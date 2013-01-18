@@ -192,8 +192,23 @@ urlpatterns += patterns('',
 urlpatterns += patterns('',
     url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_id>\d+)/$', chapters.chapter_view, {'random_stories': random_stories, 'view_type': 'single'}, name='chapter_view_single'),
     url(r'^story/(?P<story_id>\d+)/chapter/all/$', chapters.chapter_view, {'random_stories': random_stories, 'view_type': 'all'}, name='chapter_view_all'),
-    # TODO: повесить на этот же шаблон-представление вообще работу с главой
-    # url(r'^story/(?P<story_id>\d+)/chapter/edit/$', chapters.chapter_work, {'random_stories': random_stories}, name='???'),
+    # Добавление
+    url(r'^story/(?P<story_id>\d+)/chapter/add/$',
+        stories.story_work,
+        {
+            'random_stories': random_stories,
+            'page_title': 'Новый рассказ',
+        },
+        name='chapter_add'
+    ),
+    # Правка
+    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_id>\d+)/edit/$',
+        stories.story_work,
+        {
+         'random_stories': random_stories
+        },
+        name='chapter_edit'
+    ),
 )
 
 
