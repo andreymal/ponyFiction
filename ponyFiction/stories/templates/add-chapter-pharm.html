@@ -1,0 +1,53 @@
+{% extends "common.html" %}
+
+{% load url from future %}
+
+{% block content %}
+<div class="row">
+	<div class="span12">
+    <ul class="breadcrumb">
+      <li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+      <li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>
+      <li><a href="#">Редактирование «Все любят Орхидеуса»</a> <span class="divider">/</span></li>
+      <li class="active">Добавление главы</li>
+    </ul>
+  </div>
+  
+  <div class="span12">
+    <h1>Добавление новой главы к рассказу «Все любят Орхидеуса»</h1>
+    <p>Перед добавлением главы рекомендуем прочитать <a href="#">правила</a>, <a href="#">рекомендации</a> и <a href="#">инструкции</a>. Они сделают вашу жизнь и жизни читателей проще.</p>
+
+
+    <form method="POST" enctype="multipart/form-data" name="search" id="searchform" class="form-horizontal">
+      <fieldset>
+
+      <div class="control-group">
+        <label class="control-label" for="input01">Название</label>
+        <div class="controls">
+          <input type="text" class="input-xlarge" id="input01">
+        </div>
+      </div>  
+      <div class="control-group">
+        <label class="control-label" for="input01">Текст главы<br/><a href="#">Загрузить из файла</a></label>
+        <div class="controls">
+          <textarea rows="3" id="textarea" class="input-xlarge chapter-textarea"></textarea>
+        </div>
+      </div>  
+      
+      <div class="form-actions notop">
+        <button class="btn btn-primary" type="button">Опубликовать главу</button> <button class="btn" type="button">Сохранить как черновик</button>
+      </div>
+      </fieldset>
+    </form>
+  </div>     
+
+	<div class="span12">
+    <ul class="breadcrumb">
+      <li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+      <li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>
+      <li><a href="#">Редактирование «Все любят Орхидеуса»</a> <span class="divider">/</span></li>
+      <li class="active">Добавление главы</li>
+    </ul>
+  </div>
+ </div>
+{% endblock %}

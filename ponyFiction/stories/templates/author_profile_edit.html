@@ -1,0 +1,108 @@
+{% extends "common.html" %}
+
+{% load url from future %}
+
+{% block content %}
+{% load static %}
+{% load pluralize %}
+<div class="row">
+	<div class="span12">
+		<ul class="breadcrumb">
+			<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li><a href="{% url 'author_overview' user.id %}">Мой профиль</a> <span class="divider">/</span></li>
+			<li class="active">{{ page_title }}</li>
+		</ul>   
+	</div>
+	<div class="span12">
+		<h1>{{ page_title }}</h1>
+		<form action="" method="POST" enctype="multipart/form-data" class="form-horizontal">
+		{% csrf_token %}
+			<fieldset>
+				<legend>Основное
+					{% if profile_ok %}
+						<div><small>Профиль успешно обновлен</small></div>
+					{% endif %}
+				</legend>
+				{% for field in profile_form %}
+					<div class="control-group{% if field.errors %} error{% endif %}">
+						<label class="control-label">{{ field.label }}</label>
+						<div class="controls">
+							{{ field }}
+							{% if field.errors %}
+								{% for error in field.errors %}
+									<span class="help-inline">{{ error }}</span>
+								{% endfor %}
+							{% else %}
+								<span class="help-inline small">{{ field.help_text }}</span>
+							{% endif %}
+						</div>
+					</div>
+				{% endfor %}
+				{% if profile_form.non_field_errors %}
+					<div class="control-group error"><span class="help-inline">{{ form.non_field_errors.0 }}</span></div>
+				{% endif %}
+				<div class="form-actions">
+					<button class="btn btn-primary" type="submit" name="save_profile">Сохранить профиль</button>
+				</div>
+				<legend>Безопасность
+					{% if email_ok %}
+						<div><small>Адрес электронной почты успешно обновлен</small></div>
+					{% endif %}				</legend>
+				{% for field in email_form %}
+					<div class="control-group{% if field.errors %} error{% endif %}">
+						<label class="control-label">{{ field.label }}</label>
+						<div class="controls">
+							{{ field }}
+							{% if field.errors %}
+								{% for error in field.errors %}
+									<span class="help-inline">{{ error }}</span>
+								{% endfor %}
+							{% else %}
+								<span class="help-inline small">{{ field.help_text }}</span>
+							{% endif %}
+						</div>
+					</div>
+				{% endfor %}
+				{% if email_form.non_field_errors %}
+					<div class="control-group error"><span class="help-inline">{{ form.non_field_errors.0 }}</span></div>
+				{% endif %}
+				<div class="form-actions">
+					<button class="btn btn-primary" type="submit" name="save_email">Сменить e-mail</button>
+				</div>
+				<legend>Смена пароля
+					{% if password_ok %}
+						<div><small>Новый пароль установлен</small></div>
+					{% endif %}				</legend>
+				{% for field in password_form %}
+					<div class="control-group{% if field.errors %} error{% endif %}">
+						<label class="control-label">{{ field.label }}</label>
+						<div class="controls">
+							{{ field }}
+							{% if field.errors %}
+								{% for error in field.errors %}
+									<span class="help-inline">{{ error }}</span>
+								{% endfor %}
+							{% else %}
+								<span class="help-inline small">{{ field.help_text }}</span>
+							{% endif %}
+						</div>
+					</div>
+				{% endfor %}
+				{% if password_form.non_field_errors %}
+					<div class="control-group error"><span class="help-inline">{{ form.non_field_errors.0 }}</span></div>
+				{% endif %}
+				<div class="form-actions">
+					<button class="btn btn-primary" type="submit" name="save_password">Сменить пароль</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	<div class="span12">
+		<ul class="breadcrumb">
+			<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li><a href="{% url 'author_overview' user.id %}">Мой профиль</a> <span class="divider">/</span></li>
+			<li class="active">{{ page_title }}</li>
+		</ul>   
+	</div>
+</div>
+{% endblock %}

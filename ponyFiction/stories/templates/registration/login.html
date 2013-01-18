@@ -1,0 +1,58 @@
+{% extends "common.html" %}
+
+{% load url from future %}
+
+{% block content %}
+{% load static %}
+<div class="row">
+	<div class="span12">
+        <ul class="breadcrumb">
+    		<li><a href="index.html">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li class="active">{{ page_title }}</li>
+		</ul>   
+	</div>
+
+	{% if user.is_authenticated %}
+		<div class="span12">
+			Что такое, {{ user.username }}? Вы же уже авторизованы.
+			Впрочем, всегда можно <a href="{% url 'auth_logout' %}">выйти</a>.
+		</div>
+	{% else %}
+	<div class="span6 offset3">
+		<h1>Авторизация</h1>
+			<form action="" method="POST" enctype="multipart/form-data" class="form-horizontal registration-form">
+			{% csrf_token %}
+			<fieldset>
+				{% for field in form %}
+					<div class="control-group{% if field.errors %} error{% endif %}">
+						<label class="control-label">{{ field.label }}</label>
+						<div class="controls">
+							{{ field }}
+							{% if field.errors %}
+								{% for error in field.errors %}
+									<p class="help-inline">{{ error }}</p>
+								{% endfor %}
+							{% else %}
+								<p class="help-inline small">{{ field.help_text }}</p>
+							{% endif %}
+						</div>
+					</div>
+				{% endfor %}
+				{% if form.non_field_errors %}
+					<div class="control-group error"><p class="help-inline">{{ form.non_field_errors.0 }}</p></div>
+				{% endif %}
+				<div class="form-actions">
+					<button class="btn btn-primary" type="submit">Войти</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	{% endif %}
+	<div class="span12">
+        <ul class="breadcrumb">
+    		<li><a href="index.html">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li class="active">{{ page_title }}</li>
+		</ul>   
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "common.html" %}
+
+{% load url from future %}
+
+{% block content %}
+{% load static %}
+<div class="row">
+	<div class="span8">
+    <ul class="breadcrumb">
+      <li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+      <li class="active">{{ page_title }}</li>
+    </ul>   
+    
+		<h1>{{ page_title }}</h1>
+		<div id="comments-list">
+			{% for comment in object_list %}
+				<div class="comment-item" id="comment-{{ comment.id }}">
+					<p class="meta"><a class="authorlink" href="{% url 'author_overview' comment.author_id %}">{{ comment.author.username }}</a> {{ comment.date|date:"d.m.Y" }} о <a href="{% url 'story_view' comment.in_story_id %}"><b>{{ comment.in_story.title }}</b></a></p>
+					<p class="comment"> {{ comment.text|truncatewords_html:12|removetags:"br"|safe }}</p>
+				</div>
+			{% endfor %}
+		</div>
+		<input class="hidden" value="2" id="scroll_current"></input>
+		<div class="loader" style="display:none;"></div>
+    
+    <ul class="breadcrumb">
+      <li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+      <li class="active">{{ page_title }}</li>
+    </ul>
+	</div>
+</div>
+{% endblock %}
