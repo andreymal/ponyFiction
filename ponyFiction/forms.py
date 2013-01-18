@@ -2,11 +2,11 @@
 from django import forms
 from registration.forms import RegistrationForm
 from ponyFiction.stories.apis.recaptcha import fields as captcha_fields
-from ponyFiction.stories.models import Author, Comment, Category, Classifier, Character, Rating, Size, Story
+from ponyFiction.stories.models import Author, Comment, Category, Classifier, Character, Rating, Size, Story, Chapter
 from ponyFiction.widgets import StoriesCheckboxSelectMultiple, StoriesImgCheckboxSelectMultiple, StoriesButtons, ButtonWidget, ServiceButtonWidget, StoriesServiceInput, StoriesRadioButtons
 from sanitizer.forms import SanitizedCharField
 import ponyFiction.settings as settings
-#import pydevd
+
 class AuthorRegistrationForm(RegistrationForm):
     attrs_dict = {'class': 'required input-xlarge'}
     username = forms.RegexField(
@@ -55,7 +55,6 @@ class AuthorEditProfileForm(forms.ModelForm):
         error_messages={'invalid': 'Пожалуйста, исправьте ошибку в адресе jabber: похоже, он неправильный'},
         required=False,
     )
-    
     skype = forms.RegexField(
         regex=ur'^[a-zA-Z0-9-_]+$',
         widget=forms.TextInput(attrs=dict(attrs_dict, maxlength=32, placeholder='Логин skype')),
@@ -408,3 +407,38 @@ class StoryAdd(forms.ModelForm):
     class Meta:
         model = Story
         fields = ('characters', 'categories','classifications', 'freezed', 'original', 'rating', 'summary', 'size', 'title')
+
+class StoryWorkChapter(forms.ModelForm):
+    """
+    Форма добавления новой главы к рассказу
+    TODO: Добавить "заметки к главе" 
+    """
+    textarea_dict = {'class': 'input-xlarge chapter-textarea'}
+    attrs_dict = {'class': 'input-xlarge'}
+    # Название
+    title = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs=dict(attrs_dict, maxlength=512, placeholder= 'Заголовок новой главы')),
+        label='Название',
+        max_length=512,
+        error_messages={'required': 'Пожалуйста, назовите новую главу вашего рассказа'},
+    )
+    text=SanitizedCharField(
+        widget=forms.Textarea(attrs=dict(textarea_dict, placeholder='Текст новой главы')),
+        label='Текст главы',
+        allowed_tags=settings.SANITIZER_ALLOWED_TAGS,
+        allowed_attributes=settings.SANITIZER_ALLOWED_ATTRIBUTES,
+        required=False,
+    )
+    # Заметки к главе
+    notes=SanitizedCharField(
+        required=False,
+        widget=forms.Textarea(attrs=dict(attrs_dict, rows=4, cols=10, maxlength=4096, placeholder='Заметки к главе')),
+        max_length=4096,
+        label='Заметки',
+        help_text='Заметки автора к главе',
+    )
+    # Метакласс
+    class Meta:
+        model = Chapter
+        fields = ('title', 'text')
