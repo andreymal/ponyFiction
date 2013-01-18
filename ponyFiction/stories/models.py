@@ -214,7 +214,6 @@ class Story (models.Model):
 
 class Chapter (models.Model):
 # Модель главы
-
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
     draft = models.BooleanField(default=True, verbose_name="Черновик")   
     in_story = models.ForeignKey(Story, null=True, on_delete=models.CASCADE, verbose_name="Отношение к истории")
@@ -267,3 +266,9 @@ class Deferred(models.Model):
     author = models.ForeignKey(Author, null=True, verbose_name="Автор")
     story = models.ForeignKey('Story', related_name="deferred_set", null=True, verbose_name="История")
     comment = models.TextField(verbose_name="Текст комментария")
+
+"""
+TODO: (для меня)
+Сделать модель Activity (отслеживание активности)
+Сделать модель View (просмотр)
+"""
