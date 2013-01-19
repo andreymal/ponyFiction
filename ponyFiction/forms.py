@@ -171,7 +171,7 @@ class AuthorEditPasswordForm(forms.Form):
         author.set_password(password)
         author.save()
 
-class StoryAddComment(forms.ModelForm):
+class CommentForm(forms.ModelForm):
     attrs_dict = {'class': 'span4'}
     text=SanitizedCharField(
         widget=forms.Textarea(attrs=dict(attrs_dict, maxlength=8192, placeholder='Текст нового комментария')),
@@ -291,7 +291,7 @@ class SearchForm(forms.Form):
         ),
     )
 
-class StoryAdd(forms.ModelForm):
+class StoryForm(forms.ModelForm):
     attrs_dict = {'class': 'input-xlarge'}   
     radio_attrs={
            'btn_attrs': {'type': 'button', 'class': 'btn'},
@@ -408,7 +408,7 @@ class StoryAdd(forms.ModelForm):
         model = Story
         fields = ('characters', 'categories','classifications', 'freezed', 'original', 'rating', 'summary', 'size', 'title')
 
-class StoryWorkChapter(forms.ModelForm):
+class ChapterForm(forms.ModelForm):
     """
     Форма добавления новой главы к рассказу
     TODO: Добавить "заметки к главе" 

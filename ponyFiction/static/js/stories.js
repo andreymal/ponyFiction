@@ -387,10 +387,6 @@ $(function(){
     	// ...проставляем классы изображениям персонажей, в зависимости от выбранных скрытых чекбоксов.
     	// TODO: привести, как в редактировании
 		$('input[name="characters_select"][checked="checked"]').parent().children('img').addClass('ui-selected');
-		// ...подключаем плавный переход по вкладкам.
-		$('#searchTabNav button').click(function(e){e.preventDefault();$(this).tab('show');});
-		// ...переходим на первую вкладку.
-		$('#searchTabNav button:first').tab('show');
     }
     // На странице редактирования истории...
     var re_storyedit = new RegExp('/story/[0-9]+/edit/')

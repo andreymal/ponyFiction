@@ -23,20 +23,8 @@ urlpatterns += patterns('', url(r'^admin/', include(admin.site.urls)))
 
 # Поиск
 urlpatterns += patterns('',
-                        
-    url(r'^search/$',
-        search.search_main,
-        {
-            'GET': search.search_form,
-            'POST': search.search_action,
-            'GET_title': 'Поиск историй',
-            'POST_title': 'Результаты поиска'
-        },
-    name='search'),
-                        
-    url(r'^search/(?P<search_type>\w+)/(?P<search_id>\d+)/$',
-        search.search_simple,
-        name='search_simple')
+    url(r'^search/$', search.search_main, name='search'),
+    url(r'^search/(?P<search_type>\w+)/(?P<search_id>\d+)/$', search.search_simple, name='search_simple')
 )
 
 # Обработка пользовательских адресов
@@ -175,14 +163,20 @@ urlpatterns += patterns('',
 
 # Работа с главами
 urlpatterns += patterns('',
-    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/$', chapters.chapter_view, {'view_type': 'single'}, name='chapter_view_single'),
-    url(r'^story/(?P<story_id>\d+)/chapter/all/$', chapters.chapter_view, {'view_type': 'all'}, name='chapter_view_all'),
+    # Просмотр одной
+    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/$',
+        chapters.chapter_view_single,
+        name='chapter_view_single'
+    ),
+    # Просмотр всех глав
+    url(r'^story/(?P<story_id>\d+)/chapter/all/$',
+        chapters.chapter_view_all,
+        name='chapter_view_all'
+    ),
     # Добавление
     url(r'^story/(?P<story_id>\d+)/chapter/add/$',
         chapters.chapter_work,
-        {
-            'page_title': 'Новый рассказ',
-        },
+        {'page_title': 'Новый рассказ'},
         name='chapter_add'
     ),
     # Правка
@@ -191,7 +185,6 @@ urlpatterns += patterns('',
         name='chapter_edit'
     ),
 )
-
 
 urlpatterns += patterns('', 
     url(r'^test_add_chapter/$',

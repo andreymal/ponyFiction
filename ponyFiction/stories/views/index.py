@@ -6,8 +6,7 @@ from ponyFiction.stories.models import Story, Category, Chapter, Comment
 
 @csrf_protect
 def index(request, **kwargs):
-    random_stories = kwargs.pop('random_stories', {})
-    page_title = kwargs.pop('page_title', 'Библиотека')
+    page_title = kwargs.pop('page_title')
     categories = Category.objects.all()
     stories = Story.objects.order_by('-date')[0:settings.STORIES_COUNT['main']]
     chapters = Chapter.objects.exclude(order=1).order_by('-date')[0:settings.CHAPTERS_COUNT['main']]
@@ -17,7 +16,6 @@ def index(request, **kwargs):
             'stories' : stories,
             'chapters' : chapters,
             'comments' : comments,
-            'random_stories' : random_stories,
             'page_title' : page_title
             }
     return render(request, 'index.html', data)

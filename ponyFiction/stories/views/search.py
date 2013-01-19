@@ -5,37 +5,27 @@ from django.views.decorators.csrf import csrf_protect
 from ponyFiction.stories.models import Story, Chapter
 from ponyFiction.forms import SearchForm
 
-def search_main(request, **kwargs):
-    get_view = kwargs.pop('GET', None)
-    get_title = kwargs.pop('GET_title', None)
-    post_view = kwargs.pop('POST', None)
-    post_title = kwargs.pop('POST_title', None)
-    random_stories = kwargs.pop('random_stories', {})
-    data={'random_stories': random_stories}
-    if request.method == 'GET' and get_view is not None:        
-        data.update({'page_title' : get_title})
-        return get_view(request, data=data)
-    elif request.method == 'POST' and post_view is not None:
-        data.update({'page_title' : post_title})
-        return post_view(request, data=data)
-    raise Http404
+def search_main(request):
+    if request.method == 'GET':
+        return search_form(request)
+    elif request.method == 'POST':
+        return search_action(request)
+    else:
+        raise Http404
 
 @csrf_protect
-def search_form(request, **kwargs):
-    assert request.method == 'GET'
-    data = kwargs.pop('data', {})
+def search_form(request):
     form = SearchForm()
-    data.update({'form': form})
+    data = {'form': form, 'page_title': 'Поиск историй'}
     return render(request, 'search.html', data)
 
 @csrf_protect
-def search_action(request, **kwargs):
-    assert request.method == 'POST'
-    data = kwargs.pop('data', {})
+def search_action(request):
     from django.conf import settings
     from ponyFiction.stories.apis.sphinxapi import SphinxClient, SPH_SORT_EXTENDED
     from ponyFiction.stories.apis.utils import pagination_ranges, SetBoolSphinxFilter, SetObjSphinxFilter
     from math import ceil
+    data = {'page_title': 'Результаты поиска'}
     # Создаваем форму с данных POST
     postform = SearchForm(request.POST)
     # Новый словарь данных для иницаализации формы
@@ -53,7 +43,7 @@ def search_action(request, **kwargs):
         pass
     else:
         form = SearchForm()
-        data.update({'form': form})
+        data['form'] = form
         return render(request, 'search.html', data)
     # Текущая страница поиска
     try:
