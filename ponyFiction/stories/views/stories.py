@@ -47,6 +47,7 @@ def story_view(request, **kwargs):
 
 @login_required
 @csrf_protect
+# TODO: переработать на логику по типу поиска
 def story_work(request, **kwargs):
     random_stories = kwargs.pop('random_stories', {})
     story_id = kwargs.pop('story_id', False)

@@ -5,6 +5,7 @@ encoding//ponyFiction/stories/apis/utils.py=utf-8
 encoding//ponyFiction/stories/models.py=utf-8
 encoding//ponyFiction/stories/views/ajax.py=utf-8
 encoding//ponyFiction/stories/views/author.py=utf-8
+encoding//ponyFiction/stories/views/chapters.py=utf-8
 encoding//ponyFiction/stories/views/index.py=utf-8
 encoding//ponyFiction/stories/views/search.py=utf-8
 encoding//ponyFiction/stories/views/stories.py=utf-8

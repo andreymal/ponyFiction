@@ -3,7 +3,6 @@ all :
 
 pylint :
 	pylint --output-format=colorized --rcfile=pylint.ini \
-		avatar \
 		bleach \
 		html5lib \
 		ponyFiction \
@@ -14,4 +13,3 @@ pylint :
 
 clean :
 	find -name '*.pyc' -exec rm -rf '{}' \;
-

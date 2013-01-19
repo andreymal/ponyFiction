@@ -190,11 +190,11 @@ urlpatterns += patterns('',
 
 # Работа с главами
 urlpatterns += patterns('',
-    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_id>\d+)/$', chapters.chapter_view, {'random_stories': random_stories, 'view_type': 'single'}, name='chapter_view_single'),
+    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/$', chapters.chapter_view, {'random_stories': random_stories, 'view_type': 'single'}, name='chapter_view_single'),
     url(r'^story/(?P<story_id>\d+)/chapter/all/$', chapters.chapter_view, {'random_stories': random_stories, 'view_type': 'all'}, name='chapter_view_all'),
     # Добавление
     url(r'^story/(?P<story_id>\d+)/chapter/add/$',
-        stories.story_work,
+        chapters.chapter_work,
         {
             'random_stories': random_stories,
             'page_title': 'Новый рассказ',
@@ -202,8 +202,8 @@ urlpatterns += patterns('',
         name='chapter_add'
     ),
     # Правка
-    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_id>\d+)/edit/$',
-        stories.story_work,
+    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/edit/$',
+        chapters.chapter_work,
         {
          'random_stories': random_stories
         },
