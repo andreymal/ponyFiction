@@ -79,6 +79,7 @@ def chapter_add(request, story_id):
     Предварительно заполненную неправильно - в случае ошибки при добавлении
     """
     data['form'] = form
+    data['story'] = story
     return render(request, 'chapter_work.html', data)
 
 def chapter_edit(request, story_id, chapter_order):
@@ -108,5 +109,5 @@ def chapter_edit(request, story_id, chapter_order):
     Предварительно заполненную - в случае успешного редактирования или начальной отправки
     """
     form.fields['button_submit'].initial = 'Сохранить изменения'
-    data.update({'form': form, 'chapter_edit': True, 'page_title' : 'Редактирование «%s»' % chapter.title })
+    data.update({'form': form, 'chapter_edit': True, 'page_title' : 'Редактирование «%s»' % chapter.title, 'story': story })
     return render(request, 'chapter_work.html', data)

@@ -438,6 +438,17 @@ class ChapterForm(forms.ModelForm):
         label='Заметки',
         help_text='Заметки автора к главе',
     )
+    # Кнопка "Отправить"
+    button_submit = forms.Field(
+        required=False,
+        widget=ServiceButtonWidget(attrs={'class': 'btn btn-primary'}),
+    )
+    # Кнопка "Удалить"
+    button_delete = forms.Field(
+        required=False,
+        widget=ServiceButtonWidget(attrs={'class': 'btn btn-danger'}),
+        initial='Удалить главу',
+    )
     # Метакласс
     class Meta:
         model = Chapter

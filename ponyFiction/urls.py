@@ -149,7 +149,6 @@ urlpatterns += patterns('',
     # Добавление
     url(r'^story/add/$',
         stories.story_work,
-        {'page_title': 'Новый рассказ'},
         name='story_add'
     ),
     # Правка
@@ -176,7 +175,6 @@ urlpatterns += patterns('',
     # Добавление
     url(r'^story/(?P<story_id>\d+)/chapter/add/$',
         chapters.chapter_work,
-        {'page_title': 'Новый рассказ'},
         name='chapter_add'
     ),
     # Правка
@@ -185,16 +183,6 @@ urlpatterns += patterns('',
         name='chapter_edit'
     ),
 )
-
-urlpatterns += patterns('', 
-    url(r'^test_add_chapter/$',
-        TemplateView.as_view(
-            template_name='add-chapter-pharm.html',
-            get_context_data=lambda: {'page_title': 'Добавить главу'},
-        ),
-    )
-)
-
 
         
 urlpatterns += patterns('ponyFiction.stories.views',  

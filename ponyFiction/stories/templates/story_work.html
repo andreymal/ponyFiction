@@ -151,23 +151,25 @@
 				<!-- Отправить -->
       			<div class="form-actions">
       				{{ form.button_submit }}
-      				<!-- Псевдокнопка активации модального окна подтверждения -->
-      				<input href="#delete_story" class="btn btn-danger" type="button" data-toggle="modal" value="Удалить рассказ">
-      				<!-- Modal -->
-					<div id="delete_story" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-						<div class="modal-header">
-					    	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-					    	<h3 id="myModalLabel">Удаление рассказа</h3>
+      				{% if story_edit %}
+	      				<!-- Псевдокнопка активации модального окна подтверждения -->
+	      				<input href="#delete_story" class="btn btn-danger" type="button" data-toggle="modal" value="Удалить рассказ">
+	      				<!-- Modal -->
+						<div id="delete_story" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-header">
+						    	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						    	<h3 id="myModalLabel">Удаление рассказа</h3>
+							</div>
+							<div class="modal-body">
+								<p>Вы действительно хотите удалить рассказ?</p>
+								<p>Вся связанная статистика, главы, оценки и комментарии также будут безвозвратно удалены!</p>
+							</div>
+							<div class="modal-footer">
+								<button class="btn" data-dismiss="modal" aria-hidden="true">Отменить</button>
+								{{ form.button_delete }}
+							</div>
 						</div>
-						<div class="modal-body">
-							<p>Вы действительно хотите удалить рассказ?</p>
-							<p>Вся связанная статистика, главы, оценки и комментарии также будут безвозвратно удалены!</p>
-						</div>
-						<div class="modal-footer">
-							<button class="btn" data-dismiss="modal" aria-hidden="true">Отменить</button>
-							{{ form.button_delete }}
-						</div
-					</div>
+					{% endif %}
       			</div>
       			{% if story_edit %}
       				<legend>Главы</legend>

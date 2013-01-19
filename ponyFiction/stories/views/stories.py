@@ -53,7 +53,7 @@ def story_add(request, data):
             coauthors.approved = True
             coauthors.save()
             # Перенаправление на страницу редактирования в случае успеха
-            return redirect('story_edit', kwargs={'story_id': story.id})
+            return redirect('story_edit', story.id)
     else:
         # Отправка пустой формы для добавления рассказа.
         form = StoryForm(initial={'freezed': 0, 'original': 1, 'rating': 4, 'size': 1})
