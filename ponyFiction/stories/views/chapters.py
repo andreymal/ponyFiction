@@ -43,8 +43,13 @@ def chapter_work(request, story_id=False, chapter_order=False):
         story = Story.objects.get(pk=story_id)
         # Если пользователь входит в число соавторов
         if (story.authors.filter(id=request.user.id)):
-            # Добавляем главу
-            pass
+            # Работаем с главами
+            if (chapter_order and Chapter.objects.filter(in_story=story_id, order=chapter_order).exists()):
+                # Редактируем главу
+                return chapter_edit(request, story_id, chapter_order)
+            else:
+                # Иначе добавляем ее
+                return chapter_add(request, story_id)
         # Иначе - смотреть историю
         return redirect('story_view', kwargs={'story_id': story.id})
     # Иначе - на главную
