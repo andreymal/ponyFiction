@@ -3,6 +3,7 @@ encoding//ponyFiction/forms.py=utf-8
 encoding//ponyFiction/settings.py=utf-8
 encoding//ponyFiction/stories/apis/utils.py=utf-8
 encoding//ponyFiction/stories/models.py=utf-8
+encoding//ponyFiction/stories/templatetags/pluralize.py=utf-8
 encoding//ponyFiction/stories/views/ajax.py=utf-8
 encoding//ponyFiction/stories/views/author.py=utf-8
 encoding//ponyFiction/stories/views/chapters.py=utf-8

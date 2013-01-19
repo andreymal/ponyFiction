@@ -1,1 +1,1 @@
-from ponyFiction.stories.templatetags import pluralize
+from ponyFiction.stories.templatetags import pluralize, random_stories

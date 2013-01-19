@@ -1,5 +1,5 @@
 {% load url from future %}
-{% load static %}
+{% load random_stories %}
 <!-- Container start -->
 <div class="container">
 	<!-- Header start -->
@@ -27,33 +27,7 @@
 	<div class="logopic">
 		<div id="myCarousel" class="carousel">
 			<!-- Картинки в карусельке -->
-			<div class="carousel-inner slides_container">
-				{% for random_story in random_stories %}
-					<div class="story-item">
-						<h3><a href="{% url 'story_view' random_story.id %}">{{ random_story.title }}</a></h3>
-						<p class="meta">
-							{% spaceless %}
-								<span class="category-list">
-	              					{% for category in random_story.categories.all %}
-	                					<a class="gen gen-{{ category.id }}" href="{% url 'stories.views.search_simple' 'category' category.id %}">{{ category.name }}</a>
-	              					{% endfor %}
-	              				</span>
-	            			{% endspaceless %}
-            			</p>
-						{% if random_story.cover %}<img class="thumbnail" src="i/tumb.jpg" alt=""/>{% endif %}
-						<p>{{ random_story.summary|truncatewords:20 }}</p>
-           				<p class="meta">
-							{% spaceless %}
-              					<span class="character-list">
-              						{% for character in random_story.characters.all %}
-                						<a href="{% url 'stories.views.search_simple' 'character' character.id %}"><img src="{% get_static_prefix %}i/characters/{{ character.id }}.png" alt="{{ character.name }}" title="{{ character.name }}"/></a>
-              						{% endfor %}
-              					</span>
-            				{% endspaceless %}
-						</p>
-					</div>
-				{% endfor %}
-			</div>
+			{% random_stories %}
 		</div>
 	</div>
 	<!-- Logo image and carousel end -->

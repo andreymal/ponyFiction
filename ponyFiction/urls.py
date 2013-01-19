@@ -14,10 +14,9 @@ from ponyFiction.stories.models import Comment, Story, Chapter
 from django.views.generic import TemplateView
 
 admin.autodiscover()
-random_stories = Story.objects.order_by('?')[0:10]
 
 # Главная страница
-urlpatterns = patterns('', url(r'^$', index, {'random_stories': random_stories, 'page_title': 'Главная'}, name='index'))
+urlpatterns = patterns('', url(r'^$', index, {'page_title': 'Главная'}, name='index'))
 
 # Адреса админки
 urlpatterns += patterns('', url(r'^admin/', include(admin.site.urls)))
@@ -28,7 +27,6 @@ urlpatterns += patterns('',
     url(r'^search/$',
         search.search_main,
         {
-            'random_stories': random_stories,
             'GET': search.search_form,
             'POST': search.search_action,
             'GET_title': 'Поиск историй',
@@ -38,27 +36,24 @@ urlpatterns += patterns('',
                         
     url(r'^search/(?P<search_type>\w+)/(?P<search_id>\d+)/$',
         search.search_simple,
-        {
-            'random_stories': random_stories,
-        },
-    name='search_simple')
+        name='search_simple')
 )
 
 # Обработка пользовательских адресов
 urlpatterns += patterns('',
     url(r'^accounts/(?P<user_id>\d+)/$',
         author.author_info,
-        {'random_stories': random_stories, 'page_title': 'Профиль'},
+        {'page_title': 'Профиль'},
         name='author_overview'),
                         
     url(r'^accounts/profile/$',
         author.author_info,
-        {'random_stories': random_stories, 'page_title': 'Мой кабинет'},
+        {'page_title': 'Мой кабинет'},
         name='author_dashboard'),
                         
     url(r'^accounts/profile/edit/$',
         author.author_edit,
-        {'random_stories': random_stories, 'page_title': 'Настройки профиля'},
+        {'page_title': 'Настройки профиля'},
         name='author_profile_edit'),
                         
     url(r'^accounts/registration/$',
@@ -66,13 +61,13 @@ urlpatterns += patterns('',
         {
             'backend': 'registration.backends.pony.PonyBackend',
             'form_class': AuthorRegistrationForm,
-            'extra_context': {'random_stories': random_stories, 'page_title': 'Регистрация'}
+            'extra_context': {'page_title': 'Регистрация'}
         },
         name='registration_register'),
     url(r'^accounts/registration/complete/$',
         TemplateView.as_view(
             template_name='registration/registration_complete.html',
-            get_context_data=lambda: {'random_stories': random_stories, 'page_title': 'Завершение регистрации'},
+            get_context_data=lambda: {'page_title': 'Завершение регистрации'},
         ),
         name='registration_complete'),          
     url(r'^accounts/activate/(?P<activation_key>\w+)/$',
@@ -82,20 +77,20 @@ urlpatterns += patterns('',
     url(r'^accounts/activate/complete/$',
         TemplateView.as_view(
             template_name='registration/activation_complete.html',
-            get_context_data=lambda: {'random_stories': random_stories, 'page_title': 'Активация'},
+            get_context_data=lambda: {'page_title': 'Активация'},
         ),
         name='registration_activation_complete'),       
     url(r'^accounts/registration/closed/$',
         TemplateView.as_view(
             template_name='registration/registration_closed.html',
-            get_context_data=lambda: {'random_stories': random_stories, 'page_title': 'Регистрация закрыта'},
+            get_context_data=lambda: {'page_title': 'Регистрация закрыта'},
         ),
         name='registration_disallowed'),
     url(r'^accounts/login/$',
         auth_views.login,
         {
             'template_name': 'registration/login.html',
-            'extra_context': {'random_stories': random_stories, 'page_title': 'Авторизация'}
+            'extra_context': {'page_title': 'Авторизация'}
         },
         name='auth_login'),
     url(r'^accounts/logout/$',
@@ -120,7 +115,6 @@ urlpatterns += patterns('',
         stream_list,
         {
             'model': Comment,
-            'random_stories': random_stories,
             'page_title': 'Лента новых комментариев'
         },
         name='stream_comments'),
@@ -129,7 +123,6 @@ urlpatterns += patterns('',
         stream_list,
         {
             'model': Story,
-            'random_stories': random_stories,
             'page_title': 'Лента новых историй'
         },
         name='stream_stories'),
@@ -138,7 +131,6 @@ urlpatterns += patterns('',
         stream_list,
         {
             'model': Chapter,
-            'random_stories': random_stories,
             'page_title': 'Лента новых глав'
         },
         name='stream_chapters'),
@@ -164,24 +156,17 @@ urlpatterns += patterns('',
     # Просмотр
     url(r'^story/(?P<story_id>\d+)/$',
         stories.story_view,
-        {'random_stories': random_stories},
         name='story_view'
     ),
     # Добавление
     url(r'^story/add/$',
         stories.story_work,
-        {
-            'random_stories': random_stories,
-            'page_title': 'Новый рассказ',
-        },
+        {'page_title': 'Новый рассказ'},
         name='story_add'
     ),
     # Правка
     url(r'^story/(?P<story_id>\d+)/edit/$',
         stories.story_work,
-        {
-         'random_stories': random_stories
-        },
         name='story_edit'
     ),
     # AJAX-сортировка глав
@@ -190,13 +175,12 @@ urlpatterns += patterns('',
 
 # Работа с главами
 urlpatterns += patterns('',
-    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/$', chapters.chapter_view, {'random_stories': random_stories, 'view_type': 'single'}, name='chapter_view_single'),
-    url(r'^story/(?P<story_id>\d+)/chapter/all/$', chapters.chapter_view, {'random_stories': random_stories, 'view_type': 'all'}, name='chapter_view_all'),
+    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/$', chapters.chapter_view, {'view_type': 'single'}, name='chapter_view_single'),
+    url(r'^story/(?P<story_id>\d+)/chapter/all/$', chapters.chapter_view, {'view_type': 'all'}, name='chapter_view_all'),
     # Добавление
     url(r'^story/(?P<story_id>\d+)/chapter/add/$',
         chapters.chapter_work,
         {
-            'random_stories': random_stories,
             'page_title': 'Новый рассказ',
         },
         name='chapter_add'
@@ -204,9 +188,6 @@ urlpatterns += patterns('',
     # Правка
     url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/edit/$',
         chapters.chapter_work,
-        {
-         'random_stories': random_stories
-        },
         name='chapter_edit'
     ),
 )
@@ -216,7 +197,7 @@ urlpatterns += patterns('',
     url(r'^test_add_chapter/$',
         TemplateView.as_view(
             template_name='add-chapter-pharm.html',
-            get_context_data=lambda: {'random_stories': random_stories, 'page_title': 'Добавить главу'},
+            get_context_data=lambda: {'page_title': 'Добавить главу'},
         ),
     )
 )
