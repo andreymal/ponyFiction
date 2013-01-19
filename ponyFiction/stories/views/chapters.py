@@ -77,4 +77,31 @@ def chapter_add(request, story_id):
     return render(request, 'chapter_work.html', data)
 
 def chapter_edit(request, story_id, chapter_order):
-    pass
+    data={}
+    story = Story.objects.get(pk=story_id)
+    chapter = Chapter.objects.get(in_story=story_id, order=chapter_order)
+    if request.POST:
+        if 'button_submit' in request.POST:
+            # Редактирование существующей главы рассказа
+            form = ChapterForm(request.POST, instance=chapter)
+            if form.is_valid():
+                form.save()
+                data['edit_success'] = True
+                form = ChapterForm(instance=chapter)
+        if 'button_delete' in request.POST:
+            shift = story.chapter_set.filter(order__gt=chapter.order)
+            for chapter in shift:
+                chapter.order = chapter.order-1
+                chapter.save(update_fields=['order'])
+            chapter.delete()
+            return redirect('story_edit', kwargs={'story_id': story_id})
+    else:
+        # Отправка предварительно заполненной формы с главой
+        form = ChapterForm(instance=chapter)
+    """
+    К данным шаблона добавляем форму
+    Предварительно заполненную - в случае успешного редактирования или начальной отправки
+    """
+    form.fields['button_submit'].initial = 'Сохранить изменения'
+    data.update({'form': form, 'chapter_edit': True, 'page_title' : 'Редактирование «%s»' % chapter.title })
+    return render(request, 'chapter_work.html', data)
