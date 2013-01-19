@@ -9,18 +9,10 @@ from ponyFiction.forms import StoryAddComment, StoryAdd
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
-
 @csrf_protect
 def story_view(request, **kwargs):
-    random_stories = kwargs.pop('random_stories', {})
     story_id = kwargs.pop('story_id', None)
     story = get_object_or_404(Story, pk=story_id)
-    authors = story.authors.all()
-    characters = story.characters.all()
-    rating = story.rating
-    categories = story.categories.all()
-    classifications = story.classifications.all()
-    size = story.size
     chapters = story.chapter_set.order_by('order')
     comments_list = story.comment_set.all()
     paged = Paginator(comments_list, settings.COMMENTS_COUNT['page'], orphans=settings.COMMENTS_ORPHANS)
@@ -30,16 +22,9 @@ def story_view(request, **kwargs):
     comment_form = StoryAddComment()
     data = {
        'story' : story,
-       'authors' : authors,
-       'characters': characters,
-       'rating': rating,
-       'categories' : categories,
-       'classifications' : classifications,
-       'size' : size,
        'comments' : comments,
        'chapters' : chapters,
        'num_pages' : num_pages,
-       'random_stories' : random_stories,
        'page_title' : page_title,
        'comment_form': comment_form
        }
@@ -49,9 +34,8 @@ def story_view(request, **kwargs):
 @csrf_protect
 # TODO: переработать на логику по типу поиска
 def story_work(request, **kwargs):
-    random_stories = kwargs.pop('random_stories', {})
     story_id = kwargs.pop('story_id', False)
-    data={'random_stories': random_stories}
+    data={}
     # Если передан id истории и такая история есть
     if (story_id and Story.objects.filter(pk=story_id).exists()):
         story = Story.objects.get(pk=story_id)
