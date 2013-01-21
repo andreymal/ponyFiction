@@ -15,17 +15,8 @@ def chapter_view_all(request, story_id=False):
 def chapter_view_single(request, story_id=False, chapter_order=False):
     chapter = get_object_or_404(Chapter, in_story_id=story_id, order=chapter_order)
     page_title = chapter.title[0:80]+' – '+chapter.in_story.title
-    if (chapter.in_story.chapter_set.count() > 1):
-        try:
-            prev_chapter = Chapter.objects.get(in_story_id=story_id, order=chapter.order-1)
-        except Chapter.DoesNotExist:
-            prev_chapter = False
-        try:
-            next_chapter = Chapter.objects.get(in_story_id=story_id, order=chapter.order+1)
-        except Chapter.DoesNotExist:
-            next_chapter = False
-    else:
-        prev_chapter = next_chapter = False
+    prev_chapter = chapter.get_prev_chapter()
+    next_chapter = chapter.get_next_chapter()
     data = {
        'chapter' : chapter,
        'prev_chapter' : prev_chapter,

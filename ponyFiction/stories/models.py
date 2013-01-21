@@ -209,8 +209,7 @@ class Story (models.Model):
         return self.vote.filter(direction = True).count()
     
     def vote_down_count(self):
-        return self.vote.filter(direction = False).count()
-    
+        return self.vote.filter(direction = False).count()   
 
 class Chapter (models.Model):
 # Модель главы
@@ -232,6 +231,18 @@ class Chapter (models.Model):
     
     def __unicode__(self):
         return '[%s / %s] %s (%s)' % (self.id, self.order, self.title, self.in_story.title)
+
+    def get_prev_chapter(self):
+        try:
+            return self.in_story.chapter_set.filter(order__lt = self.order).latest('order')
+        except Chapter.DoesNotExist:
+            return None
+
+    def get_next_chapter(self):
+        try:
+            return self.in_story.chapter_set.filter(order__gt = self.order)[0:1].get()
+        except Chapter.DoesNotExist:
+            return None
 
 class Comment(models.Model):
 # Модель комментария
