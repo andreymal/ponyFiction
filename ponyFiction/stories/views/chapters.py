@@ -10,7 +10,7 @@ def chapter_view_all(request, story_id=False):
     chapters = story.chapter_set.order_by('order')
     page_title = story.title+u' – все главы'
     data = {'chapters' : chapters, 'page_title' : page_title, 'allchapters': True}
-    return render(request, 'chapter.html', data)
+    return render(request, 'chapter_view.html', data)
 
 def chapter_view_single(request, story_id=False, chapter_order=False):
     chapter = get_object_or_404(Chapter, in_story_id=story_id, order=chapter_order)
@@ -24,7 +24,7 @@ def chapter_view_single(request, story_id=False, chapter_order=False):
        'page_title' : page_title,
        'allchapters': False
     }
-    return render(request, 'chapter.html', data)
+    return render(request, 'chapter_view.html', data)
 
 @login_required
 @csrf_protect
@@ -58,7 +58,7 @@ def chapter_add(request, story_id):
             chapter.order = story.chapter_set.count()+1
             chapter.save()
             # Перенаправление на страницу редактирования в случае успеха
-            return redirect('story_edit', kwargs={'story_id': story.id})
+            return redirect('story_edit', story.id)
     else:
         # Отправка пустой формы для добавления рассказа.
         form = ChapterForm()
@@ -91,7 +91,7 @@ def chapter_edit(request, story_id, chapter_order):
                 chapter.order = chapter.order-1
                 chapter.save(update_fields=['order'])
             chapter.delete()
-            return redirect('story_edit', kwargs={'story_id': story_id})
+            return redirect('story_edit', story_id)
     else:
         # Отправка предварительно заполненной формы с главой
         form = ChapterForm(instance=chapter)

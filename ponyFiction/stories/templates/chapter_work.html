@@ -16,20 +16,63 @@
 		<form method="POST" enctype="multipart/form-data" name="search" id="searchform" class="form-horizontal">
 		{% csrf_token %}
 			<fieldset>
-				<div class="control-group">
-					<label class="control-label">Название</label>
-					<div class="controls">
-						<input type="text" class="input-xlarge" id="input01">
-					</div>
-	      		</div>  
-				<div class="control-group">
-					<label class="control-label" for="input01">Текст главы<br/><a href="#">Загрузить из файла</a></label>
-						<div class="controls">
-							<textarea rows="3" id="textarea" class="input-xlarge chapter-textarea"></textarea>
-						</div>
-				</div>  
+				<!-- Название -->
+				<div class="control-group{% if form.title.errors %} error{% endif %}">
+					<label class="control-label">{{ form.title.label }}</label>
+					<div class="controls">{{ form.title }}</div>
+					{% if form.title.errors %}
+						{% for error in form.title.errors %}
+							<span class="help-inline">{{ error }}</span>
+						{% endfor %}
+					{% else %}
+						<span class="help-inline small">{{ form.title.help_text }}</span>
+					{% endif %}
+				</div>
+				<!-- Заметки к главе -->
+			    <div class="control-group{% if form.notes.errors %} error{% endif %}">
+					<label class="control-label">{{ form.notes.label }}</label>
+					<div class="controls">{{ form.notes }}</div>
+					{% if form.notes.errors %}
+						{% for error in form.notes.errors %}
+							<span class="help-inline">{{ error }}</span>
+						{% endfor %}
+					{% else %}
+						<span class="help-inline small">{{ form.notes.help_text }}</span>
+					{% endif %}
+				</div>
+				<!-- Текст главы -->
+			    <div class="control-group{% if form.text.errors %} error{% endif %}">
+					<label class="control-label">{{ form.text.label }}</label>
+					<div class="controls">{{ form.text }}</div>
+					{% if form.text.errors %}
+						{% for error in form.text.errors %}
+							<span class="help-inline">{{ error }}</span>
+						{% endfor %}
+					{% else %}
+						<span class="help-inline small">{{ form.text.help_text }}</span>
+					{% endif %}
+				</div>
 				<div class="form-actions notop">
-					<button class="btn btn-primary" type="button">Опубликовать главу</button> <button class="btn" type="button">Сохранить как черновик</button>
+					{{ form.button_submit }}
+      				{% if chapter_edit %}
+	      				<!-- Псевдокнопка активации модального окна подтверждения -->
+	      				<input href="#delete_story" class="btn btn-danger" type="button" data-toggle="modal" value="Удалить главу">
+	      				<!-- Modal -->
+						<div id="delete_story" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-header">
+						    	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						    	<h3 id="myModalLabel">Удаление главы</h3>
+							</div>
+							<div class="modal-body">
+								<p>Вы действительно хотите удалить главу?</p>
+								<p>Вся связанная статистика, оценки и комментарии также будут безвозвратно удалены!</p>
+							</div>
+							<div class="modal-footer">
+								<button class="btn" data-dismiss="modal" aria-hidden="true">Отменить</button>
+								{{ form.button_delete }}
+							</div>
+						</div>
+					{% endif %}
 				</div>
 			</fieldset>
 		</form>
