@@ -5,7 +5,7 @@ from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.template import defaultfilters as filters
 from django.core.urlresolvers import reverse
 from ponyFiction.stories.models import Story, Author, Comment, Chapter
-from ponyFiction.stories.apis.utils import dthandler, unicode_to_int_list
+from ponyFiction.stories.utils.misc import dthandler, unicode_to_int_list
 
 # TODO: Доделать исключения
 # Перевести часть формирования данных с AJAX на обработку шаблонными фильтрами тут 

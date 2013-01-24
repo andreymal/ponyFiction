@@ -19,38 +19,41 @@
 				<!-- Название -->
 				<div class="control-group{% if form.title.errors %} error{% endif %}">
 					<label class="control-label">{{ form.title.label }}</label>
-					<div class="controls">{{ form.title }}</div>
+					<div class="controls">{{ form.title }}
 					{% if form.title.errors %}
 						{% for error in form.title.errors %}
-							<span class="help-inline">{{ error }}</span>
+						<span class="help-inline">{{ error }}</span>
 						{% endfor %}
 					{% else %}
 						<span class="help-inline small">{{ form.title.help_text }}</span>
 					{% endif %}
+          </div>
 				</div>
 				<!-- Заметки к главе -->
 			    <div class="control-group{% if form.notes.errors %} error{% endif %}">
 					<label class="control-label">{{ form.notes.label }}</label>
-					<div class="controls">{{ form.notes }}</div>
+					<div class="controls">{{ form.notes }}
 					{% if form.notes.errors %}
 						{% for error in form.notes.errors %}
-							<span class="help-inline">{{ error }}</span>
+						<span class="help-inline">{{ error }}</span>
 						{% endfor %}
 					{% else %}
 						<span class="help-inline small">{{ form.notes.help_text }}</span>
 					{% endif %}
+          </div>
 				</div>
 				<!-- Текст главы -->
 			    <div class="control-group{% if form.text.errors %} error{% endif %}">
 					<label class="control-label">{{ form.text.label }}</label>
-					<div class="controls">{{ form.text }}</div>
+					<div class="controls">{{ form.text }}
 					{% if form.text.errors %}
 						{% for error in form.text.errors %}
-							<span class="help-inline">{{ error }}</span>
+						<span class="help-inline">{{ error }}</span>
 						{% endfor %}
 					{% else %}
 						<span class="help-inline small">{{ form.text.help_text }}</span>
 					{% endif %}
+          </div>
 				</div>
 				<div class="form-actions notop">
 					{{ form.button_submit }}

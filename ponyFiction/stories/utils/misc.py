@@ -3,7 +3,6 @@
 from datetime import datetime
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime) else None
 
-
 # TODO: переписать код!
 
 #  get pretty paginator ranges

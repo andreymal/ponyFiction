@@ -5,7 +5,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
 from ponyFiction.stories.models import Story, CoAuthorsStory, Chapter
 from django.core.paginator import Paginator
-from ponyFiction.forms import CommentForm, StoryForm
+from ponyFiction.stories.forms.story import StoryForm
+from ponyFiction.stories.forms.comment import CommentForm
 
 @csrf_protect
 def story_view(request, **kwargs):

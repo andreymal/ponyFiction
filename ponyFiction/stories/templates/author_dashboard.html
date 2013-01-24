@@ -58,7 +58,7 @@
       <h4><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> 
 	      <sup><span class="upvotes">{{ story.vote_up_count }}</span> / <span class="downvotes">{{ story.vote_down_count }}</span></sup>
 	      {% if story.freezed %}<sup class="suspended">Заморожена</sup>{% endif %}
-        <sup><a class="edit-link" href="#">Редактировать</a></sup></h4>
+        <sup><a class="edit-link" href="{% url 'story_edit' story.id %}">Редактировать</a></sup></h4>
       <p>
         {% if story.chapter_set.count == 1 %}
           {% for chapter in story.chapter_set.all %}
@@ -74,7 +74,7 @@
       <div id="story-{{ story.id }}" class="collapse">
         <ul class="chapters-list">
         {% for chapter in story.chapter_set.all %}
-          <li><a class="chapter-title" href="#">{{ chapter.title }}</a> <sup><a class="edit-link" href="#">Редактировать</a></sup>
+          <li><a class="chapter-title" href="#">{{ chapter.title }}</a> <sup><a class="edit-link" href="{% url 'chapter_edit' story.id chapter.id %}">Редактировать</a></sup>
         <br/>{{ chapter.words }} слов, {{ chapter.views }} {{ chapter.views|rupluralize:'просмотр,просмотра,просмотров' }}</li>
         {% endfor %}
         </ul>

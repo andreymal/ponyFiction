@@ -1,7 +1,6 @@
 {% extends "common.html" %}
-
 {% load url from future %}
-
+{% load pluralize %}
 {% block content %}
 {% load static %}
 <div class="row">
@@ -17,8 +16,13 @@
 		<form action="/search/" method="POST" enctype="multipart/form-data" name="search" id="searchform" class="form-horizontal">
 		{% csrf_token %}
 			<fieldset>
-				<!-- Поле поиска -->
-				<p>{{ form.search_query }}</p>
+				<div class="padded">
+					<!-- Поле поиска -->
+					{{ form.search_query }}
+				
+					<!-- Тип поиска -->
+					<span class="bootstrap radio">{{ form.search_type }}</span>
+				</div>
 				
 				<!-- Жанры -->
 				<p class="genres-select">{{ form.categories_select }}</p>
@@ -60,23 +64,12 @@
 		</form>
 		</div>
 	</div>
-	
-	{% if active_tab %}
 	<!-- Результаты: начало вывода -->
-	<div class="tabbable span9 search-results">
-		<ul id='searchTabNav' class="nav">
-			<li{% if active_tab == 'stories' %} class="active"{% endif %}>
-				<button href="#stories-results" data-toggle="tab" class="btn">Истории ({{ stories_found }})</button>
-			</li>
-			<li{% if active_tab == 'chapters' %} class="active"{% endif %}>
-				<button href="#chapters-results" data-toggle="tab" class="btn">Главы ({{ chapters_found }})</button>
-			</li>
-		</ul>
-		<div class="tab-content">
-			<div class="tab-pane fade in{% if active_tab == 'stories' %} active{% endif %}" id="stories-results">
-				<!-- Истории: начало вывода -->
-					{% for story in result.stories %}
-						<!-- История "{{ story.title }}": начало вывода -->
+	<div class="span9 search-results tab-content">
+		{% if search_type == '0' %}
+				<!-- Рассказы: начало вывода -->
+					{% for story in result %}
+						<!-- Рассказ "{{ story.title }}": начало вывода -->
 						<div class="story-item">	
 							<h3><a href="{% url 'story_view' story.id %}">{{ story.title }}</a>
 	            				<sup><span class="upvotes">{{ story.vote_up_count }}</span> / <span class="downvotes">{{ story.vote_down_count }}</span></sup>
@@ -86,11 +79,11 @@
 								{% spaceless %}
 									<span class="category-list">
 					         			{% for category in story.categories.all %}
-					         				<a class="gen gen-{{ category.id }}" href="{% url 'stories.views.search_simple' 'category' category.id %}">{{ category.name }}</a>
+					         				<a class="gen gen-{{ category.id }}" href="{% url 'search_simple' 'category' category.id %}">{{ category.name }}</a>
 					         			{% endfor %}
-					       			</span>
-				        		{% endspaceless %}
-								{{ story.words }} слов и {{story.chapter_set.count }} глав от <!-- TODO: сделать глав/глава/главы -->
+					       		</span>
+				        		{% endspaceless %}	
+								{{ story.words }} {{ story.words|rupluralize:'слово,слова,слов' }} и {{ story.chapter_set.count }} {{ story.chapter_set.count|rupluralize:'глава,главы,глав' }} от 
 								{% for author in story.authors.all %}
 				          			{% if forloop.counter == 1 %}
 							        	<a class="authorlink" href="{% url 'author_overview' author.id %}">{{author.username}}</a>
@@ -107,39 +100,20 @@
 								{% spaceless %}
 				         			<span class="character-list">
 				         				{% for character in story.characters.all %}
-					       					<a href="{% url 'stories.views.search_simple' 'character' character.id %}"><img src="{% get_static_prefix %}i/characters/{{ character.id }}.png" alt="{{ character.name }}" title="{{ character.name }}"/></a>
+					       					<a href="{% url 'search_simple' 'character' character.id %}"><img src="{% get_static_prefix %}i/characters/{{ character.id }}.png" alt="{{ character.name }}" title="{{ character.name }}"/></a>
 			        					{% endfor %}
 			        				</span>
 				        		{% endspaceless %}
 							</p>
 						</div>
-						<!-- История "{{ story.title }}": конец вывода -->
+						<!-- Рассказ "{{ story.title }}": конец вывода -->
+					{% empty %}
+					<div class="story-item"><h3>Рассказов не найдено</h3></div>
 					{% endfor %}
-				<!-- Истории: конец вывода -->
-				<!-- Пагинация историй: начало вывода -->
-					<div id="pagination-stories" class="center">
-						{% for page_head_id in pagination.stories.head_range %}
-			        		<input form="searchform" type="submit" class="btn{% if page_head_id = pagination.stories.current %} btn-primary{% endif %}" name="page_current_stories" value="{{ page_head_id }}" >
-			        	{% endfor %}
-			        	{% if pagination.stories.head_dots %}
-			        		<span class="pagination-dots">…</span>
-			        	{% endif %}
-			        	{% for page_local_id in pagination.stories.locality_range %}
-			        		<input form="searchform" type="submit" class="btn{% if page_local_id = pagination.stories.current %} btn-primary{% endif %}" name="page_current_stories" value="{{ page_local_id }}" >
-			        	{% endfor %}
-			        	{% if pagination.stories.tail_dots %}
-			        		<span class="pagination-dots">…</span>
-			        	{% endif %}
-			        	{% for page_tail_id in pagination.stories.tail_range %}
-			        		<input form="searchform" type="submit" class="btn{% if page_tail_id = pagination.stories.current %} btn-primary{% endif %}" name="page_current_stories" value="{{ page_tail_id }}" >
-			        	{% endfor %}
-			      	</div>
-		      	<!-- Пагинация историй: конец вывода -->
-			</div>
-			
-			<div class="tab-pane fade{% if active_tab == 'chapters' %} active{% endif %}" id="chapters-results">
+				<!-- Рассказы: конец вывода -->
+		{% else %}
 				<!-- Главы: начало вывода -->
-					{% for chapter, excerpt in result.chapters_data %}
+					{% for chapter, excerpt in result %}
 						<div class="story-item">
 							<h3><a href="{% url 'chapter_view_single' chapter.in_story_id chapter.order %}">{{ chapter.title }}</a></h3>
 							<p>{{ excerpt|safe }}</p>
@@ -147,31 +121,31 @@
 	        			</div>
 					{% endfor %}
 				<!-- Главы: конец вывода -->
-				
-				<!-- Пагинация глав: начало вывода -->
-					<div id="pagination-chapers" class="center">
-						{% for page_head_id in pagination.chapters.head_range %}
-			        		<input form="searchform" type="submit" class="btn{% if page_head_id = pagination.chapters.current %} btn-primary{% endif %}" name="page_current_chapters" value="{{ page_head_id }}" >
+		{% endif %}
+		{% if result %}
+				<!-- Пагинация: начало вывода -->
+					<div id="pagination" class="center">
+						{% for page_head_id in pagination.head_range %}
+			        		<input form="searchform" type="submit" class="btn{% if page_head_id = pagination.current %} btn-primary{% endif %}" name="page_current" value="{{ page_head_id }}" >
 			        	{% endfor %}
-			        	{% if pagination.chapters.head_dots %}
+			        	{% if pagination.head_dots %}
 			        		<span class="pagination-dots">…</span>
 			        	{% endif %}
-			        	{% for page_local_id in pagination.chapters.locality_range %}
-			        		<input form="searchform" type="submit" class="btn{% if page_local_id = pagination.chapters.current %} btn-primary{% endif %}" name="page_current_chapters" value="{{ page_local_id }}" >
+			        	{% for page_local_id in pagination.locality_range %}
+			        		<input form="searchform" type="submit" class="btn{% if page_local_id = pagination.current %} btn-primary{% endif %}" name="page_current" value="{{ page_local_id }}" >
 			        	{% endfor %}
-			        	{% if pagination.chapters.tail_dots %}
+			        	{% if pagination.tail_dots %}
 			        		<span class="pagination-dots">…</span>
 			        	{% endif %}
-			        	{% for page_tail_id in pagination.chapters.tail_range %}
-			        		<input form="searchform" type="submit" class="btn{% if page_tail_id = pagination.chapters.current %} btn-primary{% endif %}" name="page_current_chapters" value="{{ page_tail_id }}" >
+			        	{% for page_tail_id in pagination.tail_range %}
+			        		<input form="searchform" type="submit" class="btn{% if page_tail_id = pagination.current %} btn-primary{% endif %}" name="page_current" value="{{ page_tail_id }}" >
 			        	{% endfor %}
 			      	</div>
-		      	<!-- Пагинация глав: конец вывода -->
-			</div>
-		</div>
+		      	<!-- Пагинация: конец вывода -->
+		{% endif %}
 	</div>
 	<!-- Результаты: конец вывода -->
-	{% endif %}
+
 	<!-- Навигация: начало вывода -->
 	<div class="span12">
 		<ul class="breadcrumb">

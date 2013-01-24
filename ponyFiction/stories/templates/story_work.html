@@ -31,55 +31,61 @@
 				<!-- Название -->
 				<div class="control-group{% if form.title.errors %} error{% endif %}">
 					<label class="control-label">{{ form.title.label }}</label>
-					<div class="controls">{{ form.title }}</div>
+					<div class="controls">{{ form.title }}
 					{% if form.title.errors %}
 						{% for error in form.title.errors %}
-							<span class="help-inline">{{ error }}</span>
+            <span class="help-inline">{{ error }}</span>
 						{% endfor %}
 					{% else %}
 						<span class="help-inline small">{{ form.title.help_text }}</span>
 					{% endif %}
+          </div>
 				</div>
 				<!-- Жанры -->
 				<div class="control-group{% if form.categories.errors %} error{% endif %}">
 					<label class="control-label">{{ form.categories.label }}</label>
-					<div class="controls genres-select">{{ form.categories }}</div>
+					<div class="controls genres-select">
 					{% if form.categories.errors %}
 						{% for error in form.categories.errors %}
-							<span class="help-inline">{{ error }}</span>
+						<span class="help-block">{{ error }}</span>
 						{% endfor %}
 					{% else %}
-						<span class="help-inline small">{{ form.categories.help_text }}</span>
+						<span class="help-block small">{{ form.categories.help_text }}</span>
 					{% endif %}
+          {{ form.categories }}
+          </div>
 				</div>
 				<!-- Персонажи -->
 				<div class="control-group{% if form.characters.errors %} error{% endif %}">
 					<label class="control-label">{{ form.characters.label }}</label>
-					<div class="controls characters-select">{{ form.characters }}</div>
+					<div class="controls characters-select">
 					{% if form.characters.errors %}
 						{% for error in form.characters.errors %}
-							<span class="help-inline">{{ error }}</span>
+            <span class="help-block">{{ error }}</span>
 						{% endfor %}
 					{% else %}
-						<span class="help-inline small">{{ form.characters.help_text }}</span>
+						<span class="help-block small">{{ form.characters.help_text }}</span>
 					{% endif %}
+          {{ form.characters }}
+          </div>
 				</div>
 				<!-- Общее описание -->
 			    <div class="control-group{% if form.summary.errors %} error{% endif %}">
 					<label class="control-label">{{ form.summary.label }}</label>
-					<div class="controls">{{ form.summary }}</div>
+					<div class="controls">{{ form.summary }}
 					{% if form.summary.errors %}
 						{% for error in form.summary.errors %}
-							<span class="help-inline">{{ error }}</span>
+						<span class="help-inline">{{ error }}</span>
 						{% endfor %}
 					{% else %}
 						<span class="help-inline small">{{ form.summary.help_text }}</span>
 					{% endif %}
+          </div>
 				</div>
 				<!-- Заметки к рассказу -->
 			    <div class="control-group{% if form.notes.errors %} error{% endif %}">
 					<label class="control-label">{{ form.notes.label }}</label>
-					<div class="controls">{{ form.notes }}</div>
+					<div class="controls">{{ form.notes }}
 					{% if form.notes.errors %}
 						{% for error in form.notes.errors %}
 							<span class="help-inline">{{ error }}</span>
@@ -87,11 +93,12 @@
 					{% else %}
 						<span class="help-inline small">{{ form.notes.help_text }}</span>
 					{% endif %}
+          </div>
 				</div>
 				<!-- Рейтинг -->
 				<div class="control-group{% if form.rating.errors %} error{% endif %}">
 					<label class="control-label">{{ form.rating.label }}</label>
-					<div class="controls bootstrap radio">{{ form.rating }}</div>
+					<div class="controls bootstrap radio">{{ form.rating }}
 					{% if form.rating.errors %}
 						{% for error in form.rating.errors %}
 							<span class="help-inline">{{ error }}</span>
@@ -99,11 +106,12 @@
 					{% else %}
 						<span class="help-inline small">{{ form.rating.help_text }}</span>
 					{% endif %}
+          </div>
 				</div>
 				<!-- Размер -->
 				<div class="control-group{% if form.size.errors %} error{% endif %}">
 					<label class="control-label">{{ form.size.label }}</label>
-					<div class="controls bootstrap radio">{{ form.size }}</div>
+					<div class="controls bootstrap radio">{{ form.size }}
 					{% if form.size.errors %}
 						{% for error in form.size.errors %}
 							<span class="help-inline">{{ error }}</span>
@@ -111,11 +119,12 @@
 					{% else %}
 						<span class="help-inline small">{{ form.size.help_text }}</span>
 					{% endif %}
+          </div>
 				</div>
 				<!-- Оригинал/перевод -->
 				<div class="control-group{% if form.original.errors %} error{% endif %}">
 					<label class="control-label">{{ form.original.label }}</label>
-					<div class="controls bootstrap radio">{{ form.original }}</div>
+					<div class="controls bootstrap radio">{{ form.original }}
 					{% if form.original.errors %}
 						{% for error in form.original.errors %}
 							<span class="help-inline">{{ error }}</span>
@@ -123,11 +132,12 @@
 					{% else %}
 						<span class="help-inline small">{{ form.original.help_text }}</span>
 					{% endif %}
+          </div>
 				<!-- Заморожен/активен -->
 				</div>
 				<div class="control-group{% if form.freezed.errors %} error{% endif %}">
 					<label class="control-label">{{ form.freezed.label }}</label>
-					<div class="controls bootstrap radio">{{ form.freezed }}</div>
+					<div class="controls bootstrap radio">{{ form.freezed }}
 					{% if form.freezed.errors %}
 						{% for error in form.freezed.errors %}
 							<span class="help-inline">{{ error }}</span>
@@ -135,18 +145,21 @@
 					{% else %}
 						<span class="help-inline small">{{ form.freezed.help_text }}</span>
 					{% endif %}
+          </div>
 				</div>
 				<!-- Категории -->
 				<div class="control-group{% if form.classifications.errors %} error{% endif %}">
 					<label class="control-label">{{ form.classifications.label }}</label>
-					<div class="controls events">{{ form.classifications }}</div>
+					<div class="controls events">
 					{% if form.classifications.errors %}
 						{% for error in form.classifications.errors %}
-							<span class="help-inline">{{ error }}</span>
+						<span class="help-block">{{ error }}</span>
 						{% endfor %}
 					{% else %}
-						<span class="help-inline small">{{ form.classifications.help_text }}</span>
+						<span class="help-block small">{{ form.classifications.help_text }}</span>
 					{% endif %}
+          {{ form.classifications }}
+          </div>
 				</div>
 				<!-- Отправить -->
       			<div class="form-actions">
@@ -177,7 +190,7 @@
         				<div class="controls events">   
 							<ul id="sortable_chapters" class="chapters-control">
 								{% for chapter in chapters %}
-          							<li id="chapters_{{ chapter.id }}" class="btn btn-large">{{ chapter.title }}<a href="#">править</a> <a href="#">удалить</a></li>
+          							<li id="chapters_{{ chapter.id }}" class="btn btn-large">{{ chapter.title }}<a href="{% url 'chapter_edit' chapter.in_story.id chapter.id %}">править</a> <a href="#">удалить</a></li>
 								{% endfor %}
 							</ul>
 							<button href="#" class="btn btn-success">Добавить главу</button>

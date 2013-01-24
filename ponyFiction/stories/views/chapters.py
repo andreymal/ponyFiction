@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from ponyFiction.stories.models import Story, Chapter
-from ponyFiction.forms import ChapterForm
+from ponyFiction.stories.forms.chapter import ChapterForm
 
 def chapter_view_all(request, story_id=False):
     story = get_object_or_404(Story, pk=story_id)
@@ -14,7 +14,7 @@ def chapter_view_all(request, story_id=False):
 
 def chapter_view_single(request, story_id=False, chapter_order=False):
     chapter = get_object_or_404(Chapter, in_story_id=story_id, order=chapter_order)
-    page_title = chapter.title[0:80]+' – '+chapter.in_story.title
+    page_title = chapter.title[0:80]+' : '+chapter.in_story.title
     prev_chapter = chapter.get_prev_chapter()
     next_chapter = chapter.get_next_chapter()
     data = {

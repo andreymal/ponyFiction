@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
 from ponyFiction.stories.models import Author, Comment
 from django.core.paginator import Paginator
-
+from ponyFiction.stories.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm 
 @login_required
 @csrf_protect
 def author_info(request, **kwargs):
@@ -38,7 +38,7 @@ def author_info(request, **kwargs):
             }
     return render(request, template, data)
 
-from ponyFiction.forms import AuthorEditProfileForm, AuthorEditEmailForm, AuthorEditPasswordForm
+
 @login_required
 @csrf_protect
 def author_edit(request, **kwargs):
