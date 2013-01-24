@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-
-
 from django.conf import settings
 from ponyFiction.stories import feeds
 from ponyFiction.stories.views import search, ajax, author, comment
@@ -101,6 +99,8 @@ urlpatterns += patterns('',
     url(r'^stream/chapters/ajax$', ajax.ajax_chapters),
     # AJAX-сортировка глав
     url(r'^story/(?P<story_id>\d+)/edit/ajax$', ajax.sort_chapters),
+    # Голосование за историю
+    url(r'^story/(?P<story_id>\d+)/vote$', ajax.story_vote, name='story_vote'),
 )
 
 # Ленты

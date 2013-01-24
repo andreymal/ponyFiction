@@ -291,6 +291,36 @@ function getChapters(request) {
 // Функция проверки CRSF-безопасности
 function csrfSafeMethod(method) { return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));}
 
+/**
+ * Голосование за рассказ по AJAX
+ */
+function voteStory(request) {
+	// Читаем CSRF Cookie
+	var csrftoken = $.cookie('csrftoken');
+	// Конфигурируем заголовок AJAX-запроса
+	$.ajaxSetup({
+		crossDomain: false,
+		beforeSend: function(xhr, settings) {
+			if (!csrfSafeMethod(settings.type)) {
+				xhr.setRequestHeader("X-CSRFToken", csrftoken);
+			}
+		}
+	});
+	$.ajax({
+		cache:		false,
+		data:		{vote: request},
+		dataType:   'json',
+		error:      getAjaxErrorHandler,
+		success:	changeVote,
+		type:       'POST',
+		url:        'vote'
+		});
+}
+// Обработка смены количества голосов
+function changeVote(response){
+	$('#vote-up').text(response[0]);
+	$('#vote-down').text(response[1])
+}
 // При загрузке страницы
 $(function(){
 	//Включаем карусель
@@ -418,6 +448,9 @@ $(function(){
 			}
 		});
     }
+    // Голосование
+    $('#vote-up').click(function(){voteStory('1')});
+	$('#vote-down').click(function(){voteStory('-1')});
 	// Ещё какая-то ерунда
 	// ---
 });

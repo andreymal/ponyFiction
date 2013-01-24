@@ -4,7 +4,7 @@ from django.conf import settings
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.template import defaultfilters as filters
 from django.core.urlresolvers import reverse
-from ponyFiction.stories.models import Story, Author, Comment, Chapter
+from ponyFiction.stories.models import Story, Author, Comment, Chapter, Vote
 from ponyFiction.stories.utils.misc import dthandler, unicode_to_int_list
 
 # TODO: Доделать исключения
@@ -204,3 +204,32 @@ def sort_chapters(request, story_id):
                     chapter.order = new_order_id+1
                     chapter.save(update_fields=['order'])
                 return HttpResponse('Done', status=200)
+def story_vote(request, story_id):
+    try:
+        story = Story.objects.get(pk=story_id)    
+        assert request.POST
+        assert request.is_ajax()
+    except Story.DoesNotExist:
+        return HttpResponse("Story doesn't exist!", status=404)
+    except AssertionError:
+        return HttpResponseRedirect(reverse('index'))
+    else:
+        if not request.user.is_authenticated():
+            return HttpResponse('Unauthorized user!', status=401)
+        direction = True if (request.POST.get('vote', True) == '1') else False
+        try:
+            # Достаем голос
+            vote = story.vote.get(author=request.user)
+        except Vote.DoesNotExist:
+            # Если автор не голосовал ещё
+            vote = Vote.objects.create()
+            vote.author = request.user
+            vote.ip = request.META['REMOTE_ADDR']
+            vote.direction = direction
+            vote.save()
+            story.vote.add(vote)
+        else:
+            # Иначе просто обновляем голос автора
+            vote.direction = direction
+            vote.save()
+        return HttpResponse(dumps([story.vote_up_count(), story.vote_down_count()]), status=200)

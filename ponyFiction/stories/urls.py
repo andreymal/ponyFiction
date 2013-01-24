@@ -13,7 +13,7 @@ urlpatterns = patterns('ponyFiction.stories.views.stories',
     # Правка
     url(r'(?P<story_id>\d+)/edit/$',
         'story_work', name='story_edit'
-    )
+    ),
 )
 # Работа с главами
 urlpatterns += patterns('ponyFiction.stories.views.chapters',

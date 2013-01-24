@@ -12,7 +12,7 @@
         </ul>   
         
     	<h1 id="story_title">{{ story.title }} 
-    	<span class="vote"><a class="upvote" href="#">{{ story.vote_up_count }}</a> / <a class="downvote" href="#">{{ story.vote_down_count }}</a></span>
+    	<span class="vote"><a class="upvote" id="vote-up">{{ story.vote_up_count }}</a> / <a class="downvote" id="vote-down">{{ story.vote_down_count }}</a></span>
     	{% if story.finished %} <sup class="complete">завершен</sup>{% endif %}{% if story.freezed %}, заморожен{% endif %}</h1>
 		{% spaceless %}
 			<p class="story-genres">
