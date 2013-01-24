@@ -319,7 +319,8 @@ function voteStory(request) {
 // Обработка смены количества голосов
 function changeVote(response){
 	$('#vote-up').text(response[0]);
-	$('#vote-down').text(response[1])
+	$('#vote-down').text(response[1]);
+	$('#vote-msg').html('<span class="alert alert-success">Ваш голос учтен!</span>').animate({ opacity: 0.1}, 3500, function() {$('#vote-msg span').remove();});
 }
 // При загрузке страницы
 $(function(){

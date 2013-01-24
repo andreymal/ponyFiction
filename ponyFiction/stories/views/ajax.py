@@ -217,6 +217,8 @@ def story_vote(request, story_id):
         if not request.user.is_authenticated():
             return HttpResponse('Unauthorized user!', status=401)
         direction = True if (request.POST.get('vote', True) == '1') else False
+        if (story.authors.filter(id=request.user.id)):
+            return HttpResponse(dumps([story.vote_up_count(), story.vote_down_count()]), status=200) 
         try:
             # Достаем голос
             vote = story.vote.get(author=request.user)

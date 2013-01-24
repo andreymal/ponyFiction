@@ -287,6 +287,16 @@ class Vote(models.Model):
     ip = models.GenericIPAddressField(default='0.0.0.0', verbose_name="IP автора")
     direction = models.BooleanField(default=True, verbose_name="Направление")
     
+    class Meta:
+        verbose_name = "голос"
+        verbose_name_plural = "голоса"
+    
+    def __unicode__(self):
+        if self.direction:
+            return "%s [+] story '%s'" % (self.author.username, self.story_set.all()[0].title)
+        else:
+            return "%s [-] story '%s'" % (self.author.username, self.story_set.all()[0].title)
+    
 class Favorites(models.Model):
     author = models.ForeignKey(Author, null=True, verbose_name="Автор")
     story = models.ForeignKey('Story', related_name="favorites_set", null=True, verbose_name="История")
