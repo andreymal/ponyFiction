@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
-from ponyFiction.stories.models import Author, User, Character, Category, Classifier, Size, Rating, Series, Story, Chapter, Comment, BetaReading
+from ponyFiction.stories.models import Author, User, Character, CharacterGroup, Category, Classifier, Size, Rating, Series, Story, Chapter, Comment, BetaReading
 
 """
 class StoryAdmin(admin.ModelAdmin):
@@ -13,7 +13,7 @@ class StoryAdmin(admin.ModelAdmin):
 admin.site.register(Story, StoryAdmin)
 """
 
-models = [Character, Category, Classifier, Size, Rating, Series, Story, Chapter, Comment, BetaReading]
+models = [Character, CharacterGroup, Category, Classifier, Size, Rating, Series, Story, Chapter, Comment, BetaReading]
 
 
 

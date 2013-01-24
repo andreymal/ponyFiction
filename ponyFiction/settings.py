@@ -127,7 +127,6 @@ INSTALLED_APPS = (
     'ponyFiction.stories',
     'debug_toolbar',
     'registration',
-    'django_coverage',
     'sanitizer'
 )
 
@@ -208,6 +207,7 @@ SANITIZER_ALLOWED_TAGS = [
     'blockquote', 'sup', 'sub', 'code',
     'small', 'abbr'
 ]
+
 SANITIZER_ALLOWED_ATTRIBUTES = {
     'img': ['src', 'alt', 'title', 'width', 'height'],
     'a': ['href', 'rel', 'title'],

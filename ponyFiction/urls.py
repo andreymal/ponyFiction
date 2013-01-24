@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+
+
 from django.conf import settings
 from ponyFiction.stories import feeds
-from ponyFiction.stories.views import search, stories, ajax, chapters, author, comment
+from ponyFiction.stories.views import search, ajax, author, comment
 from ponyFiction.stories.views.index import index
 from ponyFiction.stories.views.stream import stream_list
 from django.contrib.auth import views as auth_views
 from registration.views import activate, register
-from ponyFiction.forms import AuthorRegistrationForm
+from ponyFiction.stories.forms.register import AuthorRegistrationForm
 
 from ponyFiction.stories.models import Comment, Story, Chapter
 from django.views.generic import TemplateView
@@ -20,6 +22,9 @@ urlpatterns = patterns('', url(r'^$', index, {'page_title': 'Главная'}, n
 
 # Адреса админки
 urlpatterns += patterns('', url(r'^admin/', include(admin.site.urls)))
+
+# Адреса работы с историями и главами
+urlpatterns += patterns('', url(r'^story/', include('ponyFiction.stories.urls')))
 
 # Поиск
 urlpatterns += patterns('',
@@ -87,13 +92,15 @@ urlpatterns += patterns('',
         name='auth_logout'),
     
 )
-# Подгрузка комментариев, историй и глав по AJAX
+# AJAX
 urlpatterns += patterns('',
     url(r'^story/(?P<story_id>\d+)/ajax$', ajax.ajax_comments, {'type' : 'story'}),
     url(r'^accounts/(?P<user_id>\d+)/ajax$', ajax.ajax_comments, {'type' : 'user'}),
     url(r'^stream/comments/ajax$', ajax.ajax_comments, {'type' : 'new'}),
     url(r'^stream/stories/ajax$', ajax.ajax_stories),
-    url(r'^stream/chapters/ajax$', ajax.ajax_chapters)
+    url(r'^stream/chapters/ajax$', ajax.ajax_chapters),
+    # AJAX-сортировка глав
+    url(r'^story/(?P<story_id>\d+)/edit/ajax$', ajax.sort_chapters),
 )
 
 # Ленты
@@ -137,56 +144,6 @@ urlpatterns += patterns('',
     url(r'^feeds/atom/chapters/$', feeds.chapters_atom(), name='feeds_atom_chapters'),
     url(r'^feeds/rss/story/(?P<story_id>\d+)/$', feeds.story_chapters_rss(), name='feeds_rss_story'),
     url(r'^feeds/atom/story/(?P<story_id>\d+)/$', feeds.story_chapters_atom(), name='feeds_atom_story'),
-)
-
-# Работа с историями
-urlpatterns += patterns('',
-    # Просмотр
-    url(r'^story/(?P<story_id>\d+)/$',
-        stories.story_view,
-        name='story_view'
-    ),
-    # Добавление
-    url(r'^story/add/$',
-        stories.story_work,
-        name='story_add'
-    ),
-    # Правка
-    url(r'^story/(?P<story_id>\d+)/edit/$',
-        stories.story_work,
-        name='story_edit'
-    ),
-    # AJAX-сортировка глав
-    url(r'^story/(?P<story_id>\d+)/edit/ajax$', ajax.sort_chapters),
-)
-
-# Работа с главами
-urlpatterns += patterns('',
-    # Просмотр одной
-    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/$',
-        chapters.chapter_view_single,
-        name='chapter_view_single'
-    ),
-    # Просмотр всех глав
-    url(r'^story/(?P<story_id>\d+)/chapter/all/$',
-        chapters.chapter_view_all,
-        name='chapter_view_all'
-    ),
-    # Добавление
-    url(r'^story/(?P<story_id>\d+)/chapter/add/$',
-        chapters.chapter_work,
-        name='chapter_add'
-    ),
-    # Правка
-    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/edit/$',
-        chapters.chapter_work,
-        name='chapter_edit'
-    ),
-)
-
-        
-urlpatterns += patterns('ponyFiction.stories.views',  
-    url(r'^series/(?P<series_id>\d+)/$', 'series_view')
 )
 
 

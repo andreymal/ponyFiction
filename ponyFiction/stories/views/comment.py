@@ -1,6 +1,6 @@
 from django.views.decorators.csrf import csrf_protect
 from ponyFiction.stories.models import Story
-from ponyFiction.forms import CommentForm
+from ponyFiction.stories.forms.comment import CommentForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 

@@ -25,7 +25,19 @@ class Author(User):
         verbose_name = "автор"
         verbose_name_plural = "авторы"
 
+class CharacterGroup(models.Model):
+# Модель группы персонажа
 
+    name = models.CharField(max_length=256, verbose_name="Название группы")
+    description = models.TextField(max_length=4096, blank=True, verbose_name="Описание группы")
+
+    def __unicode__(self):
+        return self.name
+    
+    class Meta:
+        verbose_name = "Группа персонажей"
+        verbose_name_plural = "Группы персонажей"
+        
 class Character(models.Model):
 # Модель персонажа
 
@@ -33,6 +45,7 @@ class Character(models.Model):
     
     description = models.TextField(max_length=4096, blank=True, verbose_name="Биография")
     name = models.CharField(max_length=256, verbose_name="Имя")
+    group = models.ForeignKey(CharacterGroup, null=True, verbose_name="Группа персонажа")
     
     def __unicode__(self):
         return self.name
@@ -106,7 +119,13 @@ class BetaReading(models.Model):
     beta = models.ForeignKey(Author, null=True, verbose_name="Бета")
     story = models.ForeignKey('Story', null=True, verbose_name="История вичитки")
     checked = models.BooleanField(default=False, verbose_name="Вычитано бетой")
-    
+
+    def __unicode__(self):
+        if self.checked:
+            return "%s -> %s [OK]" % self.name
+        else:
+            return "%s -> %s [?]" % self.name
+
     class Meta:
         verbose_name = "вычитка"
         verbose_name_plural = "вычитки"

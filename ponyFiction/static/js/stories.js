@@ -302,9 +302,9 @@ $(function(){
 		});
     // Включаем обработку BootStrap Buttons
     // TODO: Всерьёз заняться оптимизированием кода!
-	$('div.bootstrap').each(function(){
+	$('.bootstrap').each(function(){
 		var group = $(this);
-		var buttons_container = $('div.buttons-visible', group)
+		var buttons_container = $('.buttons-visible', group)
 		var data_container = $('.buttons-data', group)
 		
 		if (group.hasClass('checkboxes')) {
@@ -385,7 +385,6 @@ $(function(){
     // На странице поиска...
     if (window.location.pathname == "/search/"){
     	// ...проставляем классы изображениям персонажей, в зависимости от выбранных скрытых чекбоксов.
-    	// TODO: привести, как в редактировании
 		$('input[name="characters_select"][checked="checked"]').parent().children('img').addClass('ui-selected');
     }
     // На странице редактирования истории...
