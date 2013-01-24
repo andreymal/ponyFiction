@@ -16,9 +16,9 @@
     <h1 id="author-name"><img src="{% get_static_prefix %}i/userpic.jpg" width="42" title="{{ author.username }}" alt="{{ author.username }}"/>{% if author.story_set.count > 0 %}Кабинет автора{% else %}Кабинет потенциального автора{% endif %}</h1>
     
     <p>{% if author.story_set.count > 0 %}Вы уже написали <b>{{ author.story_set.count }}</b> {{ author.story_set.count|rupluralize:'рассказ,рассказа,рассказов' }}{% else %}Вы пока ничего не написали{% endif %}.
-    <!-- TODO: все следующие данные --><br/>
-    Читатели просмотрели ваши рассказы и главы 9000 раз, оставив 40000 комментариев.<br/>
-    Ваш общий рейтинг составляет: <span class="upvotes">800</span> / <span class="downvotes">42</span>.
+    <br/>
+    Читатели просмотрели ваши рассказы и главы 9000 раз, оставив {{ comments_count }} {{ comments_count|rupluralize:'комментарий,комментария,комментариев' }}.<br/>
+    Ваш общий рейтинг составляет: <span class="upvotes">{{ votes.0 }}</span> / <span class="downvotes">{{ votes.1 }}</span>.
     </p>
   </div>
   <div class="span8 top-list">

@@ -202,6 +202,7 @@ line-height:16px;
 height:16px;
 font-weight:bold;
 text-decoration:none;
+cursor:pointer;
 }
 .vote a:hover {
 opacity:0.8;
@@ -216,7 +217,16 @@ color:red;
 padding:4px 30px 5px 0;
 background:transparent url('../i/downvote-24.png') no-repeat 100% 0;
 }
-
+h1 .alert {
+display: inline-block;
+font-size: 12px;
+line-height: 12px;
+padding-right:14px;
+margin: 0;
+position: relative;
+top: 4px;
+vertical-align: top;
+}
 
 
 /* Thumbnails */
