@@ -1,2 +1,7 @@
 glob:sphinx/*
 glob:debug_toolbar/*
+
+syntax: regexp
+^debug_toolbar$
+syntax: regexp
+^html5lib$
