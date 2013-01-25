@@ -21,9 +21,6 @@ urlpatterns = patterns('', url(r'^$', index, {'page_title': 'Главная'}, n
 # Адреса админки
 urlpatterns += patterns('', url(r'^admin/', include(admin.site.urls)))
 
-# Адреса работы с историями и главами
-urlpatterns += patterns('', url(r'^story/', include('ponyFiction.stories.urls')))
-
 # Поиск
 urlpatterns += patterns('',
     url(r'^search/$', search.search_main, name='search'),
@@ -146,6 +143,40 @@ urlpatterns += patterns('',
     url(r'^feeds/atom/story/(?P<story_id>\d+)/$', feeds.story_chapters_atom(), name='feeds_atom_story'),
 )
 
+# Работа с историями
+urlpatterns += patterns('ponyFiction.stories.views.stories',
+    # Просмотр
+    url(r'^story/(?P<story_id>\d+)/$',
+        'story_view', name='story_view'
+    ),
+    # Добавление
+    url(r'^story/add/$',
+        'story_work', name='story_add'
+    ),
+    # Правка
+    url(r'^story/(?P<story_id>\d+)/edit/$',
+        'story_work', name='story_edit'
+    ),
+)
+# Работа с главами
+urlpatterns += patterns('ponyFiction.stories.views.chapters',
+    # Просмотр одной
+    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/$',
+        'chapter_view', name='chapter_view_single'
+    ),
+    # Просмотр всех глав
+    url(r'^story/(?P<story_id>\d+)/chapter/all/$',
+        'chapter_view', name='chapter_view_all'
+    ),
+    # Добавление
+    url(r'^story/(?P<story_id>\d+)/chapter/add/$',
+        'chapter_work', name='chapter_add'
+    ),
+    # Правка
+    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/edit/$',
+        'chapter_work', name='chapter_edit'
+    ),
+)
 
 if settings.DEBUG:
     urlpatterns += patterns('',

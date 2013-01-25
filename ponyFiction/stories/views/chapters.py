@@ -2,29 +2,40 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
-from ponyFiction.stories.models import Story, Chapter
+from ponyFiction.stories.models import Story, Chapter, StoryView
 from ponyFiction.stories.forms.chapter import ChapterForm
 
-def chapter_view_all(request, story_id=False):
-    story = get_object_or_404(Story, pk=story_id)
-    chapters = story.chapter_set.order_by('order')
-    page_title = story.title+u' – все главы'
-    data = {'chapters' : chapters, 'page_title' : page_title, 'allchapters': True}
-    return render(request, 'chapter_view.html', data)
-
-def chapter_view_single(request, story_id=False, chapter_order=False):
-    chapter = get_object_or_404(Chapter, in_story_id=story_id, order=chapter_order)
-    page_title = chapter.title[0:80]+' : '+chapter.in_story.title
-    prev_chapter = chapter.get_prev_chapter()
-    next_chapter = chapter.get_next_chapter()
-    data = {
-       'chapter' : chapter,
-       'prev_chapter' : prev_chapter,
-       'next_chapter' : next_chapter,
-       'page_title' : page_title,
-       'allchapters': False
-    }
-    return render(request, 'chapter_view.html', data)
+def chapter_view(request, story_id=False, chapter_order=False):
+    if chapter_order:
+        chapter = get_object_or_404(Chapter, in_story_id=story_id, order=chapter_order)
+        page_title = chapter.title[0:80]+' : '+chapter.in_story.title
+        prev_chapter = chapter.get_prev_chapter()
+        next_chapter = chapter.get_next_chapter()
+        data = {
+           'chapter' : chapter,
+           'prev_chapter' : prev_chapter,
+           'next_chapter' : next_chapter,
+           'page_title' : page_title,
+           'allchapters': False
+        }
+        if request.user.is_authenticated():
+            view = StoryView.objects.create()
+            view.author = request.user
+            view.story_id = story_id
+            view.chapter = chapter
+            view.save()
+    else:
+        story = get_object_or_404(Story, pk=story_id)
+        chapters = story.chapter_set.order_by('order')
+        page_title = story.title+u' – все главы'
+        data = {'chapters' : chapters, 'page_title' : page_title, 'allchapters': True}
+        if request.user.is_authenticated():
+            view = StoryView.objects.create()
+            view.author = request.user
+            view.story_id = story_id
+            view.save()
+    return render(request, 'chapter_view.html', data) 
+    
 
 @login_required
 @csrf_protect

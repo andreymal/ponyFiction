@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.db.models import Count
 from django.contrib.auth.models import User, UserManager
 
 class Author(User):
@@ -40,8 +41,6 @@ class CharacterGroup(models.Model):
         
 class Character(models.Model):
 # Модель персонажа
-
-    old_id = models.IntegerField(null=True)
     
     description = models.TextField(max_length=4096, blank=True, verbose_name="Биография")
     name = models.CharField(max_length=256, verbose_name="Имя")
@@ -56,8 +55,6 @@ class Character(models.Model):
 
 class Category(models.Model):
 # Модель категории
-
-    old_id = models.IntegerField(null=True)
     
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
@@ -71,9 +68,7 @@ class Category(models.Model):
 
 class Classifier(models.Model):
 # Модель классификатора
-
-    old_id = models.IntegerField(null=True)
-    
+   
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
     
@@ -99,8 +94,6 @@ class Size(models.Model):
 
 class Rating(models.Model):
 # Модель рейтинга
-
-    old_id = models.IntegerField(null=True)
     
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
@@ -213,7 +206,6 @@ class Story (models.Model):
     size = models.ForeignKey(Size, null=True, verbose_name="Размер")
     title = models.CharField(max_length=512, verbose_name="Название")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
-    views = models.IntegerField(default=0, verbose_name="Количество просмотров")
     vote = models.ManyToManyField('Vote', null=True, verbose_name="Голоса за историю")
     words = models.IntegerField(default=0, verbose_name="Количество слов в истории")
 
@@ -228,7 +220,12 @@ class Story (models.Model):
         return self.vote.filter(direction = True).count()
     
     def vote_down_count(self):
-        return self.vote.filter(direction = False).count()   
+        return self.vote.filter(direction = False).count()
+    
+    # Количество просмотров
+    # FIXME: Эта функция не отлажена и НЕ оптимальна!
+    def views(self):
+        return self.story_views_set.values('author').annotate(Count('author')).count()
 
 class Chapter (models.Model):
 # Модель главы
@@ -241,7 +238,6 @@ class Chapter (models.Model):
     title = models.CharField(max_length=512, verbose_name="Название")
     text = models.TextField(blank=True, verbose_name="Текст главы")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
-    views = models.IntegerField(default=0, verbose_name="Количество просмотров")
     words = models.IntegerField(default=0, verbose_name="Количество слов в главе")
     
     class Meta:
@@ -262,6 +258,11 @@ class Chapter (models.Model):
             return self.in_story.chapter_set.filter(order__gt = self.order)[0:1].get()
         except Chapter.DoesNotExist:
             return None
+        
+    # Количество просмотров
+    # FIXME: Эта функция не отлажена и НЕ оптимальна!
+    def views(self):
+        return self.chapter_views_set.values('author').annotate(Count('author')).count()
 
 class Comment(models.Model):
 # Модель комментария
@@ -307,8 +308,21 @@ class Deferred(models.Model):
     story = models.ForeignKey('Story', related_name="deferred_set", null=True, verbose_name="История")
     comment = models.TextField(verbose_name="Текст комментария")
 
+class StoryView(models.Model):
+# Модель просмотров
+    author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE, verbose_name="Автор просмотра")
+    date = models.DateTimeField(auto_now_add=True, verbose_name="Дата просмотра")
+    story = models.ForeignKey(Story, related_name="story_views_set", null=True, verbose_name="Рассказ")
+    chapter = models.ForeignKey(Chapter, related_name="chapter_views_set", null=True, verbose_name="Глава рассказа")
+    
+    class Meta:
+        verbose_name = "просмотр"
+        verbose_name_plural = "просмотры"
+    
+    def __unicode__(self):
+        return "%s: %s" % (self.author.username, self.story.title)
+
 """
 TODO: (для меня)
 Сделать модель Activity (отслеживание активности)
-Сделать модель View (просмотр)
 """

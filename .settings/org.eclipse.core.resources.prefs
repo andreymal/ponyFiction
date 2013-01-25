@@ -10,7 +10,6 @@ encoding//ponyFiction/stories/forms/search.py=utf-8
 encoding//ponyFiction/stories/forms/story.py=utf-8
 encoding//ponyFiction/stories/models.py=utf-8
 encoding//ponyFiction/stories/templatetags/pluralize.py=utf-8
-encoding//ponyFiction/stories/urls.py=utf-8
 encoding//ponyFiction/stories/utils/misc.py=utf-8
 encoding//ponyFiction/stories/views/ajax.py=utf-8
 encoding//ponyFiction/stories/views/author.py=utf-8

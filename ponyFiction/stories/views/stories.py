@@ -3,7 +3,7 @@ from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
-from ponyFiction.stories.models import Story, CoAuthorsStory, Chapter
+from ponyFiction.stories.models import Story, CoAuthorsStory, Chapter, StoryView
 from django.core.paginator import Paginator
 from ponyFiction.stories.forms.story import StoryForm
 from ponyFiction.stories.forms.comment import CommentForm
@@ -27,6 +27,13 @@ def story_view(request, **kwargs):
        'page_title' : page_title,
        'comment_form': comment_form
        }
+    # Если только одна глава
+    if (story.chapter_set.count() == 1 and request.user.is_authenticated()):
+        view = StoryView.objects.create()
+        view.author = request.user
+        view.story_id = story_id
+        view.chapter = story.chapter_set.all()[0]
+        view.save()
     return render(request, 'story_view.html', data)
 
 @login_required
