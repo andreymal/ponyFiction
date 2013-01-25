@@ -19,7 +19,7 @@ class AuthorEditProfileForm(ModelForm):
         required=False,
     )
     skype = RegexField(
-        regex=ur'^[a-zA-Z0-9-_]+$',
+        regex=ur'^[a-zA-Z0-9\.-_]+$',
         widget=TextInput(attrs=dict(attrs_dict, maxlength=32, placeholder='Логин skype')),
         max_length=32,
         label='Skype ID',
