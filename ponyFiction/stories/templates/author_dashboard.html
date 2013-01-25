@@ -23,7 +23,9 @@
   </div>
   <div class="span8 top-list">
     <div class="series-block">
-    <h2>Мои сборники <button class="btn btn-success btn-small">Новый сборник</button></h2>
+    <h2>Мои сборники
+    <!--  TODO: <button class="btn btn-success btn-small">Новый сборник</button> -->
+    </h2> 
     {% if series %}
     {% for sr in series %}
     <div class="story-item">
@@ -51,7 +53,7 @@
   {% endif %}
   </div>
   
-  <h2>Мои рассказы  <button class="btn btn-success btn-small">Добавить рассказ</button></h2>
+  <h2>Мои рассказы  <a class="btn btn-success btn-small" href="{% url 'story_add' %}">Добавить рассказ</a></h2>
   {% for story in stories %}
   	{% if not story.in_series.all %}
     <div class="story-item">
@@ -74,7 +76,7 @@
       <div id="story-{{ story.id }}" class="collapse">
         <ul class="chapters-list">
         {% for chapter in story.chapter_set.all %}
-          <li><a class="chapter-title" href="#">{{ chapter.title }}</a> <sup><a class="edit-link" href="{% url 'chapter_edit' story.id chapter.id %}">Редактировать</a></sup>
+          <li><a class="chapter-title" href="#">{{ chapter.title }}</a> <sup><a class="edit-link" href="{% url 'chapter_edit' story.id chapter.order %}">Редактировать</a></sup>
         <br/>{{ chapter.words }} слов, {{ chapter.views }} {{ chapter.views|rupluralize:'просмотр,просмотра,просмотров' }}</li>
         {% endfor %}
         </ul>
