@@ -7,6 +7,8 @@ background:#f6f6f6 url('../i/body-bg.png') repeat 0 0;
 padding:0 20px;
 background-color:#F6F6F6;
 box-shadow:0 0 10px -5px #000000;
+margin-bottom:20px;
+border-radius:0 0 8px 8px;
 }
 
 /* Header */
@@ -262,6 +264,9 @@ display: inline-block;
 line-height: 16px;
 margin:0 4px 4px 0;
 }
+.error .gen {
+color:#ffffff!important;
+}
 p.meta .gen {
 padding:2px 7px;
 margin:0 4px 0 0;
@@ -323,7 +328,6 @@ line-height:26px;
 margin-bottom:20px;
 }
 .comment-date {
-padding-left: 5px;
 }
 
 /* Storypanel */
@@ -453,6 +457,9 @@ width:540px;
 display:inline-block;
 }
 .controls.radio {
+padding-left:0;
+}
+.form-actions {
 padding-left:0;
 }
 
@@ -670,6 +677,7 @@ padding:15px 20px 5px;
 background:#1D2A4F url('../i/header-bg.jpg') no-repeat 0 0;
 color: #FAFAE8;
 text-align:center;
+border-radius:0 0 8px 8px;
 }
 
 /* Больное наследие Еврипони */
