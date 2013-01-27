@@ -21,7 +21,7 @@ def story_view(request, **kwargs):
     comment_form = CommentForm()
     if request.user.is_authenticated():
         activity = Activity.objects.get_or_create(author_id=request.user.id, story=story)[0]
-        activity.last_views = story.views
+        activity.last_views = story.views()
         activity.last_comments = comments_list.count()
         activity.last_vote_up = story.vote_up_count()
         activity.last_vote_down = story.vote_down_count()
@@ -104,5 +104,5 @@ def story_edit(request, story_id, data):
     """
     form.fields['button_submit'].initial = 'Сохранить изменения'
     chapters = Chapter.objects.filter(in_story=story.id).order_by('order')
-    data.update({'form': form, 'story_edit': True, 'chapters': chapters, 'page_title' : 'Редактирование «%s»' % story.title })
+    data.update({'form': form, 'story_edit': True, 'chapters': chapters, 'page_title' : 'Редактирование «%s»' % story.title , 'story_id': story_id})
     return render(request, 'story_work.html', data)

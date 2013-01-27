@@ -1,5 +1,4 @@
 {% extends "common.html" %}
-
 {% load url from future %}
 
 {% block content %}
@@ -193,7 +192,7 @@
           							<li id="chapters_{{ chapter.id }}" class="btn btn-large">{{ chapter.title }}<a class="chapter-edit-link" href="{% url 'chapter_edit' chapter.in_story.id chapter.order %}">править</a> <a class="chapter-delete-link" href="#">удалить</a></li>
 								{% endfor %}
 							</ul>
-							<button href="#" class="btn btn-success">Добавить главу</button>
+							<a href="{% url 'chapter_add' story_id %}" class="btn btn-success">Добавить главу</a>
 						</div>
 					</div>
       			{% endif %}
