@@ -20,4 +20,4 @@ def comment_story(request, story_id=False):
         new_comment.in_story = story
         new_comment.ip = ip
         new_comment.save()
-        return redirect('story_view', kwargs={'story_id': story_id})
+        return redirect('story_view', story_id)

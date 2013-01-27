@@ -226,6 +226,10 @@ class Story (models.Model):
     # FIXME: Эта функция не отлажена и НЕ оптимальна!
     def views(self):
         return self.story_views_set.values('author').annotate(Count('author')).count()
+    
+    # Дельта количества последних добавленных комментариев с момента посещения юзером рассказа
+    def last_comments_by_author(self, author):
+        return self.story_activity_set.get(author_id=author).last_comments
 
 class Chapter (models.Model):
 # Модель главы
@@ -322,7 +326,20 @@ class StoryView(models.Model):
     def __unicode__(self):
         return "%s: %s" % (self.author.username, self.story.title)
 
-"""
-TODO: (для меня)
-Сделать модель Activity (отслеживание активности)
-"""
+
+class Activity(models.Model):
+# Модель отслеживания активности
+    author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE, verbose_name="Автор просмотра")
+    date = models.DateTimeField(auto_now_add=True, verbose_name="Дата последнего просмотра автором")
+    story = models.ForeignKey(Story, related_name="story_activity_set", null=True, verbose_name="Рассказ")
+    last_views = models.IntegerField(default=0, verbose_name="Последнее количество просмотров")
+    last_comments = models.IntegerField(default=0, verbose_name="Последнее количество комментариев")
+    last_vote_up = models.IntegerField(default=0, verbose_name="Последнее количество голосов 'За'")
+    last_vote_down = models.IntegerField(default=0, verbose_name="Последнее количество голосов 'Против'")
+    
+    class Meta:
+        verbose_name = "активность"
+        verbose_name_plural = "активность"
+    
+    def __unicode__(self):
+        return "%s: %s [v:%s c:%s (+):%s (-):%s]" % (self.author.username, self.story.title, self.last_views, self.last_comments, self.last_vote_up, self.last_vote_down)

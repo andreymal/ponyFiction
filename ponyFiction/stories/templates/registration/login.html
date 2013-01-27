@@ -18,8 +18,8 @@
 			Впрочем, всегда можно <a href="{% url 'auth_logout' %}">выйти</a>.
 		</div>
 	{% else %}
-	<div class="span6 offset3">
-		<h1>Авторизация</h1>
+	<div class="span12">
+		<h1>Парадный вход в библиотеку</h1>
 			<form action="" method="POST" enctype="multipart/form-data" class="form-horizontal registration-form">
 			{% csrf_token %}
 			<fieldset>

@@ -76,7 +76,7 @@
   				<ul id="story_chapters">
 					{% for chapter in chapters %}
 						<li><h4><a href="{% url 'chapter_view_single' story.id chapter.order %}">{{ chapter.title }}</a></h4>
-    					{{ chapter.words }} слов, {{ chapter.views }} {{ chapter.views|rupluralize:'просмотр,просмотра,просмотров' }}<li>
+    					{{ chapter.words|rupluralize:'слово,слова,слов' }}, {{ chapter.views|rupluralize:'просмотр,просмотра,просмотров' }}<li>
 					{% endfor %}
   				</ul>
   			{% else %}	
@@ -128,7 +128,7 @@
 				<div class="controls">	
 					{{ comment_form.text }}			
 				</div>
-				<div class="form-actions">
+				<div class="controls">
 					<button class="btn btn-primary" type="submit">Отправить</button>
 				</div>
 			</div>

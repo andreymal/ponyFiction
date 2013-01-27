@@ -3,7 +3,7 @@ from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
-from ponyFiction.stories.models import Story, CoAuthorsStory, Chapter, StoryView
+from ponyFiction.stories.models import Story, CoAuthorsStory, Chapter, StoryView, Activity
 from django.core.paginator import Paginator
 from ponyFiction.stories.forms.story import StoryForm
 from ponyFiction.stories.forms.comment import CommentForm
@@ -19,6 +19,13 @@ def story_view(request, **kwargs):
     comments = paged.page(1).object_list
     page_title = story.title
     comment_form = CommentForm()
+    if request.user.is_authenticated():
+        activity = Activity.objects.get_or_create(author_id=request.user.id, story=story)[0]
+        activity.last_views = story.views()
+        activity.last_comments = comments_list.count()
+        activity.last_vote_up = story.vote_up_count()
+        activity.last_vote_down = story.vote_down_count()
+        activity.save()
     data = {
        'story' : story,
        'comments' : comments,
