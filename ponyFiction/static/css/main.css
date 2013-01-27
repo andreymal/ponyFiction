@@ -1,3 +1,4 @@
+/* ToDo отправить коммент - кнопка странная */
 /* Body, base and containers */
 body {
 background:#f6f6f6 url('../i/body-bg.png') repeat 0 0;
@@ -441,7 +442,6 @@ input.hidden {
 display:none;
 }
 .controls .help-inline {
-vertical-align:top;
 }
 .controls.radio .help-inline {
 vertical-align:middle;
@@ -499,6 +499,7 @@ border-color:transparent;
 }
 
 /* Add and edit story */
+a.btn {text-decoration:none;}
 .chapters-control {
 margin:0;
 list-style-type:none;

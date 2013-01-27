@@ -86,7 +86,18 @@ urlpatterns += patterns('',
         auth_views.logout,
         {'next_page': '/'},
         name='auth_logout'),
-    
+    # Регистрация
+    url(r'^accounts/password/reset/$', 
+        auth_views.password_reset, 
+        {'post_reset_redirect' : '/accounts/password/reset/done/'},
+        name='password_reset'),
+    url(r'^accounts/password/reset/done/$',
+        auth_views.password_reset_done),
+    url(r'^accounts/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
+        auth_views.password_reset_confirm, 
+        {'post_reset_redirect' : '/accounts/password/done/'}),
+    url(r'^accounts/password/done/$', 
+        auth_views.password_reset_complete),
 )
 # AJAX
 urlpatterns += patterns('',
