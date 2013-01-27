@@ -20,7 +20,18 @@
 		<p>
 			{% if author.story_set.count > 0 %}Вы уже написали <b>{{ author.story_set.count|rupluralize:'рассказ,рассказа,рассказов' }}</b>{% else %}Вы пока ничего не написали{% endif %}.
 			<br/>
-			Читатели просмотрели ваши рассказы 9000 раз, оставив {{ comments_count|rupluralize:'комментарий,комментария,комментариев' }}.<br/>
+			Читатели 
+			{% if all_views > 0 %}
+				просмотрели ваши рассказы {{ all_views|rupluralize:'раз,раза,раз' }},
+			{% else %}
+				пока не интересовались вашими рассказами,
+			{% endif %}
+			{% if comments_count > 0 %}
+				 и оставили {{ comments_count|rupluralize:'комментарий,комментария,комментариев' }}.
+			{% else %}
+				 не откомментировав их.
+			{% endif%}
+			<br/>
 			Ваш общий рейтинг составляет: <span class="upvotes">{{ votes.0 }}</span> / <span class="downvotes">{{ votes.1 }}</span>.
 		</p>
 	</div>

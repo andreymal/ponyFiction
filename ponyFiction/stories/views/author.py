@@ -3,7 +3,7 @@ from django.conf import settings
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
-from ponyFiction.stories.models import Author, Comment, Vote
+from ponyFiction.stories.models import Author, Comment, Vote, StoryView
 from django.core.paginator import Paginator
 from ponyFiction.stories.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm 
 @login_required
@@ -11,9 +11,11 @@ from ponyFiction.stories.forms.author import AuthorEditEmailForm, AuthorEditPass
 def author_info(request, **kwargs):
     user_id = kwargs.pop('user_id', None)
     page_title = kwargs.pop('page_title', None)
+    data = {}
     if user_id is None:
         author = Author.objects.get(pk=request.user.id)
         comments_list = Comment.objects.filter(in_story__authors=request.user.id)
+        data['all_views'] = StoryView.objects.filter(story__authors=author).count()
         template = 'author_dashboard.html'
     else:
         author = Author.objects.get(pk=user_id)
@@ -27,7 +29,7 @@ def author_info(request, **kwargs):
     paged = Paginator(comments_list, settings.COMMENTS_COUNT['page'], orphans=settings.COMMENTS_ORPHANS)
     comments = paged.page(1).object_list
     num_pages = paged.num_pages
-    data = {
+    data.update({
             'author' : author,
             'series' : series,
             'stories' : stories,
@@ -36,7 +38,7 @@ def author_info(request, **kwargs):
             'comments_count': comments_count,
             'page_title': page_title,
             'votes': votes
-            }
+            })
     return render(request, template, data)
 
 

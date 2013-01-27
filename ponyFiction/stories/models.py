@@ -224,6 +224,7 @@ class Story (models.Model):
     
     # Количество просмотров
     # FIXME: Эта функция не отлажена и НЕ оптимальна!
+    @property
     def views(self):
         return self.story_views_set.values('author').annotate(Count('author')).count()
     

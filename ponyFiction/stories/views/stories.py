@@ -21,7 +21,7 @@ def story_view(request, **kwargs):
     comment_form = CommentForm()
     if request.user.is_authenticated():
         activity = Activity.objects.get_or_create(author_id=request.user.id, story=story)[0]
-        activity.last_views = story.views()
+        activity.last_views = story.views
         activity.last_comments = comments_list.count()
         activity.last_vote_up = story.vote_up_count()
         activity.last_vote_down = story.vote_down_count()
