@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from ponyFiction.stories.apis.recaptcha.fields import ReCaptchaField
-from registration.forms import RegistrationForm
+from registration.forms import RegistrationFormUniqueEmail
 from django.forms import CharField, EmailField, PasswordInput, RegexField, TextInput
-class AuthorRegistrationForm(RegistrationForm):
+class AuthorRegistrationForm(RegistrationFormUniqueEmail):
     attrs_dict = {'class': 'required input-xlarge'}
     username = RegexField(
         regex=ur'^[0-9a-zA-Z\u0430-\u044f\u0410-\u042f\u0451\u0401_@+-.. ]+$',
