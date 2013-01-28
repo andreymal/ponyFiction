@@ -4,6 +4,7 @@ from sanitizer.forms import SanitizedCharField
 from ponyFiction.stories.models import Chapter
 from ponyFiction.stories.widgets import ServiceButtonWidget
 from ponyFiction import settings as settings
+from django.template import defaultfilters as filters
 
 class ChapterForm(ModelForm):
     """
@@ -50,3 +51,8 @@ class ChapterForm(ModelForm):
     class Meta:
         model = Chapter
         fields = ('title', 'text')
+        
+    def save(self, *args, **kwargs):
+        chapter = super(ChapterForm, self).save(*args, **kwargs)
+        chapter.words = filters.wordcount(filters.striptags(chapter.text))
+        chapter.save(update_fields=['words'])

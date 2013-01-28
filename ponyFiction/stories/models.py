@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.contrib.auth.models import User, UserManager
 
 class Author(User):
@@ -207,7 +207,6 @@ class Story (models.Model):
     title = models.CharField(max_length=512, verbose_name="Название")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     vote = models.ManyToManyField('Vote', null=True, verbose_name="Голоса за историю")
-    words = models.IntegerField(default=0, verbose_name="Количество слов в истории")
 
     class Meta:
         verbose_name = "история"
@@ -223,9 +222,12 @@ class Story (models.Model):
         return self.vote.filter(direction = False).count()
     
     # Количество просмотров
-    # FIXME: Эта функция не отлажена и НЕ оптимальна!
     def views(self):
         return self.story_views_set.values('author').annotate(Count('author')).count()
+    
+    # Количество слов
+    def words(self):
+        return self.chapter_set.aggregate(Sum('words'))['words__sum']
     
     # Дельта количества последних добавленных комментариев с момента посещения юзером рассказа
     def last_comments_by_author(self, author):
