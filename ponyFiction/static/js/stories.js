@@ -507,6 +507,23 @@ $(function(){
     $('#vote-up').click(function(){voteStory('1')});
 	$('#vote-down').click(function(){voteStory('-1')});
 	$('#favstar').click(function(){favoriteStory()});
+	// Переключение размера и типа шрифта
+	$('.select-font').change(function() {
+	    if($('.select-font').val() == '1')
+	    $('.chapter-text').removeClass('mono-font serif-font')
+	    else if($('.select-font').val() == '2')
+	    $('.chapter-text').removeClass('mono-font').addClass('serif-font')
+	    else if($('.select-font').val() == '3')
+	    $('.chapter-text').removeClass('serif-font').addClass('mono-font')
+	});
+	$('.select-size').change(function() {
+	    if($('.select-size').val() == '1')
+	    $('.chapter-text').removeClass('small-font big-font')
+	    else if($('.select-size').val() == '2')
+	    $('.chapter-text').removeClass('big-font').addClass('small-font')
+	    else if($('.select-size').val() == '3')
+	    $('.chapter-text').removeClass('small-font').addClass('big-font')
+	});
 	// Ещё какая-то ерунда
 	// ---
 });
