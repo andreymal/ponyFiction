@@ -121,16 +121,16 @@ class AuthorEditPasswordForm(Form):
         old_password = cleaned_data.get('old_password')
         new_password_1 = cleaned_data.get('new_password_1')
         new_password_2 = cleaned_data.get('new_password_2')
-        
-        if old_password and new_password_1 and new_password_2:
-            if self.author.check_password(old_password):
-                if new_password_1 != new_password_2:
-                    raise ValidationError('Пароли не совпадают')
-            else:
-                raise ValidationError('Пароль неверный')
+        nfe = []
+        if not(old_password and new_password_1 and new_password_2):
+            nfe.append('Введены не все данные')
         else:
-            raise ValidationError('Введены не все данные')
-        
+            if not (self.author.check_password(old_password)):
+                nfe.append('Старый пароль неверный')
+            if new_password_1 != new_password_2:
+                nfe.append('Пароли не совпадают')
+        if nfe:
+            raise ValidationError(nfe)
         return cleaned_data
     
     def save(self):

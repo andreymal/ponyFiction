@@ -85,8 +85,12 @@
 						</div>
 					</div>
 				{% endfor %}
-				{% if password_form.non_field_errors %}
-					<div class="control-group error"><span class="help-inline">{{ form.non_field_errors.0 }}</span></div>
+				{% if password_form_nfe %}
+					<div class="control-group error">
+						{% for error in password_form_nfe %}
+							<span class="help-inline">{{ error }}</span>
+						{% endfor %}
+					</div>
 				{% endif %}
 				<div class="form-actions">
 					<button class="btn btn-primary" type="submit" name="save_password">Сменить пароль</button>

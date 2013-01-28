@@ -68,14 +68,12 @@ def author_edit(request):
             if password_form.is_valid():
                 password_form.save()
                 data['password_ok'] = True
-        else:
-            password_form = AuthorEditPasswordForm(author=author, prefix='password_form')
+            else:
+                data['password_form_nfe'] = password_form.non_field_errors()
+                password_form = AuthorEditPasswordForm(author=author, prefix='password_form')
     else:
         profile_form = AuthorEditProfileForm(instance=author, prefix='profile_form')
         email_form = AuthorEditEmailForm(author=author, prefix='email_form')
         password_form = AuthorEditPasswordForm(author=author, prefix='password_form')
-    data.update({'profile_form': profile_form,
-          'email_form': email_form,
-          'password_form': password_form,
-          })
+    data.update({'profile_form': profile_form, 'email_form': email_form, 'password_form': password_form})
     return render(request, 'author_profile_edit.html', data)
