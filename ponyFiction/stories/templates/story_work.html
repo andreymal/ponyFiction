@@ -189,7 +189,7 @@
         				<div class="controls events">   
 							<ul id="sortable_chapters" class="chapters-control">
 								{% for chapter in chapters %}
-          							<li id="chapters_{{ chapter.id }}" class="btn btn-large">{{ chapter.title }}<a class="chapter-edit-link" href="{% url 'chapter_edit' chapter.in_story.id chapter.order %}">править</a> <a class="chapter-delete-link" href="#">удалить</a></li>
+          							<li id="chapters_{{ chapter.id }}" class="btn btn-large">{{ chapter.title }}<a class="chapter-edit-link" href="{% url 'chapter_edit' chapter.in_story.id chapter.order %}">править</a> <!-- <a class="chapter-delete-link" href="#">удалить</a> --></li>
 								{% endfor %}
 							</ul>
 							<a href="{% url 'chapter_add' story_id %}" class="btn btn-success">Добавить главу</a>

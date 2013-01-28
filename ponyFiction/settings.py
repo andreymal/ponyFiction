@@ -200,13 +200,12 @@ DEFAULT_FROM_EMAIL = 'noreply@stories.everypony.ru'
 RECAPTCHA_PUBLIC_KEY = '6LfbstoSAAAAAAcFIteoZTld24mt3s6_sODZnc8J'
 RECAPTCHA_PRIVATE_KEY = '6LfbstoSAAAAAHHN9jYw9Lp9lsunQCILAyAYgoxz'
 SANITIZER_ALLOWED_TAGS = [
-    'i', 'em', 'b', 'strong', 's', 'u'
-    'h1', 'h2', 'h3', 'h4', 'h5',
-    'p', 'br', 'hr'
+    'strong', 'em', 's', 'u',
+    'h3', 'h4', 'h5',
+    'p', 'br', 'hr',
     'img', 'a',
     'ul', 'ol', 'li',
-    'blockquote', 'sup', 'sub', 'code',
-    'small', 'abbr'
+    'blockquote', 'sup', 'sub', 'code', 'small'
 ]
 
 SANITIZER_ALLOWED_ATTRIBUTES = {

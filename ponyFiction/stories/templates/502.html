@@ -1,0 +1,23 @@
+{% extends "common.html" %}
+{% block content %}
+<div class="row page-502">
+	<div class="span12">
+      <ul class="breadcrumb">
+    		<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li class="active">{{ page_title }}</li>
+		</ul>
+	</div>
+
+	<div class="span12 message-502">
+		<h1>502 - плохой шлюз</h1>
+		<p>Кажется, я не уверен, в каком случае вылазиет эта ошибка.</p>
+  </div>
+
+	<div class="span12">
+      <ul class="breadcrumb">
+    		<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li class="active">{{ page_title }}</li>
+		</ul>
+	</div>
+</div>
+{% endblock %}

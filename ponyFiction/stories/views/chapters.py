@@ -94,15 +94,13 @@ def chapter_edit(request, story_id, chapter_order):
             form = ChapterForm(request.POST, instance=chapter)
             if form.is_valid():
                 form.save()
-                data['edit_success'] = True
-                form = ChapterForm(instance=chapter)
         if 'button_delete' in request.POST:
             shift = story.chapter_set.filter(order__gt=chapter.order)
             for chapter in shift:
                 chapter.order = chapter.order-1
                 chapter.save(update_fields=['order'])
             chapter.delete()
-            return redirect('story_edit', story_id)
+        return redirect('story_edit', story_id)
     else:
         # Отправка предварительно заполненной формы с главой
         form = ChapterForm(instance=chapter)

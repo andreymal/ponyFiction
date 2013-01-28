@@ -498,6 +498,11 @@ $(function(){
 			}
 		});
     }
+    // На странице редактирования главы
+    var re_chapteredit = new RegExp('/story/[0-9]+/chapter/[0-9]+/edit/')
+    if (re_chapteredit.test(window.location.pathname)){
+    $('.chapter-textarea').markItUp(mySettings);
+    }
     // Голосование
     $('#vote-up').click(function(){voteStory('1')});
 	$('#vote-down').click(function(){voteStory('-1')});
