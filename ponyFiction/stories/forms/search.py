@@ -53,7 +53,6 @@ class SearchForm(Form):
         required=False,
         queryset=Character.objects.all(),
         group_by_field='group',
-#        empty_label=None,
         widget=StoriesImgSelect(attrs=img_attrs),
     )
     # Оригинал/перевод

@@ -63,7 +63,9 @@
   			{% if chapters.count > 1 %}
   				<h2>Содержание</h2>
 				<div class="story-panel">
-  					<a title="В избранное" id="favstar" class="scon fav{% if story|faved:user.id %} faved{% endif %}"></a> 
+  					{% if user.is_authenticated %}
+  						<a title="В избранное" id="favstar" class="scon fav{% if story|faved:user.id %} faved{% endif %}"></a>
+  					{% endif %} 
   					<a title="Подписаться на новые главы по RSS" href="{% url 'feeds_atom_story' story.id %}" class="scon feed"></a>
 					<!--
 						<a title="Отложить на потом (в закладки)" href="#" class="scon later"></a> 
@@ -97,7 +99,9 @@
   			{% else %}	
 				<h2 id="chaptertitle">{{ chapters.0.title }}</h2>
 				<div class="story-panel">
-  					<a title="В избранное" id="favstar" class="scon fav{% if story|faved:user.id %} faved{% endif %}"></a> 
+					{% if user.is_authenticated %}
+  						<a title="В избранное" id="favstar" class="scon fav{% if story|faved:user.id %} faved{% endif %}"></a>
+  					{% endif %} 
   					<a title="Подписаться на новые главы по RSS" href="{% url 'feeds_atom_story' story.id %}" class="scon feed"></a>
 					<!--
 						<a title="Отложить на потом" href="#" class="scon later"></a>

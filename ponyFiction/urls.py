@@ -112,8 +112,10 @@ urlpatterns += patterns('',
     url(r'^story/(?P<story_id>\d+)/edit/ajax$', ajax.sort_chapters),
     # Голосование за историю
     url(r'^story/(?P<story_id>\d+)/vote$', ajax.story_vote, name='story_vote'),
-    # Добавление в избранное
+    # Добавление в избранное истории
     url(r'^story/(?P<story_id>\d+)/favorite$', ajax.favorites_work, name='favorites_work'),
+    # Добавление в избранное главы (workaround, пока добавляется вся история)
+    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_id>\d+)/favorite$', ajax.favorites_work, name='favorites_work'),
     # Подгрузка избранного
     url(r'^accounts/(?P<user_id>\d+)/favorites/ajax$', ajax.ajax_favorites),
 

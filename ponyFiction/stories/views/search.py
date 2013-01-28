@@ -7,6 +7,7 @@ from ponyFiction.stories.forms.search import SearchForm
 from ponyFiction import settings as settings
 from ponyFiction.stories.apis.sphinxapi import SphinxClient, SPH_SORT_EXTENDED
 from ponyFiction.stories.utils.misc import pagination_ranges, SetBoolSphinxFilter, SetObjSphinxFilter
+from django.shortcuts import redirect
 
 def search_main(request):
     if request.method == 'GET':
@@ -42,9 +43,7 @@ def search_action(request, postform):
         data['search_type'] = search_type
         initial_data['search_type'] = int(search_type)
     else:
-        data['errors'] = postform.errors
-        data['form'] = SearchForm(initial={'search_type': 0})
-        return render(request, 'search.html', data)
+        return redirect('search')
     # Текущая страница поиска
     try:
         page_current = int(request.POST['page_current']) if request.POST['page_current'] else 1
@@ -118,6 +117,22 @@ def search_action(request, postform):
     # Закрываем за собой сокет
     sphinx.Close()
     return render(request, 'search.html', data)
-        
+  
 def search_simple(request, search_type, search_id):
-    pass
+    if search_type == 'character':
+        bound_data={'characters_select': [search_id], 'search_type': 0}
+    elif search_type == 'category':
+        bound_data={'categories_select': [search_id], 'search_type': 0}
+    elif search_type == 'classifier':
+        bound_data={'classifications_select': [search_id], 'search_type': 0}
+    elif search_type == 'rating':
+        bound_data={'ratings_select': [search_id], 'search_type': 0}
+    elif search_type == 'size':
+        bound_data={'sizes_select': [search_id], 'search_type': 0}
+    else:
+        return search_form(request)
+    postform = SearchForm(bound_data)
+    if postform.is_valid():
+        return search_action(request, postform)
+    else:
+        return search_form(request)

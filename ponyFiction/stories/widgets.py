@@ -48,7 +48,7 @@ class StoriesCheckboxSelectMultiple(CheckboxSelectMultiple):
 
 class StoriesImgSelect(SelectMultiple):
     def render(self, name, value, attrs=None, choices=()):
-        if value is None: value = ''
+        if value is None: value = []
         output = []
         attrs = self.attrs
         group_container_class = attrs['group_container_class']
@@ -56,10 +56,10 @@ class StoriesImgSelect(SelectMultiple):
             output.append('<span class="%s%s" title="%s">' % (group_container_class, group.id, group.name))
             for option in option_sublist:
                 # *option == (int, string)
-                output.append(self.render_option(attrs, name, [value], *option))
+                output.append(self.render_option(attrs, name, value, *option))
             output.append('</span>')
         return mark_safe('\n'.join(output))
-    
+
     def render_option(self, attrs, name, selected_choices, option_value, option_label):
         container_attrs = attrs['container_attrs']
         data_attrs = attrs['data_attrs']

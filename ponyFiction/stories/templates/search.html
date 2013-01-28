@@ -67,60 +67,62 @@
 	<!-- Результаты: начало вывода -->
 	<div class="span9 search-results tab-content">
 		{% if search_type == '0' %}
-				<!-- Рассказы: начало вывода -->
-					{% for story in result %}
-						<!-- Рассказ "{{ story.title }}": начало вывода -->
-						<div class="story-item">	
-							<h3><a href="{% url 'story_view' story.id %}">{{ story.title }}</a>
-	            				<sup><span class="upvotes">{{ story.vote_up_count }}</span> / <span class="downvotes">{{ story.vote_down_count }}</span></sup>
-	            				{%if not story.finished %}<sup class="incomplete">Не закончена</sup>{% else %}<sup class="complete">Закончена</sup>{% endif%} {% if story.freezed %}<sup class="suspended">Заморожена</sup>{% endif %}
-	            			</h3>
-							<p class="meta">
-								{% spaceless %}
-									<span class="category-list">
-					         			{% for category in story.categories.all %}
-					         				<a class="gen gen-{{ category.id }}" href="{% url 'search_simple' 'category' category.id %}">{{ category.name }}</a>
-					         			{% endfor %}
-					       		</span>
-				        		{% endspaceless %}	
-								{{ story.words|rupluralize:'слово,слова,слов' }} и {{ story.chapter_set.count|rupluralize:'глава,главы,глав' }} от 
-								{% for author in story.authors.all %}
-				          			{% if forloop.counter == 1 %}
-							        	<a class="authorlink" href="{% url 'author_overview' author.id %}">{{author.username}}</a>
-							        	{% if story.authors.all.count > 1 %}(в соавторстве с{% endif %}
-							        {% endif %}
-							        {% if forloop.counter > 1 %}           	        	
-										<a class="authorlink" href="{% url 'author_overview' author.id %}">{{author.username}}</a>{% if forloop.revcounter0 == 1 %} и {% endif %}{% if forloop.revcounter0 > 1 %}, {% endif %}
-									{% endif %}
-				          			{% if forloop.revcounter0 == 0 and story.authors.all.count > 1 %}){% endif %}
-				        		{% endfor %}
-	            			</p>
-							<p>{{ story.summary }}</p>
-	            			<p class="meta">
-								{% spaceless %}
-				         			<span class="character-list">
-				         				{% for character in story.characters.all %}
-					       					<a href="{% url 'search_simple' 'character' character.id %}"><img src="{% get_static_prefix %}i/characters/{{ character.id }}.png" alt="{{ character.name }}" title="{{ character.name }}"/></a>
-			        					{% endfor %}
-			        				</span>
-				        		{% endspaceless %}
-							</p>
-						</div>
-						<!-- Рассказ "{{ story.title }}": конец вывода -->
-					{% empty %}
-					<div class="story-item"><h3>Рассказов не найдено</h3></div>
-					{% endfor %}
-				<!-- Рассказы: конец вывода -->
+			<!-- Рассказы: начало вывода -->
+			{% if result %}<div class="story-item"><h3>Всего нашли {{ total|rupluralize:'рассказ,рассказа,рассказов' }}</h3></div>{% endif %}
+			{% for story in result %}
+				<!-- Рассказ "{{ story.title }}": начало вывода -->
+				<div class="story-item">	
+					<h3><a href="{% url 'story_view' story.id %}">{{ story.title }}</a>
+        				<sup><span class="upvotes">{{ story.vote_up_count }}</span> / <span class="downvotes">{{ story.vote_down_count }}</span></sup>
+        				{%if not story.finished %}<sup class="incomplete">Не закончена</sup>{% else %}<sup class="complete">Закончена</sup>{% endif%} {% if story.freezed %}<sup class="suspended">Заморожена</sup>{% endif %}
+        			</h3>
+					<p class="meta">
+						{% spaceless %}
+							<span class="category-list">
+			         			{% for category in story.categories.all %}
+			         				<a class="gen gen-{{ category.id }}" href="{% url 'search_simple' 'category' category.id %}">{{ category.name }}</a>
+			         			{% endfor %}
+			       		</span>
+		        		{% endspaceless %}	
+						{{ story.words|rupluralize:'слово,слова,слов' }} и {{ story.chapter_set.count|rupluralize:'глава,главы,глав' }} от 
+						{% for author in story.authors.all %}
+		          			{% if forloop.counter == 1 %}
+					        	<a class="authorlink" href="{% url 'author_overview' author.id %}">{{author.username}}</a>
+					        	{% if story.authors.all.count > 1 %}(в соавторстве с{% endif %}
+					        {% endif %}
+					        {% if forloop.counter > 1 %}           	        	
+								<a class="authorlink" href="{% url 'author_overview' author.id %}">{{author.username}}</a>{% if forloop.revcounter0 == 1 %} и {% endif %}{% if forloop.revcounter0 > 1 %}, {% endif %}
+							{% endif %}
+		          			{% if forloop.revcounter0 == 0 and story.authors.all.count > 1 %}){% endif %}
+		        		{% endfor %}
+        			</p>
+					<p>{{ story.summary }}</p>
+        			<p class="meta">
+						{% spaceless %}
+		         			<span class="character-list">
+		         				{% for character in story.characters.all %}
+			       					<a href="{% url 'search_simple' 'character' character.id %}"><img src="{% get_static_prefix %}i/characters/{{ character.id }}.png" alt="{{ character.name }}" title="{{ character.name }}"/></a>
+	        					{% endfor %}
+	        				</span>
+		        		{% endspaceless %}
+					</p>
+				</div>
+				<!-- Рассказ "{{ story.title }}": конец вывода -->
+			{% empty %}
+			<div class="story-item"><h3>Рассказов не найдено</h3></div>
+			{% endfor %}
+			<!-- Рассказы: конец вывода -->
 		{% else %}
-				<!-- Главы: начало вывода -->
-					{% for chapter, excerpt in result %}
-						<div class="story-item">
-							<h3><a href="{% url 'chapter_view_single' chapter.in_story_id chapter.order %}">{{ chapter.title }}</a></h3>
-							<p>{{ excerpt|safe }}</p>
-	          				<p class="meta">Глава из рассказа <b><a href="{% url 'story_view' chapter.in_story_id %}">{{ chapter.in_story.title }}</a></b> от <a class="authorlink" href="{% url 'author_overview' chapter.in_story.authors.all.0.id %}">{{ chapter.in_story.authors.all.0.username }}</a></p>
-	        			</div>
-					{% endfor %}
-				<!-- Главы: конец вывода -->
+			<!-- Главы: начало вывода -->
+			{% if result %}<div class="story-item"><h3>Всего нашли {{ total|rupluralize:'главу,главы,глав' }}</h3></div>{% endif %}
+			{% for chapter, excerpt in result %}
+				<div class="story-item">
+					<h3><a href="{% url 'chapter_view_single' chapter.in_story_id chapter.order %}">{{ chapter.title }}</a></h3>
+					<p>{{ excerpt|safe }}</p>
+      				<p class="meta">Глава из рассказа <b><a href="{% url 'story_view' chapter.in_story_id %}">{{ chapter.in_story.title }}</a></b> от <a class="authorlink" href="{% url 'author_overview' chapter.in_story.authors.all.0.id %}">{{ chapter.in_story.authors.all.0.username }}</a></p>
+    			</div>
+			{% endfor %}
+			<!-- Главы: конец вывода -->
 		{% endif %}
 		{% if result %}
 				<!-- Пагинация: начало вывода -->

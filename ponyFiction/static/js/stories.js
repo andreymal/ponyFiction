@@ -462,7 +462,8 @@ $(function(){
         }
     });
     // На странице поиска...
-    if (window.location.pathname == "/search/"){
+    var re_search = new RegExp('/search/(.+)?');
+    if (re_search.test(window.location.pathname)){
     	// ...проставляем классы изображениям персонажей, в зависимости от выбранных скрытых чекбоксов.
 		$('input[name="characters_select"][checked="checked"]').parent().children('img').addClass('ui-selected');
     }
