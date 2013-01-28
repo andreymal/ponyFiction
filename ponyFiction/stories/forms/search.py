@@ -127,5 +127,3 @@ class SearchForm(Form):
         required=True,
         widget=StoriesRadioButtons(attrs=radio_attrs),
     )
-#sff = SearchForm(initial={'search_type': 0})
-#print sff['search_type']

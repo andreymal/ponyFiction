@@ -27,21 +27,23 @@ urlpatterns += patterns('',
     url(r'^search/(?P<search_type>\w+)/(?P<search_id>\d+)/$', search.search_simple, name='search_simple')
 )
 
+# Избранное
+urlpatterns += patterns('',
+    url(r'^accounts/(?P<user_id>\d+)/favorites/$', 'ponyFiction.stories.views.favorites.favorites_view', name='favorites'),
+)
+
 # Обработка пользовательских адресов
 urlpatterns += patterns('',
     url(r'^accounts/(?P<user_id>\d+)/$',
         author.author_info,
-        {'page_title': 'Профиль'},
         name='author_overview'),
                         
     url(r'^accounts/profile/$',
         author.author_info,
-        {'page_title': 'Мой кабинет'},
         name='author_dashboard'),
                         
     url(r'^accounts/profile/edit/$',
         author.author_edit,
-        {'page_title': 'Настройки профиля'},
         name='author_profile_edit'),
                         
     url(r'^accounts/registration/$',
@@ -110,6 +112,11 @@ urlpatterns += patterns('',
     url(r'^story/(?P<story_id>\d+)/edit/ajax$', ajax.sort_chapters),
     # Голосование за историю
     url(r'^story/(?P<story_id>\d+)/vote$', ajax.story_vote, name='story_vote'),
+    # Добавление в избранное
+    url(r'^story/(?P<story_id>\d+)/favorite$', ajax.favorites_work, name='favorites_work'),
+    # Подгрузка избранного
+    url(r'^accounts/(?P<user_id>\d+)/favorites/ajax$', ajax.ajax_favorites),
+
 )
 
 # Ленты
@@ -190,6 +197,22 @@ urlpatterns += patterns('ponyFiction.stories.views.chapters',
     ),
 )
 
+# Другое
+urlpatterns += patterns('',
+    url(r'^not_found/$',
+        TemplateView.as_view(
+            template_name='404.html',
+            get_context_data=lambda: {'page_title': '404: не найдено'},
+        ),
+    ),
+    url(r'^bad_gateway/$',
+        TemplateView.as_view(
+            template_name='502.html',
+            get_context_data=lambda: {'page_title': '502: плохой шлюз'},
+        ),
+    ),
+            
+)
 if settings.DEBUG:
     urlpatterns += patterns('',
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),

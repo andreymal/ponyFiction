@@ -14,7 +14,7 @@
 	<!-- Вывод шапки -->
 	<div class="span8">
 		<h1 id="author-name">
-			<!-- <img src="{% get_static_prefix %}i/userpic.jpg" width="42" title="{{ author.username }}" alt="{{ author.username }}"/> -->
+			<img src="{% get_static_prefix %}i/userpic.jpg" width="42" title="{{ author.username }}" alt="{{ author.username }}"/>
 			{% if author.story_set.count > 0 %}Кабинет автора{% else %}Кабинет потенциального автора{% endif %}
 		</h1>
 		<p>
@@ -38,11 +38,11 @@
 	<div class="span8 top-list">
 		<!-- Сборники -->
 		<div class="series-block">
-			<h2>Мои сборники
-			<!--  TODO: <button class="btn btn-success btn-small">Новый сборник</button> -->
-			</h2>
-			<!-- Начало вывода сборников -->
+			<!-- Начало вывода сборников, если они есть -->
 			{% if series %}
+				<h2>Мои сборники
+				<!--  TODO: <button class="btn btn-success btn-small">Новый сборник</button> -->
+				</h2>
 				{% for sr in series %}
 					<div class="story-item">
 						<h4>
@@ -60,17 +60,18 @@
 								<li>
 									<a href="{% url 'story_view' story.id %}">{{ story.title }}</a> 
 									<sup><span class="upvotes">{{ story.vote_up_count }}</span> / <span class="downvotes">{{ story.vote_down_count }}</span></sup>
-									{% if story.freezed %}<sup class="suspended">Заморожена</sup>{% endif %}<br>
-									<sup><a class="edit-link" href="{% url 'story_edit' story.id %}">Редактировать</a></sup>
+									{% if story.freezed %}<sup class="suspended">Заморожена</sup>{% endif %}<br/>
+									<a class="edit-link" href="{% url 'story_edit' story.id %}">Редактировать</a><br/>
 									{% if story.chapter_set.count > 1 %}
 										{{ story.chapter_set.count|rupluralize:'глава,главы,глав' }},
 									{% endif %}
 									{{ story.views|rupluralize:'просмотр,просмотра,просмотров' }}, 
 									{{ story.comment_set.count|rupluralize:'комментарий,комментария,комментариев' }}
-								</li>
-								{% if story|story_comments_delta:author > 0 %}
-									(<span class="green">+{{ story|story_comments_delta:author }}</span>)
+
+									{% if story|story_comments_delta:user > 0 %}
+									<sup><span class="green">+{{ story|story_comments_delta:user }}</span></sup>
 								{% endif %} 
+								</li>
 							{% endfor %}
 						</ul>
 						<!-- Вывод рассказов в сборнике: конец -->
@@ -100,8 +101,8 @@
 							{% endfor %}
 						{% endif %}
 						{{ story.comment_set.count|rupluralize:'комментарий,комментария,комментариев' }}
-						{% if story|story_comments_delta:author > 0%}
-							(<span class="green">+{{ story|story_comments_delta:author }}</span>)
+						{% if story|story_comments_delta:user > 0%}
+							(<span class="green">+{{ story|story_comments_delta:user }}</span>)
 						{% endif %} 
 					</p>
 					{% if story.chapter_set.count > 1 %}

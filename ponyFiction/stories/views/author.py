@@ -6,20 +6,21 @@ from django.contrib.auth.decorators import login_required
 from ponyFiction.stories.models import Author, Comment, Vote, StoryView
 from django.core.paginator import Paginator
 from ponyFiction.stories.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm 
+
 @login_required
 @csrf_protect
-def author_info(request, **kwargs):
-    user_id = kwargs.pop('user_id', None)
-    page_title = kwargs.pop('page_title', None)
+def author_info(request, user_id=None):
     data = {}
     if user_id is None:
         author = Author.objects.get(pk=request.user.id)
         comments_list = Comment.objects.filter(in_story__authors=request.user.id)
         data['all_views'] = StoryView.objects.filter(story__authors=author).count()
+        data['page_title'] = 'Мой кабинет'
         template = 'author_dashboard.html'
     else:
         author = Author.objects.get(pk=user_id)
         comments_list = author.comment_set.all()
+        data['page_title'] = 'Автор: %s' % author.username
         template = 'author_overview.html'
     comments_count = comments_list.count()
     series = author.series_set.all()
@@ -36,7 +37,6 @@ def author_info(request, **kwargs):
             'comments' : comments,
             'num_pages': num_pages,
             'comments_count': comments_count,
-            'page_title': page_title,
             'votes': votes
             })
     return render(request, template, data)
@@ -44,10 +44,10 @@ def author_info(request, **kwargs):
 
 @login_required
 @csrf_protect
-def author_edit(request, **kwargs):
-    page_title = kwargs.pop('page_title', None)
+def author_edit(request):
     author = request.user
     data={}
+    data['page_title'] = 'Настройки профиля'
     if request.POST:
         if 'save_profile' in request.POST:
             profile_form = AuthorEditProfileForm(request.POST, instance=author, prefix='profile_form')
@@ -77,6 +77,5 @@ def author_edit(request, **kwargs):
     data.update({'profile_form': profile_form,
           'email_form': email_form,
           'password_form': password_form,
-          'page_title': page_title
           })
     return render(request, 'author_profile_edit.html', data)

@@ -17,6 +17,7 @@ class AuthorEditProfileForm(ModelForm):
         label='Jabber ID (XMPP)',
         error_messages={'invalid': 'Пожалуйста, исправьте ошибку в адресе jabber: похоже, он неправильный'},
         required=False,
+        help_text='Пример: user@server.com',
     )
     skype = RegexField(
         regex=ur'^[a-zA-Z0-9\._-]+$',
@@ -36,8 +37,9 @@ class AuthorEditProfileForm(ModelForm):
     )
     forum = URLField(
         widget=TextInput(attrs=dict(attrs_dict, maxlength=32, placeholder='URL вашего профиля')),
-        max_length=32,
-        label='Адрес профиля на Форуме',
+        max_length=72,
+        label='Профиль на Форуме',
+        help_text='Вставьте полную ссылку на профиль',
         error_messages={'invalid': 'Пожалуйста, исправьте ошибку адресе профиля: похоже, он неправильный.'},
         required=False
     )
@@ -96,16 +98,19 @@ class AuthorEditPasswordForm(Form):
         widget=PasswordInput(attrs=dict(attrs_dict, placeholder='****************'), render_value=False),
         label="Старый пароль",
         help_text='Для безопасной смены пароля введите старый пароль',
+        error_messages={'required': 'Поле нельзя оставить пустым'}
     )
     new_password_1 = CharField(
         widget=PasswordInput(attrs=dict(attrs_dict, placeholder='****************'), render_value=False),
         label="Новый пароль",
         help_text='Выбирайте сложный пароль',
+        error_messages={'required': 'Поле нельзя оставить пустым'}
     )
     new_password_2 = CharField(
         widget=PasswordInput(attrs=dict(attrs_dict, placeholder='****************'), render_value=False),
         label="Новый пароль (опять)",
         help_text='Повторите новый пароль, чтобы не забыть',
+        error_messages={'required': 'Поле нельзя оставить пустым'}
         )
     def __init__(self, *args, **kwargs):
         self.author = kwargs.pop('author', None)

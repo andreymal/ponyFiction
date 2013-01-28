@@ -1,0 +1,24 @@
+{% extends "common.html" %}
+{% load url from future %}
+{% block content %}
+{% load static %}
+<div class="row">
+	<div class="span8">
+    <ul class="breadcrumb">
+      <li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+      <li class="active">{{ page_title }}</li>
+    </ul>   
+    
+		<h1>{{ page_title }}</h1>
+		<div id="comments-list">
+		</div>
+		<input class="hidden" value="1" id="scroll_current"></input>
+		<div class="loader" style="display:none;"></div>
+    
+    <ul class="breadcrumb">
+      <li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+      <li class="active">{{ page_title }}</li>
+    </ul>
+	</div>
+</div>
+{% endblock %}

@@ -12,7 +12,7 @@
 	</div>
 	<div class="span8">
 		<h1 id="author-name">
-			<!-- <img src="{% get_static_prefix %}i/userpic.jpg" width="42" title="{{ author.username }}" alt="{{ author.username }}"/> -->
+			<img src="{% get_static_prefix %}i/userpic.jpg" width="42" title="{{ author.username }}" alt="{{ author.username }}"/>
 			{{ author.username }}
 			{% if user.is_authenticated and user.id == author.id %}
 				<sup><a class="edit-link" href="{% url 'author_profile_edit' %}">Редактировать профиль</a></sup>
@@ -26,12 +26,12 @@
 		    {% endif %}
 		     и 
 		    {% if author.comment_set.count > 0 %}
-		    	оставил <b>{{ author.comment_set.count|rupluralize:'комментарий,комментария,комментариев' }}</b>
+		    	оставил <b>{{ author.comment_set.count|rupluralize:'комментарий,комментария,комментариев' }}</b>.
 		    {% else %}
-		    	ничего не комментировал
-		    {% endif %}.
+		    	ничего не комментировал.
+		    {% endif %}
 		    {% if author.favorites_story_set.count > 0 %}
-		    	Занес в избранное <a href="#">{{ author.favorites_story_set.count|rupluralize:'рассказ,рассказа,рассказов' }}</a>.
+		    	Занес в избранное <a href="{% url 'favorites' author.id %}">{{ author.favorites_story_set.count|rupluralize:'рассказ,рассказа,рассказов' }}</a>.
 			{% endif %}
 		</p>
 		<p class="author-description">{{ author.bio|safe }}</p>    

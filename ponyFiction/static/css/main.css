@@ -318,7 +318,7 @@ font-size:12px;
 margin-bottom:0;
 }
 .chapter-text {
-width:80%;
+width:70%;
 margin:0 auto;
 font-family:Verdana, Arial, sans-serif;
 font-size:14px;
@@ -327,8 +327,33 @@ line-height:26px;
 .chapter-text p {
 margin-bottom:20px;
 }
-.comment-date {
+
+/* Режимы просмотра текста */
+.chapter-text.serif-font {
+font-family:Georgia, Utopia, Palatino, 'Palatino Linotype', serif; /* 'Times New Roman', Times, serif */
+font-size:16px;
+line-height:28px;
 }
+.chapter-text.mono-font {
+font-family:'Courier New', Courier, monospace;
+font-size:15px;
+}
+.chapter-text.small-font {
+font-size:12px;
+}
+.chapter-text.big-font {
+font-size:17px;
+}
+.chapter-text.serif-font.big-font { font-size:21px; width:90%; }
+.chapter-text.serif-font.small-font { font-size:13px; }
+.chapter-text.mono-font.big-font { font-size:21px; width:90%; }
+.chapter-text.mono-font.small-font { font-size:13px; line-height:22px }
+
+.chapter-text.serif-font p {  }
+.chapter-text.mono-font p {  }
+.chapter-text.serif-font.small-font p {  }
+.chapter-text.mono-font.small-font p {  }
+
 
 /* Storypanel */
 .story-panel {
@@ -408,6 +433,12 @@ padding-bottom:20px;
 .series-block h2 button {
 vertical-align:top;
 margin-top:3px;
+}
+.series-block .story-item ul li {
+margin:6px 0;
+}
+.series-block .story-item ul li sup .green {
+font-size:13px;
 }
 
 /* Search page and results */
@@ -588,7 +619,7 @@ background-image: none;
 /* Author page */
 h1 img, .userpic {
 vertical-align:top;
-margin-right:8px;
+margin-right:2px;
 border-radius:5px;
 margin-top:-2px;
 }
@@ -680,6 +711,13 @@ text-align:center;
 border-radius:0 0 8px 8px;
 }
 
+/* Красивые картинки, маскоты, графика, истерэги */
+.page-404 { background:transparent url('../i/404.png') no-repeat 90% 100%; }
+.page-404 .message-404{ margin-bottom:200px; }
+.page-502 { background:transparent url('../i/502.png') no-repeat 90% 80%; }
+.page-502 .message-502{ margin-bottom:200px; }
+
+
 /* Больное наследие Еврипони */
 .servicelinks {
 display:block;
@@ -763,7 +801,7 @@ margin: 6px 0 0 12px;
 .welcome-box .span4, .welcome-box .span8 {width:96%;max-width:96%;}
 
 #logolink {font-size:32px;}
-.chapter-text {width:90%;}
+.chapter-text {width:96%;}
 #comments {width:100%;}
 }
 
@@ -784,7 +822,7 @@ margin: 6px 0 0 12px;
 .nav-pills > li > a {padding:6px 8px;}
 
 .story-panel {padding:10px 0 10px 12px;}
-.chapter-text {width:100%;}
+.chapter-text {width:100%!important;}
 #comments {width:100%;}
 
 .story-chapter-page .story-panel {height:auto;line-height:16px;}

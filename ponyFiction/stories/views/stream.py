@@ -1,8 +1,6 @@
 from django.conf import settings
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_protect
 
-@csrf_protect
 def stream_list(request, **kwargs):
     model = kwargs.pop('model', None)
     page_title = kwargs.pop('page_title', None)

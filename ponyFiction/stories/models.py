@@ -224,7 +224,6 @@ class Story (models.Model):
     
     # Количество просмотров
     # FIXME: Эта функция не отлажена и НЕ оптимальна!
-    @property
     def views(self):
         return self.story_views_set.values('author').annotate(Count('author')).count()
     
@@ -304,9 +303,17 @@ class Vote(models.Model):
             return "%s [-] story '%s'" % (self.author.username, self.story_set.all()[0].title)
     
 class Favorites(models.Model):
+# Модель избранного
     author = models.ForeignKey(Author, null=True, verbose_name="Автор")
     story = models.ForeignKey('Story', related_name="favorites_set", null=True, verbose_name="История")
-    comment = models.TextField(verbose_name="Текст комментария")
+    date = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления в избранное")
+
+    class Meta:
+        verbose_name = "избранное"
+        verbose_name_plural = "избранное"
+    
+    def __unicode__(self):
+        return "%s: %s [%s]" % (self.author.username, self.story.title, self.date)    
 
 class Deferred(models.Model):
     author = models.ForeignKey(Author, null=True, verbose_name="Автор")

@@ -320,8 +320,44 @@ function voteStory(request) {
 function changeVote(response){
 	$('#vote-up').text(response[0]);
 	$('#vote-down').text(response[1]);
-	$('#vote-msg').html('<span class="alert alert-success">Ваш голос учтен!</span>').animate({ opacity: 0.1}, 3500, function() {$('#vote-msg span').remove();});
+	$('#vote-msg').html('<span class="alert alert-success">Ваш голос учтен!</span>');
+	$('#vote-msg span').animate({ opacity: 0.1}, 3500, function() {$('#vote-msg span').remove();});
 }
+/**
+ * Добавление-удаление из избранного по AJAX
+ */
+function favoriteStory() {
+	// Читаем CSRF Cookie
+	var csrftoken = $.cookie('csrftoken');
+	// Конфигурируем заголовок AJAX-запроса
+	$.ajaxSetup({
+		crossDomain: false,
+		beforeSend: function(xhr, settings) {
+			if (!csrfSafeMethod(settings.type)) {
+				xhr.setRequestHeader("X-CSRFToken", csrftoken);
+			}
+		}
+	});
+	$.ajax({
+		cache:		false,
+		error:      getAjaxErrorHandler,
+		success:	changeFavorite,
+		type:       'POST',
+		url:        'favorite'
+		});
+}
+// Обработка добавления-удаления из избранного
+function changeFavorite(response){
+	$('#favstar').toggleClass('faved');
+	if (response == '0') {
+	var text = 'Рассказ удален из избранного';
+	} else if (response == '1') {
+	var text = 'Рассказ добавлен в избранное';
+	}
+	$('#fav-msg').append('<span class="alert alert-success">'+text+'</span>')
+	$('#fav-msg span').animate({ opacity: 0.1}, 3500, function() {$('#fav-msg span').remove();});
+}
+
 // При загрузке страницы
 $(function(){
 	//Включаем карусель
@@ -391,7 +427,7 @@ $(function(){
 	});
 	// Подгрузка комментариев по прокрутке
 	$(window).scroll(function() {
-		if (window.location.pathname == "/stream/comments/" && ($('.container').height() == $(window).height()+$(this).scrollTop())){
+		if (window.location.pathname == "/stream/comments/" && ($('.container').height()+20 == $(window).height()+$(this).scrollTop())){
         	$('.loader').fadeIn('fast');
             getComments('flow');
             $('.loader').fadeOut('fast');
@@ -399,15 +435,27 @@ $(function(){
     });
 	// Подгрузка историй по прокрутке
 	$(window).scroll(function() {
-		if (window.location.pathname == "/stream/stories/" && ($('.container').height() == $(window).height()+$(this).scrollTop())){
+		if (window.location.pathname == "/stream/stories/" && ($('.container').height()+20 == $(window).height()+$(this).scrollTop())){
         	$('.loader').fadeIn('fast');
             getStories('flow');
             $('.loader').fadeOut('fast');
         }
     });
+    // Подгрузка избранного
+    var re_storyfaved = new RegExp('/accounts/[0-9]+/favorites/')
+    if (re_storyfaved.test(window.location.pathname)) {
+    	getStories('flow');
+		$(window).scroll(function() {
+			if (($('.container').height()+20 == $(window).height()+$(this).scrollTop())){
+	        	$('.loader').fadeIn('fast');
+	            getStories('flow');
+	            $('.loader').fadeOut('fast');
+	        }
+    	});
+    }
     // Подгрузка глав по прокрутке
 	$(window).scroll(function() {
-		if (window.location.pathname == "/stream/chapters/" && ($('.container').height() == $(window).height()+$(this).scrollTop())){
+		if (window.location.pathname == "/stream/chapters/" && ($('.container').height()+20 == $(window).height()+$(this).scrollTop())){
         	$('.loader').fadeIn('fast');
             getChapters('flow');
             $('.loader').fadeOut('fast');
@@ -452,6 +500,7 @@ $(function(){
     // Голосование
     $('#vote-up').click(function(){voteStory('1')});
 	$('#vote-down').click(function(){voteStory('-1')});
+	$('#favstar').click(function(){favoriteStory()});
 	// Ещё какая-то ерунда
 	// ---
 });

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from simplejson import loads, dumps
 from django.conf import settings
-from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.http import Http404, HttpResponse
 from django.template import defaultfilters as filters
-from django.core.urlresolvers import reverse
-from ponyFiction.stories.models import Story, Author, Comment, Chapter, Vote
+from django.shortcuts import redirect
+from ponyFiction.stories.models import Story, Author, Comment, Chapter, Vote, Favorites
 from ponyFiction.stories.utils.misc import dthandler, unicode_to_int_list
 
 # TODO: Доделать исключения
@@ -40,6 +40,24 @@ def ajax_stories(request):
         raise Http404
     message = makeStoriesAjaxResponse(stories_list, data)
     return HttpResponse(message)
+
+def ajax_favorites(request, user_id):
+    if request.method == 'GET' and request.is_ajax():
+        try:
+            data = loads(request.GET['data'])
+        except:
+            raise ValueError
+        else:
+            if not Author.objects.filter(id=1).exists():
+                raise Http404
+            else:
+                author = Author.objects.get(id=user_id)
+                stories_list = author.favorites_story_set.order_by('-favorites_set__date')
+    else:
+        raise Http404
+    message = makeStoriesAjaxResponse(stories_list, data)
+    return HttpResponse(message)
+
 
 def ajax_chapters(request):
     if request.method == 'GET' and request.is_ajax():
@@ -180,6 +198,7 @@ def processFlow(object_list, data, objects_type):
         return o_l
 
 # TODO: Всерьёз оптимизировать! Эта функция слишком, СЛИШКОМ медленно отрабатывает!
+
 def sort_chapters(request, story_id):
     try:
         story = Story.objects.get(pk=story_id)    
@@ -188,7 +207,7 @@ def sort_chapters(request, story_id):
     except Story.DoesNotExist:
         return HttpResponse("Story doesn't exist!", status=404)
     except AssertionError:
-        return HttpResponseRedirect(reverse('index'))
+        return redirect('index')
     else:
         if not request.user.is_authenticated():
             return HttpResponse('Unauthorized user!', status=401)
@@ -204,6 +223,7 @@ def sort_chapters(request, story_id):
                     chapter.order = new_order_id+1
                     chapter.save(update_fields=['order'])
                 return HttpResponse('Done', status=200)
+
 def story_vote(request, story_id):
     try:
         story = Story.objects.get(pk=story_id)    
@@ -212,7 +232,7 @@ def story_vote(request, story_id):
     except Story.DoesNotExist:
         return HttpResponse("Story doesn't exist!", status=404)
     except AssertionError:
-        return HttpResponseRedirect(reverse('index'))
+        return redirect('index')
     else:
         if not request.user.is_authenticated():
             return HttpResponse('Unauthorized user!', status=401)
@@ -235,3 +255,22 @@ def story_vote(request, story_id):
             vote.direction = direction
             vote.save()
         return HttpResponse(dumps([story.vote_up_count(), story.vote_down_count()]), status=200)
+    
+def favorites_work(request, story_id):
+    try:
+        story = Story.objects.get(pk=story_id)    
+        assert request.method == 'POST'
+        assert request.is_ajax()
+    except Story.DoesNotExist:
+        return HttpResponse("Story doesn't exist!", status=404)
+    except AssertionError:
+        return redirect('index')
+    else:
+        if not request.user.is_authenticated():
+            return HttpResponse('Unauthorized user!', status=401)            
+        if Favorites.objects.filter(author=request.user, story=story).exists():
+            Favorites.objects.get(author=request.user, story=story).delete()
+            return HttpResponse('0', status=200)
+        else:
+            Favorites.objects.create(author=request.user, story=story)
+            return HttpResponse('1', status=200)

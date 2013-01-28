@@ -12,7 +12,9 @@ def search_main(request):
     if request.method == 'GET':
         return search_form(request)
     elif request.method == 'POST':
-        return search_action(request)
+        # Создаваем форму с данных POST
+        postform = SearchForm(request.POST)
+        return search_action(request, postform)
     else:
         raise Http404
 
@@ -23,11 +25,9 @@ def search_form(request):
     return render(request, 'search.html', data)
 
 @csrf_protect
-def search_action(request):
+def search_action(request, postform):
     from math import ceil
     data = {'page_title': 'Результаты поиска'}
-    # Создаваем форму с данных POST
-    postform = SearchForm(request.POST)
     # Новый словарь данных для иницаализации формы
     initial_data = {}
     # Словарь данных пагинации
