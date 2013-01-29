@@ -49,4 +49,4 @@ class ChapterForm(ModelForm):
     # Метакласс
     class Meta:
         model = Chapter
-        fields = ('title', 'text')
+        fields = ('title', 'text', 'notes')
