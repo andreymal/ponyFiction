@@ -163,7 +163,7 @@ urlpatterns += patterns('ponyFiction.stories.views.chapters',
     # Добавление
     url(r'^story/(?P<story_id>\d+)/chapter/add/$', 'chapter_work', name='chapter_add'),
     # Правка
-    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/edit/$', 'chapter_work', name='chapter_edit'),
+    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_id>\d+)/edit/$', 'chapter_work', name='chapter_edit'),
 )
 
 # Другое

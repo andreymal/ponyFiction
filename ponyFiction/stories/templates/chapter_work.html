@@ -11,7 +11,11 @@
 		</ul>
 	</div>
 	<div class="span12">
-		<h1>Добавление новой главы к рассказу «{{ story.title }}»</h1>
+		{% if not chapter_edit %}
+			<h1>Добавление новой главы к рассказу «{{ story.title }}»</h1>
+		{% else %}
+			<h1>Редактирование главы рассказа «{{ story.title }}»</h1>
+		{% endif %}
 		<p>Перед добавлением главы рекомендуем прочитать <a href="{% url 'terms' %}">правила</a>, <a href="{% url 'help' %}">инструкции</a> и <a href="{% url 'faq' %}">FAQ</a>. Они сделают вашу жизнь и жизни читателей проще.</p>
 		<form method="POST" enctype="multipart/form-data" name="search" id="searchform" class="form-horizontal">
 		{% csrf_token %}

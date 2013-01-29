@@ -2,7 +2,7 @@
 # Django settings for ponyFiction project.
 from ponyFiction.stories.apis.sphinxapi import SPH_MATCH_EXTENDED, SPH_RANK_SPH04
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (

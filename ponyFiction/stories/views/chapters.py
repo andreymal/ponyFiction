@@ -5,6 +5,8 @@ from django.views.decorators.csrf import csrf_protect
 from ponyFiction.stories.models import Story, Chapter, StoryView
 from ponyFiction.stories.forms.chapter import ChapterForm
 from django.template import defaultfilters as filters
+from django.db.models import F, Max
+from django.core.exceptions import PermissionDenied
 
 def chapter_view(request, story_id=False, chapter_order=False):
     if chapter_order:
@@ -40,23 +42,20 @@ def chapter_view(request, story_id=False, chapter_order=False):
 
 @login_required
 @csrf_protect
-def chapter_work(request, story_id=False, chapter_order=False):
+def chapter_work(request, story_id=False, chapter_id=False):
     # Если передан id рассказа и такой рассказ есть
-    if (story_id and Story.objects.filter(pk=story_id).exists()):
-        story = Story.objects.get(pk=story_id)
-        # Если пользователь входит в число соавторов
-        if (story.authors.filter(id=request.user.id)):
-            # Работаем с главами
-            if (chapter_order and Chapter.objects.filter(in_story=story_id, order=chapter_order).exists()):
-                # Редактируем главу
-                return chapter_edit(request, story_id, chapter_order)
-            else:
-                # Иначе добавляем ее
-                return chapter_add(request, story_id)
-        # Иначе - смотреть рассказs
-        return redirect('story_view', kwargs={'story_id': story.id})
+    story = get_object_or_404(Story, pk=story_id)
+    # Если пользователь входит в число соавторов
+    if story.is_author(request.user):
+        # Работаем с главами
+        if (chapter_id and Chapter.objects.filter(in_story=story_id, id=chapter_id).exists()):
+            # Редактируем главу
+            return chapter_edit(request, story_id, chapter_id)
+        else:
+            # Иначе добавляем ее
+            return chapter_add(request, story_id)
     # Иначе - на главную
-    return redirect('index')
+    raise PermissionDenied
 
 def chapter_add(request, story_id):
     data = {}
@@ -68,7 +67,7 @@ def chapter_add(request, story_id):
             chapter = form.save(commit=False)
             chapter.words = filters.wordcount(filters.striptags(chapter.text))
             chapter.in_story = story
-            chapter.order = story.chapter_set.count()+1
+            chapter.order = (story.chapter_set.aggregate(o=Max('order'))['o'] or 0) + 1
             chapter.save()
             # Перенаправление на страницу редактирования в случае успеха
             return redirect('story_edit', story.id)
@@ -86,10 +85,10 @@ def chapter_add(request, story_id):
     data['story'] = story
     return render(request, 'chapter_work.html', data)
 
-def chapter_edit(request, story_id, chapter_order):
+def chapter_edit(request, story_id, chapter_id):
     data={}
     story = Story.objects.get(pk=story_id)
-    chapter = Chapter.objects.get(in_story=story_id, order=chapter_order)
+    chapter = Chapter.objects.get(in_story=story_id, id=chapter_id)
     if request.POST:
         if 'button_submit' in request.POST:
             # Редактирование существующей главы рассказа
@@ -99,10 +98,7 @@ def chapter_edit(request, story_id, chapter_order):
                 chapter.words = filters.wordcount(filters.striptags(chapter.text))
                 chapter.save()
         if 'button_delete' in request.POST:
-            shift = story.chapter_set.filter(order__gt=chapter.order)
-            for chapter in shift:
-                chapter.order = chapter.order-1
-                chapter.save(update_fields=['order'])
+            story.chapter_set.filter(order__gt=chapter.order).update(order=F('order')-1)
             chapter.delete()
         return redirect('story_edit', story_id)
     else:

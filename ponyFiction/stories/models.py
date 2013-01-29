@@ -222,6 +222,10 @@ class Story (models.Model):
     # Дельта количества последних добавленных комментариев с момента посещения юзером рассказа
     def last_comments_by_author(self, author):
         return self.story_activity_set.get(author_id=author).last_comments
+    
+    # Проверка авторства
+    def is_author(self, author):
+        return self.authors.filter(id=author.id).exists()
 
 class Chapter (models.Model):
 # Модель главы
@@ -260,6 +264,10 @@ class Chapter (models.Model):
     def views(self):
         return self.chapter_views_set.values('author').annotate(Count('author')).count()
 
+    # Проверка авторства
+    def is_author(self, author):
+        return self.in_story.authors.filter(id=author.id).exists()
+    
 class Comment(models.Model):
 # Модель комментария
     author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE, verbose_name="Автор комментария")

@@ -7,6 +7,7 @@ from ponyFiction.stories.models import Story, CoAuthorsStory, Chapter, StoryView
 from django.core.paginator import Paginator
 from ponyFiction.stories.forms.story import StoryForm
 from ponyFiction.stories.forms.comment import CommentForm
+from django.core.exceptions import PermissionDenied
 
 @csrf_protect
 def story_view(request, story_id):
@@ -45,15 +46,15 @@ def story_view(request, story_id):
 @login_required
 @csrf_protect
 def story_work(request, story_id=False):
-    # Если передан id рассказа и такой рассказ есть
-    if (story_id and Story.objects.filter(pk=story_id).exists()):
-        story = Story.objects.get(pk=story_id)
-        # Если пользователь входит в число соавторов
-        if (story.authors.filter(id=request.user.id)):
-            # Редактирование существующего рассказа
-            return story_edit(request, story_id, data={})
-    # Создание нового рассказа на основании данных формы
-    return story_add(request, data={})
+    if not story_id:
+        return story_add(request, data={})
+    story = get_object_or_404(Story, pk=story_id)
+    # Если пользователь входит в число соавторов
+    if story.is_author(request.user):
+        # Редактирование существующего рассказа
+        return story_edit(request, story_id, data={})
+    else:
+        raise PermissionDenied
 
 def story_add(request, data):
     if request.POST:
