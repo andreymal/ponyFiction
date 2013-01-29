@@ -5,8 +5,8 @@ from django.views.decorators.csrf import csrf_protect
 from ponyFiction.stories.models import Story, Category, Chapter, Comment
 
 @csrf_protect
-def index(request, **kwargs):
-    page_title = kwargs.pop('page_title')
+def index(request):
+    page_title = 'Главная'
     categories = Category.objects.all()
     stories = Story.objects.order_by('-date')[0:settings.STORIES_COUNT['main']]
     chapters = Chapter.objects.exclude(order=1).order_by('-date')[0:settings.CHAPTERS_COUNT['main']]

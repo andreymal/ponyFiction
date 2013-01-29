@@ -52,22 +52,23 @@ class StoryForm(ModelForm):
         label='События',
         help_text='Ключевые события рассказа',
     )
+    # Закончен/не закончен
+    finished = ChoiceField(
+        required=True,
+        choices=[(0, 'Не закончен'),(1, 'Закончен')],
+        widget=StoriesRadioButtons(attrs=radio_attrs),
+        label='Статус',
+        help_text='Завершен ли рассказ',
+        error_messages={'required': 'Нужно обязательно указать статус рассказа!'},
+    )
     # Заморожен/активен
     freezed = ChoiceField(
         required=True,
         choices=[(0, 'Активен'),(1, 'Заморожен')],
         widget=StoriesRadioButtons(attrs=radio_attrs),
-        label='Статус',
+        label='Состояние',
         help_text='Активность рассказа (пишется ли он сейчас)',
-        error_messages={'required': 'Нужно обязательно указать статус рассказа!'},
-    )
-    # Заметки к рассказу
-    notes=SanitizedCharField(
-        required=False,
-        widget=Textarea(attrs=dict(attrs_dict, rows=4, cols=10, maxlength=4096, placeholder='Заметки к рассказу')),
-        max_length=4096,
-        label='Заметки',
-        help_text='Заметки автора к рассказу',
+        error_messages={'required': 'Нужно обязательно указать состояние рассказа!'},
     )
     # Оригинал/перевод
     original = ChoiceField(
@@ -81,7 +82,7 @@ class StoryForm(ModelForm):
     rating = ModelChoiceField(
         required=True,
         empty_label=None,
-        queryset=Rating.objects.all(),
+        queryset=Rating.objects.order_by('-id'),
         widget=StoriesRadioButtons(attrs=radio_attrs),
         label='Рейтинг',
         help_text='О рейтингах',
@@ -90,10 +91,18 @@ class StoryForm(ModelForm):
     # Краткое описание рассказа
     summary=SanitizedCharField(
         required=True,
-        widget=Textarea(attrs=dict(attrs_dict, rows=4, cols=10, maxlength=4096, placeholder='Обязательное краткое описание рассказа')),
+        widget=Textarea(attrs=dict(attrs_dict, maxlength=4096, placeholder='Обязательное краткое описание рассказа')),
         max_length=4096,
         label='Краткое описание рассказа',
         error_messages={'required': 'Опишите вкратце содержание рассказа - это обязательное поле'},
+    )
+    # Заметки к рассказу
+    notes=SanitizedCharField(
+        required=False,
+        widget=Textarea(attrs=dict(attrs_dict, maxlength=4096, placeholder='Заметки к рассказу')),
+        max_length=4096,
+        label='Заметки',
+        help_text='Заметки автора к рассказу',
     )
     # Размер
     size = ModelChoiceField(
@@ -127,4 +136,5 @@ class StoryForm(ModelForm):
     # Метакласс
     class Meta:
         model = Story
-        fields = ('characters', 'categories','classifications', 'freezed', 'original', 'rating', 'summary', 'size', 'title')
+        fields = ('characters', 'categories', 'classifications', 'finished',
+                  'freezed', 'original', 'rating', 'summary', 'notes', 'size', 'title')

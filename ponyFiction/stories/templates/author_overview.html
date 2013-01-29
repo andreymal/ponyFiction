@@ -147,7 +147,7 @@
 					</p>
 					<p>{{ story.summary|safe }}</p>
 					{% if story.chapter_set.count > 1 %}
-						<button class="btn btn-collapse btn-small" data-toggle="collapse" data-target="#story-{{ story.id }}">Показать {{ story.chapter_set.count }} {{ story.chapter_set.count|rupluralize:'главу,главы,глав' }}</button>
+						<button class="btn btn-collapse btn-small" data-toggle="collapse" data-target="#story-{{ story.id }}">Показать {{ story.chapter_set.count|rupluralize:'главу,главы,глав' }}</button>
 					{% endif %}  
 					{% if not story.finished or story.finished and story.chapter_set.count > 1 %}
 						<div id="story-{{ story.id }}" class="collapse">

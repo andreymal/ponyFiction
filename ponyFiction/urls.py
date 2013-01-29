@@ -9,43 +9,30 @@ from ponyFiction.stories.views.stream import stream_list
 from django.contrib.auth import views as auth_views
 from registration.views import activate, register
 from ponyFiction.stories.forms.register import AuthorRegistrationForm
-
 from ponyFiction.stories.models import Comment, Story, Chapter
 from django.views.generic import TemplateView
 
 admin.autodiscover()
 
 # Главная страница
-urlpatterns = patterns('', url(r'^$', index, {'page_title': 'Главная'}, name='index'))
-
+urlpatterns = patterns('', url(r'^$', index, name='index'))
 # Адреса админки
 urlpatterns += patterns('', url(r'^admin/', include(admin.site.urls)))
-
 # Поиск
 urlpatterns += patterns('',
     url(r'^search/$', search.search_main, name='search'),
     url(r'^search/(?P<search_type>\w+)/(?P<search_id>\d+)/$', search.search_simple, name='search_simple')
 )
-
 # Избранное
 urlpatterns += patterns('',
     url(r'^accounts/(?P<user_id>\d+)/favorites/$', 'ponyFiction.stories.views.favorites.favorites_view', name='favorites'),
 )
-
 # Обработка пользовательских адресов
 urlpatterns += patterns('',
-    url(r'^accounts/(?P<user_id>\d+)/$',
-        author.author_info,
-        name='author_overview'),
-                        
-    url(r'^accounts/profile/$',
-        author.author_info,
-        name='author_dashboard'),
-                        
-    url(r'^accounts/profile/edit/$',
-        author.author_edit,
-        name='author_profile_edit'),
-                        
+    url(r'^accounts/(?P<user_id>\d+)/$', author.author_info, name='author_overview'),
+    url(r'^accounts/profile/$', author.author_info, name='author_dashboard'),
+    url(r'^accounts/profile/edit/$', author.author_edit, name='author_profile_edit'),
+    
     url(r'^accounts/registration/$',
         register,
         {
@@ -123,30 +110,9 @@ urlpatterns += patterns('',
 
 # Ленты
 urlpatterns += patterns('',
-
-    url(r'^stream/comments/$',
-        stream_list,
-        {
-            'model': Comment,
-            'page_title': 'Лента новых комментариев'
-        },
-        name='stream_comments'),
-
-    url(r'^stream/stories/$',
-        stream_list,
-        {
-            'model': Story,
-            'page_title': 'Лента новых историй'
-        },
-        name='stream_stories'),
-
-    url(r'^stream/chapters/$',
-        stream_list,
-        {
-            'model': Chapter,
-            'page_title': 'Лента новых глав'
-        },
-        name='stream_chapters'),
+    url(r'^stream/comments/$', stream_list, {'model': Comment}, name='stream_comments'),
+    url(r'^stream/stories/$', stream_list, {'model': Story}, name='stream_stories'),
+    url(r'^stream/chapters/$', stream_list, {'model': Chapter }, name='stream_chapters'),
 )
 
 # Комментирование
@@ -167,54 +133,35 @@ urlpatterns += patterns('',
 # Работа с историями
 urlpatterns += patterns('ponyFiction.stories.views.stories',
     # Просмотр
-    url(r'^story/(?P<story_id>\d+)/$',
-        'story_view', name='story_view'
-    ),
+    url(r'^story/(?P<story_id>\d+)/$', 'story_view', name='story_view'),
     # Добавление
-    url(r'^story/add/$',
-        'story_work', name='story_add'
-    ),
+    url(r'^story/add/$', 'story_work', name='story_add'),
     # Правка
-    url(r'^story/(?P<story_id>\d+)/edit/$',
-        'story_work', name='story_edit'
-    ),
+    url(r'^story/(?P<story_id>\d+)/edit/$', 'story_work', name='story_edit'),
 )
 # Работа с главами
 urlpatterns += patterns('ponyFiction.stories.views.chapters',
     # Просмотр одной
-    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/$',
-        'chapter_view', name='chapter_view_single'
-    ),
+    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/$','chapter_view', name='chapter_view_single'),
     # Просмотр всех глав
-    url(r'^story/(?P<story_id>\d+)/chapter/all/$',
-        'chapter_view', name='chapter_view_all'
-    ),
+    url(r'^story/(?P<story_id>\d+)/chapter/all/$', 'chapter_view', name='chapter_view_all'),
     # Добавление
-    url(r'^story/(?P<story_id>\d+)/chapter/add/$',
-        'chapter_work', name='chapter_add'
-    ),
+    url(r'^story/(?P<story_id>\d+)/chapter/add/$', 'chapter_work', name='chapter_add'),
     # Правка
-    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/edit/$',
-        'chapter_work', name='chapter_edit'
-    ),
+    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/edit/$', 'chapter_work', name='chapter_edit'),
 )
 
 # Другое
 urlpatterns += patterns('',
-    url(r'^not_found/$',
-        TemplateView.as_view(
-            template_name='404.html',
-            get_context_data=lambda: {'page_title': '404: не найдено'},
-        ),
-    ),
-    url(r'^bad_gateway/$',
-        TemplateView.as_view(
-            template_name='502.html',
-            get_context_data=lambda: {'page_title': '502: плохой шлюз'},
-        ),
-    ),
-            
+    url(r'^not_found/$', TemplateView.as_view(template_name='404.html', get_context_data=lambda: {'page_title': '404: не найдено'})),
+    url(r'^bad_gateway/$', TemplateView.as_view(template_name='502.html', get_context_data=lambda: {'page_title': '502: плохой шлюз'})),
+    url(r'^forbidden/$', TemplateView.as_view(template_name='403.html', get_context_data=lambda: {'page_title': '403: запрещено'})),
+    url(r'^internal_server_error/$', TemplateView.as_view(template_name='500.html', get_context_data=lambda: {'page_title': '500: внутренняя ошибка сервера'})),
+    url(r'^faq/$', TemplateView.as_view(template_name='faq.html', get_context_data=lambda: {'page_title': 'FAQ'}), name='faq'),
+    url(r'^terms/$', TemplateView.as_view(template_name='terms.html', get_context_data=lambda: {'page_title': 'Правила'}), name='terms'),
+    url(r'^help/$', TemplateView.as_view(template_name='help.html', get_context_data=lambda: {'page_title': 'Помощь'}), name='help'),
 )
+
 if settings.DEBUG:
     urlpatterns += patterns('',
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),

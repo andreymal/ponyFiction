@@ -4,7 +4,10 @@ register = template.Library()
 @register.filter
 def rupluralize(value, arg='число,числа,чисел'):
     args = arg.split(',')
-    number = abs(int(value))
+    try:
+        number = abs(int(value))
+    except:
+        return 'нет %s' % args[2]
     a = number % 10
     b = number % 100
     if number == 0:

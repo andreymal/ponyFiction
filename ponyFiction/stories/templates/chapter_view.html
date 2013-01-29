@@ -20,6 +20,9 @@
 		<div class="span12 story-chapter-page">
 		
 			<div class="story-panel">			
+					{% if user.is_authenticated %}
+						<a title="В избранное" id="favstar" class="scon fav{% if chapters.0.in_story|faved:user.id %} faved{% endif %}"></a>
+					{% endif %} 
 				<!--
 					<span class="chapter-controls">
 				    <a title="Скачать в MOBI" href="#" class="get mobi"></a>
@@ -50,18 +53,21 @@
 				</span>
 			</div>
 			
+			<div class="chapter-text">
+			<h1>{{ chapters.0.title }}</h1>
 			{% for chapter in chapters %}
-				<h1 id="chaptertitle">{{ chapter.title }}</h1>
-				<div class="chapter-text">
+					<h2 id="chaptertitle">{{ chapter.title }}</h2>
 					<p>{{ chapter.text|safe }}</p>
-				</div>
 			{% endfor %}
+			</div>
 			
 	    </div>
     {% else %}
 		<div class="span12 story-chapter-page">
-			<h1 id="chaptertitle">{{ chapter.title }}</h1>
 			<div class="story-panel">
+				{% if user.is_authenticated %}
+					<a title="В избранное" id="favstar" class="scon fav{% if chapter.in_story|faved:user.id %} faved{% endif %}"></a>
+				{% endif %} 
 				<span class="chapter-switch">
 					{% if chapter.in_story.chapter_set.count > 1 %}
 						{% if prev_chapter %}← <a class="left" href="{% url 'chapter_view_single' chapter.in_story_id prev_chapter.order %}">{{ prev_chapter.title }}</a>{% endif %}
@@ -80,13 +86,7 @@
 				<span class="chapter-controls">
 					<a title="Вниз" href="#" class="scon down"></a> 
 					<a title="Вверх" href="#" class="scon up"></a> 
-				</span>-->
-				<span class="chapter-controls">
-					<!--<a title="Отложить на потом" href="#" class="scon later"></a>-->
-					{% if user.is_authenticated %}
-						<a title="В избранное" id="favstar" class="scon fav{% if chapter.in_story|faved:user.id %} faved{% endif %}"></a>
-					{% endif %} 
-				</span>
+				</span><a title="Отложить на потом" href="#" class="scon later"></a>-->
 				<span class="chapter-controls">
 					<select class="select-font">
 						<option value="1">Без засечек</option>
@@ -102,6 +102,7 @@
 			</div>
 	    
 			<div class="chapter-text">
+				<h1 id="chaptertitle">{{ chapter.title }}</h1>
 				<p>{{ chapter.text|safe }}</p>
 			</div>
 	    </div>

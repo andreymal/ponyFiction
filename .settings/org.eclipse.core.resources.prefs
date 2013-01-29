@@ -20,5 +20,6 @@ encoding//ponyFiction/stories/views/favorites.py=utf-8
 encoding//ponyFiction/stories/views/index.py=utf-8
 encoding//ponyFiction/stories/views/search.py=utf-8
 encoding//ponyFiction/stories/views/stories.py=utf-8
+encoding//ponyFiction/stories/views/stream.py=utf-8
 encoding//ponyFiction/stories/widgets.py=utf-8
 encoding//ponyFiction/urls.py=utf-8

@@ -256,7 +256,7 @@ def story_vote(request, story_id):
             vote.save()
         return HttpResponse(dumps([story.vote_up_count(), story.vote_down_count()]), status=200)
     
-def favorites_work(request, story_id, chapter_id):
+def favorites_work(request, story_id, chapter_id=None):
     try:
         story = Story.objects.get(pk=story_id)    
         assert request.method == 'POST'

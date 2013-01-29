@@ -498,9 +498,10 @@ $(function(){
 			}
 		});
     }
-    // На странице редактирования главы
+    // На странице добавления или редактирования главы
     var re_chapteredit = new RegExp('/story/[0-9]+/chapter/[0-9]+/edit/')
-    if (re_chapteredit.test(window.location.pathname)){
+    var re_chapteradd = new RegExp('/story/[0-9]+/chapter/add/')
+    if (re_chapteredit.test(window.location.pathname) || re_chapteradd.test(window.location.pathname)){
     $('.chapter-textarea').markItUp(mySettings);
     }
     // Голосование

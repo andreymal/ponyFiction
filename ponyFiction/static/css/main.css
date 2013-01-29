@@ -24,7 +24,7 @@ font-family:Georgia, Times, serif;
 }
 .logopic {
 height:240px;
-background:transparent url('../i/logopic.jpg') no-repeat 0 0;
+background:transparent url('../i/logopics/logopic-6.jpg') no-repeat 0 0;
 background-size:cover;
 }
 .carousel {
@@ -103,7 +103,7 @@ padding:14px 0 8px;
 h1 {
 font-size:32px;
 line-height:42px;
-margin:0 0 6px;
+margin:6px 0 6px;
 }
 h1 sup {
 font-size:17px;
@@ -271,6 +271,9 @@ p.meta .gen {
 padding:2px 7px;
 margin:0 4px 0 0;
 }
+.carousel p.meta .gen { margin-bottom:4px; }
+.carousel p.meta{ margin-bottom:0; }
+.carousel .story-item { padding-bottom:10px; }
 a.gen:hover {
 color:#fff;
 background-color:#999;
@@ -382,7 +385,7 @@ width:90px;
 }
 .chapter-controls {
 float:right;
-margin-right:12px;
+margin-left:12px;
 }
 .chapter-controls .get, .chapter-controls .scon {
 float:right;
@@ -398,6 +401,7 @@ width:16px;
 height:16px;
 margin-right:4px;
 vertical-align:top;
+cursor:pointer;
 }
 .get:hover, .scon:hover {
 opacity:0.75;
@@ -712,11 +716,20 @@ border-radius:0 0 8px 8px;
 }
 
 /* Красивые картинки, маскоты, графика, истерэги */
-.page-404 { background:transparent url('../i/404.png') no-repeat 90% 100%; }
-.page-404 .message-404{ margin-bottom:200px; }
-.page-502 { background:transparent url('../i/502.png') no-repeat 90% 80%; }
-.page-502 .message-502{ margin-bottom:200px; }
+.page-404 .message-404,.message-502,.message-500,.message-403,.text-faq,.text-help,.text-terms{ margin-bottom:200px; }
+.page-404 { background:transparent url('../i/pageart/404.png') no-repeat 90% 100%; }
+.page-502 { background:transparent url('../i/pageart/502.png') no-repeat 90% 80%; }
 
+.page-faq h2, .page-terms h2, .page-help h2 {margin-top:24px;}
+.page-faq li, .page-terms li, .page-help li {margin-bottom:8px;}
+.text-faq, .text-terms, .text-help  { width:70%; }
+
+.page-faq { background:transparent url('../i/pageart/faq.png') no-repeat 90% 100%; }
+.text-faq {}
+.page-terms { background:transparent url('../i/pageart/terms.png') no-repeat 90% 100%; }
+.text-terms {}
+.page-help { background:transparent url('../i/pageart/help.png') no-repeat 90% 100%; }
+.text-help {}
 
 /* Больное наследие Еврипони */
 .servicelinks {

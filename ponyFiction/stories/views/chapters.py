@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from ponyFiction.stories.models import Story, Chapter, StoryView
 from ponyFiction.stories.forms.chapter import ChapterForm
+from django.template import defaultfilters as filters
 
 def chapter_view(request, story_id=False, chapter_order=False):
     if chapter_order:
@@ -65,6 +66,7 @@ def chapter_add(request, story_id):
         form = ChapterForm(request.POST)
         if form.is_valid():
             chapter = form.save(commit=False)
+            chapter.words = filters.wordcount(filters.striptags(chapter.text))
             chapter.in_story = story
             chapter.order = story.chapter_set.count()+1
             chapter.save()
@@ -93,7 +95,9 @@ def chapter_edit(request, story_id, chapter_order):
             # Редактирование существующей главы рассказа
             form = ChapterForm(request.POST, instance=chapter)
             if form.is_valid():
-                form.save()
+                chapter = form.save(commit=False)
+                chapter.words = filters.wordcount(filters.striptags(chapter.text))
+                chapter.save()
         if 'button_delete' in request.POST:
             shift = story.chapter_set.filter(order__gt=chapter.order)
             for chapter in shift:

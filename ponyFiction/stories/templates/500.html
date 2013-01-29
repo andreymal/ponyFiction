@@ -1,0 +1,23 @@
+{% extends "common.html" %}
+{% block content %}
+<div class="row page-500">
+	<div class="span12">
+      <ul class="breadcrumb">
+    		<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li class="active">{{ page_title }}</li>
+		</ul>
+	</div>
+
+	<div class="span12 message-500">
+		<h1>500 - внутренняя ошибка сервера</h1>
+		<p>Пегасы с отвертками что-то напортачили в тонкой душе сервера. Если хотите помочь, <a href="http://everypony.ru/message">напишите</a>, как вам удалось добиться этой ошибки.</p>
+  </div>
+
+	<div class="span12">
+      <ul class="breadcrumb">
+    		<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li class="active">{{ page_title }}</li>
+		</ul>
+	</div>
+</div>
+{% endblock %}

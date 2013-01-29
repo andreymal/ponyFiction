@@ -5,13 +5,7 @@
 {% load static %}
 
 <div class="row welcome-box">
-	<div class="span8">
-		<h2><!- Заголовок новости --></h2>
-		<p><!- Вывод новости --></p>
-	</div>
-
-  <div class="span4 genra">
-		<h2>Жанры</h2>
+  <div class="span12 genra">
 	{% spaceless %}
     {% for category in categories %}
 		<a class="gen gen-{{ category.id }}" href="{% url 'search_simple' 'category' category.id %}">{{ category.name }}</a>

@@ -9,8 +9,7 @@ from ponyFiction.stories.forms.story import StoryForm
 from ponyFiction.stories.forms.comment import CommentForm
 
 @csrf_protect
-def story_view(request, **kwargs):
-    story_id = kwargs.pop('story_id', None)
+def story_view(request, story_id):
     story = get_object_or_404(Story, pk=story_id)
     chapters = story.chapter_set.order_by('order')
     comments_list = story.comment_set.all()
@@ -71,7 +70,7 @@ def story_add(request, data):
             return redirect('story_edit', story.id)
     else:
         # Отправка пустой формы для добавления рассказа.
-        form = StoryForm(initial={'freezed': 0, 'original': 1, 'rating': 4, 'size': 1})
+        form = StoryForm(initial={'finished': 0, 'freezed': 0, 'original': 1, 'rating': 4, 'size': 1})
         data['page_title'] = 'Новый рассказ'
         form.fields['button_submit'].initial = 'Добавить рассказ'
     """
@@ -83,26 +82,24 @@ def story_add(request, data):
     return render(request, 'story_work.html', data)
 
 def story_edit(request, story_id, data):
-    story = Story.objects.get(pk=story_id)
     if request.POST:
         if 'button_submit' in request.POST:
             # Редактирование существующего рассказа
-            form = StoryForm(request.POST, instance=story)
+            form = StoryForm(request.POST, instance=Story.objects.get(pk=story_id))
             if form.is_valid():
                 form.save()
-                data['edit_success'] = True
-                form = StoryForm(instance=story)
+                return redirect('story_edit', story_id)
         if 'button_delete' in request.POST:
-            story.delete()
+            Story.objects.get(pk=story_id).delete()
             return redirect('author_dashboard')
     else:
         # Отправка предварительно заполненной формы с рассказом
-        form = StoryForm(instance=story)
+        form = StoryForm(instance=Story.objects.get(pk=story_id))
     """
     К данным шаблона добавляем форму
     Предварительно заполненную - в случае успешного редактирования или начальной отправки
     """
     form.fields['button_submit'].initial = 'Сохранить изменения'
-    chapters = Chapter.objects.filter(in_story=story.id).order_by('order')
-    data.update({'form': form, 'story_edit': True, 'chapters': chapters, 'page_title' : 'Редактирование «%s»' % story.title , 'story_id': story_id})
+    chapters = Chapter.objects.filter(in_story=story_id).order_by('order')
+    data.update({'form': form, 'story_edit': True, 'chapters': chapters, 'page_title' : 'Редактирование «%s»' % Story.objects.get(pk=story_id).title , 'story_id': story_id})
     return render(request, 'story_work.html', data)
