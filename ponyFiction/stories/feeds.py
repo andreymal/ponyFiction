@@ -7,7 +7,7 @@ from django.utils.feedgenerator import Atom1Feed
 from django.shortcuts import get_object_or_404
 
 class stories_rss(Feed):
-    title = 'Новые истории - Библиотека EveryPony.ru'
+    title = 'Новые рассказы - Библиотека EveryPony.ru'
     link = '/new/stories/'
     description = 'Новые главы фанфиков'
     title_template = 'feeds/stories_title.html'
@@ -26,7 +26,7 @@ class stories_atom(stories_rss):
 class chapters_rss(Feed):
     title = 'Обновления глав - Библиотека EveryPony.ru'
     link = '/new/chapters/'
-    description = 'Новые главы историй'
+    description = 'Новые главы рассказов'
     title_template = 'feeds/chapters_title.html'
     description_template = 'feeds/chapters_description.html'
 

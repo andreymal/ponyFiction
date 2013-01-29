@@ -2,7 +2,7 @@
 # Django settings for ponyFiction project.
 from ponyFiction.stories.apis.sphinxapi import SPH_MATCH_EXTENDED, SPH_RANK_SPH04
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -211,5 +211,4 @@ SANITIZER_ALLOWED_TAGS = [
 SANITIZER_ALLOWED_ATTRIBUTES = {
     'img': ['src', 'alt', 'title', 'width', 'height'],
     'a': ['href', 'rel', 'title'],
-    'abbr': ['title',]
 }

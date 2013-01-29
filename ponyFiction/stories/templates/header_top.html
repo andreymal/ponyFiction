@@ -35,7 +35,7 @@
 	<!-- Menu start -->
 	<ul class="nav nav-pills">
 		<li><a href="{% url 'index' %}">Главная</a></li>
-		<li><a href="{% url 'search' %}">Поиск историй</a></li>
+		<li><a href="{% url 'search' %}">Поиск рассказов</a></li>
   	
   		{% if user.is_authenticated %}
     		<li><a href="{% url 'favorites' user.id %}">Избранное</a></li>

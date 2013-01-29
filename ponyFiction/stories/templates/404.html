@@ -1,24 +1,72 @@
-{% extends "common.html" %}
-{% block content %}
-<div class="row page-404">
-	<div class="span12">
-      <ul class="breadcrumb">
-    		<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
-			<li class="active">{{ page_title }}</li>
-		</ul>   
-	</div>
-  
-	<div class="span12 message-404">
-		<h1>404 - книга не найдена</h1>
-		<p>Кажется, такой истории нет. Яростно удалена или еще не написана. А может, у вас неправильная ссылка?</p>
-		<p>Попробуйте поискать нужный специально обученным <a href="{% url 'search' %}">поиском</a> или вернуться на <a href="{% url 'index' %}">главную</a>.</p>
-  </div>
-  
-	<div class="span12">
-      <ul class="breadcrumb">
-    		<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
-			<li class="active">{{ page_title }}</li>
-		</ul>   
-	</div>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<title>404: книга не найдена &mdash; Библиотека EveryPony.ru</title>
+ 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 		<link rel="shortcut icon" type="image/x-icon" href="/static/i/favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="/static/css/main.css">
+		<script type="text/javascript" src="/static/js/bootstrap.js"></script>
+ 		<!--[if lt IE 9]> <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script> <![endif]-->
+	</head>
+	<body>
+		<!-- Container start -->
+		<div class="container">
+			<!-- Header start -->
+			<div class="page-header">
+				<ul class="servicelinks">
+					<li>&nbsp;</li>
+				</ul>
+				<a title="Подписаться на RSS поток" href="/feeds/atom/stories" class="rss"></a>
+				<a title="Твиттер Everypony.ru" href="https://twitter.com/#!/everypony_ru" class="twitter"></a>
+				<ul class="main-menu">
+					<li id="logolink"><a href="/">Библиотека</a></li>
+					<li><a href="http://everypony.ru">Блог</a></li>
+					<li><a href="http://forum.everypony.ru">Форум</a></li>
+					<li><a href="http://wiki.everypony.ru">Вики</a></li>
+					<li><a href="http://tabun.everypony.ru">Табун</a></li>
+					<li><a href="http://stories.everypony.ru">Рассказы</a></li>
+				</ul>
+			</div>
+			<!-- Header end -->
+			<!-- Logo image and carousel start -->
+			<div class="logopic"></div>
+			<!-- Logo image and carousel end -->
+			<!-- Menu start -->
+			<ul class="nav nav-pills">
+				<li><a href="/">Главная</a></li>
+				<li><a href="/search/">Поиск рассказов</a></li>
+	    		<li><a href="/accounts/registration/">Регистрация</a></li>
+			</ul>
+			<!-- Menu end -->
+			<div id="content">
+				<div class="row page-404">
+					<div class="span12">
+				    	<ul class="breadcrumb">
+				    		<li><a href="/">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+							<li class="active">404: книга не найдена</li>
+						</ul>   
+					</div>
+					<div class="span12 message-404">
+						<h1>404 - книга не найдена</h1>
+						<p>Кажется, такого рассказа нет. Яростно удалён или еще не написан. А может, у вас неправильная ссылка?</p>
+						<p>Попробуйте поискать нужный специально обученным <a href="/search/">поиском</a> или вернуться на <a href="/">главную</a>.</p>
+					</div>
+					<div class="span12">
+				    	<ul class="breadcrumb">
+			    			<li><a href="/">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+							<li class="active">404: книга не найдена</li>
+						</ul>   
+					</div>
+				</div>
+			</div>
+			<!-- Footer start -->
+			<div class="footer">	
+				<p>Все принадлежит пони.</p>
+			</div>
+			<!-- Footer end -->
+		</div>
+		<!-- Container end -->
+	</body>
+</html>

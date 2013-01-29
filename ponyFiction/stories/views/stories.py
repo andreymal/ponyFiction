@@ -45,7 +45,7 @@ def story_view(request, story_id):
 @login_required
 @csrf_protect
 def story_work(request, story_id=False):
-    # Если передан id истории и такая история есть
+    # Если передан id рассказа и такой рассказ есть
     if (story_id and Story.objects.filter(pk=story_id).exists()):
         story = Story.objects.get(pk=story_id)
         # Если пользователь входит в число соавторов

@@ -1,4 +1,4 @@
 Регистрация на сайте
 Для активации вашего аккаунта необходимо перейти по ссылке:
-{{ site }}/accounts/activate/{{ activation_key }}/
+http://stories.everypony.ru/accounts/activate/{{ activation_key }}/
 Спасибо!

@@ -22,7 +22,7 @@ def search_main(request):
 @csrf_protect
 def search_form(request):
     form = SearchForm()
-    data = {'form': form, 'page_title': 'Поиск историй'}
+    data = {'form': form, 'page_title': 'Поиск рассказов'}
     return render(request, 'search.html', data)
 
 @csrf_protect

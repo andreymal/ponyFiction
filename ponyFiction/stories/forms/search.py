@@ -61,13 +61,13 @@ class SearchForm(Form):
         required=False,
         widget=StoriesButtons(attrs=checkbox_attrs),
     )
-    # Статус истории
+    # Статус рассказа
     finished_select = MultipleChoiceField(
         choices=[(0, 'Не завершен'),(1, 'Завершен')],
         required=False,
         widget=StoriesButtons(attrs=checkbox_attrs),
     )
-    # Активность истории
+    # Активность рассказа
     freezed_select = MultipleChoiceField(
         choices=[(0, 'Активен'),(1, 'Заморожен')],
         required=False,

@@ -9,7 +9,7 @@ def stream_list(request, **kwargs):
         page_title =  'Лента новых комментариев'
     elif model.__name__.lower() == 'story':
         object_list = model.objects.order_by('-date')[0:settings.STORIES_COUNT['stream']]
-        page_title =  'Лента новых историй'
+        page_title =  'Лента новых рассказов'
     elif model.__name__.lower() == 'chapter':
         object_list = model.objects.order_by('-date')[0:settings.CHAPTERS_COUNT['stream']]
         page_title =  'Лента новых глав'

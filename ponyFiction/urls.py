@@ -3,7 +3,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
 from ponyFiction.stories import feeds
-from ponyFiction.stories.views import search, ajax, author, comment
+from ponyFiction.stories.views import search, ajax, author, comment, DirectTemplateView # TODO: заменить на это! 
 from ponyFiction.stories.views.index import index
 from ponyFiction.stories.views.stream import stream_list
 from django.contrib.auth import views as auth_views
@@ -78,15 +78,30 @@ urlpatterns += patterns('',
     # Регистрация
     url(r'^accounts/password/reset/$', 
         auth_views.password_reset, 
-        {'post_reset_redirect' : '/accounts/password/reset/done/'},
+        {
+         'post_reset_redirect' : '/accounts/password/reset/done/',
+         'extra_context': {'page_title': 'Восстановление пароля: введите адрес e-mail'}
+         },
         name='password_reset'),
     url(r'^accounts/password/reset/done/$',
-        auth_views.password_reset_done),
+        auth_views.password_reset_done,
+        {
+         'extra_context': {'page_title': 'Восстановление пароля: письмо отправлено'}
+         },
+        ),
     url(r'^accounts/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
         auth_views.password_reset_confirm, 
-        {'post_reset_redirect' : '/accounts/password/done/'}),
+        {
+         'post_reset_redirect' : '/accounts/password/done/',
+         'extra_context': {'page_title': 'Восстановление пароля: новый пароль'}
+         },
+        ),
     url(r'^accounts/password/done/$', 
-        auth_views.password_reset_complete),
+        auth_views.password_reset_complete,
+        {
+         'extra_context': {'page_title': 'Восстановление пароля: пароль восстановлен'}
+         },
+        ),
 )
 # AJAX
 urlpatterns += patterns('',
@@ -97,11 +112,11 @@ urlpatterns += patterns('',
     url(r'^stream/chapters/ajax$', ajax.ajax_chapters),
     # AJAX-сортировка глав
     url(r'^story/(?P<story_id>\d+)/edit/ajax$', ajax.sort_chapters),
-    # Голосование за историю
+    # Голосование за рассказ
     url(r'^story/(?P<story_id>\d+)/vote$', ajax.story_vote, name='story_vote'),
-    # Добавление в избранное истории
+    # Добавление в избранное рассказа
     url(r'^story/(?P<story_id>\d+)/favorite$', ajax.favorites_work, name='favorites_work'),
-    # Добавление в избранное главы (workaround, пока добавляется вся история)
+    # Добавление в избранное главы (workaround, пока добавляется весь рассказ)
     url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_id>\d+)/favorite$', ajax.favorites_work, name='favorites_work'),
     # Подгрузка избранного
     url(r'^accounts/(?P<user_id>\d+)/favorites/ajax$', ajax.ajax_favorites),
@@ -130,7 +145,7 @@ urlpatterns += patterns('',
     url(r'^feeds/atom/story/(?P<story_id>\d+)/$', feeds.story_chapters_atom(), name='feeds_atom_story'),
 )
 
-# Работа с историями
+# Работа с рассказами
 urlpatterns += patterns('ponyFiction.stories.views.stories',
     # Просмотр
     url(r'^story/(?P<story_id>\d+)/$', 'story_view', name='story_view'),
@@ -153,16 +168,16 @@ urlpatterns += patterns('ponyFiction.stories.views.chapters',
 
 # Другое
 urlpatterns += patterns('',
-    url(r'^not_found/$', TemplateView.as_view(template_name='404.html', get_context_data=lambda: {'page_title': '404: не найдено'})),
-    url(r'^bad_gateway/$', TemplateView.as_view(template_name='502.html', get_context_data=lambda: {'page_title': '502: плохой шлюз'})),
-    url(r'^forbidden/$', TemplateView.as_view(template_name='403.html', get_context_data=lambda: {'page_title': '403: запрещено'})),
-    url(r'^internal_server_error/$', TemplateView.as_view(template_name='500.html', get_context_data=lambda: {'page_title': '500: внутренняя ошибка сервера'})),
+    url(r'^not_found/$', DirectTemplateView.as_view(template_name='404.html')),
+    url(r'^bad_gateway/$', TemplateView.as_view(template_name='502.html')),
+    url(r'^forbidden/$', TemplateView.as_view(template_name='403.html')),
+    url(r'^internal_server_error/$', TemplateView.as_view(template_name='500.html')),
     url(r'^faq/$', TemplateView.as_view(template_name='faq.html', get_context_data=lambda: {'page_title': 'FAQ'}), name='faq'),
     url(r'^terms/$', TemplateView.as_view(template_name='terms.html', get_context_data=lambda: {'page_title': 'Правила'}), name='terms'),
     url(r'^help/$', TemplateView.as_view(template_name='help.html', get_context_data=lambda: {'page_title': 'Помощь'}), name='help'),
 )
-
-if settings.DEBUG:
+#if settings.DEBUG:
+if True:
     urlpatterns += patterns('',
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
     )

@@ -1,23 +1,71 @@
-{% extends "common.html" %}
-{% block content %}
-<div class="row page-403">
-	<div class="span12">
-      <ul class="breadcrumb">
-    		<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
-			<li class="active">{{ page_title }}</li>
-		</ul>
-	</div>
-
-	<div class="span12 message-403">
-		<h1>403 - доступ запрещен</h1>
-		<p>Возможно, вы пытаетесь влезть в файл на сервере, в который лазать нельзя. От того и не получается.</p>
-  </div>
-
-	<div class="span12">
-      <ul class="breadcrumb">
-    		<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
-			<li class="active">{{ page_title }}</li>
-		</ul>
-	</div>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<title>403 - доступ запрещен &mdash; Библиотека EveryPony.ru</title>
+ 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 		<link rel="shortcut icon" type="image/x-icon" href="/static/i/favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="/static/css/main.css">
+		<script type="text/javascript" src="/static/js/bootstrap.js"></script>
+ 		<!--[if lt IE 9]> <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script> <![endif]-->
+	</head>
+	<body>
+		<!-- Container start -->
+		<div class="container">
+			<!-- Header start -->
+			<div class="page-header">
+				<ul class="servicelinks">
+					<li>&nbsp;</li>
+				</ul>
+				<a title="Подписаться на RSS поток" href="/feeds/atom/stories" class="rss"></a>
+				<a title="Твиттер Everypony.ru" href="https://twitter.com/#!/everypony_ru" class="twitter"></a>
+				<ul class="main-menu">
+					<li id="logolink"><a href="/">Библиотека</a></li>
+					<li><a href="http://everypony.ru">Блог</a></li>
+					<li><a href="http://forum.everypony.ru">Форум</a></li>
+					<li><a href="http://wiki.everypony.ru">Вики</a></li>
+					<li><a href="http://tabun.everypony.ru">Табун</a></li>
+					<li><a href="http://stories.everypony.ru">Рассказы</a></li>
+				</ul>
+			</div>
+			<!-- Header end -->
+			<!-- Logo image and carousel start -->
+			<div class="logopic"></div>
+			<!-- Logo image and carousel end -->
+			<!-- Menu start -->
+			<ul class="nav nav-pills">
+				<li><a href="/">Главная</a></li>
+				<li><a href="/search/">Поиск рассказов</a></li>
+	    		<li><a href="/accounts/registration/">Регистрация</a></li>
+			</ul>
+			<!-- Menu end -->
+			<div id="content">
+				<div class="row page-403">
+					<div class="span12">
+				    	<ul class="breadcrumb">
+				    		<li><a href="/">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+							<li class="active">403 - доступ запрещен</li>
+						</ul>   
+					</div>
+					<div class="span12 message-403">
+						<h1>403 - доступ запрещен</h1>
+						<p>Возможно, вы пытаетесь влезть в файл на сервере, в который лазать нельзя. От того и не получается.</p>
+					</div>
+					<div class="span12">
+				    	<ul class="breadcrumb">
+			    			<li><a href="/">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+							<li class="active">403 - доступ запрещен</li>
+						</ul>   
+					</div>
+				</div>
+			</div>
+			<!-- Footer start -->
+			<div class="footer">	
+				<p>Все принадлежит пони.</p>
+			</div>
+			<!-- Footer end -->
+		</div>
+		<!-- Container end -->
+	</body>
+</html>

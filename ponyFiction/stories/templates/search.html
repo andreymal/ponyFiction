@@ -11,7 +11,7 @@
 			<li class="active">{{ page_title }}</li>
 		</ul>   
 	<!-- Поиск -->
-		<h1>Поиск историй</h1>
+		<h1>Поиск рассказов</h1>
 		<div>
 		<form action="/search/" method="POST" enctype="multipart/form-data" name="search" id="searchform" class="form-horizontal">
 		{% csrf_token %}
@@ -33,7 +33,7 @@
 				<!-- Оригинал/перевод -->
 				<div class="padded bootstrap checkboxes">{{ form.originals_select }}</div>
 								
-				<!-- Статус истории -->
+				<!-- Статус рассказа -->
 				<div class="padded bootstrap checkboxes">{{ form.finished_select }}</div>
 
 				<!-- Тонкая настройка поиска -->
