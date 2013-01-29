@@ -110,7 +110,11 @@ function processStories(stories_array, request) {
    		story_vote_up_count = current_story['story_vote_up_count']
    		story_vote_down_count = current_story['story_vote_down_count']
    		// Количество слов
-   		story_words = current_story['story_words']
+   		if (current_story['story_words'] == null) {
+   			story_words = 'нет'
+   			} else {
+   			story_words = current_story['story_words']
+   		}
    		// Жанры
    		story_categories = current_story['story_categories']
    		// Персонажи
