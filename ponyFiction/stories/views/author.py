@@ -53,16 +53,12 @@ def author_edit(request):
             profile_form = AuthorEditProfileForm(request.POST, instance=author, prefix='profile_form')
             if profile_form.is_valid():
                 profile_form.save()
-                data['profile_ok'] = True
-        else:
-            profile_form = AuthorEditProfileForm(instance=author, prefix='profile_form')
+                data['profile_ok'] = True            
         if 'save_email' in request.POST:
             email_form = AuthorEditEmailForm(request.POST, author=author, prefix='email_form')
             if email_form.is_valid():
                 email_form.save()
                 data['email_ok'] = True
-        else:
-            email_form = AuthorEditEmailForm(author=author, prefix='email_form')
         if 'save_password' in request.POST:
             password_form = AuthorEditPasswordForm(request.POST, author=author, prefix='password_form')
             if password_form.is_valid():
@@ -70,10 +66,8 @@ def author_edit(request):
                 data['password_ok'] = True
             else:
                 data['password_form_nfe'] = password_form.non_field_errors()
-                password_form = AuthorEditPasswordForm(author=author, prefix='password_form')
-    else:
-        profile_form = AuthorEditProfileForm(instance=author, prefix='profile_form')
-        email_form = AuthorEditEmailForm(author=author, prefix='email_form')
-        password_form = AuthorEditPasswordForm(author=author, prefix='password_form')
+    profile_form = AuthorEditProfileForm(instance=author, prefix='profile_form')
+    email_form = AuthorEditEmailForm(author=author, prefix='email_form')
+    password_form = AuthorEditPasswordForm(author=author, prefix='password_form')
     data.update({'profile_form': profile_form, 'email_form': email_form, 'password_form': password_form})
     return render(request, 'author_profile_edit.html', data)
