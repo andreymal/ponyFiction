@@ -45,8 +45,8 @@ def chapter_view(request, story_id=False, chapter_order=False):
 def chapter_work(request, story_id=False, chapter_id=False):
     # Если передан id рассказа и такой рассказ есть
     story = get_object_or_404(Story, pk=story_id)
-    # Если пользователь входит в число соавторов
-    if story.is_author(request.user):
+    # Если пользователь входит в число соавторов или модеров
+    if (story.is_author(request.user) or request.user.is_staff):
         # Работаем с главами
         if (chapter_id and Chapter.objects.filter(in_story=story_id, id=chapter_id).exists()):
             # Редактируем главу

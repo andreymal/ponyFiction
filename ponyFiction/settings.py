@@ -205,7 +205,7 @@ SANITIZER_ALLOWED_TAGS = [
     'p', 'br', 'hr',
     'img', 'a',
     'ul', 'ol', 'li',
-    'blockquote', 'sup', 'sub', 'code', 'small'
+    'blockquote', 'sup', 'sub', 'pre', 'small'
 ]
 
 SANITIZER_ALLOWED_ATTRIBUTES = {

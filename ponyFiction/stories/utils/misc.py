@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Лямбды и прочая хрень
 from datetime import datetime
+import re
 dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime) else None
 
 # TODO: переписать код!
@@ -172,3 +173,5 @@ def SetObjSphinxFilter(sphinx, filter_name, field_name, oldform):
             return {field_name: selector}
         else:
             return {}
+
+def make_p(s): return "<p>" + re.sub('\n[\s\n]*\n', '</p><p>', s) + "</p>\n"

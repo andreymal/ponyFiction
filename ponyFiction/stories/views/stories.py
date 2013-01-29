@@ -49,8 +49,8 @@ def story_work(request, story_id=False):
     if not story_id:
         return story_add(request, data={})
     story = get_object_or_404(Story, pk=story_id)
-    # Если пользователь входит в число соавторов
-    if story.is_author(request.user):
+    # Если пользователь входит в число соавторов или модер
+    if (story.is_author(request.user) or request.user.is_staff):
         # Редактирование существующего рассказа
         return story_edit(request, story_id, data={})
     else:

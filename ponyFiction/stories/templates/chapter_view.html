@@ -1,6 +1,7 @@
 {% extends "common.html" %}
 {% load url from future %}
 {% load faved %}
+{% load typogrify %}
 {% block content %}
 <div class="row">
 	<div class="span12">
@@ -57,7 +58,7 @@
 			<h1>{{ chapters.0.title }}</h1>
 			{% for chapter in chapters %}
 					<h2 id="chaptertitle">{{ chapter.title }}</h2>
-					<p>{{ chapter.text|safe }}</p>
+					<p>{{ chapter.text|typogrify|safe }}</p>
 			{% endfor %}
 			</div>
 			
@@ -103,7 +104,7 @@
 	    
 			<div class="chapter-text">
 				<h1 id="chaptertitle">{{ chapter.title }}</h1>
-				<p>{{ chapter.text|safe }}</p>
+				<p>{{ chapter.text|typogrify|safe }}</p>
 			</div>
 	    </div>
     {% endif %}

@@ -33,7 +33,6 @@ class StoryForm(ModelForm):
         label='Персонажи',
         help_text='Следует выбрать персонажей, находящихся в гуще событий, а не всех пони, упомянутых в произведении.',
     )
-
     # Жанры
     categories = ModelMultipleChoiceField(
         required=True,
@@ -85,7 +84,6 @@ class StoryForm(ModelForm):
         queryset=Rating.objects.order_by('-id'),
         widget=StoriesRadioButtons(attrs=radio_attrs),
         label='Рейтинг',
-        help_text='О рейтингах',
         error_messages={'required': 'Нужно обязательно указать рейтинг рассказа!'},
     )
     # Краткое описание рассказа
@@ -102,7 +100,6 @@ class StoryForm(ModelForm):
         widget=Textarea(attrs=dict(attrs_dict, maxlength=4096, placeholder='Заметки к рассказу')),
         max_length=4096,
         label='Заметки',
-        help_text='Заметки автора к рассказу',
     )
     # Размер
     size = ModelChoiceField(
@@ -111,7 +108,6 @@ class StoryForm(ModelForm):
         queryset=Size.objects.all(),
         widget=StoriesRadioButtons(attrs=radio_attrs),
         label='Размер',
-        help_text='О размерах',
         error_messages={'required': 'Нужно обязательно указать размер рассказа!'},
     )
     # Название
