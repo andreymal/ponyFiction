@@ -62,11 +62,11 @@ def story_add(request, data):
         form = StoryForm(request.POST)
         if form.is_valid():
             story = form.save()
-            coauthors = CoAuthorsStory.objects.create()
-            coauthors.story = story
-            coauthors.author = request.user
-            coauthors.approved = True
-            coauthors.save()
+            CoAuthorsStory.objects.create(
+                story = story,
+                author = request.user,
+                approved = True,
+            )
             # Перенаправление на страницу редактирования в случае успеха
             return redirect('story_edit', story.id)
     else:

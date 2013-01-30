@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from simplejson import loads, dumps
+from json import loads, dumps
 from django.conf import settings
 from django.http import Http404, HttpResponse
 from django.template import defaultfilters as filters
