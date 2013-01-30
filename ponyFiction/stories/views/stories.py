@@ -49,9 +49,7 @@ def story_work(request, story_id=False):
     if not story_id:
         return story_add(request, data={})
     story = get_object_or_404(Story, pk=story_id)
-    # Если пользователь входит в число соавторов или модер
-    if (story.is_author(request.user) or request.user.is_staff):
-        # Редактирование существующего рассказа
+    if story.is_editable_by(request.user):
         return story_edit(request, story_id, data={})
     else:
         raise PermissionDenied

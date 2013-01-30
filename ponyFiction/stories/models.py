@@ -224,8 +224,8 @@ class Story (models.Model):
         return self.story_activity_set.get(author_id=author).last_comments
     
     # Проверка авторства
-    def is_author(self, author):
-        return self.authors.filter(id=author.id).exists()
+    def is_editable_by(self, author):
+        return author.is_staff or self.authors.filter(id=author.id).exists()
 
 class Chapter (models.Model):
 # Модель главы
@@ -264,9 +264,8 @@ class Chapter (models.Model):
     def views(self):
         return self.chapter_views_set.values('author').annotate(Count('author')).count()
 
-    # Проверка авторства
-    def is_author(self, author):
-        return self.in_story.authors.filter(id=author.id).exists()
+    def is_editable_by(self, author):
+        return self.in_story.is_editable_by(author)
     
 class Comment(models.Model):
 # Модель комментария
