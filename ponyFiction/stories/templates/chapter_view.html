@@ -1,7 +1,6 @@
 {% extends "common.html" %}
 {% load url from future %}
 {% load stories %}
-{% load typogrify %}
 {% block content %}
 <div class="row">
 	{% include "chapter_breadcrumbs.html" %}
@@ -11,10 +10,10 @@
             {% include "story_panel.html" %}
 			
 			<div class="chapter-text">
-			<h1>{{ chapters.0.in_story.title }}</h1>
+			<h1>{{ story.title }}</h1>
 			{% for chapter in chapters %}
 					<h2 id="chaptertitle">{{ chapter.title }}</h2>
-					<p>{{ chapter.text|typogrify|safe }}</p>
+					{{ chapter.text_as_html }}
 			{% endfor %}
 			</div>
 			
@@ -25,7 +24,7 @@
 	    
 			<div class="chapter-text">
 				<h1 id="chaptertitle">{{ chapter.title }}</h1>
-				<p>{{ chapter.text|typogrify|safe }}</p>
+				{{ chapter.text_as_html }}
 			</div>
 	    </div>
     {% endif %}

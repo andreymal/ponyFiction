@@ -20,11 +20,9 @@ class ChapterForm(ModelForm):
         max_length=512,
         error_messages={'required': 'Пожалуйста, назовите новую главу вашего рассказа'},
     )
-    text=SanitizedCharField(
+    text=CharField(
         widget=Textarea(attrs=dict(textarea_dict, placeholder='Текст новой главы')),
         label='Текст главы',
-        allowed_tags=settings.SANITIZER_ALLOWED_TAGS,
-        allowed_attributes=settings.SANITIZER_ALLOWED_ATTRIBUTES,
         required=False,
     )
     # Заметки к главе

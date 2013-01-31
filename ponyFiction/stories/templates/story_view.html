@@ -80,7 +80,7 @@
 				{% include "story_panel.html" %}
 				
 				<div class="chapter-text">
-					<p>{{ chapter.text|safe }}</p>
+					{{ chapter.text_as_html }}
 				</div>
                 {% endwith %}
 			{% endif %}

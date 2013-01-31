@@ -2,6 +2,7 @@
 from django.db import models
 from django.db.models import Count, Sum
 from django.contrib.auth.models import User, UserManager
+from .filters import filter_html, filtered_property
 
 class Author(User):
 # Модель автора     
@@ -266,6 +267,8 @@ class Chapter (models.Model):
 
     def is_editable_by(self, author):
         return self.in_story.is_editable_by(author)
+    
+    text_as_html = filtered_property('text', filter_html)
     
 class Comment(models.Model):
 # Модель комментария
