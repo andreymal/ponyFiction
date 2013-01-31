@@ -1,0 +1,47 @@
+{% load faved %}
+<div class="story-panel">
+    {% if user.is_authenticated %}
+        <a title="В избранное" id="favstar" class="scon fav{% if story|faved:user.id %} faved{% endif %}"></a>
+    {% endif %} 
+    {% if not story.finished %}
+        <a title="Подписаться на новые главы по RSS" href="{% url 'feeds_atom_story' story.id %}" class="scon feed"></a>
+    {% endif %}
+    {% if prev_chapter or next_chapter %}
+    <span class="chapter-switch">
+        {% if prev_chapter %}← <a class="left" href="{% url 'chapter_view_single' chapter.in_story_id prev_chapter.order %}">{{ prev_chapter.title }}</a>{% endif %}
+        {% if next_chapter %}<a href="{% url 'chapter_view_single' chapter.in_story_id next_chapter.order %}">{{ next_chapter.title }}</a> →{% endif %}
+    </span>
+    {% endif %}
+    {% if not chapter and not allchapters %}
+        <a href="{% url 'chapter_view_all' story.id %}">Все главы одной страницей</a>	
+    {% endif %}
+    <span id="fav-msg"></span>
+    
+    {% comment %}<span class="chapter-controls">
+        <a title="Скачать в MOBI" href="#" class="get mobi"></a>
+        <a title="Скачать в FB2" href="#" class="get fb2"></a>
+        <a title="Скачать в PDF" href="#" class="get pdf"></a>
+        <a title="Скачать в HTML" href="#" class="get html"></a>
+        <a title="Скачать в TXT" href="#" class="get txt"></a>
+    </span>
+    <span class="chapter-controls">
+        <a title="Вниз" href="#" class="scon down"></a> 
+        <a title="Вверх" href="#" class="scon up"></a> 
+    </span><a title="Отложить на потом" href="#" class="scon later"></a>
+    {% endcomment %}
+
+    {% if chapter or chapters %}
+    <span class="chapter-controls">
+        <select class="select-font">
+            <option value="1">Без засечек</option>
+            <option value="2">С засечками</option>
+            <option value="3">Моноширинный</option>
+        </select>
+        <select class="select-size">
+            <option value="1">Обычный</option>
+            <option value="2">Маленький</option>
+            <option value="3">Большой</option>
+        </select>
+    </span>
+    {% endif %}
+</div>

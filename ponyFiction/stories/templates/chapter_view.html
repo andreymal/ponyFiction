@@ -4,58 +4,14 @@
 {% load typogrify %}
 {% block content %}
 <div class="row">
-	<div class="span12">
-		<ul class="breadcrumb">
-			<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
-			{% if not allchapters %}
-				<li><a href="{% url 'story_view' chapter.in_story_id %}">{{ chapter.in_story.title }}</a> <span class="divider">/</span></li>
-				<li class="active">{{ chapter.title }}</li>
-			{% else %}
-				<li><a href="{% url 'story_view' chapters.0.in_story_id %}">{{ chapters.0.in_story.title }}</a> <span class="divider">/</span></li>
-				<li class="active">Все главы</li>
-			{% endif %}
-        	
-        </ul>
-	</div>
+	{% include "chapter_breadcrumbs.html" %}
 	{% if allchapters %}
 		<div class="span12 story-chapter-page">
 		
-			<div class="story-panel">			
-					{% if user.is_authenticated %}
-						<a title="В избранное" id="favstar" class="scon fav{% if chapters.0.in_story|faved:user.id %} faved{% endif %}"></a>
-					{% endif %} 
-				<!--
-					<span class="chapter-controls">
-				    <a title="Скачать в MOBI" href="#" class="get mobi"></a>
-						<a title="Скачать в FB2" href="#" class="get fb2"></a>
-						<a title="Скачать в PDF" href="#" class="get pdf"></a>
-						<a title="Скачать в HTML" href="#" class="get html"></a>
-						<a title="Скачать в TXT" href="#" class="get txt"></a>
-				    </span>
-					<span class="chapter-controls">
-						<a title="Вниз" href="#" class="scon down"></a> 
-						<a title="Вверх" href="#" class="scon up"></a> 
-					</span>
-				-->
-				<span class="chapter-controls">
-					<!--<a title="Отложить на потом" href="#" class="scon later"></a>-->
-				</span>
-				<span class="chapter-controls">
-					<select class="select-font">
-						<option value="1">Без засечек</option>
-						<option value="2">С засечками</option>
-						<option value="3">Моноширинный</option>
-					</select>
-					<select class="select-size">
-						<option value="1">Обычный</option>
-						<option value="2">Маленький</option>
-						<option value="3">Большой</option>
-					</select>
-				</span>
-			</div>
+            {% include "story_panel.html" %}
 			
 			<div class="chapter-text">
-			<h1>{{ chapters.0.title }}</h1>
+			<h1>{{ chapters.0.in_story.title }}</h1>
 			{% for chapter in chapters %}
 					<h2 id="chaptertitle">{{ chapter.title }}</h2>
 					<p>{{ chapter.text|typogrify|safe }}</p>
@@ -65,42 +21,7 @@
 	    </div>
     {% else %}
 		<div class="span12 story-chapter-page">
-			<div class="story-panel">
-				{% if user.is_authenticated %}
-					<a title="В избранное" id="favstar" class="scon fav{% if chapter.in_story|faved:user.id %} faved{% endif %}"></a>
-				{% endif %} 
-				<span class="chapter-switch">
-					{% if chapter.in_story.chapter_set.count > 1 %}
-						{% if prev_chapter %}← <a class="left" href="{% url 'chapter_view_single' chapter.in_story_id prev_chapter.order %}">{{ prev_chapter.title }}</a>{% endif %}
-						{% if next_chapter %}<a href="{% url 'chapter_view_single' chapter.in_story_id next_chapter.order %}">{{ next_chapter.title }}</a> →{% endif %}
-					{% else %}
-						{{ chapter.title }}
-					{% endif %}
-				</span>
-				<!--<span class="chapter-controls">
-			    	<a title="Скачать в MOBI" href="#" class="get mobi"></a>
-					<a title="Скачать в FB2" href="#" class="get fb2"></a>
-					<a title="Скачать в PDF" href="#" class="get pdf"></a>
-					<a title="Скачать в HTML" href="#" class="get html"></a>
-					<a title="Скачать в TXT" href="#" class="get txt"></a>
-			    </span>
-				<span class="chapter-controls">
-					<a title="Вниз" href="#" class="scon down"></a> 
-					<a title="Вверх" href="#" class="scon up"></a> 
-				</span><a title="Отложить на потом" href="#" class="scon later"></a>-->
-				<span class="chapter-controls">
-					<select class="select-font">
-						<option value="1">Без засечек</option>
-						<option value="2">С засечками</option>
-						<option value="3">Моноширинный</option>
-					</select>
-					<select class="select-size">
-						<option value="1">Обычный</option>
-						<option value="2">Маленький</option>
-						<option value="3">Большой</option>
-					</select>
-				</span>
-			</div>
+			{% include "story_panel.html" %}
 	    
 			<div class="chapter-text">
 				<h1 id="chaptertitle">{{ chapter.title }}</h1>
@@ -108,17 +29,6 @@
 			</div>
 	    </div>
     {% endif %}
-	<div class="span12">
-		<ul class="breadcrumb">
-			<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
-			{% if not allchapters %}
-				<li><a href="{% url 'story_view' chapter.in_story_id %}">{{ chapter.in_story.title }}</a> <span class="divider">/</span></li>
-				<li class="active">{{ chapter.title }}</li>
-			{% else %}
-				<li><a href="{% url 'story_view' chapters.0.in_story_id %}">{{ chapters.0.in_story.title }}</a> <span class="divider">/</span></li>
-				<li class="active">Все главы</li>
-			{% endif %}
-        </ul>  
-	</div>
+	{% include "chapter_breadcrumbs.html" %}
 </div>
 {% endblock %}

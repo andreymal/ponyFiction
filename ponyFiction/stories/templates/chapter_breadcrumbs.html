@@ -1,0 +1,13 @@
+<div class="span12">
+    <ul class="breadcrumb">
+        <li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>			
+        <li><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> <span class="divider">/</span></li>
+        <li class="active">
+            {% if not allchapters %}
+                {{ chapter.title }}
+            {% else %}
+                Все главы
+            {% endif %}
+        </li>
+    </ul>  
+</div>

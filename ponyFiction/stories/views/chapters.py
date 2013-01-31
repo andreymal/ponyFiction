@@ -10,11 +10,13 @@ from django.core.exceptions import PermissionDenied
 
 def chapter_view(request, story_id=False, chapter_order=False):
     if chapter_order:
-        chapter = get_object_or_404(Chapter, in_story_id=story_id, order=chapter_order)
+        story = get_object_or_404(Story, pk=story_id)
+        chapter = get_object_or_404(story.chapter_set, order=chapter_order)
         page_title = chapter.title[0:80]+' : '+chapter.in_story.title
         prev_chapter = chapter.get_prev_chapter()
         next_chapter = chapter.get_next_chapter()
         data = {
+           'story': story,
            'chapter' : chapter,
            'prev_chapter' : prev_chapter,
            'next_chapter' : next_chapter,
@@ -22,21 +24,26 @@ def chapter_view(request, story_id=False, chapter_order=False):
            'allchapters': False
         }
         if request.user.is_authenticated():
-            view = StoryView.objects.create()
-            view.author = request.user
-            view.story_id = story_id
-            view.chapter = chapter
-            view.save()
+            StoryView.objects.create(
+                author = request.user,
+                story_id = story_id,
+                chapter = chapter,
+            )
     else:
         story = get_object_or_404(Story, pk=story_id)
         chapters = story.chapter_set.order_by('order')
         page_title = story.title+u' – все главы'
-        data = {'chapters' : chapters, 'page_title' : page_title, 'allchapters': True}
+        data = {
+            'story': story,
+            'chapters' : chapters,
+            'page_title' : page_title,
+            'allchapters': True
+        }
         if request.user.is_authenticated():
-            view = StoryView.objects.create()
-            view.author = request.user
-            view.story_id = story_id
-            view.save()
+            StoryView.objects.create(
+                author = request.user,
+                story_id = story_id,
+            )
     return render(request, 'chapter_view.html', data) 
     
 

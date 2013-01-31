@@ -67,34 +67,7 @@
   		<div class="story-chapters">
   			{% if chapters.count > 1 %}
   				<h2>Содержание</h2>
-				<div class="story-panel">
-  					{% if user.is_authenticated %}
-  						<a title="В избранное" id="favstar" class="scon fav{% if story|faved:user.id %} faved{% endif %}"></a>
-  					{% endif %} 
-  					<a title="Подписаться на новые главы по RSS" href="{% url 'feeds_atom_story' story.id %}" class="scon feed"></a>
-					<!--
-						<a title="Отложить на потом (в закладки)" href="#" class="scon later"></a> 
-	  					Скачать архив:     
-	  					<a title="Скачать в TXT" href="#" class="get txt"></a>
-	  					<a title="Скачать в HTML" href="#" class="get html"></a>
-	  					<a title="Скачать в PDF" href="#" class="get pdf"></a>
-	  					<a title="Скачать в FB2" href="#" class="get fb2"></a>
-	  					<a title="Скачать в MOBI" href="#" class="get mobi"></a>
-  					-->
-  					<a href="{% url 'chapter_view_all' story.id %}">Все главы одной страницей</a>			
-					<span class="chapter-controls">
-						<select class="select-font">
-							<option value="1">Без засечек</option>
-							<option value="2">С засечками</option>
-							<option value="3">Моноширинный</option>
-						</select>
-						<select class="select-size">
-							<option value="1">Обычный</option>
-							<option value="2">Маленький</option>
-							<option value="3">Большой</option>
-						</select>
-					</span>			
-				</div>
+				{% include "story_panel.html" %}
   				<ul id="story_chapters">
 					{% for chapter in chapters %}
 						<li><h4><a href="{% url 'chapter_view_single' story.id chapter.order %}">{{ chapter.title }}</a></h4>
@@ -102,39 +75,14 @@
 					{% endfor %}
   				</ul>
   			{% else %}	
-				<h2 id="chaptertitle">{{ chapters.0.title }}</h2>
-				<div class="story-panel">
-					{% if user.is_authenticated %}
-  						<a title="В избранное" id="favstar" class="scon fav{% if story|faved:user.id %} faved{% endif %}"></a>
-  					{% endif %} 
-  					<a title="Подписаться на новые главы по RSS" href="{% url 'feeds_atom_story' story.id %}" class="scon feed"></a>
-					<!--
-						<a title="Отложить на потом" href="#" class="scon later"></a>
-						Скачать:     
-						<a title="Скачать в TXT" href="#" class="get txt"></a>
-						<a title="Скачать в HTML" href="#" class="get html"></a>
-						<a title="Скачать в PDF" href="#" class="get pdf"></a>
-						<a title="Скачать в FB2" href="#" class="get fb2"></a>
-						<a title="Скачать в MOBI" href="#" class="get mobi"></a>
-					-->
-					<span class="chapter-controls">
-						<select class="select-font">
-							<option value="1">Без засечек</option>
-							<option value="2">С засечками</option>
-							<option value="3">Моноширинный</option>
-						</select>
-						<select class="select-size">
-							<option value="1">Обычный</option>
-							<option value="2">Маленький</option>
-							<option value="3">Большой</option>
-						</select>
-					</span>
-					<span id="fav-msg"></span>
-				</div>
+                {% with chapter=chapters.0 %}
+				<h2 id="chaptertitle">{{ chapter.title }}</h2>
+				{% include "story_panel.html" %}
 				
 				<div class="chapter-text">
-					<p>{{ chapters.0.text|safe }}</p>
+					<p>{{ chapter.text|safe }}</p>
 				</div>
+                {% endwith %}
 			{% endif %}
 		</div>
 		<!-- Вывод комментариев: начало -->
