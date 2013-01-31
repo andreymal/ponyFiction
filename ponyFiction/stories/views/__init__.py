@@ -1,4 +1,3 @@
-import index, stories, ajax, search, chapters, author, stream, series, comment, favorites
 from django.views.generic import TemplateView
 
 class DirectTemplateView(TemplateView):
