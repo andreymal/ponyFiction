@@ -113,7 +113,7 @@
 							<ul class="chapters-list">
 								{% for chapter in story.chapter_set.all %}
 									<li>
-										<a class="chapter-title" href="#">{{ chapter.title }}</a> 
+										<a class="chapter-title" href="{% url 'chapter_view_single' story.id chapter.order %}">{{ chapter.title }}</a> 
 										<sup><a class="edit-link" href="{% url 'chapter_edit' story.id chapter.id %}">Редактировать</a></sup>
 										<br/>
 										{{ chapter.words }} слов, {{ chapter.views|rupluralize:'просмотр,просмотра,просмотров' }}
