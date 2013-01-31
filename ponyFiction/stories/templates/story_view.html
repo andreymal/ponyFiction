@@ -1,7 +1,7 @@
 {% extends "common.html" %}
 {% load url from future %}
 {% load pluralize %}
-{% load faved %}
+{% load stories %}
 {% block content %}
 {% load static %}
 <div class="row">
@@ -14,7 +14,7 @@
     	<h1 id="story_title">{{ story.title }} 
     		<span class="vote"><a class="upvote" id="vote-up">{{ story.vote_up_count }}</a> / <a class="downvote" id="vote-down">{{ story.vote_down_count }}</a></span>
     		{% if story.finished %} <sup class="complete">завершен</sup>{% endif %}{% if story.freezed %}<sup>, </sup><sup class="suspended">заморожен</sup>{% endif %} 
-        	{% if user.is_staff %}
+        	{% if story|is_editable_by:user %}
 	        	<span class="moder">
 	        		<a class="btn btn-warning btn-small" href="{% url 'story_edit' story.id %}">Редактировать рассказ</a>
 	        	</span>

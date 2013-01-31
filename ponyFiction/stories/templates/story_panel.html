@@ -1,4 +1,4 @@
-{% load faved %}
+{% load stories %}
 <div class="story-panel">
     {% if user.is_authenticated %}
         <a title="В избранное" id="favstar" class="scon fav{% if story|faved:user.id %} faved{% endif %}"></a>
