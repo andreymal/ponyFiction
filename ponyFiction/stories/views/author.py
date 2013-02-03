@@ -20,7 +20,7 @@ def author_info(request, user_id=None):
     else:
         author = Author.objects.get(pk=user_id)
         comments_list = author.comment_set.all()
-        data['page_title'] = 'Автор: %s' % author.username
+        data['page_title'] = u'Автор: %s' % author.username
         template = 'author_overview.html'
     comments_count = comments_list.count()
     series = author.series_set.all()
