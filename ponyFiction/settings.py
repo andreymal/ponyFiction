@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Django settings for ponyFiction project.
 import os
-from ponyFiction.stories.apis.sphinxapi import SPH_MATCH_EXTENDED, SPH_RANK_SPH04
+from ponyFiction.stories.apis.sphinxapi import SPH_MATCH_ALL, SPH_RANK_SPH04
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -175,7 +175,7 @@ SPHINX_CONFIG = {
     'retries_count' : 5,
     'retries_delay' : 1,
     'timeout' : 10,
-    'match_mode' : SPH_MATCH_EXTENDED,
+    'match_mode' : SPH_MATCH_ALL,
     'rank_mode' : SPH_RANK_SPH04,
     'number' : 10,
     'max' : 1000,
