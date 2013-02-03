@@ -184,6 +184,7 @@ class Story (models.Model):
     cover = models.BooleanField(default=False, verbose_name="Наличие обложки")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
     draft = models.BooleanField(default=True, verbose_name="Черновик")
+    approved = models.BooleanField(default=False, verbose_name="Статус одобрения")
     finished = models.BooleanField(default=False, verbose_name="Оконченность рассказа")
     freezed = models.BooleanField(default=False, verbose_name='Статус "заморозки"')
     favorites = models.ManyToManyField(Author, through='Favorites', blank=True, null=True, related_name="favorites_story_set", verbose_name="Избранность")
