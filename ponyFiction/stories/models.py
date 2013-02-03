@@ -173,9 +173,17 @@ class Series(models.Model):
     def __unicode__(self):
         return self.title
 
+
+class PublishedManager(models.Manager):
+        def get_query_set(self):
+            return super(PublishedManager, self).get_query_set().filter(draft=False, approved=True)
+
+class SubmittedManager(models.Manager):
+        def get_query_set(self):
+            return super(SubmittedManager, self).get_query_set().filter(draft=False, approved=False)
+        
 class Story (models.Model):
 # Модель рассказа
-   
     authors = models.ManyToManyField(Author, null=True, through='CoAuthorsStory', verbose_name=u"Авторы")
     betas = models.ManyToManyField(Author, through='BetaReading', related_name="beta_set", verbose_name=u"Бета-читатели")
     characters = models.ManyToManyField(Character, blank=True, null=True, verbose_name='Персонажи')
@@ -200,6 +208,10 @@ class Story (models.Model):
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     vote = models.ManyToManyField('Vote', null=True, verbose_name="Голоса за рассказ")
 
+    objects = models.Manager()
+    published = PublishedManager()
+    submitted = SubmittedManager()
+    
     class Meta:
         verbose_name = "рассказ"
         verbose_name_plural = "рассказы"

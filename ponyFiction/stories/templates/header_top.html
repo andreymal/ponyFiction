@@ -1,5 +1,6 @@
 {% load url from future %}
 {% load random_stories %}
+{% load submitted_stories_count %}
 <!-- Container start -->
 <div class="container">
 	<!-- Header start -->
@@ -45,7 +46,7 @@
     		<li class="right"><a class="active" href="{% url 'author_dashboard' %}">Кабинет автора</a></li>
     		<li class="right"><a href="{% url 'story_add' %}">Добавить рассказ</a></li>
     		{% if user.is_staff %}
-    			<li class="right"><a href="{% url 'stream_submits' %}">Новые поступления</a></li>
+    			<li class="right"><a href="{% url 'stream_submits' %}">Новые поступления ({% submitted_stories_count %})</a></li>
     		{% endif %}
   		{% else %}
     		<li><a href="{% url 'registration_register' %}">Регистрация</a></li>

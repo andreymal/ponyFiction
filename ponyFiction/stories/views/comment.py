@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 @csrf_protect
 def comment_story(request, story_id=False):
     try:
-        story = Story.objects.get(pk=story_id)
+        story = Story.published.get(pk=story_id)
     except Story.DoesNotExist:
         return redirect('story_view', kwargs={'story_id': story_id})
     else:

@@ -22,7 +22,7 @@ def author_info(request, user_id=None):
         author = Author.objects.get(pk=user_id)
         comments_list = author.comment_set.all()
         data['page_title'] = u'Автор: %s' % author.username
-        data['stories'] = author.story_set.filter(draft=False, approved=True)
+        data['stories'] = author.story_set.published.all()
         template = 'author_overview.html'
     comments_count = comments_list.count()
     series = author.series_set.all()

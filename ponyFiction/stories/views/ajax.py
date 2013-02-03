@@ -35,7 +35,7 @@ def ajax_stories(request):
         except:
             raise ValueError
         else:
-            stories_list = Story.objects.order_by('-date').all()
+            stories_list = Story.published.order_by('-date').all()
     else:
         raise Http404
     message = makeStoriesAjaxResponse(stories_list, data)
@@ -52,7 +52,7 @@ def ajax_favorites(request, user_id):
                 raise Http404
             else:
                 author = Author.objects.get(id=user_id)
-                stories_list = author.favorites_story_set.order_by('-favorites_set__date')
+                stories_list = author.favorites_story_set.published.order_by('-favorites_set__date')
     else:
         raise Http404
     message = makeStoriesAjaxResponse(stories_list, data)
@@ -226,7 +226,7 @@ def sort_chapters(request, story_id):
 
 def story_vote(request, story_id):
     try:
-        story = Story.objects.get(pk=story_id)    
+        story = Story.published.get(pk=story_id)    
         assert request.POST
         assert request.is_ajax()
     except Story.DoesNotExist:
