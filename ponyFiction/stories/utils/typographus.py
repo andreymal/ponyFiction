@@ -237,7 +237,7 @@ rules_quotes = compile_ruleset(
     (u"(%s)(%s)" % (any_quote, phrase_begin), u'%s\g<2>' % sym['lquote']),
     
     # ((?:(?:\.{3,5}|[a-zA-Zа-яА-Я_])|[0-9]+))((?:«|»|„|“|&quot;|"))
-    (ur"((?:%s|(?:[0-9]+)))(%s)" % (phrase_end, any_quote), u'\g<1>%s' % sym['rquote']),
+    (ur"((?:%s|%s|(?:[0-9]+)))(%s)" % (phrase_end, all_punctuation, any_quote), u'\g<1>%s' % sym['rquote']),
     
     (sym['rquote'] + any_quote, sym['rquote']+sym['rquote']),
     (any_quote + sym['lquote'], sym['lquote']+sym['lquote']),
@@ -265,7 +265,7 @@ rules_main = compile_ruleset(
     (r'\s+(?=[\.,:;!\?])', ''),
     
     # а вот после - очень даже кстати
-    (r'(?<=[\.,:;!\?])(?![\.,:;!\?\s])', ' '),
+    (r'(?<=[\.,:;!\?])(?![\.,:;!\?\s]|%s)' % (any_quote), ' '),
     
     # знак дефиса, ограниченный с обоих сторон цифрами — на минус.
     (r'(?<=\d)-(?=\d)', sym['minus']),
