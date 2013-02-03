@@ -115,5 +115,5 @@ def chapter_edit(request, story_id, chapter_id):
     Предварительно заполненную - в случае успешного редактирования или начальной отправки
     """
     form.fields['button_submit'].initial = 'Сохранить изменения'
-    data.update({'form': form, 'chapter_edit': True, 'page_title' : 'Редактирование «%s»' % chapter.title, 'story': story })
+    data.update({'form': form, 'chapter_edit': True, 'page_title' : u'Редактирование «%s»' % chapter.title, 'story': story })
     return render(request, 'chapter_work.html', data)
