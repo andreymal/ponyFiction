@@ -118,10 +118,16 @@ class StoryForm(ModelForm):
         max_length=512,
         error_messages={'required': 'Пожалуйста, назовите ваш рассказ'},
     )
-    # Кнопка "Отправить"
+    # Кнопка "Добавить рассказ/Сохранить изменения"
     button_submit = Field(
         required=False,
         widget=ServiceButtonWidget(attrs={'class': 'btn btn-primary'}),
+    )
+    # Кнопка "Сохранить в черновики"
+    button_save_draft = Field(
+        required=False,
+        widget=ServiceButtonWidget(attrs={'class': 'btn'}),
+        initial = 'Сохранить как черновик'
     )
     # Кнопка "Удалить"
     button_delete = Field(

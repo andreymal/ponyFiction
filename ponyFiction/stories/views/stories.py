@@ -65,6 +65,9 @@ def story_add(request, data):
                 author = request.user,
                 approved = True,
             )
+            # Если нажата кнопка "Сохранить как черновик", устанавливаем статус черновика
+            if 'button_save_draft' in request.POST:
+                Story.objects.filter(pk=story.id).update(draft=True)
             # Перенаправление на страницу редактирования в случае успеха
             return redirect('story_edit', story.id)
     else:
@@ -82,11 +85,17 @@ def story_add(request, data):
 
 def story_edit(request, story_id, data):
     if request.POST:
-        if 'button_submit' in request.POST:
+        if (('button_submit' in request.POST) or ('button_save_draft' in request.POST)):
             # Редактирование существующего рассказа
             form = StoryForm(request.POST, instance=Story.objects.get(pk=story_id))
             if form.is_valid():
                 form.save()
+                # Если нажата кнопка "Сохранить как черновик", устанавливаем статус черновика
+                if 'button_save_draft' in request.POST:
+                    Story.objects.filter(pk=story_id).update(draft=True)
+                # Иначе отправляем на премодерацию
+                elif 'button_submit' in request.POST:
+                    Story.objects.filter(pk=story_id).update(draft=False)
                 return redirect('story_edit', story_id)
         if 'button_delete' in request.POST:
             Story.objects.get(pk=story_id).delete()

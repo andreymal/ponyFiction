@@ -173,9 +173,12 @@
 	          			{{ form.classifications }}
 	          		</div>
 				</div>
-				<!-- Отправить -->
+				<!-- Действия -->
       			<div class="form-actions">
+      				<!-- Отправить -->
       				{{ form.button_submit }}
+      				<!-- Сохранить как черновик -->
+      				{{ form.button_save_draft }}
       				{% if story_edit %}
 	      				<!-- Псевдокнопка активации модального окна подтверждения -->
 	      				<input href="#delete_story" class="btn btn-danger" type="button" data-toggle="modal" value="Удалить рассказ">
