@@ -100,5 +100,5 @@ def story_edit(request, story_id, data):
     """
     form.fields['button_submit'].initial = 'Сохранить изменения'
     chapters = Chapter.objects.filter(in_story=story_id).order_by('order')
-    data.update({'form': form, 'story_edit': True, 'chapters': chapters, 'page_title' : 'Редактирование «%s»' % Story.objects.get(pk=story_id).title , 'story_id': story_id})
+    data.update({'form': form, 'story_edit': True, 'chapters': chapters, 'page_title' : u'Редактирование «%s»' % Story.objects.get(pk=story_id).title , 'story_id': story_id})
     return render(request, 'story_work.html', data)
