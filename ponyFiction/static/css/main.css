@@ -278,17 +278,17 @@ a.gen:hover {
 color:#fff;
 background-color:#999;
 }
-.gen-1 {background-color:#ca0707;}
+.gen-1 {background-color:#3f74ce;}
 .gen-2 {background-color:#eda21f;}
 .gen-3 {background-color:#cec12a;}
 .gen-4 {background-color:#45c950;}
 .gen-5 {background-color:#45c9ab;}
-.gen-6 {background-color:#3f74ce;}
+.gen-6 {background-color:#ca6565;}
 .gen-7 {background-color:#d84a9d;}
 .gen-8 {background-color:#8738d8;}
 .gen-9 {background-color:#b5835a;}
 .gen-10 {background-color:gray;}
-.gen-11 {background-color:#ca6565;}
+.gen-11 {background-color:#ca0707;}
 .gen-12 {background-color:#8760b0;}
 label.gen {
 min-height:18px;
@@ -496,6 +496,7 @@ padding-left:0;
 }
 .form-actions {
 padding-left:0;
+background-color:transparent;
 }
 
 /* Registration form */
@@ -527,7 +528,6 @@ line-height:22px;
 margin:0;
 }
 .story-page .story-description {
-font-style:italic;
 }
 .story-page .story-genres {
 margin-bottom:4px;
@@ -716,9 +716,23 @@ border-radius:0 0 8px 8px;
 }
 
 /* Красивые картинки, маскоты, графика, истерэги */
-.page-404 .message-404,.message-502,.message-500,.message-403,.text-faq,.text-help,.text-terms{ margin-bottom:200px; }
+.page-special,.page-404 .message-404,.message-502,.message-403,.text-faq,.text-help,.text-terms{ margin-bottom:200px; }
+.message-500 {margin-bottom:300px;}
 .page-404 { background:transparent url('../i/pageart/404.png') no-repeat 90% 100%; }
+.page-500 { background:transparent url('../i/pageart/500.png') no-repeat 90% 100%; }
 .page-502 { background:transparent url('../i/pageart/502.png') no-repeat 90% 80%; }
+
+.passres-form-text {margin-bottom:160px;}
+.passres-form { background:transparent url('../i/pageart/passres-form.png') no-repeat 90% 90%; }
+.passres-confirm { background:transparent url('../i/pageart/passres-confirm.png') no-repeat 90% 100%; }
+.passres-complete { background:transparent url('../i/pageart/passres-complete.png') no-repeat 90% 100%; }
+.passres-done { background:transparent url('../i/pageart/passres-done.png') no-repeat 90% 90%; }
+
+.login-text {margin-bottom:80px;}
+.login-text form, .passres-form form {margin-top:20px;}
+.login-page { background:transparent url('../i/pageart/login.png') no-repeat 90% 100%; }
+
+.comment-form { background:transparent url('../i/pageart/comments.png') no-repeat 90% 100%; }
 
 .page-faq h2, .page-terms h2, .page-help h2 {margin-top:24px;}
 .page-faq li, .page-terms li, .page-help li {margin-bottom:8px;}
@@ -837,6 +851,7 @@ margin: 6px 0 0 12px;
 .story-panel {padding:10px 0 10px 12px;}
 .chapter-text {width:100%!important;}
 #comments {width:100%;}
+.controls textarea  {width:100%;}
 
 .story-chapter-page .story-panel {height:auto;line-height:16px;}
 .story-chapter-page .story-panel .chapter-switch {display:block;padding-bottom:6px;}
@@ -849,6 +864,7 @@ margin: 6px 0 0 12px;
 #content {padding:0 0 0 12px;}
 .page-header {height:36px;padding-top:12px;}
 
+.controls textarea  {width:100%;}
 .servicelinks {display:none;}
 #logolink {font-size:15px;padding-right:6px;}
 .main-menu li {font-size:14px;padding-right:4px;}
@@ -857,4 +873,17 @@ margin: 6px 0 0 12px;
 .nav-pills {font-size:14px;padding:4px 12px 8px;}
 .nav-pills > li > a {padding:6px 8px;}
 .nav-tabs > li, .nav-pills > li {padding:0 0 0px;}
+
+.chapter-text {font-size:12px;line-height:22px;}
+.characters-group {display:inline;padding-right:0;}
+.padded > .bootstrap.radio {display:none;}
+}
+
+/* 320 px screens */
+@media (max-width: 320px) {
+	#logolink, .rss, .twitter {display:none;}
+	.nav-pills > li > a {padding:4px;font-size:13px;}
+	.gen {font-size:12px;line-height:14px;padding:4px 5px;}
+	h1 {font-size:22px;}
+	.login-form .input-small {width:56px;}
 }

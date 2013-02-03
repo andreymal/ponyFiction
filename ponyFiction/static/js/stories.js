@@ -507,6 +507,7 @@ $(function(){
     var re_chapteradd = new RegExp('/story/[0-9]+/chapter/add/')
     if (re_chapteredit.test(window.location.pathname) || re_chapteradd.test(window.location.pathname)){
     $('.chapter-textarea').markItUp(mySettings);
+		$('#id_notes').markItUp(mySettings);
     }
     // Голосование
     $('#vote-up').click(function(){voteStory('1')});
