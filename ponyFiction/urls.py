@@ -125,9 +125,10 @@ urlpatterns += patterns('',
 
 # Ленты
 urlpatterns += patterns('',
-    url(r'^stream/comments/$', stream_list, {'model': Comment}, name='stream_comments'),
-    url(r'^stream/stories/$', stream_list, {'model': Story}, name='stream_stories'),
-    url(r'^stream/chapters/$', stream_list, {'model': Chapter }, name='stream_chapters'),
+    url(r'^stream/comments/$', stream_list, {'model': Comment, 'type': 'comments'}, name='stream_comments'),
+    url(r'^stream/stories/$', stream_list, {'model': Story, 'type': 'stories'}, name='stream_stories'),
+    url(r'^stream/submits/$', stream_list, {'model': Story, 'type': 'submits'}, name='stream_submits'),
+    url(r'^stream/chapters/$', stream_list, {'model': Chapter, 'type': 'chapters'}, name='stream_chapters'),
 )
 
 # Комментирование
@@ -152,7 +153,13 @@ urlpatterns += patterns('ponyFiction.stories.views.stories',
     # Добавление
     url(r'^story/add/$', 'story_work', name='story_add'),
     # Правка
-    url(r'^story/(?P<story_id>\d+)/edit/$', 'story_work', name='story_edit'),
+    url(r'^story/(?P<story_id>\d+)/edit/$', 'story_work', {'edit': True}, name='story_edit'),
+    # Отправка на публикацию
+    url(r'^story/(?P<story_id>\d+)/publish/$', 'story_work', {'publish': True}, name='story_publish'),
+    # Одобрение
+    url(r'^story/(?P<story_id>\d+)/approve/$', 'story_work', {'approve': True}, name='story_approve'),
+    # Удаление
+    url(r'^story/(?P<story_id>\d+)/delete/$', 'story_work', {'delete': True}, name='story_delete'),
 )
 # Работа с главами
 urlpatterns += patterns('ponyFiction.stories.views.chapters',

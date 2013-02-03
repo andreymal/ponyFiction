@@ -16,15 +16,16 @@ def author_info(request, user_id=None):
         comments_list = Comment.objects.filter(in_story__authors=request.user.id)
         data['all_views'] = StoryView.objects.filter(story__authors=author).count()
         data['page_title'] = 'Мой кабинет'
+        data['stories'] = author.story_set.all()
         template = 'author_dashboard.html'
     else:
         author = Author.objects.get(pk=user_id)
         comments_list = author.comment_set.all()
         data['page_title'] = u'Автор: %s' % author.username
+        data['stories'] = author.story_set.filter(draft=False, approved=True)
         template = 'author_overview.html'
     comments_count = comments_list.count()
     series = author.series_set.all()
-    stories = author.story_set.all()
     votes = [Vote.objects.filter(direction=True).filter(story__authors__id=author.id).count(),
              Vote.objects.filter(direction=False).filter(story__authors__id=author.id).count()]
     paged = Paginator(comments_list, settings.COMMENTS_COUNT['page'], orphans=settings.COMMENTS_ORPHANS)
@@ -33,7 +34,6 @@ def author_info(request, user_id=None):
     data.update({
             'author' : author,
             'series' : series,
-            'stories' : stories,
             'comments' : comments,
             'num_pages': num_pages,
             'comments_count': comments_count,

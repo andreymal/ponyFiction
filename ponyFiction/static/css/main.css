@@ -191,7 +191,9 @@ border-radius:4px;
 margin:0 0 30px;
 font-size:12px;
 }
-
+.story-control-btn {
+float: right;
+}
 
 /* Vote-buttons */
 .upvotes { color:#66CC66; }
@@ -802,7 +804,7 @@ padding-right: 1%;
 padding-top: 1.5%;
 }
 /**
- * ?~?^(o)?3/4?1/2?^(o)??
+ * RSS + Twitter icons
 */
 .twitter { background-image: url('../i/twitter.png');}
 .rss { background-image: url('../i/rss.png'); }
