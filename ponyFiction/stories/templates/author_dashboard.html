@@ -47,7 +47,7 @@
 					<div class="story-item">
 						<h4>
 							<a href="#">{{ sr.title }}</a>
-							{% if sr.freezed %}<sup class="suspended">Заморожена</sup>{% endif %}
+							{% if sr.freezed %}<sup class="suspended">Заморожен</sup>{% endif %}
 							<!-- <sup><a class="edit-link" href="#">Редактировать серию</a></sup> -->
 						</h4>
 						<p>
@@ -60,7 +60,7 @@
 								<li>
 									<a href="{% url 'story_view' story.id %}">{{ story.title }}</a> 
 									<sup><span class="upvotes">{{ story.vote_up_count }}</span> / <span class="downvotes">{{ story.vote_down_count }}</span></sup>
-									{% if story.freezed %}<sup class="suspended">Заморожена</sup>{% endif %}<br/>
+									{% if story.freezed %}<sup class="suspended">Заморожен</sup>{% endif %}<br/>
 									<a class="edit-link" href="{% url 'story_edit' story.id %}">Редактировать</a><br/>
 									{% if story.chapter_set.count > 1 %}
 										{{ story.chapter_set.count|rupluralize:'глава,главы,глав' }},
@@ -91,7 +91,7 @@
 					<h4>
 						<a href="{% url 'story_view' story.id %}">{{ story.title }}</a> 
 						<sup><span class="upvotes">{{ story.vote_up_count }}</span> / <span class="downvotes">{{ story.vote_down_count }}</span></sup>
-						{% if story.freezed %}<sup class="suspended">Заморожена</sup>{% endif %}
+						{% if story.freezed %}<sup class="suspended">Заморожен</sup>{% endif %}
 						<span class="story-control-btn">
 							{% if story.chapter_set.count != 0 %}
 								{% if story.draft %}
