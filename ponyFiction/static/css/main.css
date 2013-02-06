@@ -745,11 +745,8 @@ border-radius:0 0 8px 8px;
 .text-faq, .text-terms, .text-help  { width:70%; }
 
 .page-faq { background:transparent url('../i/pageart/faq.png') no-repeat 90% 100%; }
-.text-faq {}
 .page-terms { background:transparent url('../i/pageart/terms.png') no-repeat 90% 100%; }
-.text-terms {}
 .page-help { background:transparent url('../i/pageart/help.png') no-repeat 90% 100%; }
-.text-help {}
 
 /* Больное наследие Еврипони */
 .servicelinks {
