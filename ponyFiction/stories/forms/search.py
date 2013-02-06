@@ -91,16 +91,42 @@ class SearchForm(Form):
         required=False,
         widget=StoriesCheckboxSelectMultiple(attrs={'label_attrs': ['checkbox', 'inline']}),
     )
-    # Кнопка "Развернуть"
+    # Кнопка "Развернуть тонкие настройки поиска"
     button_advanced = Field(
         required=False,
         widget=ButtonWidget(
             attrs={
                    'type': 'button',
-                   'class': 'btn btn-collapse btn-small',
+                   'class': 'btn btn-collapse',
                    'data-toggle': 'collapse',
                    'data-target': '#more-info',
                    'text': 'Еще более тонкий поиск'
+                   }
+        ),
+    )
+    # Кнопка "Развернуть фильтры"
+    button_filters = Field(
+        required=False,
+        widget=ButtonWidget(
+            attrs={
+                   'type': 'button',
+                   'class': 'btn btn-collapse',
+                   'data-toggle': 'collapse',
+                   'data-target': '#more-filters',
+                   'text': 'Фильтры поиска'
+                   }
+        ),
+    )
+    # Кнопка "Развернуть сортировку"
+    button_sort = Field(
+        required=False,
+        widget=ButtonWidget(
+            attrs={
+                   'type': 'button',
+                   'class': 'btn btn-collapse',
+                   'data-toggle': 'collapse',
+                   'data-target': '#more-sort',
+                   'text': 'Сортировка результатов'
                    }
         ),
     )

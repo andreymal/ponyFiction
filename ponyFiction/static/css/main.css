@@ -455,8 +455,12 @@ overflow:visible;
 #searchTabNav li {
 display:inline-block;
 }
-
-
+.search-page div.collapse {
+margin:10px 0;
+}
+.search-page div.collapse h3 {
+margin-bottom:8px;
+}
 
 /* === Editing, Forms, Active elements, Buttons === */
 /* Forms and stuff */
@@ -521,15 +525,15 @@ border-style:dashed;
 margin-bottom:6px;
 }
 .collapse {
-background-color:#fff;
 font-size:12px;
+}
+.story-page .collapse {
+background-color:#fff;
 }
 .collapse p {
 padding:8px 0 8px 10px;
 line-height:22px;
 margin:0;
-}
-.story-page .story-description {
 }
 .story-page .story-genres {
 margin-bottom:4px;

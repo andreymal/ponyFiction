@@ -3,9 +3,9 @@
 {% load pluralize %}
 {% block content %}
 {% load static %}
-<div class="row">
+<div class="row search-page">
 	<!-- Навигация -->
-	<div class="span12 story-chapter-page">
+	<div class="span12">
 		<ul class="breadcrumb">
 			<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
 			<li class="active">{{ page_title }}</li>
@@ -24,35 +24,62 @@
 					<span class="bootstrap radio">{{ form.search_type }}</span>
 				</div>
 				
+				
+				
+				<!-- Сортировка результатов поиска -->
+				{{ form.button_sort }}
+				
+				<!-- Фильтры поиска -->
+				{{ form.button_filters }}
+				
+				<!-- Тонкая настройка поиска -->
+				{{ form.button_advanced }}
+				
+				
+				<!--Начало спойлера -->
+				<div id="more-sort" > <!-- ToDo: class="collapse" -->
+				<h3>Сортировать по: <sup>Это пока не работает.</sup></h3>
+					<button class="btn">Дате публикации</button>
+					<button class="btn">Рейтингу</button>
+					<button class="btn">Размеру</button>
+					<button class="btn">Комментируемости</button>
+					
+				</div>
+				<!-- Конец спойлера -->
+				
+				<!--Начало спойлера -->
+				<div id="more-filters"> <!-- ToDo: class="collapse" -->
 				<!-- Жанры -->
+				<h3>Фильтровать по:</h3>
 				<p class="genres-select">{{ form.categories_select }}</p>
 				
-	    		<!-- Персонажи -->
-	    		<div class="characters-select" >{{ form.characters_select }}</div>
+				<!-- Персонажи -->
+				<div class="characters-select" >{{ form.characters_select }}</div>
+
+				</div>
+				<!-- Конец спойлера -->
 				
+				<!--Начало спойлера -->
+				<div id="more-info" class="collapse">
+				
+				<h3>Дополнительные настройки поиска:</h3>
 				<!-- Оригинал/перевод -->
 				<div class="padded bootstrap checkboxes">{{ form.originals_select }}</div>
 								
 				<!-- Статус рассказа -->
 				<div class="padded bootstrap checkboxes">{{ form.finished_select }}</div>
-
-				<!-- Тонкая настройка поиска -->
-				{{ form.button_advanced }}
 				
-				<!--Начало спойлера -->
-				<div id="more-info" class="collapse">
+				<!-- Заморожен/активен -->
+				<div class="padded bootstrap checkboxes">{{ form.freezed_select }}</div>
+						
+				<!-- Размер -->
+				<div class="padded bootstrap checkboxes">{{ form.sizes_select }}</div>
 				
-			        <!-- Заморожен/активен -->
-			        <div class="padded bootstrap checkboxes">{{ form.freezed_select }}</div>
-			        
-					<!-- Размер -->
-					<div class="padded bootstrap checkboxes">{{ form.sizes_select }}</div>
-					
-					<!-- Рейтинг -->
-					<div class="padded bootstrap checkboxes">{{ form.ratings_select }}</div>
-					
-					<!-- События -->
-					<div class="control-group"><label class="control-label">События</label><div class="controls events">{{ form.classifications_select }}</div></div>
+				<!-- Рейтинг -->
+				<div class="padded bootstrap checkboxes">{{ form.ratings_select }}</div>
+				
+				<!-- События -->
+				<div class="control-group"><label class="control-label">События</label><div class="controls events">{{ form.classifications_select }}</div></div>
 					
 				</div>
 				<!-- Конец спойлера -->
