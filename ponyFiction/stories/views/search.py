@@ -82,8 +82,12 @@ def search_action(request, postform):
         raw_result = sphinx.Query(postform.cleaned_data['search_query'], 'stories')
         # Обработка результатов поиска рассказов
         for res in raw_result['matches']:
-            story = Story.objects.get(pk=res['id'])
-            result.append(story)
+            try:
+                story = Story.objects.get(pk=res['id'])
+            except Story.DoesNotExist:
+                pass
+            else:
+                result.append(story)
     else:
         # Установка весов для полей глав  
         sphinx.SetFieldWeights(settings.SPHINX_CONFIG['weights_chapters'])
@@ -91,12 +95,16 @@ def search_action(request, postform):
         raw_result = sphinx.Query(postform.cleaned_data['search_query'], 'chapters')
         # Обработка результатов поиска глав и постройка сниппетов текста
         for res in raw_result['matches']:
-            chapter = Chapter.objects.get(pk=res['id'])
-            text=[]
-            text.append(chapter.text)
-            excerpt = sphinx.BuildExcerpts(text, 'chapters', postform.cleaned_data['search_query'], settings.SPHINX_CONFIG['excerpts_opts'])
-            excerpts.append(excerpt[0])
-            chapters.append(chapter)
+            try:
+                chapter = Chapter.objects.get(pk=res['id'])
+            except Chapter.DoesNotExist:
+                pass
+            else:
+                text=[]
+                text.append(chapter.text)
+                excerpt = sphinx.BuildExcerpts(text, 'chapters', postform.cleaned_data['search_query'], settings.SPHINX_CONFIG['excerpts_opts'])
+                excerpts.append(excerpt[0])
+                chapters.append(chapter)
         result = zip(chapters, excerpts)
     # Пагинация
     (
@@ -105,15 +113,14 @@ def search_action(request, postform):
      pagination['locality_range'],
      pagination['tail_dots'],
      pagination['tail_range'],
-    ) = pagination_ranges(num_pages=int(ceil(raw_result['total']/10.0)), page=page_current)
+    ) = pagination_ranges(num_pages=int(ceil(len(result)/10.0)), page=page_current)
     pagination['current'] = page_current
     # Создаем форму для рендера с данными поиска
     data['form'] = SearchForm(initial=initial_data)
     # Добавляем данные
     data['pagination'] = pagination
-    data['total'] = raw_result['total']
+    data['total'] = len(result)
     data['result'] = result
-    data['initial_data'] = initial_data
     # Закрываем за собой сокет
     sphinx.Close()
     return render(request, 'search.html', data)
