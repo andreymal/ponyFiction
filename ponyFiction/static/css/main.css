@@ -726,6 +726,7 @@ border-radius:0 0 8px 8px;
 .message-500 {margin-bottom:300px;}
 .page-404 { background:transparent url('../i/pageart/404.png') no-repeat 90% 100%; }
 .page-500 { background:transparent url('../i/pageart/500.png') no-repeat 90% 100%; }
+.page-tech-work { background:transparent url('../i/pageart/tech-work.png') no-repeat 90% 100%; }
 .page-502 { background:transparent url('../i/pageart/502.png') no-repeat 90% 80%; }
 
 .passres-form-text {margin-bottom:160px;}
