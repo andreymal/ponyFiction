@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
-from ponyFiction.stories.models import Author, Comment, Vote, StoryView
+from ponyFiction.stories.models import Author, Story, Comment, Vote, StoryView
 from django.core.paginator import Paginator
 from ponyFiction.stories.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm 
 
@@ -19,7 +19,8 @@ def author_info(request, user_id=None):
         data['stories'] = author.story_set.all()
         template = 'author_dashboard.html'
     else:
-        author = Author.objects.get(pk=user_id)
+        author = get_object_or_404(Author, pk=user_id)
+        published_stories = Story.published.filter(authors__id=user_id).count()
         comments_list = author.comment_set.all()
         data['page_title'] = u'Автор: %s' % author.username
         data['stories'] = author.story_set.filter(draft=False, approved=True)
@@ -33,6 +34,7 @@ def author_info(request, user_id=None):
     num_pages = paged.num_pages
     data.update({
             'author' : author,
+            'published_stories': published_stories,
             'series' : series,
             'comments' : comments,
             'num_pages': num_pages,
