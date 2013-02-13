@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import Count, Sum
 from django.contrib.auth.models import User, UserManager
 from .filters import filter_html, filtered_property
+from django.db.models.signals import pre_save
 
 class Author(User):
 # Модель автора     
@@ -282,6 +283,13 @@ class Chapter (models.Model):
         return self.in_story.is_editable_by(author)
     
     text_as_html = filtered_property('text', filter_html)
+    
+
+def update_chapter_word_count(sender, instance, **kw):
+    from django.template import defaultfilters as filters
+    instance.words = filters.wordcount(filters.striptags(instance.text))
+pre_save.connect(update_chapter_word_count, sender = Chapter)
+
     
 class Comment(models.Model):
 # Модель комментария
