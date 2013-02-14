@@ -34,7 +34,7 @@
 		    	Занес в избранное <a href="{% url 'favorites' author.id %}">{{ author.favorites_story_set.count|rupluralize:'рассказ,рассказа,рассказов' }}</a>.
 			{% endif %}
 		</p>
-		<p class="author-description">{{ author.bio|safe }}</p>    
+		<p class="author-description">{{ author.bio_as_html }}</p>    
 		<p class="contact-links">
 			{% if author.jabber %}<a href="xmpp:{{ author.jabber }}" class="jabberlink">{{ author.jabber }}</a><br/>{% endif %}
 			{% if author.skype %}<a href="skype:{{ author.skype }}" class="skypelink">{{ author.skype }}</a><br/>{% endif %}
@@ -84,7 +84,7 @@
 									{% endfor %}
 								{% endif %}
 							</p>
-							<p>{{ story.summary|safe }}</p>
+							<p>{{ story.summary_as_html }}</p>
 							{% if story.chapter_set.count > 1 %}
 								<button class="btn btn-collapse btn-small" data-toggle="collapse" data-target="#series-story-{{ story.id }}">Показать {{ story.chapter_set.count|rupluralize:'главу,главы,глав' }}</button>
 							{% endif %}   
@@ -145,7 +145,7 @@
 							{% endfor %}
 						{% endif %}
 					</p>
-					<p>{{ story.summary|safe }}</p>
+					<p>{{ story.summary_as_html }}</p>
 					{% if story.chapter_set.count > 1 %}
 						<button class="btn btn-collapse btn-small" data-toggle="collapse" data-target="#story-{{ story.id }}">Показать {{ story.chapter_set.count|rupluralize:'главу,главы,глав' }}</button>
 					{% endif %}  
@@ -182,7 +182,7 @@
     		{% for comment in comments %}
         		<div class="comment-item" id="comment-{{ comment.id }}">
             		<p class="comment-meta"><span class="comment-date">{{ comment.date|date:"d.m.Y" }} к рассказу <a href="{% url 'story_view' comment.in_story_id %}">{{ comment.in_story.title }}</a></span></p>
-          			<p class="comment_text">{{ comment.text|safe }}</p>
+          			<p class="comment_text">{{ comment.text_as_html }}</p>
         		</div>
       		{% endfor %}
     	</div>

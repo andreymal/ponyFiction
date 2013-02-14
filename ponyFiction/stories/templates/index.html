@@ -70,7 +70,7 @@
         <h2>Последние комментарии</h2>
 		{% for comment in comments %}
 			<div class="story-item">
-				<p class="comment"> {{ comment.text|truncatewords_html:12|removetags:"br"|safe }}</p>
+				<p class="comment"> {{ comment.text_as_html|truncatewords_html:12|removetags:"br"|safe }}</p>
 				<p>{{ comment.date|timesince }} назад <a class="authorlink" href="{% url 'author_overview' comment.author_id %}">{{ comment.author.username }}</a> о <a href="{% url 'story_view' comment.in_story_id %}"><b>{{ comment.in_story.title }}</b></a></p>
 			</div>
 		{% endfor %}

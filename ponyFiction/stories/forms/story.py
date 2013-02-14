@@ -3,7 +3,6 @@ from django.forms import CharField, ChoiceField, Field, ModelForm, ModelChoiceFi
 from ponyFiction.stories.fields import GroupedModelChoiceField
 from ponyFiction.stories.models import Character, Category, Classifier, Rating, Size, Story
 from ponyFiction.stories.widgets import ServiceButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesRadioButtons
-from sanitizer.forms import SanitizedCharField
 
 class StoryForm(ModelForm):
     attrs_dict = {'class': 'input-xlarge'}
@@ -87,7 +86,7 @@ class StoryForm(ModelForm):
         error_messages={'required': 'Нужно обязательно указать рейтинг рассказа!'},
     )
     # Краткое описание рассказа
-    summary=SanitizedCharField(
+    summary=CharField(
         required=True,
         widget=Textarea(attrs=dict(attrs_dict, maxlength=4096, placeholder='Обязательное краткое описание рассказа')),
         max_length=4096,
@@ -95,7 +94,7 @@ class StoryForm(ModelForm):
         error_messages={'required': 'Опишите вкратце содержание рассказа - это обязательное поле'},
     )
     # Заметки к рассказу
-    notes=SanitizedCharField(
+    notes=CharField(
         required=False,
         widget=Textarea(attrs=dict(attrs_dict, maxlength=4096, placeholder='Заметки к рассказу')),
         max_length=4096,

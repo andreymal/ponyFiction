@@ -202,6 +202,19 @@ RECAPTCHA_PUBLIC_KEY = '6LfbstoSAAAAAAcFIteoZTld24mt3s6_sODZnc8J'
 RECAPTCHA_PRIVATE_KEY = '6LfbstoSAAAAAHHN9jYw9Lp9lsunQCILAyAYgoxz'
 SANITIZER_ALLOWED_TAGS = [
     'b', 'i', 'strong', 'em', 's', 'u',
+    'p', 'br', 'hr',
+    'a',
+    'ul', 'ol', 'li',
+    'blockquote', 'sup', 'sub', 'pre', 'small', 'tt'
+]
+
+SANITIZER_ALLOWED_ATTRIBUTES = {
+    'img': ['src', 'alt', 'title', 'width', 'height'],
+    'a': ['href', 'rel', 'title'],
+}
+
+SANITIZER_CHAPTER_ALLOWED_TAGS = [
+    'b', 'i', 'strong', 'em', 's', 'u',
     'h3', 'h4', 'h5',
     'p', 'br', 'hr',
     'img', 'a',
@@ -209,7 +222,7 @@ SANITIZER_ALLOWED_TAGS = [
     'blockquote', 'sup', 'sub', 'pre', 'small', 'tt'
 ]
 
-SANITIZER_ALLOWED_ATTRIBUTES = {
+SANITIZER_CHAPTER_ALLOWED_ATTRIBUTES = {
     'img': ['src', 'alt', 'title', 'width', 'height'],
     'a': ['href', 'rel', 'title'],
 }

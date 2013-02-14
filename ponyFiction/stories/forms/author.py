@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 from ponyFiction.stories.models import Author
 from django.forms import CharField, EmailField, Form, ModelForm, PasswordInput, RegexField, TextInput, Textarea, ValidationError, URLField
-from sanitizer.forms import SanitizedCharField
 
 class AuthorEditProfileForm(ModelForm):
     attrs_dict = {'class': 'input-xlarge'}
-    bio=SanitizedCharField(
+    bio=CharField(
         widget=Textarea(attrs=dict(attrs_dict, maxlength=2048, placeholder='Небольшое описание, отображается в профиле')),
         max_length=2048,
         label='Пару слов о себе',

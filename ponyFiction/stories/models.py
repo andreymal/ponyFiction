@@ -2,7 +2,7 @@
 from django.db import models
 from django.db.models import Count, Sum
 from django.contrib.auth.models import User, UserManager
-from .filters import filter_html, filtered_property
+from .filters import filter_html, filter_chapter_html, filtered_property
 from django.db.models.signals import pre_save
 
 class Author(User):
@@ -23,6 +23,8 @@ class Author(User):
     class Meta:
         verbose_name = "автор"
         verbose_name_plural = "авторы"
+        
+    bio_as_html = filtered_property('bio', filter_html)
 
 class CharacterGroup(models.Model):
 # Модель группы персонажа
@@ -241,6 +243,9 @@ class Story (models.Model):
     # Проверка авторства
     def is_editable_by(self, author):
         return author.is_staff or self.authors.filter(id=author.id).exists()
+    
+    summary_as_html = filtered_property('summary', filter_html)
+    notes_as_html = filtered_property('notes', filter_html)
 
 class Chapter (models.Model):
 # Модель главы
@@ -260,7 +265,11 @@ class Chapter (models.Model):
         verbose_name_plural = "главы"
     
     def __unicode__(self):
-        return '[%s / %s] %s (%s)' % (self.id, self.order, self.title, self.in_story.title)
+        try:
+            return '[%s / %s] %s (%s)' % (self.id, self.order, self.title, self.in_story.title)
+        except:
+            print type(self)
+            raise
 
     def get_prev_chapter(self):
         try:
@@ -282,7 +291,8 @@ class Chapter (models.Model):
     def is_editable_by(self, author):
         return self.in_story.is_editable_by(author)
     
-    text_as_html = filtered_property('text', filter_html)
+    text_as_html = filtered_property('text', filter_chapter_html)
+    notes_as_html = filtered_property('notes', filter_html)
     
 
 def update_chapter_word_count(sender, instance, **kw):
@@ -306,6 +316,8 @@ class Comment(models.Model):
     
     def __unicode__(self):
         return self.text
+    
+    text_as_html = filtered_property('text', filter_html)
 
 class Vote(models.Model):
 # Модель голосований
