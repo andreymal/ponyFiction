@@ -125,10 +125,9 @@ urlpatterns += patterns('',
 
 # Ленты
 urlpatterns += patterns('',
-    url(r'^stream/comments/$', stream_list, {'model': Comment, 'type': 'comments'}, name='stream_comments'),
-    url(r'^stream/stories/$', stream_list, {'model': Story, 'type': 'stories'}, name='stream_stories'),
-    url(r'^stream/submits/$', stream_list, {'model': Story, 'type': 'submits'}, name='stream_submits'),
-    url(r'^stream/chapters/$', stream_list, {'model': Chapter, 'type': 'chapters'}, name='stream_chapters'),
+    url(r'^stream/comments/$', stream_list, {'model': Comment}, name='stream_comments'),
+    url(r'^stream/stories/$', stream_list, {'model': Story}, name='stream_stories'),
+    url(r'^stream/chapters/$', stream_list, {'model': Chapter }, name='stream_chapters'),
 )
 
 # Комментирование
@@ -183,8 +182,7 @@ urlpatterns += patterns('',
     url(r'^terms/$', TemplateView.as_view(template_name='terms.html', get_context_data=lambda: {'page_title': 'Правила'}), name='terms'),
     url(r'^help/$', TemplateView.as_view(template_name='help.html', get_context_data=lambda: {'page_title': 'Помощь'}), name='help'),
 )
-#if settings.DEBUG:
-if True:
+if settings.DEBUG:
     urlpatterns += patterns('',
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
     )

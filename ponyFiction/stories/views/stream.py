@@ -1,24 +1,16 @@
-# -*- coding: utf-8 -*-
 from django.conf import settings
 from django.shortcuts import render
-from django.core.exceptions import PermissionDenied
+from django.views.decorators.csrf import csrf_protect
 
+@csrf_protect
 def stream_list(request, **kwargs):
     model = kwargs.pop('model', None)
-    stream_type = kwargs.pop('type', None)
-    if stream_type == 'comments':
-        object_list = model.published.order_by('-date')[0:settings.COMMENTS_COUNT['stream']]
-        page_title = 'Лента новых комментариев'
-    elif stream_type == 'stories':
-        object_list = model.published.filter(draft=False,approved=True).order_by('-date')[0:settings.STORIES_COUNT['stream']]
-        page_title = 'Лента новых рассказов'
-    elif stream_type == 'chapters':
-        object_list = model.published.order_by('-date')[0:settings.CHAPTERS_COUNT['stream']]
-        page_title = 'Лента новых глав'
-    elif stream_type == 'submits':
-        if not request.user.is_staff:
-            raise PermissionDenied 
-        object_list = model.submitted.order_by('-date')[0:settings.CHAPTERS_COUNT['stream']]
-        page_title = 'Лента новых поступлений'
-    template_name = 'stream/%s.html' % stream_type
+    page_title = kwargs.pop('page_title', None)
+    if model.__name__.lower() == 'comment':
+        object_list = model.objects.order_by('-date')[0:settings.COMMENTS_COUNT['stream']]
+    elif model.__name__.lower() == 'story':
+        object_list = model.published.order_by('-date')[0:settings.STORIES_COUNT['stream']]
+    elif model.__name__.lower() == 'chapter':
+        object_list = model.objects.order_by('-date')[0:settings.CHAPTERS_COUNT['stream']]
+    template_name = 'stream/%s.html' % model.__name__.lower()
     return render(request, template_name, {'object_list': object_list, 'page_title': page_title})
