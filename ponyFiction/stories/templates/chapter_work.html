@@ -84,6 +84,14 @@
 			</fieldset>
 		</form>
 	</div>
+
+    {% if chapter %}
+    <div class="chapter-text">
+        <h1 id="chaptertitle">{{ chapter.title }}</h1>
+        {{ chapter.text_as_html }}
+    </div>
+    {% endif %}
+    
 	<div class="span12">
 		<ul class="breadcrumb">
 			<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>

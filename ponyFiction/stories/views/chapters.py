@@ -74,7 +74,7 @@ def chapter_add(request, story_id):
             chapter.order = (story.chapter_set.aggregate(o=Max('order'))['o'] or 0) + 1
             chapter.save()
             # Перенаправление на страницу редактирования в случае успеха
-            return redirect('story_edit', story.id)
+            return redirect('chapter_edit', story.id, chapter.id)
     else:
         # Отправка пустой формы для добавления рассказа.
         form = ChapterForm()
@@ -102,7 +102,7 @@ def chapter_edit(request, story_id, chapter_id):
         if 'button_delete' in request.POST:
             story.chapter_set.filter(order__gt=chapter.order).update(order=F('order')-1)
             chapter.delete()
-        return redirect('story_edit', story_id)
+            return redirect('story_edit', story_id)
     else:
         # Отправка предварительно заполненной формы с главой
         form = ChapterForm(instance=chapter)
@@ -111,5 +111,11 @@ def chapter_edit(request, story_id, chapter_id):
     Предварительно заполненную - в случае успешного редактирования или начальной отправки
     """
     form.fields['button_submit'].initial = 'Сохранить изменения'
-    data.update({'form': form, 'chapter_edit': True, 'page_title' : u'Редактирование «%s»' % chapter.title, 'story': story })
+    data.update(
+        form = form,
+        chapter_edit = True,
+        page_title = u'Редактирование «%s»' % chapter.title,
+        story = story,
+        chapter = chapter,
+    )
     return render(request, 'chapter_work.html', data)
