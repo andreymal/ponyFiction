@@ -265,11 +265,7 @@ class Chapter (models.Model):
         verbose_name_plural = "главы"
     
     def __unicode__(self):
-        try:
-            return '[%s / %s] %s (%s)' % (self.id, self.order, self.title, self.in_story.title)
-        except:
-            print type(self)
-            raise
+        return '[%s / %s] %s (%s)' % (self.id, self.order, self.title, self.in_story.title)
 
     def get_prev_chapter(self):
         try:
