@@ -20,11 +20,12 @@ def author_info(request, user_id=None):
         template = 'author_dashboard.html'
     else:
         author = get_object_or_404(Author, pk=user_id)
-        published_stories = Story.published.filter(authors__id=user_id).count()
         comments_list = author.comment_set.all()
         data['page_title'] = u'Автор: %s' % author.username
         data['stories'] = author.story_set.filter(draft=False, approved=True)
         template = 'author_overview.html'
+
+    published_stories = Story.published.filter(authors__id=user_id).count()
     comments_count = comments_list.count()
     series = author.series_set.all()
     votes = [Vote.objects.filter(direction=True).filter(story__authors__id=author.id).count(),
