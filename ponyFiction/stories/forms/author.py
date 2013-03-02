@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from ponyFiction.stories.models import Author
 from django.forms import CharField, EmailField, Form, ModelForm, PasswordInput, RegexField, TextInput, Textarea, ValidationError, URLField
-from sanitizer.forms import SanitizedCharField
+from ponyFiction.stories.fields import SanitizedCharField
 
 class AuthorEditProfileForm(ModelForm):
     attrs_dict = {'class': 'input-xlarge'}
@@ -51,6 +51,7 @@ class AuthorEditProfileForm(ModelForm):
         error_messages={'invalid': 'Пожалуйста, исправьте ошибку в логине VK: похоже, он неправильный'},
         required=False
     )
+            
     class Meta:
         model = Author
         fields = ('bio', 'jabber', 'skype', 'tabun', 'forum', 'vk')

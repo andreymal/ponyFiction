@@ -3,7 +3,7 @@ from django.forms import Field, Form, ModelMultipleChoiceField, MultipleChoiceFi
 from ponyFiction.stories.fields import GroupedModelChoiceField
 from ponyFiction.stories.models import Character, Category, Classifier, Rating, Size
 from ponyFiction.stories.widgets import ButtonWidget, ServiceButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesButtons, StoriesRadioButtons, StoriesServiceInput
-from sanitizer.forms import SanitizedCharField
+from ponyFiction.stories.fields import SanitizedCharField
 
 class SearchForm(Form):
     checkbox_attrs={

@@ -3,7 +3,7 @@ from django.forms import CharField, ChoiceField, Field, ModelForm, ModelChoiceFi
 from ponyFiction.stories.fields import GroupedModelChoiceField
 from ponyFiction.stories.models import Character, Category, Classifier, Rating, Size, Story
 from ponyFiction.stories.widgets import ServiceButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesRadioButtons
-from sanitizer.forms import SanitizedCharField
+from ponyFiction.stories.fields import SanitizedCharField
 
 class StoryForm(ModelForm):
     attrs_dict = {'class': 'input-xlarge'}

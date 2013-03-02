@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.forms import CharField, Field, ModelForm, TextInput, Textarea
-from sanitizer.forms import SanitizedCharField
+from ponyFiction.stories.fields import SanitizedCharField
 from ponyFiction.stories.models import Chapter
 from ponyFiction.stories.widgets import ServiceButtonWidget
 from ponyFiction import settings as settings

@@ -2,7 +2,7 @@
 from ponyFiction.stories.models import Comment
 from ponyFiction import settings as settings
 from django.forms import ModelForm, Textarea 
-from sanitizer.forms import SanitizedCharField
+from ponyFiction.stories.fields import SanitizedCharField
 
 
 class CommentForm(ModelForm):
