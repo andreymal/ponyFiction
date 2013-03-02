@@ -1,22 +1,32 @@
+APP = ponyFiction
+SETTINGS = settings
+PWD = $(shell pwd)
+MANAGESCRIPT = django-admin.py
+MANAGE = PYTHONPATH=$(PWD):$(PWD)/$(APP) DJANGO_SETTINGS_MODULE=$(APP).$(SETTINGS) $(MANAGESCRIPT)
+
 all :
 	true
 
-pylint :
+run:
+	$(MANAGE) runserver
+
+install-db:
+	$(MANAGE) syncdb --noinput --migrate
+
+syncdb:
+	$(MANAGE) syncdb --noinput
+
+pylint:
 	pylint --output-format=colorized --rcfile=pylint.ini \
-		bleach \
-		html5lib \
 		ponyFiction \
-		registration \
-		sanitizer \
-		*.py \
-		2>&1 | less -SR
+		*.py 2>&1 | less -SR
 
 pylint-int :
 	pylint --output-format=colorized --rcfile=pylint.ini \
 		ponyFiction \
 		*.py \
-		--int-import-graph=file.dot
+		--int-import-graph=ponyFiction.dot
 
-
-clean :
+clean:
 	find -name '*.pyc' -exec rm -rf '{}' \;
+	

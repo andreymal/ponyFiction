@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Django settings for ponyFiction project.
 import os
-from ponyFiction.stories.apis.sphinxapi import SPH_MATCH_ALL, SPH_RANK_SPH04
+from ponyFiction.apis.sphinxapi import SPH_MATCH_ALL, SPH_RANK_SPH04
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -125,11 +125,10 @@ INSTALLED_APPS = (
     
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'ponyFiction.stories',
+    'ponyFiction',
     'django.contrib.admin',
     'debug_toolbar',
     'registration',
-    'sanitizer'
 )
 
 # A sample logging configuration. The only tangible logging
@@ -189,7 +188,7 @@ STORIES_COUNT = {'page' : 10, 'main' : 5, 'stream' : 10, 'load': 10}
 CHAPTERS_COUNT = {'page' : 10, 'main' : 5, 'stream' : 10, 'load': 10}
 COMMENTS_ORPHANS = 5
 RSS = {'stories': 20, 'chapters': 20, 'comments': 100}
-CUSTOM_USER_MODEL = 'stories.Author'
+CUSTOM_USER_MODEL = 'ponyFiction.Author'
 AUTHENTICATION_BACKENDS = ('ponyFiction.auth_backends.AuthorModelBackend',)
 ACCOUNT_ACTIVATION_DAYS = 5
 EMAIL_HOST = 'localhost'
@@ -203,7 +202,7 @@ RECAPTCHA_PRIVATE_KEY = '6LfbstoSAAAAAHHN9jYw9Lp9lsunQCILAyAYgoxz'
 SANITIZER_ALLOWED_TAGS = [
     'b', 'i', 'strong', 'em', 's', 'u',
     'h3', 'h4', 'h5',
-    'p', 'br', 'hr',
+    'br', 'hr',
     'img', 'a',
     'ul', 'ol', 'li',
     'blockquote', 'sup', 'sub', 'pre', 'small', 'tt'
