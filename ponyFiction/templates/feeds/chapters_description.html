@@ -1,0 +1,4 @@
+{% load url from future %}
+{{ obj.text|truncatewords_html:50|safe }}
+<br />
+<small>(<a href="{% url 'story_view' obj.story_id %}">{{ obj.story.title }}</a> от <a href="{% url 'author_overview' obj.story.authors.all.0.id %}">{{ obj.story.authors.all.0.username }}</a>)</small>

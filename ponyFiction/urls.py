@@ -2,14 +2,14 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
-from ponyFiction.stories import feeds
-from ponyFiction.stories.views import search, ajax, author, comment, DirectTemplateView # TODO: заменить на это! 
-from ponyFiction.stories.views.index import index
-from ponyFiction.stories.views.stream import stream_list
+from ponyFiction import feeds
+from ponyFiction.views import search, ajax, author, comment, DirectTemplateView # TODO: заменить на это! 
+from ponyFiction.views.index import index
+from ponyFiction.views.stream import stream_list
 from django.contrib.auth import views as auth_views
 from registration.views import activate, register
-from ponyFiction.stories.forms.register import AuthorRegistrationForm
-from ponyFiction.stories.models import Comment, Story, Chapter
+from ponyFiction.forms.register import AuthorRegistrationForm
+from ponyFiction.models import Comment, Story, Chapter
 from django.views.generic import TemplateView
 
 admin.autodiscover()
@@ -25,7 +25,7 @@ urlpatterns += patterns('',
 )
 # Избранное
 urlpatterns += patterns('',
-    url(r'^accounts/(?P<user_id>\d+)/favorites/$', 'ponyFiction.stories.views.favorites.favorites_view', name='favorites'),
+    url(r'^accounts/(?P<user_id>\d+)/favorites/$', 'ponyFiction.views.favorites.favorites_view', name='favorites'),
 )
 # Обработка пользовательских адресов
 urlpatterns += patterns('',
@@ -146,7 +146,7 @@ urlpatterns += patterns('',
 )
 
 # Работа с рассказами
-urlpatterns += patterns('ponyFiction.stories.views.stories',
+urlpatterns += patterns('ponyFiction.views.stories',
     # Просмотр
     url(r'^story/(?P<story_id>\d+)/$', 'story_view', name='story_view'),
     # Добавление
@@ -161,7 +161,7 @@ urlpatterns += patterns('ponyFiction.stories.views.stories',
     url(r'^story/(?P<story_id>\d+)/delete/$', 'story_work', {'delete': True}, name='story_delete'),
 )
 # Работа с главами
-urlpatterns += patterns('ponyFiction.stories.views.chapters',
+urlpatterns += patterns('ponyFiction.views.chapters',
     # Просмотр одной
     url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/$','chapter_view', name='chapter_view_single'),
     # Просмотр всех глав

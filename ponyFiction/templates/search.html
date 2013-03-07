@@ -1,0 +1,187 @@
+{% extends "common.html" %}
+{% load url from future %}
+{% load pluralize %}
+{% block content %}
+{% load static %}
+<div class="row search-page">
+	<!-- Навигация -->
+	<div class="span12">
+		<ul class="breadcrumb">
+			<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li class="active">{{ page_title }}</li>
+		</ul>   
+	<!-- Поиск -->
+		<h1>Поиск рассказов</h1>
+		<div>
+		<form action="/search/" method="POST" enctype="multipart/form-data" name="search" id="searchform" class="form-horizontal">
+		{% csrf_token %}
+			<fieldset>
+				<div class="padded">
+					<!-- Поле поиска -->
+					{{ form.search_query }}
+				
+					<!-- Тип поиска -->
+					<span class="bootstrap radio">{{ form.search_type }}</span>
+				</div>
+				
+				
+				
+				<!-- Сортировка результатов поиска -->
+				{{ form.button_sort }}
+				
+				<!-- Фильтры поиска -->
+				{{ form.button_filters }}
+				
+				<!-- Тонкая настройка поиска -->
+				{{ form.button_advanced }}
+				
+				
+				<!--Начало спойлера -->
+				<div id="more-sort" class="collapse">
+				<h3>Сортировать по: <sup>Это пока не работает.</sup></h3>
+					<button class="btn">Дате публикации</button>
+					<button class="btn">Рейтингу</button>
+					<button class="btn">Размеру</button>
+					<button class="btn">Комментируемости</button>
+					
+				</div>
+				<!-- Конец спойлера -->
+				
+				<!--Начало спойлера -->
+				<div id="more-filters" class="collapse">
+				<!-- Жанры -->
+				<h3>Фильтровать по:</h3>
+				<p class="genres-select">{{ form.categories_select }}</p>
+				
+				<!-- Персонажи -->
+				<div class="characters-select" >{{ form.characters_select }}</div>
+
+				</div>
+				<!-- Конец спойлера -->
+				
+				<!--Начало спойлера -->
+				<div id="more-info" class="collapse">
+				
+				<h3>Дополнительные настройки поиска:</h3>
+				<!-- Оригинал/перевод -->
+				<div class="padded bootstrap checkboxes">{{ form.originals_select }}</div>
+								
+				<!-- Статус рассказа -->
+				<div class="padded bootstrap checkboxes">{{ form.finished_select }}</div>
+				
+				<!-- Заморожен/активен -->
+				<div class="padded bootstrap checkboxes">{{ form.freezed_select }}</div>
+						
+				<!-- Размер -->
+				<div class="padded bootstrap checkboxes">{{ form.sizes_select }}</div>
+				
+				<!-- Рейтинг -->
+				<div class="padded bootstrap checkboxes">{{ form.ratings_select }}</div>
+				
+				<!-- События -->
+				<div class="control-group"><label class="control-label">События</label><div class="controls events">{{ form.classifications_select }}</div></div>
+					
+				</div>
+				<!-- Конец спойлера -->
+				
+				<!-- Отправка формы -->
+				<p class="form-sumbit">{{ form.button_submit }} {{ form.button_reset }}</p>
+				
+			</fieldset>
+		</form>
+		</div>
+	</div>
+	<!-- Результаты: начало вывода -->
+	<div class="span9 search-results tab-content">
+		{% if search_type == '0' %}
+			<!-- Рассказы: начало вывода -->
+			{% if result %}<div class="story-item"><h3>Всего нашли {{ total|rupluralize:'рассказ,рассказа,рассказов' }}</h3></div>{% endif %}
+			{% for story in result %}
+				<!-- Рассказ "{{ story.title }}": начало вывода -->
+				<div class="story-item">	
+					<h3><a href="{% url 'story_view' story.id %}">{{ story.title }}</a>
+        				<sup><span class="upvotes">{{ story.vote_up_count }}</span> / <span class="downvotes">{{ story.vote_down_count }}</span></sup>
+        				{%if not story.finished %}<sup class="incomplete">Не закончен</sup>{% else %}<sup class="complete">Закончен</sup>{% endif%} {% if story.freezed %}<sup class="suspended">Заморожен</sup>{% endif %}
+        			</h3>
+					<p class="meta">
+						{% spaceless %}
+							<span class="category-list">
+			         			{% for category in story.categories.all %}
+			         				<a class="gen gen-{{ category.id }}" href="{% url 'search_simple' 'category' category.id %}">{{ category.name }}</a>
+			         			{% endfor %}
+			       		</span>
+		        		{% endspaceless %}	
+						{{ story.words|rupluralize:'слово,слова,слов' }} и {{ story.chapter_set.count|rupluralize:'глава,главы,глав' }} от 
+						{% for author in story.authors.all %}
+		          			{% if forloop.counter == 1 %}
+					        	<a class="authorlink" href="{% url 'author_overview' author.id %}">{{author.username}}</a>
+					        	{% if story.authors.all.count > 1 %}(в соавторстве с{% endif %}
+					        {% endif %}
+					        {% if forloop.counter > 1 %}           	        	
+								<a class="authorlink" href="{% url 'author_overview' author.id %}">{{author.username}}</a>{% if forloop.revcounter0 == 1 %} и {% endif %}{% if forloop.revcounter0 > 1 %}, {% endif %}
+							{% endif %}
+		          			{% if forloop.revcounter0 == 0 and story.authors.all.count > 1 %}){% endif %}
+		        		{% endfor %}
+        			</p>
+					<p>{{ story.summary }}</p>
+        			<p class="meta">
+						{% spaceless %}
+		         			<span class="character-list">
+		         				{% for character in story.characters.all %}
+			       					<a href="{% url 'search_simple' 'character' character.id %}"><img src="{% get_static_prefix %}i/characters/{{ character.id }}.png" alt="{{ character.name }}" title="{{ character.name }}"/></a>
+	        					{% endfor %}
+	        				</span>
+		        		{% endspaceless %}
+					</p>
+				</div>
+				<!-- Рассказ "{{ story.title }}": конец вывода -->
+			{% empty %}
+			<div class="story-item"><h3>Рассказов не найдено</h3></div>
+			{% endfor %}
+			<!-- Рассказы: конец вывода -->
+		{% else %}
+			<!-- Главы: начало вывода -->
+			{% if result %}<div class="story-item"><h3>Всего нашли {{ total|rupluralize:'главу,главы,глав' }}</h3></div>{% endif %}
+			{% for chapter, excerpt in result %}
+				<div class="story-item">
+					<h3><a href="{% url 'chapter_view_single' chapter.story_id chapter.order %}">{{ chapter.title }}</a></h3>
+					<p>{{ excerpt|safe }}</p>
+      				<p class="meta">Глава из рассказа <b><a href="{% url 'story_view' chapter.story_id %}">{{ chapter.story.title }}</a></b> от <a class="authorlink" href="{% url 'author_overview' chapter.story.authors.all.0.id %}">{{ chapter.story.authors.all.0.username }}</a></p>
+    			</div>
+			{% endfor %}
+			<!-- Главы: конец вывода -->
+		{% endif %}
+		{% if result %}
+				<!-- Пагинация: начало вывода -->
+					<div id="pagination" class="center">
+						{% for page_head_id in pagination.head_range %}
+			        		<input form="searchform" type="submit" class="btn{% if page_head_id = pagination.current %} btn-primary{% endif %}" name="page_current" value="{{ page_head_id }}" >
+			        	{% endfor %}
+			        	{% if pagination.head_dots %}
+			        		<span class="pagination-dots">…</span>
+			        	{% endif %}
+			        	{% for page_local_id in pagination.locality_range %}
+			        		<input form="searchform" type="submit" class="btn{% if page_local_id = pagination.current %} btn-primary{% endif %}" name="page_current" value="{{ page_local_id }}" >
+			        	{% endfor %}
+			        	{% if pagination.tail_dots %}
+			        		<span class="pagination-dots">…</span>
+			        	{% endif %}
+			        	{% for page_tail_id in pagination.tail_range %}
+			        		<input form="searchform" type="submit" class="btn{% if page_tail_id = pagination.current %} btn-primary{% endif %}" name="page_current" value="{{ page_tail_id }}" >
+			        	{% endfor %}
+			      	</div>
+		      	<!-- Пагинация: конец вывода -->
+		{% endif %}
+	</div>
+	<!-- Результаты: конец вывода -->
+
+	<!-- Навигация: начало вывода -->
+	<div class="span12">
+		<ul class="breadcrumb">
+			<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li class="active">{{ page_title }}</li>
+		</ul>   
+	</div>
+	<!-- Навигация: конец вывода -->
+</div>
+{% endblock %}

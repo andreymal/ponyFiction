@@ -1,0 +1,141 @@
+{% extends "common.html" %}
+{% load url from future %}
+{% load pluralize %}
+{% load stories %}
+{% block content %}
+{% load static %}
+<div class="row">
+	<div class="span12 story-page">
+        <ul class="breadcrumb">
+        	<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+        	<li class="active">{{ page_title }}</li>
+        </ul>   
+        
+    	<h1 id="story_title">{{ story.title }} 
+    		<span class="vote"><a class="upvote" id="vote-up">{{ story.vote_up_count }}</a> / <a class="downvote" id="vote-down">{{ story.vote_down_count }}</a></span>
+    		{% if story.finished %} <sup class="complete">завершен</sup>{% endif %}{% if story.freezed %}<sup>, </sup><sup class="suspended">заморожен</sup>{% endif %} 
+        	{% if story|is_editable_by:user %}
+	        	<span class="story-control-btn">
+					{% if story.draft %}
+						<a class="btn btn-primary btn-mini" href="{% url 'story_publish' story.id %}">Опубликовать</a>
+					{% else %}
+						<a class="btn btn-mini" href="{% url 'story_publish' story.id %}">В черновики</a>
+					{% endif %}
+					<a class="btn btn-warning btn-mini" href="{% url 'story_edit' story.id %}">Редактировать</a>
+					<a class="btn btn-danger btn-mini" href="{% url 'story_delete' story.id %}">Удалить</a>
+					{% if user.is_staff %}
+						{% if not story.approved %}
+							<a class="btn btn-success btn-mini" href="{% url 'story_approve' story.id %}">Одобрить</a>
+						{% else %}
+							<a class="btn btn-mini" href="{% url 'story_approve' story.id %}">Отменить</a>
+						{% endif %}
+					{% endif %}
+	        	</span>
+        	{% endif %}
+        	<span id="vote-msg"></span>
+      	</h1>
+		{% spaceless %}
+			<p class="story-genres">
+				{% for category in story.categories.all %}
+        			<a class="gen gen-{{ category.id }}" href="{% url 'search_simple' 'category' category.id %}">{{ category.name }}</a>
+      			{% endfor %}
+			</p>		
+			<p class="story-thumbnails">
+				{% for character in story.characters.all %}
+	     			<a href="{% url 'search_simple' 'character' character.id %}"><img src="{% get_static_prefix %}i/characters/{{ character.id }}.png" alt="{{ character.name }}" title="{{ character.name }}"/></a>
+      			{% endfor %}
+			</p>
+		{% endspaceless %}
+		
+		<p>Написал: 
+			{% for author in story.authors.all %}
+	        	{% if forloop.counter == 1 %}
+	           		<a class="authorlink" href="{% url 'author_overview' author.id %}">{{author.username}}</a>
+	           		{% if story.authors.all.count > 1 %}(в соавторстве с{% endif %}
+	           	{% endif %}
+	            {% if forloop.counter > 1 %}           	        	
+					<a class="authorlink" href="{% url 'author_overview' author.id %}">{{author.username}}</a>{% if forloop.revcounter0 == 1 %} и {% endif %}{% if forloop.revcounter0 > 1 %}, {% endif %}
+				{% endif %}
+	           	{% if forloop.revcounter0 == 0 and story.authors.all.count > 1 %}){% endif %}
+            {% endfor %}
+		</p>
+        
+        <p class="story-description">{{ story.summary|safe }}</p>        
+		
+		{% if story.notes %}
+			<p>Заметки к рассказу: {{ story.notes|safe }}</p>
+		{% endif %}
+  		
+  		<button class="btn btn-collapse btn-small" data-toggle="collapse" data-target="#more-info">Подробности и статистика</button>
+		
+		<div id="more-info" class="collapse">
+			<p>
+				Рейтинг: <a href="{% url 'search_simple' 'rating' story.rating.id %}">{{ story.rating.name }}</a><br/>
+    			Размер: <a href="{% url 'search_simple' 'size' story.size.id %}">{{ story.size.name }}</a><br/>
+    			События: {% for classifier in story.classifications.all %}<a href="{% url 'search_simple' 'classifier' classifier.id %}">{{ classifier.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}<br/>
+    			Просмотров: {{ story.views }}<br/> Опубликован: {{ story.date|date:"d.m.Y" }}<br/> Изменен: {{ story.updated|timesince }} назад
+    		</p>
+  		</div>
+  		
+  		<div class="story-chapters">
+  			{% if chapters.count > 1 %}
+  				<h2>Содержание</h2>
+				{% include "story_panel.html" %}
+  				<ul id="story_chapters">
+					{% for chapter in chapters %}
+						<li><h4><a href="{% url 'chapter_view_single' story.id chapter.order %}">{{ chapter.title }}</a></h4>
+    					{{ chapter.words|rupluralize:'слово,слова,слов' }}, {{ chapter.views|rupluralize:'просмотр,просмотра,просмотров' }}<li>
+					{% endfor %}
+  				</ul>
+  			{% else %}	
+                {% with chapter=chapters.0 %}
+				<h2 id="chaptertitle">{{ chapter.title }}</h2>
+				{% include "story_panel.html" %}
+				
+				<div class="chapter-text">
+					{{ chapter.text_as_html }}
+				</div>
+                {% endwith %}
+			{% endif %}
+		</div>
+		<!-- Вывод комментариев: начало -->
+		<div id="comments">
+      		<h3>Комментарии ({{ story.comment_set.count }})</h3>
+	      	<div id="comments-list">
+	      		{% for comment in comments %}
+	      			<div class="comment-item" id="comment-{{ comment.id }}">
+			        	<p class="comment-meta"><a class="comment_user" href="{% url 'author_overview' comment.author.id %}">{{ comment.author.username }}</a> <span class="comment-date">{{ comment.date|date:"d.m.Y" }}</span></p>
+	        			<p class="comment_text">{{ comment.text|safe }}</p>
+	      			</div>
+	      		{% endfor %}
+	      	</div>
+			<div id="pagination" class="center">
+	        	<input type="submit" class="btn" value="&laquo;" onclick="getComments('first')">
+	        	<input type="submit" class="btn" value="&lsaquo;" onclick="getComments('prev')">
+	        	<input type="text" onchange="getComments($(this).val())" id="comments-goto-page" class="input-xlarge" placeholder="1 / {{ num_pages }}">
+	        	<input type="submit" class="btn" value="&rsaquo;" onclick="getComments('next')">
+	        	<input type="submit" class="btn" value="&raquo;" onclick="getComments('last')">
+	        	<input type="hidden" id="page_current" value="1">
+	        	<input type="hidden" id="num-pages" value="{{ num_pages }}">
+	      	</div>
+      	</div>
+      	<!-- Вывод комментариев: конец -->
+      	
+      	<!-- Вывод формы: начало -->
+      	<form action="{% url 'comment_story' story.id %}" method="POST" enctype="multipart/form-data" class="">
+      	{% csrf_token %}
+	      	<legend>Добавить комментарий</legend>
+	      	<div class="control-group">
+				<div class="controls">	
+					{{ comment_form.text }}			
+				</div>
+				<div class="controls">
+					<button class="btn btn-primary" type="submit">Отправить</button>
+				</div>
+			</div>
+		</form>
+      	<!-- Вывод формы: конец -->
+      	
+    </div>
+</div>
+{% endblock %}

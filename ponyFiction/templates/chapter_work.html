@@ -1,0 +1,96 @@
+{% extends "common.html" %}
+{% load url from future %}
+{% block content %}
+<div class="row">
+	<div class="span12">
+		<ul class="breadcrumb">
+			<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>
+			<li><a href="{% url 'story_edit' story.id %}">Редактирование «{{ story.title }}»</a> <span class="divider">/</span></li>
+			<li class="active">Добавление главы</li>
+		</ul>
+	</div>
+	<div class="span12">
+		{% if not chapter_edit %}
+			<h1>Добавление новой главы к рассказу «{{ story.title }}»</h1>
+		{% else %}
+			<h1>Редактирование главы рассказа «{{ story.title }}»</h1>
+		{% endif %}
+		<p>Перед добавлением главы рекомендуем прочитать <a href="{% url 'terms' %}">правила</a>, <a href="{% url 'help' %}">инструкции</a> и <a href="{% url 'faq' %}">FAQ</a>. Они сделают вашу жизнь и жизни читателей проще.</p>
+		<form method="POST" enctype="multipart/form-data" name="search" id="searchform" class="form-horizontal">
+		{% csrf_token %}
+			<fieldset>
+				<!-- Название -->
+				<div class="control-group{% if form.title.errors %} error{% endif %}">
+					<label class="control-label">{{ form.title.label }}</label>
+					<div class="controls">{{ form.title }}
+					{% if form.title.errors %}
+						{% for error in form.title.errors %}
+						<span class="help-inline">{{ error }}</span>
+						{% endfor %}
+					{% else %}
+						<span class="help-inline small">{{ form.title.help_text }}</span>
+					{% endif %}
+          </div>
+				</div>
+				<!-- Заметки к главе -->
+			    <div class="control-group{% if form.notes.errors %} error{% endif %}">
+					<label class="control-label">{{ form.notes.label }}</label>
+					<div class="controls">{{ form.notes }}
+					{% if form.notes.errors %}
+						{% for error in form.notes.errors %}
+						<span class="help-inline">{{ error }}</span>
+						{% endfor %}
+					{% else %}
+						<span class="help-inline small">{{ form.notes.help_text }}</span>
+					{% endif %}
+          </div>
+				</div>
+				<!-- Текст главы -->
+			    <div class="control-group{% if form.text.errors %} error{% endif %}">
+					<label class="control-label">{{ form.text.label }}</label>
+					<div class="controls">{{ form.text }}
+					{% if form.text.errors %}
+						{% for error in form.text.errors %}
+						<span class="help-inline">{{ error }}</span>
+						{% endfor %}
+					{% else %}
+						<!--<span class="help-inline small">-->{{ form.text.help_text }}<!--</span>-->
+					{% endif %}
+          </div>
+				</div>
+				<div class="form-actions notop">
+					{{ form.button_submit }}
+      				{% if chapter_edit %}
+	      				<!-- Псевдокнопка активации модального окна подтверждения -->
+	      				<input href="#delete_story" class="btn btn-danger" type="button" data-toggle="modal" value="Удалить главу">
+	      				<!-- Modal -->
+						<div id="delete_story" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+							<div class="modal-header">
+						    	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						    	<h3 id="myModalLabel">Удаление главы</h3>
+							</div>
+							<div class="modal-body">
+								<p>Вы действительно хотите удалить главу?</p>
+								<p>Вся связанная статистика, оценки и комментарии также будут безвозвратно удалены!</p>
+							</div>
+							<div class="modal-footer">
+								<button class="btn" data-dismiss="modal" aria-hidden="true">Отменить</button>
+								{{ form.button_delete }}
+							</div>
+						</div>
+					{% endif %}
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	<div class="span12">
+		<ul class="breadcrumb">
+			<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>
+			<li><a href="{% url 'story_edit' story.id %}">Редактирование «{{ story.title }}»</a> <span class="divider">/</span></li>
+			<li class="active">Добавление главы</li>
+		</ul>
+	</div>
+</div>
+{% endblock %}

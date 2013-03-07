@@ -1,13 +1,6 @@
-env
-ponyFiction/local_settings.py
-
 syntax: glob
-sphinx/*
-debug_toolbar/*
-*.sqlite
 
-
-syntax: regexp
-^debug_toolbar$
-syntax: regexp
-^html5lib$
+sphinx
+.settings
+.project
+.pydevproject

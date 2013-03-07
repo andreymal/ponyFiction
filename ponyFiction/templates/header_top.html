@@ -1,0 +1,64 @@
+{% load url from future %}
+{% load random_stories %}
+{% load submitted_stories_count %}
+<!-- Container start -->
+<div class="container">
+	<!-- Header start -->
+	<div class="page-header">
+		<ul class="servicelinks">
+			<li>&nbsp;</li>
+		</ul>
+
+		<a title="Подписаться на RSS поток" href="{% url 'feeds_atom_stories' %}" class="rss"></a>
+		<a title="Твиттер Everypony.ru" href="https://twitter.com/#!/everypony_ru" class="twitter"></a>
+    
+		<ul class="main-menu">
+			<li id="logolink"><a href="{% url 'index' %}">Библиотека</a></li>
+
+			<li><a href="http://everypony.ru">Блог</a></li>
+			<li><a href="http://forum.everypony.ru">Форум</a></li>
+			<li><a href="http://wiki.everypony.ru">Вики</a></li>
+			<li><a href="http://tabun.everypony.ru">Табун</a></li>
+			<li><a href="http://stories.everypony.ru">Рассказы</a></li>
+		</ul>
+	</div>
+	<!-- Header end -->
+	
+	<!-- Logo image and carousel start -->
+	<div class="logopic">
+		<div id="myCarousel" class="carousel">
+			<!-- Картинки в карусельке -->
+			{% random_stories %}
+		</div>
+	</div>
+	<!-- Logo image and carousel end -->
+
+	<!-- Menu start -->
+	<ul class="nav nav-pills">
+		<li><a href="{% url 'index' %}">Главная</a></li>
+		<li><a href="{% url 'search' %}">Поиск рассказов</a></li>
+  	
+  		{% if user.is_authenticated %}
+    		<li><a href="{% url 'favorites' user.id %}">Избранное</a></li>
+    		<!--<li><a href="#">Закладки</a></li>-->
+    		<li class="right"><a href="{% url 'auth_logout' %}">Выход</a></li>
+    		<li class="right"><a href="{% url 'author_overview' user.id %}">Профиль</a></li>
+    		<li class="right"><a class="active" href="{% url 'author_dashboard' %}">Кабинет автора</a></li>
+    		<li class="right"><a href="{% url 'story_add' %}">Добавить рассказ</a></li>
+    		{% if user.is_staff %}
+    			<li class="right"><a href="#">Новые поступления ({% submitted_stories_count %})</a></li>
+    		{% endif %}
+  		{% else %}
+    		<li><a href="{% url 'registration_register' %}">Регистрация</a></li>
+        <li class="right">
+	    		<form class="login-form form-inline" action="{% url 'auth_login' %}" method="POST" enctype="multipart/form-data">
+	    			{% csrf_token %}
+	      			<input id="id_username" type="text" name="username" placeholder="Логин" class="input-small" maxlength="30">
+	      			<input type="password" name="password" id="id_password" placeholder="Пароль" class="input-small">
+	      			<button class="btn" type="submit">Войти</button>
+	      			<a href="{% url 'password_reset' %}">Забыл<br/> пароль</a>
+	    		</form>
+    		</li>
+  		{% endif %}
+	</ul>
+	<!-- Menu end -->
