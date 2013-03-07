@@ -25,7 +25,7 @@ pylint-int :
 	pylint --output-format=colorized --rcfile=pylint.ini \
 		ponyFiction \
 		*.py \
-		--int-import-graph=ponyFiction.dot
+		--int-import-graph=ponyFiction.dot > /dev/null
 
 clean:
 	find -name '*.pyc' -exec rm -rf '{}' \;
