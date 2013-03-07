@@ -60,10 +60,10 @@
             {% endfor %}
 		</p>
         
-        <p class="story-description">{{ story.summary|safe }}</p>        
+        <p class="story-description">{{ story.summary_as_html }}</p>        
 		
 		{% if story.notes %}
-			<p>Заметки к рассказу: {{ story.notes|safe }}</p>
+			<p>Заметки к рассказу: {{ story.notes_as_html }}</p>
 		{% endif %}
   		
   		<button class="btn btn-collapse btn-small" data-toggle="collapse" data-target="#more-info">Подробности и статистика</button>
@@ -105,7 +105,7 @@
 	      		{% for comment in comments %}
 	      			<div class="comment-item" id="comment-{{ comment.id }}">
 			        	<p class="comment-meta"><a class="comment_user" href="{% url 'author_overview' comment.author.id %}">{{ comment.author.username }}</a> <span class="comment-date">{{ comment.date|date:"d.m.Y" }}</span></p>
-	        			<p class="comment_text">{{ comment.text|safe }}</p>
+	        			<p class="comment_text">{{ comment.text_as_html }}</p>
 	      			</div>
 	      		{% endfor %}
 	      	</div>

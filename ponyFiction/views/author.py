@@ -12,7 +12,7 @@ from ponyFiction.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm
 def author_info(request, user_id=None):
     data = {}
     if user_id is None:
-        author = Author.objects.get(pk=request.user.id)
+        author = request.user
         comments_list = Comment.objects.filter(story__authors=request.user.id)
         data['all_views'] = StoryView.objects.filter(story__authors=author).count()
         data['page_title'] = 'Мой кабинет'
@@ -25,8 +25,8 @@ def author_info(request, user_id=None):
         data['stories'] = author.story_set.filter(draft=False, approved=True)
         template = 'author_overview.html'
 
-    published_stories = Story.published.filter(authors__id=user_id).count()
     comments_count = comments_list.count()
+    published_stories = Story.published.filter(authors=author).count()
     series = author.series_set.all()
     votes = [Vote.objects.filter(direction=True).filter(story__authors__id=author.id).count(),
              Vote.objects.filter(direction=False).filter(story__authors__id=author.id).count()]

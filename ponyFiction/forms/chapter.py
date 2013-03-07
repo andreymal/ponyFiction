@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.forms import CharField, Field, ModelForm, TextInput, Textarea
-from ponyFiction.fields import SanitizedCharField
 from ponyFiction.models import Chapter
 from ponyFiction.widgets import ServiceButtonWidget
-from ponyFiction import settings as settings
 
 class ChapterForm(ModelForm):
     """
@@ -26,7 +24,7 @@ class ChapterForm(ModelForm):
         required=False,
     )
     # Заметки к главе
-    notes=SanitizedCharField(
+    notes=CharField(
         required=False,
         widget=Textarea(attrs=dict(attrs_dict, rows=4, cols=10, maxlength=4096, placeholder='Заметки к главе')),
         max_length=4096,

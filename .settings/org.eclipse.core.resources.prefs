@@ -1,5 +1,6 @@
 eclipse.preferences.version=1
 encoding//ponyFiction/feeds.py=utf-8
+encoding//ponyFiction/forms/author.py=utf-8
 encoding//ponyFiction/models.py=utf-8
 encoding//ponyFiction/settings.py=utf-8
 encoding//ponyFiction/urls.py=utf-8

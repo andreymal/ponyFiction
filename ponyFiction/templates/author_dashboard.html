@@ -144,7 +144,7 @@
 	    	{% for comment in comments %}
 		        <div class="comment-item" id="comment-{{ comment.id }}">
 	        	   	<p class="comment-meta"><span class="comment-date">{{ comment.date|date:"d.m.Y" }} к рассказу <a href="{% url 'story_view' comment.story_id %}">{{ comment.story.title }}</a></span></p>
-		          	<p class="comment_text">{{ comment.text|safe }}</p>
+		          	<p class="comment_text">{{ comment.text_as_html }}</p>
 	        	</div> 
 		    {% endfor %} 
     	</div>
