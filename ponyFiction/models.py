@@ -178,13 +178,13 @@ class Series(models.Model):
 
 
 class PublishedManager(models.Manager):
-        def get_query_set(self):
-            return super(PublishedManager, self).get_query_set().filter(draft=False, approved=True)
+    def get_query_set(self):
+        return super(PublishedManager, self).get_query_set().filter(draft=False, approved=True)
 
 class SubmittedManager(models.Manager):
-        def get_query_set(self):
-            return super(SubmittedManager, self).get_query_set().filter(draft=False, approved=False)
-        
+    def get_query_set(self):
+        return super(SubmittedManager, self).get_query_set().filter(draft=False, approved=False)
+    
 class Story (models.Model):
 # Модель рассказа
     authors = models.ManyToManyField(Author, null=True, through='CoAuthorsStory', verbose_name=u"Авторы")

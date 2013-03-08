@@ -4,5 +4,6 @@ encoding//ponyFiction/forms/author.py=utf-8
 encoding//ponyFiction/models.py=utf-8
 encoding//ponyFiction/settings.py=utf-8
 encoding//ponyFiction/urls.py=utf-8
+encoding//ponyFiction/views/ajax.py=utf-8
 encoding//ponyFiction/views/favorites.py=utf-8
 encoding//ponyFiction/views/index.py=utf-8

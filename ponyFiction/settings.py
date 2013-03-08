@@ -221,7 +221,7 @@ SANITIZER_CHAPTER_ALLOWED_TAGS = [
     'blockquote', 'sup', 'sub', 'pre', 'small', 'tt'
 ]
 
-SANITIZER_ALLOWED_ATTRIBUTES = {
+SANITIZER_CHAPTER_ALLOWED_ATTRIBUTES = {
     'img': ['src', 'alt', 'title', 'width', 'height'],
     'a': ['href', 'rel', 'title'],
 }

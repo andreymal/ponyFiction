@@ -445,18 +445,6 @@ $(function(){
             $('.loader').fadeOut('fast');
         }
     });
-    // Подгрузка избранного
-    var re_storyfaved = new RegExp('/accounts/[0-9]+/favorites/')
-    if (re_storyfaved.test(window.location.pathname)) {
-    	getStories('flow');
-		$(window).scroll(function() {
-			if (($('.container').height()+20 == $(window).height()+$(this).scrollTop())){
-	        	$('.loader').fadeIn('fast');
-	            getStories('flow');
-	            $('.loader').fadeOut('fast');
-	        }
-    	});
-    }
     // Подгрузка глав по прокрутке
 	$(window).scroll(function() {
 		if (window.location.pathname == "/stream/chapters/" && ($('.container').height()+20 == $(window).height()+$(this).scrollTop())){
