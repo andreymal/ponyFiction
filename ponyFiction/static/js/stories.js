@@ -55,7 +55,7 @@ function processComments(comments_array, request) {
         // Выносим данные для удобства
         c_i = 'comment-'+comments_array[comment]['comment_id']
         c_t_d = new Date(comments_array[comment]['date'])
-        c_d = c_t_d.getDate() +'.'+c_t_d.getMonth()+'.'+c_t_d.getFullYear()
+        c_d = c_t_d.getDate() +'.'+(c_t_d.getMonth()+1)+'.'+c_t_d.getFullYear()
         c_t = comments_array[comment]['text'];
         u_i = comments_array[comment]['author_id'];
         u_p = comments_array[comment]['author_name'];
