@@ -16,7 +16,7 @@ def story_view(request, story_id):
     comments_list = story.comment_set.all()
     paged = Paginator(comments_list, settings.COMMENTS_COUNT['page'], orphans=settings.COMMENTS_ORPHANS)
     num_pages = paged.num_pages
-    comments = paged.page(1).object_list
+    comments = paged.page(1)
     page_title = story.title
     comment_form = CommentForm()
     if request.user.is_authenticated():

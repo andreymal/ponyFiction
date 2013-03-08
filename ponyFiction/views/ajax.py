@@ -41,24 +41,6 @@ def ajax_stories(request):
     message = makeStoriesAjaxResponse(stories_list, data)
     return HttpResponse(message)
 
-def ajax_favorites(request, user_id):
-    if request.method == 'GET' and request.is_ajax():
-        try:
-            data = loads(request.GET['data'])
-        except:
-            raise ValueError
-        else:
-            if not Author.objects.filter(id=1).exists():
-                raise Http404
-            else:
-                author = Author.objects.get(id=user_id)
-                stories_list = author.favorites_story_set.published.order_by('-favorites_set__date')
-    else:
-        raise Http404
-    message = makeStoriesAjaxResponse(stories_list, data)
-    return HttpResponse(message)
-
-
 def ajax_chapters(request):
     if request.method == 'GET' and request.is_ajax():
         try:

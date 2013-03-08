@@ -1,6 +1,7 @@
 syntax: glob
-
 sphinx
-.settings
 .project
 .pydevproject
+
+syntax: regexp
+^ponyFiction/.settings$

@@ -25,7 +25,8 @@ urlpatterns += patterns('',
 )
 # Избранное
 urlpatterns += patterns('',
-    url(r'^accounts/(?P<user_id>\d+)/favorites/$', 'ponyFiction.views.favorites.favorites_view', name='favorites'),
+    url(r'^accounts/(?P<user_id>\d+)/favorites/$', 'ponyFiction.views.favorites.favorites_view', {'page_id': 1}, name='favorites'),
+    url(r'^accounts/(?P<user_id>\d+)/favorites/page/(?P<page_id>\d+)$', 'ponyFiction.views.favorites.favorites_view', name='favorites_page'),
 )
 # Обработка пользовательских адресов
 urlpatterns += patterns('',
@@ -118,8 +119,6 @@ urlpatterns += patterns('',
     url(r'^story/(?P<story_id>\d+)/favorite$', ajax.favorites_work, name='favorites_work'),
     # Добавление в избранное главы (workaround, пока добавляется весь рассказ)
     url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_id>\d+)/favorite$', ajax.favorites_work, name='favorites_work'),
-    # Подгрузка избранного
-    url(r'^accounts/(?P<user_id>\d+)/favorites/ajax$', ajax.ajax_favorites),
 
 )
 
