@@ -2,6 +2,4 @@ syntax: glob
 sphinx
 .project
 .pydevproject
-
-syntax: regexp
-^ponyFiction/.settings$
+.settings

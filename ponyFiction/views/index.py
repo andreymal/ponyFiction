@@ -9,7 +9,7 @@ def index(request):
     page_title = 'Главная'
     categories = Category.objects.all()
     stories = Story.published.order_by('-date')[0:settings.STORIES_COUNT['main']]
-    chapters = Chapter.objects.exclude(order=1).order_by('-date')[0:settings.CHAPTERS_COUNT['main']]
+    chapters = Chapter.objects.filter(story__draft=False, story__approved=True).exclude(order=1).order_by('-date')[0:settings.CHAPTERS_COUNT['main']]
     comments = Comment.objects.order_by('-date')[0:settings.COMMENTS_COUNT['main']]
     data = {
             'categories' : categories,
