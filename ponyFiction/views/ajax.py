@@ -220,22 +220,14 @@ def story_vote(request, story_id):
             return HttpResponse('Unauthorized user!', status=401)
         direction = True if (request.POST.get('vote', True) == '1') else False
         if (story.authors.filter(id=request.user.id)):
-            return HttpResponse(dumps([story.vote_up_count(), story.vote_down_count()]), status=200) 
+            return HttpResponse(dumps([story.vote_up_count(), story.vote_down_count()]), status=200)
         try:
-            # Достаем голос
             vote = story.vote.get(author=request.user)
         except Vote.DoesNotExist:
-            # Если автор не голосовал ещё
-            vote = Vote.objects.create()
-            vote.author = request.user
-            vote.ip = request.META['REMOTE_ADDR']
-            vote.direction = direction
-            vote.save()
-            story.vote.add(vote)
+            story.vote.add(Vote.objects.create(author=request.user, ip=request.META['REMOTE_ADDR'], direction=direction))
         else:
-            # Иначе просто обновляем голос автора
             vote.direction = direction
-            vote.save()
+            vote.save(update_fields=['direction'])
         return HttpResponse(dumps([story.vote_up_count(), story.vote_down_count()]), status=200)
     
 def favorites_work(request, story_id, chapter_id=None):

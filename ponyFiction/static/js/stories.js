@@ -298,7 +298,12 @@ function csrfSafeMethod(method) { return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(meth
 /**
  * Голосование за рассказ по AJAX
  */
+requestRunning = false;
 function voteStory(request) {
+	if (requestRunning) { // don't do anything if an AJAX request is pending
+	        return;
+	}
+	requestRunning = true;
 	// Читаем CSRF Cookie
 	var csrftoken = $.cookie('csrftoken');
 	// Конфигурируем заголовок AJAX-запроса
@@ -316,6 +321,7 @@ function voteStory(request) {
 		dataType:   'json',
 		error:      getAjaxErrorHandler,
 		success:	changeVote,
+		complete:	function() {requestRunning = false;},
 		type:       'POST',
 		url:        'vote'
 		});
@@ -498,8 +504,12 @@ $(function(){
 		$('#id_notes').markItUp(mySettings);
     }
     // Голосование
-    $('#vote-up').click(function(){voteStory('1')});
-	$('#vote-down').click(function(){voteStory('-1')});
+	$('#vote-up').click(function() {
+    	voteStory('1');
+    });
+	$('#vote-down').click(function() {
+    	voteStory('-1');
+    });
 	$('#favstar').click(function(){favoriteStory()});
 	// Переключение размера и типа шрифта
 	$('.select-font').change(function() {
