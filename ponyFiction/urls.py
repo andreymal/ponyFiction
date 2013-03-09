@@ -182,14 +182,15 @@ if settings.DEBUG:
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
     )
 
-from ponyFiction.views.stories_list import StoriesList
-from ponyFiction.views.favorites import FavoritesList
-urlpatterns += patterns('',
-    url(r'^allstories/$', StoriesList.as_view()),
-    url(r'^allstories/page/(?P<page>\d+)/$', StoriesList.as_view(), name='allstories_page'),
-)
+from ponyFiction.views.stories_list import FavoritesList, SubmitsList
+
 # Избранное
 urlpatterns += patterns('',
     url(r'^accounts/(?P<user_id>\d+)/favorites/$', FavoritesList.as_view(), name='favorites'),
     url(r'^accounts/(?P<user_id>\d+)/favorites/page/(?P<page>\d+)$', FavoritesList.as_view(), name='favorites_page'),
+)
+# Новые поступления
+urlpatterns += patterns('',
+    url(r'^submitted/$', SubmitsList.as_view(), name='submitted'),
+    url(r'^submitted/page/(?P<page>\d+)$', SubmitsList.as_view(), name='submitted_page'),
 )
