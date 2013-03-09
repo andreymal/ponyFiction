@@ -11,6 +11,7 @@ from registration.views import activate, register
 from ponyFiction.forms.register import AuthorRegistrationForm
 from ponyFiction.models import Comment, Story, Chapter
 from django.views.generic import TemplateView
+from ponyFiction.views.stories_list import FavoritesList, SubmitsList
 
 admin.autodiscover()
 
@@ -23,7 +24,16 @@ urlpatterns += patterns('',
     url(r'^search/$', search.search_main, name='search'),
     url(r'^search/(?P<search_type>\w+)/(?P<search_id>\d+)/$', search.search_simple, name='search_simple')
 )
-
+# Избранное
+urlpatterns += patterns('',
+    url(r'^accounts/(?P<user_id>\d+)/favorites/$', FavoritesList.as_view(), name='favorites'),
+    url(r'^accounts/(?P<user_id>\d+)/favorites/page/(?P<page>\d+)/$', FavoritesList.as_view(), name='favorites_page'),
+)
+# Новые поступления
+urlpatterns += patterns('',
+    url(r'^submitted/$', SubmitsList.as_view(), name='submitted'),
+    url(r'^submitted/page/(?P<page>\d+)/$', SubmitsList.as_view(), name='submitted_page'),
+)
 # Обработка пользовательских адресов
 urlpatterns += patterns('',
     url(r'^accounts/(?P<user_id>\d+)/$', author.author_info, name='author_overview'),
@@ -33,7 +43,7 @@ urlpatterns += patterns('',
     url(r'^accounts/registration/$',
         register,
         {
-            'backend': 'registration.backends.pony.PonyBackend',
+            'backend': 'registration.backends.default.DefaultBackend',
             'form_class': AuthorRegistrationForm,
             'extra_context': {'page_title': 'Регистрация'}
         },
@@ -46,7 +56,7 @@ urlpatterns += patterns('',
         name='registration_complete'),          
     url(r'^accounts/activate/(?P<activation_key>\w+)/$',
         activate,
-        {'backend': 'registration.backends.pony.PonyBackend',
+        {'backend': 'registration.backends.default.DefaultBackend',
          'template_name': 'registration/activation_complete.html'},
         name='registration_activate'),
     url(r'^accounts/activate/complete/$',
@@ -181,16 +191,3 @@ if settings.DEBUG:
     urlpatterns += patterns('',
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
     )
-
-from ponyFiction.views.stories_list import FavoritesList, SubmitsList
-
-# Избранное
-urlpatterns += patterns('',
-    url(r'^accounts/(?P<user_id>\d+)/favorites/$', FavoritesList.as_view(), name='favorites'),
-    url(r'^accounts/(?P<user_id>\d+)/favorites/page/(?P<page>\d+)$', FavoritesList.as_view(), name='favorites_page'),
-)
-# Новые поступления
-urlpatterns += patterns('',
-    url(r'^submitted/$', SubmitsList.as_view(), name='submitted'),
-    url(r'^submitted/page/(?P<page>\d+)$', SubmitsList.as_view(), name='submitted_page'),
-)
