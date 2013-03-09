@@ -50,21 +50,15 @@
 		{% if stories %}
 				<!-- Пагинация: начало вывода -->
 					<div id="pagination" class="center">
-						{% for page_head_id in pagination.head_range %}
-			        		<a class="btn{% if page_head_id == pagination.current %} btn-primary{% endif %}" href="{% url 'favorites_page' user.id page_head_id %}" >{{ page_head_id }}</a>
-			        	{% endfor %}
-			        	{% if pagination.head_dots %}
-			        		<span class="pagination-dots">…</span>
-			        	{% endif %}
-			        	{% for page_local_id in pagination.locality_range %}
-			        		<a class="btn{% if page_local_id == pagination.current %} btn-primary{% endif %}" href="{% url 'favorites_page' user.id page_local_id %}" >{{ page_local_id }}</a>
-			        	{% endfor %}
-			        	{% if pagination.tail_dots %}
-			        		<span class="pagination-dots">…</span>
-			        	{% endif %}
-			        	{% for page_tail_id in pagination.tail_range %}
-			        		<a class="btn{% if page_tail_id == pagination.current %} btn-primary{% endif %}" href="{% url 'favorites_page' user.id page_tail_id %}" >{{ page_tail_id }}</a>
-			        	{% endfor %}
+			        	{% if page_obj.has_previous %}
+							<a class="btn" href="{% url 'allstories_page' page_obj.previous_page_number %}">← Назад</a>
+						{% endif %}
+						<span class="btn btn-primary">
+							{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+						</span>			
+			        	{% if page_obj.has_next %}
+							<a class="btn" href="{% url 'allstories_page' page_obj.next_page_number %}">Вперед →</a>
+						{% endif %}
 			      	</div>
 		      	<!-- Пагинация: конец вывода -->
 		{% endif %}

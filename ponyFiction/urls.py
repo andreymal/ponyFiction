@@ -23,11 +23,7 @@ urlpatterns += patterns('',
     url(r'^search/$', search.search_main, name='search'),
     url(r'^search/(?P<search_type>\w+)/(?P<search_id>\d+)/$', search.search_simple, name='search_simple')
 )
-# Избранное
-urlpatterns += patterns('',
-    url(r'^accounts/(?P<user_id>\d+)/favorites/$', 'ponyFiction.views.favorites.favorites_view', {'page_id': 1}, name='favorites'),
-    url(r'^accounts/(?P<user_id>\d+)/favorites/page/(?P<page_id>\d+)$', 'ponyFiction.views.favorites.favorites_view', name='favorites_page'),
-)
+
 # Обработка пользовательских адресов
 urlpatterns += patterns('',
     url(r'^accounts/(?P<user_id>\d+)/$', author.author_info, name='author_overview'),
@@ -185,3 +181,15 @@ if settings.DEBUG:
     urlpatterns += patterns('',
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
     )
+
+from ponyFiction.views.stories_list import StoriesList
+from ponyFiction.views.favorites import FavoritesList
+urlpatterns += patterns('',
+    url(r'^allstories/$', StoriesList.as_view()),
+    url(r'^allstories/page/(?P<page>\d+)/$', StoriesList.as_view(), name='allstories_page'),
+)
+# Избранное
+urlpatterns += patterns('',
+    url(r'^accounts/(?P<user_id>\d+)/favorites/$', FavoritesList.as_view(), name='favorites'),
+    url(r'^accounts/(?P<user_id>\d+)/favorites/page/(?P<page>\d+)$', FavoritesList.as_view(), name='favorites_page'),
+)

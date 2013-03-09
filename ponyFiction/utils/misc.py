@@ -7,7 +7,7 @@ dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime) else None
 # TODO: переписать код!
 
 #  get pretty paginator ranges
-#  return 3 ranges of indexes [1...num_pages] and 2 dots flags
+#  return dict with 3 ranges of indexes [1...num_pages] and 2 dots flags, and current pagenum
 #  (head_range, dots1, locality_range, dots2, tail_range)
 def pagination_ranges(
     num_pages,             # sumary page numbers
@@ -125,9 +125,17 @@ def pagination_ranges(
         locality_range = xrange(finish, finish - locality, -1)
         tail_range     = xrange(head, 0, -1)
 
-    dots1 = bool(head_range and (locality_range or tail_range))
-    dots2 = bool(locality_range and tail_range)
-    return head_range, dots1, locality_range, dots2, tail_range
+    head_dots = bool(head_range and (locality_range or tail_range))
+    tail_dots = bool(locality_range and tail_range)
+    pagination={
+                'current': page,
+                'head_range': head_range,
+                'head_dots': head_dots,
+                'locality_range': locality_range,
+                'tail_dots': tail_dots,
+                'tail_range': tail_range
+                }
+    return pagination
 
 
 def unicode_to_int_list(lst):

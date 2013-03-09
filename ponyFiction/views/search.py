@@ -107,14 +107,7 @@ def search_action(request, postform):
                 chapters.append(chapter)
         result = zip(chapters, excerpts)
     # Пагинация
-    (
-     pagination['head_range'],
-     pagination['head_dots'],
-     pagination['locality_range'],
-     pagination['tail_dots'],
-     pagination['tail_range'],
-    ) = pagination_ranges(num_pages=int(ceil(len(result)/10.0)), page=page_current)
-    pagination['current'] = page_current
+    pagination = pagination_ranges(num_pages=int(ceil(len(result)/10.0)), page=page_current)
     # Создаем форму для рендера с данными поиска
     data['form'] = SearchForm(initial=initial_data)
     # Добавляем данные
