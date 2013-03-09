@@ -45,9 +45,7 @@
     		<li class="right"><a href="{% url 'author_overview' user.id %}">Профиль</a></li>
     		<li class="right"><a class="active" href="{% url 'author_dashboard' %}">Кабинет автора</a></li>
     		<li class="right"><a href="{% url 'story_add' %}">Добавить рассказ</a></li>
-    		{% if user.is_staff %}
-    			<li class="right"><a href="{% url 'submitted' %}">Новые поступления ({% submitted_stories_count %})</a></li>
-    		{% endif %}
+    		<li class="right"><a href="{% url 'submitted' %}">Новые поступления ({% submitted_stories_count %})</a></li>
   		{% else %}
     		<li><a href="{% url 'registration_register' %}">Регистрация</a></li>
         <li class="right">
