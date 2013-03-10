@@ -1,5 +1,7 @@
-syntax: glob
-sphinx
-.project
-.pydevproject
-.settings
+syntax: regexp
+\.settings
+\.project
+\.pydevproject
+
+syntax: regexp
+^sphinx$
