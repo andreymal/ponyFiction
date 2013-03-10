@@ -178,7 +178,7 @@ RECAPTCHA_PRIVATE_KEY = '6LfbstoSAAAAAHHN9jYw9Lp9lsunQCILAyAYgoxz'
 SANITIZER_ALLOWED_TAGS = [
     'b', 'i', 'strong', 'em', 's', 'u',
     'p', 'br', 'hr',
-    'a',
+    'p', 'a',
     'ul', 'ol', 'li',
     'blockquote', 'sup', 'sub', 'pre', 'small', 'tt'
 ]
