@@ -3,3 +3,6 @@ sphinx
 .project
 .pydevproject
 .settings
+env
+db.sqlite
+local_settings.py
