@@ -133,9 +133,9 @@ urlpatterns += patterns('',
 
 # Ленты
 urlpatterns += patterns('',
-    url(r'^stream/comments/$', stream_list, {'model': Comment}, name='stream_comments'),
-    url(r'^stream/stories/$', stream_list, {'model': Story}, name='stream_stories'),
-    url(r'^stream/chapters/$', stream_list, {'model': Chapter }, name='stream_chapters'),
+    url(r'^stream/comments/$', stream_list, {'model': Comment, 'page_title': 'Лента комментариев'}, name='stream_comments'),
+    url(r'^stream/stories/$', stream_list, {'model': Story, 'page_title': 'Лента добавлений'}, name='stream_stories'),
+    url(r'^stream/chapters/$', stream_list, {'model': Chapter, 'page_title': 'Лента обновлений'}, name='stream_chapters'),
 )
 
 # Комментирование
