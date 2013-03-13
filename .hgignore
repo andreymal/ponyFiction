@@ -1,7 +1,8 @@
-syntax: regexp
-\.settings
-\.project
-\.pydevproject
-
-syntax: regexp
-^sphinx$
+syntax: glob
+sphinx
+.project
+.pydevproject
+.settings
+env
+db.sqlite
+local_settings.py
