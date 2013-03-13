@@ -178,7 +178,7 @@ RECAPTCHA_PRIVATE_KEY = '6LfbstoSAAAAAHHN9jYw9Lp9lsunQCILAyAYgoxz'
 SANITIZER_ALLOWED_TAGS = [
     'b', 'i', 'strong', 'em', 's', 'u',
     'p', 'br', 'hr',
-    'p', 'a',
+    'a',
     'ul', 'ol', 'li',
     'blockquote', 'sup', 'sub', 'pre', 'small', 'tt'
 ]
@@ -191,7 +191,7 @@ SANITIZER_ALLOWED_ATTRIBUTES = {
 SANITIZER_CHAPTER_ALLOWED_TAGS = [
     'b', 'i', 'strong', 'em', 's', 'u',
     'h3', 'h4', 'h5',
-    'br', 'hr',
+    'p', 'br', 'hr',
     'img', 'a',
     'ul', 'ol', 'li',
     'blockquote', 'sup', 'sub', 'pre', 'small', 'tt'
