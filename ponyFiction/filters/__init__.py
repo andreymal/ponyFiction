@@ -1,9 +1,13 @@
 import re
 import functools
 import bleach
-from django.conf import settings
 from django.utils.safestring import mark_safe
-from .utils.typographus import typo
+from django.conf import settings
+from ..utils.typographus import typo
+from .base import html_doc_to_string
+from .html import normalize_html
+
+
 
 empty_lines_re = re.compile(r'\n[\s\n]*\n')
 
@@ -11,8 +15,7 @@ def filter_html(text,
                 tags = settings.SANITIZER_ALLOWED_TAGS,
                 attributes = settings.SANITIZER_ALLOWED_ATTRIBUTES):
     
-    text = '<p>%s</p>' % (empty_lines_re.subn('</p><p>', text)[0])
-    text = text.replace('\n', '<br>')
+    text = html_doc_to_string(normalize_html(text))
     text = typo(text)
     text = bleach.clean(text,
         tags = tags,
@@ -27,5 +30,5 @@ filter_chapter_html = functools.partial(filter_html,
 def filtered_property(name, filter_):
     def fn(self):
         return filter_(getattr(self, name))
-    return fn
+    return property(fn)
     

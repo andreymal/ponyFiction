@@ -191,7 +191,7 @@ SANITIZER_ALLOWED_ATTRIBUTES = {
 SANITIZER_CHAPTER_ALLOWED_TAGS = [
     'b', 'i', 'strong', 'em', 's', 'u',
     'h3', 'h4', 'h5',
-    'br', 'hr',
+    'p', 'br', 'hr',
     'img', 'a',
     'ul', 'ol', 'li',
     'blockquote', 'sup', 'sub', 'pre', 'small', 'tt'
