@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.db.models import Count, Sum, F
-from django.contrib.auth.models import User, UserManager
+from django.contrib.auth.models import AbstractUser
 from .filters import filter_html, filter_chapter_html, filtered_property
 from django.db.models.signals import pre_save
 
-class Author(User):
+class Author(AbstractUser):
 # Модель автора     
     bio = models.TextField(max_length=2048, blank=True, verbose_name="О себе")
     jabber = models.EmailField(max_length=75, blank=True, verbose_name="Jabber")
@@ -13,9 +13,6 @@ class Author(User):
     tabun = models.CharField(max_length=256, blank=True, verbose_name="Табун")
     forum = models.URLField(max_length=200, blank=True, verbose_name="Форум")
     vk = models.URLField(max_length=200, blank=True, verbose_name="VK")
-    
-    # Используем UserManager для доступа к методам User 
-    objects = UserManager()
     
     def __unicode__(self):
         return self.username
