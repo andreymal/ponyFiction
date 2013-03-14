@@ -329,8 +329,24 @@ font-family:Verdana, Arial, sans-serif;
 font-size:14px;
 line-height:26px;
 }
-.chapter-text p {
+.chapter-text p, .chapter-text span {
 margin-bottom:20px;
+}
+
+.chapter-text p[align="center"], .chapter-text span[align="center"] {
+display: inline-block;
+width: 100%;
+text-align: center;
+}
+
+.chapter-text p[align="left"], .chapter-text span[align="left"] {
+text-align: left;
+}
+
+.chapter-text p[align="right"], .chapter-text span[align="right"] {
+display: inline-block;
+width: 100%;
+text-align: right;
 }
 
 /* Режимы просмотра текста */
@@ -492,7 +508,6 @@ display:none;
 vertical-align:middle;
 }
 .controls textarea {
-width:540px;
 }
 .buttons-data {
 display:inline-block;
