@@ -468,6 +468,8 @@ $(function(){
     // На странице редактирования истории...
     var re_storyedit = new RegExp('/story/[0-9]+/edit/')
     if (re_storyedit.test(window.location.pathname)){
+    	// ...подключаем markItUp!
+    	$('#id_notes').markItUp(mySettings);
     	// ...проставляем классы изображениям персонажей, в зависимости от выбранных скрытых чекбоксов.
 		$('.character-item input[checked="checked"]').prev().addClass('ui-selected');
 		// ...подключаем возможность сортировки глав "на лету"
@@ -500,7 +502,7 @@ $(function(){
     var re_chapteredit = new RegExp('/story/[0-9]+/chapter/[0-9]+/edit/')
     var re_chapteradd = new RegExp('/story/[0-9]+/chapter/add/')
     if (re_chapteredit.test(window.location.pathname) || re_chapteradd.test(window.location.pathname)){
-    $('.chapter-textarea').markItUp(mySettings);
+    	$('.chapter-textarea').markItUp(mySettings);
 		$('#id_notes').markItUp(mySettings);
     }
     // Голосование

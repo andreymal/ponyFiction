@@ -5,7 +5,7 @@ from ponyFiction.models import Character, Category, Classifier, Rating, Size, St
 from ponyFiction.widgets import ServiceButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesRadioButtons
 
 class StoryForm(ModelForm):
-    attrs_dict = {'class': 'input-xlarge'}
+    attrs_dict = {'class': 'input-xxlarge'}
     img_attrs = {
            'group_container_class': 'characters-group group-',
            'data_attrs': {'class': 'hidden'},

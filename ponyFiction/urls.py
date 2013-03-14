@@ -53,18 +53,21 @@ urlpatterns += patterns('',
             template_name='registration/registration_complete.html',
             get_context_data=lambda: {'page_title': 'Завершение регистрации'},
         ),
-        name='registration_complete'),          
-    url(r'^accounts/activate/(?P<activation_key>\w+)/$',
-        activate,
-        {'backend': 'registration.backends.default.DefaultBackend',
-         'template_name': 'registration/activation_complete.html'},
-        name='registration_activate'),
+        name='registration_complete'),
     url(r'^accounts/activate/complete/$',
         TemplateView.as_view(
             template_name='registration/activation_complete.html',
             get_context_data=lambda: {'page_title': 'Активация'},
         ),
-        name='registration_activation_complete'),       
+        name='registration_activation_complete'),
+    url(r'^accounts/activate/(?P<activation_key>\w+)/$',
+        activate,
+        {
+            'backend': 'registration.backends.default.DefaultBackend',
+            'template_name': 'registration/activate.html',
+            'success_url' : '/accounts/activate/complete/'
+        },
+        name='registration_activate'),
     url(r'^accounts/registration/closed/$',
         TemplateView.as_view(
             template_name='registration/registration_closed.html',
@@ -130,9 +133,9 @@ urlpatterns += patterns('',
 
 # Ленты
 urlpatterns += patterns('',
-    url(r'^stream/comments/$', stream_list, {'model': Comment}, name='stream_comments'),
-    url(r'^stream/stories/$', stream_list, {'model': Story}, name='stream_stories'),
-    url(r'^stream/chapters/$', stream_list, {'model': Chapter }, name='stream_chapters'),
+    url(r'^stream/comments/$', stream_list, {'model': Comment, 'page_title': 'Лента комментариев'}, name='stream_comments'),
+    url(r'^stream/stories/$', stream_list, {'model': Story, 'page_title': 'Лента добавлений'}, name='stream_stories'),
+    url(r'^stream/chapters/$', stream_list, {'model': Chapter, 'page_title': 'Лента обновлений'}, name='stream_chapters'),
 )
 
 # Комментирование

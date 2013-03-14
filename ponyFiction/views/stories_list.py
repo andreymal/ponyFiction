@@ -10,13 +10,16 @@ from ponyFiction.models import Author, Story
 class StoriesList(ListView):
     
     context_object_name = 'stories'
-    template_name = 'stories_list.html'
     paginate_by = settings.STORIES_COUNT['page']
 
     @property
     def page_title(self):
         raise NotImplementedError("Subclasses should implement this!") 
 
+    @property
+    def template_name(self):
+        raise NotImplementedError("Subclasses should implement this!")
+     
     @property
     def page_url(self):
         raise NotImplementedError("Subclasses should implement this!") 
@@ -45,6 +48,10 @@ class FavoritesList(StoriesList):
         return reverse('favorites', args=(self.kwargs['user_id'],))
     
     @property
+    def template_name(self):
+        return 'favorites.html'
+    
+    @property
     def page_title(self):
         if self.author.id == self.request.user.id:
             return u'Мое избранное'
@@ -60,6 +67,10 @@ class SubmitsList(StoriesList):
     @method_decorator(login_required())
     def dispatch(self, request, *args, **kwargs):
         return super(SubmitsList, self).dispatch(request, *args, **kwargs)
+    
+    @property
+    def template_name(self):
+        return 'submitted.html'
 
     @property
     def page_title(self):
