@@ -176,7 +176,7 @@ class Series(models.Model):
 
 class PublishedManager(models.Manager):
     def get_query_set(self):
-        return super(PublishedManager, self).get_query_set().annotate(votes_up=Count('vote__plus'), votes_down=Count('vote__minus'), votes_all=Count('vote')).exclude(votes_all__gte=20, votes_down__gte=F('votes_all')/4).filter(draft=False, approved=True)
+        return super(PublishedManager, self).get_query_set().annotate(votes_up=Count('vote__plus'), votes_down=Count('vote__minus'), votes_all=Count('vote')).exclude(votes_all__gte=20, votes_down__gte=F('votes_all')*0.5).filter(draft=False, approved=True)
 
 class SubmittedManager(models.Manager):
     def get_query_set(self):
