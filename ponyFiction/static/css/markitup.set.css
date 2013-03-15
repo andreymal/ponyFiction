@@ -7,7 +7,10 @@
 .markItUp .edit-h4 a			{background-image:url(images/edit-h4.png);}
 .markItUp .edit-h5 a			{background-image:url(images/edit-h5.png);}
 
-.markItUp .edit-p a			{background-image:url(images/edit-p.png);}
+.markItUp .edit-alignment-left a        {background-image:url(images/edit-alignment-left.png);}
+.markItUp .edit-alignment-center a      {background-image:url(images/edit-alignment-center.png);}
+.markItUp .edit-alignment-right a       {background-image:url(images/edit-alignment-right.png);}
+
 .markItUp .edit-hr a			{background-image:url(images/edit-hr.png);}
 .markItUp .edit-br a			{background-image:url(images/edit-br.png);}
 

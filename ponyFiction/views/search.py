@@ -31,8 +31,6 @@ def search_action(request, postform):
     data = {'page_title': 'Результаты поиска'}
     # Новый словарь данных для иницаализации формы
     initial_data = {}
-    # Словарь данных пагинации
-    pagination = {}
     # Список текстовых сниппетов
     excerpts = []
     # Список результата поиска глав
@@ -107,12 +105,12 @@ def search_action(request, postform):
                 chapters.append(chapter)
         result = zip(chapters, excerpts)
     # Пагинация
-    pagination = pagination_ranges(num_pages=int(ceil(len(result)/10.0)), page=page_current)
+    pagination = pagination_ranges(num_pages=int(ceil(raw_result['total']/10.0)), page=page_current)
     # Создаем форму для рендера с данными поиска
     data['form'] = SearchForm(initial=initial_data)
     # Добавляем данные
     data['pagination'] = pagination
-    data['total'] = len(result)
+    data['total'] = raw_result['total']
     data['result'] = result
     # Закрываем за собой сокет
     sphinx.Close()
