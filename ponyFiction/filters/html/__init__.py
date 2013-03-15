@@ -10,7 +10,7 @@ post_normalize_html = xslt_transform_function('post-normalize-html.xslt')
 def normalize_html(doc):
     doc = pre_normalize_html(doc)
     doc = split_elements(doc, separators = ['p-splitter'])
-    # TODO: squash nested paragraph attributes
+    squash_paragraph_attributes(doc)
     doc = post_normalize_html(doc)
     return doc
 
@@ -51,3 +51,9 @@ def iter_splitted_elements(element, separators):
     x = etree.Element(tag, attrib)
     x.extend(accum)
     yield x
+    
+def squash_paragraph_attributes(doc):
+    for p in doc.xpath('//p'):
+        for np in p.xpath('.//p'):
+            p.attrib.update(dict(np.attrib))
+    return doc

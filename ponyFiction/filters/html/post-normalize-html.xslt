@@ -13,7 +13,7 @@
 
 <xsl:template match="@*|node()">
     <xsl:copy>
-        <xsl:apply-templates match="@*|node()"/>
+        <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
 </xsl:template>
     

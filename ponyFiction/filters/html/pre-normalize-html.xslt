@@ -7,15 +7,15 @@
     
 <xsl:template match="body">
     <xsl:copy>
-        <!-- <xsl:apply-templates match="@*"/> -->
-        <p><xsl:apply-templates match="node()"/></p>
+        <xsl:apply-templates select="@*"/>
+        <p><xsl:apply-templates select="node()"/></p>
     </xsl:copy>
 </xsl:template>
     
 <xsl:template match="p">
     <p-splitter/>
     <xsl:copy>
-        <xsl:apply-templates match="@*|node()"/>
+        <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
     <p-splitter/>
 </xsl:template>
@@ -58,7 +58,7 @@
 
 <xsl:template match="@*|node()">
     <xsl:copy>
-        <xsl:apply-templates match="@*|node()"/>
+        <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
 </xsl:template>
     
