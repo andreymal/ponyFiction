@@ -40,7 +40,7 @@
   	
   		{% if user.is_authenticated %}
     		<li><a href="{% url 'favorites' user.id %}">Избранное</a></li>
-    		<!--<li><a href="#">Закладки</a></li>-->
+    		<li><a href="{% url 'deferred' %}">Закладки</a></li>
     		<li class="right"><a href="{% url 'auth_logout' %}">Выход</a></li>
     		<li class="right"><a href="{% url 'author_overview' user.id %}">Профиль</a></li>
     		<li class="right"><a class="active" href="{% url 'author_dashboard' %}">Кабинет автора</a></li>

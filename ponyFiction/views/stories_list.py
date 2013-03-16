@@ -4,7 +4,6 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from ponyFiction.models import Author, Story
 
 class StoriesList(ListView):
@@ -19,18 +18,13 @@ class StoriesList(ListView):
     @property
     def template_name(self):
         raise NotImplementedError("Subclasses should implement this!")
-     
-    @property
-    def page_url(self):
-        raise NotImplementedError("Subclasses should implement this!") 
-    
+       
     def get_queryset(self):
         raise NotImplementedError("Subclasses should implement this!")
         
     def get_context_data(self, **kwargs):
         context = super(StoriesList, self).get_context_data(**kwargs)
         context['page_title'] = self.page_title
-        context['page_url'] = self.page_url
         return context
 
 class FavoritesList(StoriesList):
@@ -44,10 +38,6 @@ class FavoritesList(StoriesList):
         return get_object_or_404(Author, pk=self.kwargs['user_id'])
     
     @property
-    def page_url(self):
-        return reverse('favorites', args=(self.kwargs['user_id'],))
-    
-    @property
     def template_name(self):
         return 'favorites.html'
     
@@ -59,7 +49,7 @@ class FavoritesList(StoriesList):
             return u'Избранное автора %s' % self.author.username
 
     def get_queryset(self):
-        return self.author.favorites_story_set.filter(draft=False, approved=True).order_by('-favorites_set__date')
+        return self.author.favorites_story_set.filter(draft=False, approved=True).order_by('-favorites_story_related_set__date')
     
 
 class SubmitsList(StoriesList):
@@ -76,9 +66,22 @@ class SubmitsList(StoriesList):
     def page_title(self):
         return u'Новые поступления'
     
-    @property
-    def page_url(self):
-        return reverse('submitted')
-    
     def get_queryset(self):
         return Story.submitted.all()
+
+class DeferredStoriesList(StoriesList):
+    
+    @method_decorator(login_required())
+    def dispatch(self, request, *args, **kwargs):
+        return super(DeferredStoriesList, self).dispatch(request, *args, **kwargs)
+    
+    @property
+    def template_name(self):
+        return 'favorites.html'
+
+    @property
+    def page_title(self):
+        return u'Закладки: рассказы'
+    
+    def get_queryset(self):
+        return self.request.user.deferred_story_set.all()

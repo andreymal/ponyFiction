@@ -4,7 +4,7 @@ register = template.Library()
 
 @register.filter
 def faved(story, author):
-    return bool(story.favorites_set.filter(author=author))
+    return bool(story.favorites_story_related_set.filter(author=author))
 
 @register.filter
 def is_editable_by(story, author):

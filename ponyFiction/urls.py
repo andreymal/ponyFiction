@@ -11,7 +11,8 @@ from registration.views import activate, register
 from ponyFiction.forms.register import AuthorRegistrationForm
 from ponyFiction.models import Comment, Story, Chapter
 from django.views.generic import TemplateView
-from ponyFiction.views.stories_list import FavoritesList, SubmitsList
+from ponyFiction.views.stories_list import FavoritesList, SubmitsList,\
+    DeferredStoriesList
 
 admin.autodiscover()
 
@@ -33,6 +34,11 @@ urlpatterns += patterns('',
 urlpatterns += patterns('',
     url(r'^submitted/$', SubmitsList.as_view(), name='submitted'),
     url(r'^submitted/page/(?P<page>\d+)/$', SubmitsList.as_view(), name='submitted_page'),
+)
+# Закладки
+urlpatterns += patterns('',
+    url(r'^deferred/$', DeferredStoriesList.as_view(), name='deferred'),
+    url(r'^deferred/page/(?P<page>\d+)/$', DeferredStoriesList.as_view(), name='deferred_page'),
 )
 # Обработка пользовательских адресов
 urlpatterns += patterns('',

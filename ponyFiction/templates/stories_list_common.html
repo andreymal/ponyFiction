@@ -1,0 +1,58 @@
+{% extends "common.html" %}
+{% load url from future %}
+{% load static %}
+{% block content %}
+<div class="row">
+	<div class="span8">
+    <ul class="breadcrumb">
+      <li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+      <li class="active">{{ page_title }}</li>
+    </ul>   
+		<h1>{{ page_title }}</h1>
+		{% block before_list %}{% endblock %}
+		<div id="comments-list">
+			{% for story in stories %}
+				<div class="story-item">
+					<h3><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> 
+          			<sup><span class="upvotes">{{ story.vote_up_count }}</span> / <span class="downvotes">{{ story.vote_down_count }}</span></sup></h3>
+					<p class="meta">
+	          			{% spaceless %}
+							<span class="category-list">
+		           				{% for category in story.categories.all %}
+		           					<a class="gen gen-{{ category.id }}" href="{% url 'search_simple' 'category' category.id %}">{{ category.name }}</a>
+		           				{% endfor %}
+		         			 </span>
+		        		{% endspaceless %}
+	          			{{ story.words }} слов от 
+			          	{% for author in story.authors.all %}
+				            {% if forloop.counter == 1 %}
+				              <a class="authorlink" href="{% url 'author_overview' author.id %}">{{author.username}}</a>
+				                {% if story.authors.all.count > 1 %}(в соавторстве с{% endif %}
+				              {% endif %}
+				                {% if forloop.counter > 1 %}           	        	
+				              <a class="authorlink" href="{% url 'author_overview' author.id %}">{{author.username}}</a>{% if forloop.revcounter0 == 1 %} и {% endif %}{% if forloop.revcounter0 > 1 %}, {% endif %}
+				            {% endif %}
+				              {% if forloop.revcounter0 == 0 and story.authors.all.count > 1 %}){% endif %}
+			            {% endfor %}
+					</p>
+					<p>{{ story.summary }}</p>
+					<p class="meta">
+						{% spaceless %}
+            				<span class="character-list">
+            					{% for character in story.characters.all %}
+              						<a href="{% url 'search_simple' 'character' character.id %}"><img src="{% get_static_prefix %}i/characters/{{ character.id }}.png" alt="{{ character.name }}" title="{{ character.name }}"/></a>
+            					{% endfor %}
+           					</span>
+         				{% endspaceless %}
+          			</p>
+				</div>
+			{% endfor %}
+		</div>
+		{% block after_list %}{% endblock %}
+    <ul class="breadcrumb">
+      <li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+      <li class="active">{{ page_title }}</li>
+    </ul>
+	</div>
+</div>
+{% endblock %}
