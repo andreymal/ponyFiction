@@ -4,7 +4,7 @@
     
 <xsl:template match="
             p//p | text |
-            p[not(.//text()[normalize-space(.) != '']) or .//img]
+            p[not(.//text()[normalize-space(.) != ''] or .//img)]
         ">
     <xsl:apply-templates/>
 </xsl:template>

@@ -21,23 +21,7 @@
 </xsl:template>
 
 <xsl:template match="text()">
-    <xsl:variable name="text1" select="re:replace(., '\n[\n\s]*\n', 'g', '\n\n')"/>
-    <xsl:variable name="text">
-        <xsl:choose>
-            <xsl:when test="preceding-sibling::node()[self::p]">
-                <xsl:value-of select="re:replace($text1, '^[\s\n]*', 'g', '')"/>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:value-of select="$text1"/>
-            </xsl:otherwise>
-        </xsl:choose>
-    </xsl:variable>
-    
-    <!-- str:split skips separator at the beginning of the string. -->
-    <xsl:if test="starts-with($text, '&#10;&#10;')">
-        <p-splitter/>
-    </xsl:if>
-    
+    <xsl:variable name="text" select="re:replace(., '\n\s*\n', 'g', ' \n\n ')"/>
     <xsl:for-each select="str:split($text, '&#10;&#10;')">
         <xsl:for-each select="str:split(., '&#10;')">
             <text><xsl:value-of select="."/></text>
@@ -49,11 +33,6 @@
             <p-splitter/>
         </xsl:if>
     </xsl:for-each>
-    
-    <!-- str:split skips separator at the end of the string. -->
-    <xsl:if test="substring($text, string-length($text) - 1) = '&#10;&#10;'">
-        <p-splitter/>
-    </xsl:if>
 </xsl:template>
 
 <xsl:template match="@*|node()">
