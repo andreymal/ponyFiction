@@ -10,16 +10,10 @@ function processComments(comments, page_current, num_pages) {
 	// Проставляем текущий номер страницы в зависимости от указателя
 	$('#page_current').val(page_current);
 	// Обновляем плейсхолдер и текущий номер страницы
-	$('#comments_goto_page').val('');
-	$('#comments_goto_page').attr('placeholder',
+	$('#comments_goto_page').val('').attr('placeholder',
 			page_current + ' / ' + num_pages);
-	// Очищаем предыдущие комментарии
-	$('#comments-list').fadeOut('slow');
-	$('#comments-list').empty();
-	// Вставляем комментарии
-	$('#comments-list').append(comments);
-	// Показываем комментарии
-	$('#comments-list').fadeIn();
+	// Очищаем предыдущие комментарии, вставляем, показываем.
+	$('#comments-list').fadeOut('slow').empty().append(comments).fadeIn();
 	// Скрываем ненужные элементы управления
 	if (page_current == 1) {
 		$('#ajax_prev_comment').addClass('hidden');
@@ -90,7 +84,7 @@ function csrfSafeMethod(method) {
  */
 requestRunning = false;
 function voteStory(request) {
-	if (requestRunning) { // don't do anything if an AJAX request is pending
+	if (requestRunning) {
 		return;
 	}
 	requestRunning = true;
@@ -257,21 +251,22 @@ $(function() {
 						'value', '');
 				$('.span8').slideUp();
 			});
-	// На странице поиска...
+	var current_path = window.location.pathname;
+	var re_storyadd = new RegExp('/story/add/')
+	var re_storyedit = new RegExp('/story/[0-9]+/edit/')
 	var re_search = new RegExp('/search/(.+)?');
+	var re_chapteredit = new RegExp('/story/[0-9]+/chapter/[0-9]+/edit/');
+	var re_chapteradd = new RegExp('/story/[0-9]+/chapter/add/');
+	var re_story = new RegExp('/story/[0-9]+/');
+
+	// На странице поиска...
 	if (re_search.test(window.location.pathname)) {
-		// ...проставляем классы изображениям персонажей, в зависимости от
-		// выбранных скрытых чекбоксов.
 		$('input[name="characters_select"][checked="checked"]').parent()
 				.children('img').addClass('ui-selected');
 	}
-	// На странице редактирования истории...
-	var re_storyedit = new RegExp('/story/[0-9]+/edit/')
-	if (re_storyedit.test(window.location.pathname)) {
-		// ...подключаем markItUp!
+	// На странице добавления или редактирования истории...
+	if (re_storyedit.test(current_path) || re_storyadd.test(current_path)) {
 		$('#id_notes').markItUp(mySettings);
-		// ...проставляем классы изображениям персонажей, в зависимости от
-		// выбранных скрытых чекбоксов.
 		$('.character-item input[checked="checked"]').prev().addClass(
 				'ui-selected');
 		// ...подключаем возможность сортировки глав "на лету"
@@ -301,16 +296,12 @@ $(function() {
 		});
 	}
 	// На странице добавления или редактирования главы
-	var re_chapteredit = new RegExp('/story/[0-9]+/chapter/[0-9]+/edit/');
-	var re_chapteradd = new RegExp('/story/[0-9]+/chapter/add/');
-	if (re_chapteredit.test(window.location.pathname)
-			|| re_chapteradd.test(window.location.pathname)) {
+	if (re_chapteredit.test(current_path) || re_chapteradd.test(current_path)) {
 		$('.chapter-textarea').markItUp(mySettings);
 		$('#id_notes').markItUp(mySettings);
 	}
 	// На странице рассказа
-	var re_story = new RegExp('/story/[0-9]+/');
-	if (re_story.test(window.location.pathname)) {
+	if (re_story.test(current_path)) {
 		$('#id_text').markItUp(mySettings);
 	}
 	// Голосование
@@ -324,21 +315,24 @@ $(function() {
 		favoriteStory()
 	});
 	// Переключение размера и типа шрифта
-	$('.select-font').change(function() {
-		if ($('.select-font').val() == '1')
-			$('.chapter-text').removeClass('mono-font serif-font')
-		else if ($('.select-font').val() == '2')
-			$('.chapter-text').removeClass('mono-font').addClass('serif-font')
-		else if ($('.select-font').val() == '3')
-			$('.chapter-text').removeClass('serif-font').addClass('mono-font')
+	var font_selector = $('.select-font');
+	var size_selector = $('.select-size');
+	var chapter_text = $('.chapter-text');
+	font_selector.change(function() {
+		if (font_selector.val() == '1')
+			chapter_text.removeClass('mono-font serif-font');
+		else if (font_selector.val() == '2')
+			chapter_text.removeClass('mono-font').addClass('serif-font');
+		else if (font_selector.val() == '3')
+			chapter_text.removeClass('serif-font').addClass('mono-font');
 	});
-	$('.select-size').change(function() {
-		if ($('.select-size').val() == '1')
-			$('.chapter-text').removeClass('small-font big-font')
-		else if ($('.select-size').val() == '2')
-			$('.chapter-text').removeClass('big-font').addClass('small-font')
-		else if ($('.select-size').val() == '3')
-			$('.chapter-text').removeClass('small-font').addClass('big-font')
+	size_selector.change(function() {
+		if (size_selector.val() == '1')
+			chapter_text.removeClass('small-font big-font');
+		else if (size_selector.val() == '2')
+			chapter_text.removeClass('big-font').addClass('small-font');
+		else if (size_selector.val() == '3')
+			chapter_text.removeClass('small-font').addClass('big-font');
 	});
 	// Управление AJAX-пагинацией
 	$('#ajax_next_comment').click(function() {

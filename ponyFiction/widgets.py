@@ -23,8 +23,8 @@ class StoriesServiceInput(Widget):
 
 class StoriesCheckboxSelectMultiple(CheckboxSelectMultiple):
     def render(self, name, value, attrs=None):
-        # TODO: Оптимизировать (зебро)код, убрать неЛунаугодную ересь
         if value is None: value = []
+        value = map(int, value)
         attrs = self.attrs
         label_attrs = attrs.pop('label_attrs', None)
         label_id_related_attr = attrs.pop('label_id_related_attr', False)
@@ -33,11 +33,10 @@ class StoriesCheckboxSelectMultiple(CheckboxSelectMultiple):
             label_class = '%s' % join(label_attrs, ' ')
         else:
             label_class = ''        
-        for (option_value, option_label) in self.choices:            
+        for (option_value, option_label) in self.choices:
             cb = CheckboxInput(attrs, check_test=lambda x: x in value)
             rendered_cb = cb.render(name, option_value)
             option_label = force_unicode(option_label)
-            # TODO: Переписать
             if label_id_related_attr:
                 label_id_related_class = ' '+label_id_related_attr+'%s '% option_value
             else:
@@ -49,6 +48,7 @@ class StoriesCheckboxSelectMultiple(CheckboxSelectMultiple):
 class StoriesImgSelect(SelectMultiple):
     def render(self, name, value, attrs=None, choices=()):
         if value is None: value = []
+        value = map(int, value)
         output = []
         attrs = self.attrs
         group_container_class = attrs['group_container_class']

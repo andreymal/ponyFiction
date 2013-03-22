@@ -47,8 +47,8 @@ def story_view(request, story_id):
 @login_required
 @csrf_protect
 def story_work(request, story_id=False, edit=False, approve=False, publish=False, delete=False):
-    if not story_id:
-        return story_add(request, data={})
+    #if not story_id:
+   #     return story_add(request, data={})
     story = get_object_or_404(Story, pk=story_id)
     if story.is_editable_by(request.user):
         if approve and request.user.is_staff:
@@ -73,24 +73,6 @@ def story_work(request, story_id=False, edit=False, approve=False, publish=False
     else:
         raise PermissionDenied
 
-def story_add(request, data):
-    if request.POST:
-        form = StoryForm(request.POST)
-        if form.is_valid():
-            story = form.save()
-            CoAuthorsStory.objects.create(
-                story = story,
-                author = request.user,
-                approved = True,
-            )
-            return redirect('story_edit', story.id)
-    else:
-        form = StoryForm(initial={'finished': 0, 'freezed': 0, 'original': 1, 'rating': 4, 'size': 1})
-        data['page_title'] = 'Новый рассказ'
-        form.fields['button_submit'].initial = 'Добавить рассказ'
-        
-    data['form'] = form
-    return render(request, 'story_work.html', data)
 
 def story_edit(request, story_id, data):
     if request.POST:
@@ -126,3 +108,22 @@ class CommentsStory(ObjectList):
     def get_queryset(self):
         story = get_object_or_404(Story, pk=self.kwargs['story_id'])
         return story.comment_set.all()
+    
+from django.views.generic.edit import CreateView
+
+class StoryAdd(CreateView):
+    model = Story
+    form_class = StoryForm
+    template_name = 'story_work.html'
+    initial={'finished': 0, 'freezed': 0, 'original': 1, 'rating': 4, 'size': 1, 'button_submit': u'Добавить рассказ'}
+    extra_context = {'page_title': u'Новый рассказ'}
+    
+    def form_valid(self, form):
+        story = form.save()
+        CoAuthorsStory.objects.create(story = story, author = self.request.user, approved = True)
+        return redirect('story_edit', story.id)
+    
+    def get_context_data(self, **kwargs):
+        context = super(StoryAdd, self).get_context_data(**kwargs)
+        context.update(self.extra_context)
+        return context

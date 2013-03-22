@@ -11,7 +11,7 @@ from ponyFiction.views.index import index
 from ponyFiction.views.object_lists import FavoritesList, SubmitsList, DeferredStoriesList
 from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments
 from registration.views import activate, register
-from ponyFiction.views.stories import CommentsStory
+from ponyFiction.views.stories import CommentsStory, StoryAdd
 
 admin.autodiscover()
 
@@ -168,7 +168,7 @@ urlpatterns += patterns('ponyFiction.views.stories',
     # Просмотр
     url(r'^story/(?P<story_id>\d+)/$', 'story_view', name='story_view'),
     # Добавление
-    url(r'^story/add/$', 'story_work', name='story_add'),
+    url(r'^story/add/$', StoryAdd.as_view(), name='story_add'),
     # Правка
     url(r'^story/(?P<story_id>\d+)/edit/$', 'story_work', {'edit': True}, name='story_edit'),
     # Отправка на публикацию
