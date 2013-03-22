@@ -1,0 +1,19 @@
+{% load stories %}
+{% if story|is_editable_by:user %}
+	<span class="story-control-btn">
+		{% if story.draft %}
+			<a class="btn btn-primary btn-mini" href="{% url 'story_publish' story.id %}">Опубликовать</a>
+		{% else %}
+			<a class="btn btn-mini" href="{% url 'story_publish' story.id %}">В черновики</a>
+		{% endif %}
+		<a class="btn btn-warning btn-mini" href="{% url 'story_edit' story.id %}">Редактировать</a>
+		<a class="btn btn-danger btn-mini" href="{% url 'story_delete' story.id %}">Удалить</a>
+		{% if user.is_staff %}
+			{% if not story.approved %}
+				<a class="btn btn-success btn-mini" href="{% url 'story_approve' story.id %}">Одобрить</a>
+			{% else %}
+				<a class="btn btn-mini" href="{% url 'story_approve' story.id %}">Отменить</a>
+			{% endif %}
+		{% endif %}
+	</span>
+{% endif %}

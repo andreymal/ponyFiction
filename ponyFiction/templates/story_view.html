@@ -1,7 +1,6 @@
 {% extends "common.html" %}
 {% load url from future %}
 {% load pluralize %}
-{% load stories %}
 {% block content %}
 {% load static %}
 <div class="row">
@@ -14,24 +13,7 @@
     	<h1 id="story_title">{{ story.title }} 
     		<span class="vote"><a class="upvote" id="vote-up">{{ story.vote_up_count }}</a> / <a class="downvote" id="vote-down">{{ story.vote_down_count }}</a></span>
     		{% if story.finished %} <sup class="complete">завершен</sup>{% endif %}{% if story.freezed %}<sup>, </sup><sup class="suspended">заморожен</sup>{% endif %} 
-        	{% if story|is_editable_by:user %}
-	        	<span class="story-control-btn">
-					{% if story.draft %}
-						<a class="btn btn-primary btn-mini" href="{% url 'story_publish' story.id %}">Опубликовать</a>
-					{% else %}
-						<a class="btn btn-mini" href="{% url 'story_publish' story.id %}">В черновики</a>
-					{% endif %}
-					<a class="btn btn-warning btn-mini" href="{% url 'story_edit' story.id %}">Редактировать</a>
-					<a class="btn btn-danger btn-mini" href="{% url 'story_delete' story.id %}">Удалить</a>
-					{% if user.is_staff %}
-						{% if not story.approved %}
-							<a class="btn btn-success btn-mini" href="{% url 'story_approve' story.id %}">Одобрить</a>
-						{% else %}
-							<a class="btn btn-mini" href="{% url 'story_approve' story.id %}">Отменить</a>
-						{% endif %}
-					{% endif %}
-	        	</span>
-        	{% endif %}
+			{% include 'includes/story_control_buttons.html' %}
         	<span id="vote-msg"></span>
       	</h1>
 		{% spaceless %}
@@ -47,18 +29,7 @@
 			</p>
 		{% endspaceless %}
 		
-		<p>Написал: 
-			{% for author in story.authors.all %}
-	        	{% if forloop.counter == 1 %}
-	           		<a class="authorlink" href="{% url 'author_overview' author.id %}">{{author.username}}</a>
-	           		{% if story.authors.all.count > 1 %}(в соавторстве с{% endif %}
-	           	{% endif %}
-	            {% if forloop.counter > 1 %}           	        	
-					<a class="authorlink" href="{% url 'author_overview' author.id %}">{{author.username}}</a>{% if forloop.revcounter0 == 1 %} и {% endif %}{% if forloop.revcounter0 > 1 %}, {% endif %}
-				{% endif %}
-	           	{% if forloop.revcounter0 == 0 and story.authors.all.count > 1 %}){% endif %}
-            {% endfor %}
-		</p>
+		<p>Написал: {% include 'includes/story_authors_list.html' %}</p>
         
         <p class="story-description">{{ story.summary_as_html }}</p>        
 		

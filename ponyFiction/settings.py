@@ -159,7 +159,12 @@ SPHINX_CONFIG = {
     'weights_stories' : {'title' : 100, 'summary' : 50, 'notes' : 25},
     'weights_chapters' : {'text' : 100, 'title' : 50, 'notes' : 25}
     }
-COMMENTS_COUNT = {'page' : 50, 'main' : 5, 'stream' : 10, 'load': 50}
+COMMENTS_COUNT = {
+                  'page' : 50,
+                  'main' : 5,
+                  'stream' : 10,
+                  'author_page': 10
+                  }
 STORIES_COUNT = {'page' : 10, 'main' : 5, 'stream' : 10, 'load': 10}
 CHAPTERS_COUNT = {'page' : 10, 'main' : 5, 'stream' : 10, 'load': 10}
 COMMENTS_ORPHANS = 5

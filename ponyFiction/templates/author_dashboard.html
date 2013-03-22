@@ -3,7 +3,8 @@
 {% block content %}
 {% load static %}
 {% load pluralize %}
-{% load story_comments_delta %}
+
+
 <div class="row">
 	<div class="span12">
 		<ul class="breadcrumb">
@@ -40,43 +41,8 @@
 		<div class="series-block">
 			<!-- Начало вывода сборников, если они есть -->
 			{% if series %}
-				<h2>Мои сборники
-				<!--  TODO: <button class="btn btn-success btn-small">Новый сборник</button> -->
-				</h2>
-				{% for sr in series %}
-					<div class="story-item">
-						<h4>
-							<a href="#">{{ sr.title }}</a>
-							{% if sr.freezed %}<sup class="suspended">Заморожен</sup>{% endif %}
-							<!-- <sup><a class="edit-link" href="#">Редактировать серию</a></sup> -->
-						</h4>
-						<p>
-							{{ sr.story_set.count|rupluralize:'рассказ,рассказа,рассказов' }},
-							{{ sr.views|rupluralize:'просмотр,просмотра,просмотров' }}
-						</p>
-						<!-- Вывод рассказов в сборнике: начало -->
-						<ul>
-							{% for story in sr.story_set.all %}
-								<li>
-									<a href="{% url 'story_view' story.id %}">{{ story.title }}</a> 
-									<sup><span class="upvotes">{{ story.vote_up_count }}</span> / <span class="downvotes">{{ story.vote_down_count }}</span></sup>
-									{% if story.freezed %}<sup class="suspended">Заморожен</sup>{% endif %}<br/>
-									<a class="edit-link" href="{% url 'story_edit' story.id %}">Редактировать</a><br/>
-									{% if story.chapter_set.count > 1 %}
-										{{ story.chapter_set.count|rupluralize:'глава,главы,глав' }},
-									{% endif %}
-									{{ story.views|rupluralize:'просмотр,просмотра,просмотров' }}, 
-									{{ story.comment_set.count|rupluralize:'комментарий,комментария,комментариев' }}
-
-									{% if story|story_comments_delta:user > 0 %}
-									<sup><span class="green">+{{ story|story_comments_delta:user }}</span></sup>
-								{% endif %} 
-								</li>
-							{% endfor %}
-						</ul>
-						<!-- Вывод рассказов в сборнике: конец -->
-					</div>
-				{% endfor %}
+				<h2>Мои сборники</h2>
+				{% include "includes/series.html" %}
 			{% endif %}
 			<!-- Конец вывода сборников -->
 		</div>
@@ -84,81 +50,17 @@
 		<h2>
 			Мои рассказы <a class="btn btn-success btn-small" href="{% url 'story_add' %}">Добавить рассказ</a>
 		</h2>
-		{% for story in stories %}
-			{% if not story.in_series.all %}
-				<!-- Вывод рассказа: начало -->
-				<div class="story-item">
-					<h4>
-						<a href="{% url 'story_view' story.id %}">{{ story.title }}</a> 
-						<sup><span class="upvotes">{{ story.vote_up_count }}</span> / <span class="downvotes">{{ story.vote_down_count }}</span></sup>
-						{% if story.freezed %}<sup class="suspended">Заморожен</sup>{% endif %}
-						<span class="story-control-btn">
-							{% if story.chapter_set.count != 0 %}
-								{% if story.draft %}
-									<a class="btn btn-primary btn-mini" href="{% url 'story_publish' story.id %}">Опубликовать</a>
-								{% else %}
-									<a class="btn btn-mini" href="{% url 'story_publish' story.id %}">В черновики</a>
-								{% endif %}
-							{% endif %}
-							<a class="btn btn-warning btn-mini" href="{% url 'story_edit' story.id %}">Редактировать</a>
-							<a class="btn btn-danger btn-mini" href="{% url 'story_delete' story.id %}">Удалить</a>
-						</span>
-					</h4>
-					<p>
-						{% if story.chapter_set.count == 1 %}
-							{% for chapter in story.chapter_set.all %}
-								{{ chapter.views|rupluralize:'просмотр,просмотра,просмотров' }},
-							{% endfor %}
-						{% endif %}
-						{{ story.comment_set.count|rupluralize:'комментарий,комментария,комментариев' }}
-						{% if story|story_comments_delta:user > 0%}
-							(<span class="green">+{{ story|story_comments_delta:user }}</span>)
-						{% endif %} 
-					</p>
-					{% if story.chapter_set.count > 1 %}
-						<button class="btn btn-collapse btn-small" data-toggle="collapse" data-target="#story-{{ story.id }}">Показать {{ story.chapter_set.count|rupluralize:'главу,главы,глав' }}</button>
-					{% endif %}  
-					{% if not story.finished or story.finished and story.chapter_set.count > 1 %}
-						<div id="story-{{ story.id }}" class="collapse">
-							<ul class="chapters-list">
-								{% for chapter in story.chapter_set.all %}
-									<li>
-										<a class="chapter-title" href="{% url 'chapter_view_single' story.id chapter.order %}">{{ chapter.title }}</a> 
-										<sup><a class="edit-link" href="{% url 'chapter_edit' story.id chapter.id %}">Редактировать</a></sup>
-										<br/>
-										{{ chapter.words }} слов, {{ chapter.views|rupluralize:'просмотр,просмотра,просмотров' }}
-									</li>
-								{% endfor %}
-							</ul>
-						</div>
-					{% endif %}  
-				</div>
-				<!-- Вывод рассказа: конец -->
-			{% endif %}
-		{% endfor %}
+		{% include "includes/stories.html" %}
 	</div>
 	
 	<div class="span4 top-list sidelist">
-    {% if comments.count > 0 %}<h2>Комментарии читателей ({{ comments_count }})</h2>{% endif %}
-    	<div id="comments-list">
-	    	{% for comment in comments %}
-		        <div class="comment-item" id="comment-{{ comment.id }}">
-	        	   	<p class="comment-meta"><span class="comment-date">{{ comment.date|date:"d.m.Y" }} к рассказу <a href="{% url 'story_view' comment.story_id %}">{{ comment.story.title }}</a></span></p>
-		          	<p class="comment_text">{{ comment.text_as_html }}</p>
-	        	</div> 
-		    {% endfor %} 
-    	</div>
-	{% if comments.count > 5 %}
-		<div id="pagination" class="center">
-			<input type="submit" class="btn" value="&laquo;" onclick="getComments('first')">
-			<input type="submit" class="btn" value="&lsaquo;" onclick="getComments('prev')">
-			<input type="text" onchange="getComments($(this).val())" id="comments_goto_page" class="input-xlarge" placeholder="1 / {{ num_pages }}">
-			<input type="submit" class="btn" value="&rsaquo;" onclick="getComments('next')">
-			<input type="submit" class="btn" value="&raquo;" onclick="getComments('last')">
-			<input type="hidden" name="page_current" id="page_current" value="1">
-			<input type="hidden" name="num_pages" id="num_pages" value="{{ num_pages }}">
-		</div>
-	{% endif %}
+		{% if comments.count > 0 %}
+    		<h2>Комментарии читателей ({{ comments_count }})</h2>
+	    	<div id="comments-list">
+			{% include "includes/comments.html" %}
+    		</div>
+			{% include "includes/comments_pagination.html" %}
+		{% endif %}
 	</div>
 	
 	<div class="span12">

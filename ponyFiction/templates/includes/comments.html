@@ -1,0 +1,11 @@
+{% for comment in comments %}
+	<div class="story-item">
+		<p class="comment">
+			{{ comment.text_as_html|safe }}
+		</p>
+		<p class="meta">
+			<a class="authorlink" href="{% url 'author_overview' comment.author_id %}">{{ comment.author.username }}</a> 
+			{{ comment.date|timesince }} назад о <a href="{% url 'story_view' comment.story_id %}"><b>{{ comment.story.title }}</b></a>
+		</p>
+	</div>
+{% endfor %}

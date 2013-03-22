@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-from django.views.generic.list import ListView
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from django.views.generic.list import ListView
 from ponyFiction.models import Author, Story
 
-class StoriesList(ListView):
+class ObjectList(ListView):
     
     context_object_name = 'stories'
     paginate_by = settings.STORIES_COUNT['page']
@@ -23,11 +23,11 @@ class StoriesList(ListView):
         raise NotImplementedError("Subclasses should implement this!")
         
     def get_context_data(self, **kwargs):
-        context = super(StoriesList, self).get_context_data(**kwargs)
+        context = super(ObjectList, self).get_context_data(**kwargs)
         context['page_title'] = self.page_title
         return context
 
-class FavoritesList(StoriesList):
+class FavoritesList(ObjectList):
     
     @method_decorator(login_required())
     def dispatch(self, request, *args, **kwargs):
@@ -52,7 +52,7 @@ class FavoritesList(StoriesList):
         return self.author.favorites_story_set.filter(draft=False, approved=True).order_by('-favorites_story_related_set__date')
     
 
-class SubmitsList(StoriesList):
+class SubmitsList(ObjectList):
     
     @method_decorator(login_required())
     def dispatch(self, request, *args, **kwargs):
@@ -69,7 +69,7 @@ class SubmitsList(StoriesList):
     def get_queryset(self):
         return Story.submitted.all()
 
-class DeferredStoriesList(StoriesList):
+class DeferredStoriesList(ObjectList):
     
     @method_decorator(login_required())
     def dispatch(self, request, *args, **kwargs):
@@ -85,3 +85,4 @@ class DeferredStoriesList(StoriesList):
     
     def get_queryset(self):
         return self.request.user.deferred_story_set.all()
+    

@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from django.conf import settings
+from django.contrib.auth import views as auth_views
+from django.views.generic import TemplateView
 from ponyFiction import feeds
+from ponyFiction.forms.register import AuthorRegistrationForm
 from ponyFiction.views import search, ajax, author, comment, DirectTemplateView # TODO: заменить на это! 
 from ponyFiction.views.index import index
-from ponyFiction.views.stream import stream_list
-from django.contrib.auth import views as auth_views
+from ponyFiction.views.object_lists import FavoritesList, SubmitsList, DeferredStoriesList
+from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments
 from registration.views import activate, register
-from ponyFiction.forms.register import AuthorRegistrationForm
-from ponyFiction.models import Comment, Story, Chapter
-from django.views.generic import TemplateView
-from ponyFiction.views.stories_list import FavoritesList, SubmitsList,\
-    DeferredStoriesList
 
 admin.autodiscover()
 
@@ -40,6 +38,20 @@ urlpatterns += patterns('',
     url(r'^deferred/$', DeferredStoriesList.as_view(), name='deferred'),
     url(r'^deferred/page/(?P<page>\d+)/$', DeferredStoriesList.as_view(), name='deferred_page'),
 )
+# Ленты
+urlpatterns += patterns('',
+    url(r'^stream/stories/$', StreamStories.as_view(), name='stream_stories'),
+    url(r'^stream/stories/page/(?P<page>\d+)/$', StreamStories.as_view(), name='stream_stories_page'),
+    url(r'^stream/chapters/$', StreamChapters.as_view(), name='stream_chapters'),
+    url(r'^stream/chapters/page/(?P<page>\d+)/$', StreamChapters.as_view(), name='stream_chapters_page'),
+    url(r'^stream/comments/$', StreamComments.as_view(), name='stream_comments'),
+    url(r'^stream/comments/page/(?P<page>\d+)/$', StreamComments.as_view(), name='stream_comments_page'),
+)
+urlpatterns += patterns('',
+    url(r'^accounts/(?P<user_id>\d+)/ajax/comments/page/(?P<page>\d+)/$', author.CommentsAuthor.as_view()),
+    url(r'^accounts/profile/ajax/comments/page/(?P<page>\d+)/$', author.CommentsAuthor.as_view(), {'user_id': None}),
+)        
+
 # Обработка пользовательских адресов
 urlpatterns += patterns('',
     url(r'^accounts/(?P<user_id>\d+)/$', author.author_info, name='author_overview'),
@@ -121,11 +133,8 @@ urlpatterns += patterns('',
 )
 # AJAX
 urlpatterns += patterns('',
-    url(r'^story/(?P<story_id>\d+)/ajax$', ajax.ajax_comments, {'type' : 'story'}),
-    url(r'^accounts/(?P<user_id>\d+)/ajax$', ajax.ajax_comments, {'type' : 'user'}),
-    url(r'^stream/comments/ajax$', ajax.ajax_comments, {'type' : 'new'}),
-    url(r'^stream/stories/ajax$', ajax.ajax_stories),
-    url(r'^stream/chapters/ajax$', ajax.ajax_chapters),
+    #url(r'^story/(?P<story_id>\d+)/ajax$', ajax.ajax_comments, {'type' : 'story'}),
+    
     # AJAX-сортировка глав
     url(r'^story/(?P<story_id>\d+)/edit/ajax$', ajax.sort_chapters),
     # Голосование за рассказ
@@ -137,12 +146,6 @@ urlpatterns += patterns('',
 
 )
 
-# Ленты
-urlpatterns += patterns('',
-    url(r'^stream/comments/$', stream_list, {'model': Comment, 'page_title': 'Лента комментариев'}, name='stream_comments'),
-    url(r'^stream/stories/$', stream_list, {'model': Story, 'page_title': 'Лента добавлений'}, name='stream_stories'),
-    url(r'^stream/chapters/$', stream_list, {'model': Chapter, 'page_title': 'Лента обновлений'}, name='stream_chapters'),
-)
 
 # Комментирование
 urlpatterns += patterns('',
