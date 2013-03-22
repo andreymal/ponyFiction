@@ -86,10 +86,7 @@
 	</div>
 
     {% if chapter %}
-    <div class="chapter-text">
-        <h1 id="chaptertitle">{{ chapter.title }}</h1>
-        {{ chapter.text_as_html }}
-    </div>
+		{% include "includes/chapter_single.html" %}
     {% endif %}
     
 	<div class="span12">

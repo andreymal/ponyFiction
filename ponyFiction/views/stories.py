@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_protect
-from django.contrib.auth.decorators import login_required
-from ponyFiction.models import Story, CoAuthorsStory, Chapter, StoryView, Activity
-from django.core.paginator import Paginator
-from ponyFiction.forms.story import StoryForm
 from ponyFiction.forms.comment import CommentForm
-from django.core.exceptions import PermissionDenied
+from ponyFiction.forms.story import StoryForm
+from ponyFiction.models import Story, CoAuthorsStory, Chapter, StoryView, Activity
+from ponyFiction.views.object_lists import ObjectList
 
 @csrf_protect
 def story_view(request, story_id):
@@ -108,3 +109,20 @@ def story_edit(request, story_id, data):
     chapters = Chapter.objects.filter(story=story_id).order_by('order')
     data.update({'form': form, 'story_edit': True, 'chapters': chapters, 'page_title' : u'Редактирование «%s»' % Story.objects.get(pk=story_id).title , 'story_id': story_id})
     return render(request, 'story_work.html', data)
+
+class CommentsStory(ObjectList):
+    
+    context_object_name = 'comments'
+    paginate_by = settings.COMMENTS_COUNT['author_page']
+            
+    @property
+    def template_name(self):
+        return 'includes/comments.html'
+    
+    @property
+    def page_title(self):
+        return None
+    
+    def get_queryset(self):
+        story = get_object_or_404(Story, pk=self.kwargs['story_id'])
+        return story.comment_set.all()

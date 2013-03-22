@@ -11,6 +11,7 @@ from ponyFiction.views.index import index
 from ponyFiction.views.object_lists import FavoritesList, SubmitsList, DeferredStoriesList
 from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments
 from registration.views import activate, register
+from ponyFiction.views.stories import CommentsStory
 
 admin.autodiscover()
 
@@ -133,7 +134,7 @@ urlpatterns += patterns('',
 )
 # AJAX
 urlpatterns += patterns('',
-    #url(r'^story/(?P<story_id>\d+)/ajax$', ajax.ajax_comments, {'type' : 'story'}),
+    url(r'^story/(?P<story_id>\d+)/ajax/comments/page/(?P<page>\d+)/$', CommentsStory.as_view()),
     
     # AJAX-сортировка глав
     url(r'^story/(?P<story_id>\d+)/edit/ajax$', ajax.sort_chapters),

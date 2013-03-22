@@ -301,12 +301,17 @@ $(function() {
 		});
 	}
 	// На странице добавления или редактирования главы
-	var re_chapteredit = new RegExp('/story/[0-9]+/chapter/[0-9]+/edit/')
-	var re_chapteradd = new RegExp('/story/[0-9]+/chapter/add/')
+	var re_chapteredit = new RegExp('/story/[0-9]+/chapter/[0-9]+/edit/');
+	var re_chapteradd = new RegExp('/story/[0-9]+/chapter/add/');
 	if (re_chapteredit.test(window.location.pathname)
 			|| re_chapteradd.test(window.location.pathname)) {
 		$('.chapter-textarea').markItUp(mySettings);
 		$('#id_notes').markItUp(mySettings);
+	}
+	// На странице рассказа
+	var re_story = new RegExp('/story/[0-9]+/');
+	if (re_story.test(window.location.pathname)) {
+		$('#id_text').markItUp(mySettings);
 	}
 	// Голосование
 	$('#vote-up').click(function() {

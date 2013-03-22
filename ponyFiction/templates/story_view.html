@@ -31,7 +31,7 @@
 		
 		<p>Написал: {% include 'includes/story_authors_list.html' %}</p>
         
-        <p class="story-description">{{ story.summary_as_html }}</p>        
+        <p class="story-description">{{ story.summary_as_html|striptags }}</p>        
 		
 		{% if story.notes %}
 			<p>Заметки к рассказу: {{ story.notes_as_html }}</p>
@@ -51,7 +51,7 @@
   		<div class="story-chapters">
   			{% if chapters.count > 1 %}
   				<h2>Содержание</h2>
-				{% include "story_panel.html" %}
+				{% include "includes/story_panel.html" %}
   				<ul id="story_chapters">
 					{% for chapter in chapters %}
 						<li><h4><a href="{% url 'chapter_view_single' story.id chapter.order %}">{{ chapter.title }}</a></h4>
@@ -59,13 +59,9 @@
 					{% endfor %}
   				</ul>
   			{% else %}	
-                {% with chapter=chapters.0 %}
-				<h2 id="chaptertitle">{{ chapter.title }}</h2>
-				{% include "story_panel.html" %}
-				
-				<div class="chapter-text">
-					{{ chapter.text_as_html }}
-				</div>
+                {% with chapter=chapters.0 %}			
+					{% include "includes/story_panel.html" %}
+					{% include "includes/chapter_single.html" %}
                 {% endwith %}
 			{% endif %}
 		</div>
@@ -73,25 +69,11 @@
 		<div id="comments">
       		<h3>Комментарии ({{ story.comment_set.count }})</h3>
 	      	<div id="comments-list">
-	      		{% for comment in comments %}
-	      			<div class="comment-item" id="comment-{{ comment.id }}">
-			        	<p class="comment-meta"><a class="comment_user" href="{% url 'author_overview' comment.author.id %}">{{ comment.author.username }}</a> <span class="comment-date">{{ comment.date|date:"d.m.Y" }}</span></p>
-	        			<p class="comment_text">{{ comment.text_as_html }}</p>
-	      			</div>
-	      		{% endfor %}
+	      		{% include 'includes/comments.html' %}
 	      	</div>
-			<div id="pagination" class="center">
-	        	<input type="submit" class="btn" value="&laquo;" onclick="getComments('first')">
-	        	<input type="submit" class="btn" value="&lsaquo;" onclick="getComments('prev')">
-	        	<input type="text" onchange="getComments($(this).val())" id="comments-goto-page" class="input-xlarge" placeholder="1 / {{ num_pages }}">
-	        	<input type="submit" class="btn" value="&rsaquo;" onclick="getComments('next')">
-	        	<input type="submit" class="btn" value="&raquo;" onclick="getComments('last')">
-	        	<input type="hidden" id="page_current" value="1">
-	        	<input type="hidden" id="num-pages" value="{{ num_pages }}">
-	      	</div>
+			{% include 'includes/comments_pagination.html' %}
       	</div>
       	<!-- Вывод комментариев: конец -->
-      	
       	<!-- Вывод формы: начало -->
       	<form action="{% url 'comment_story' story.id %}" method="POST" enctype="multipart/form-data" class="">
       	{% csrf_token %}
@@ -106,7 +88,6 @@
 			</div>
 		</form>
       	<!-- Вывод формы: конец -->
-      	
     </div>
 </div>
 {% endblock %}

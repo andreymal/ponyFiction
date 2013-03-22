@@ -7,7 +7,6 @@ from django.views.decorators.csrf import csrf_protect
 from ponyFiction.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm 
 from ponyFiction.models import Author, Story, Comment, Vote, StoryView
 from ponyFiction.views.object_lists import ObjectList
-from django.http.response import Http404
 
 @login_required
 @csrf_protect

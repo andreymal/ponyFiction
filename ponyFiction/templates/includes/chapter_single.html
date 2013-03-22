@@ -1,0 +1,7 @@
+<div class="chapter-text">
+	<h1 id="chaptertitle">{{ chapter.title }}</h1>
+	{% if chapter.notes %}
+		<blockquote>{{ chapter.notes_as_html }}</blockquote>
+	{% endif %}
+	{{ chapter.text_as_html }}
+</div>
