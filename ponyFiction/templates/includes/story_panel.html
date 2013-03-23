@@ -19,6 +19,7 @@
     
     <span class="chapter-controls">
         <a title="Скачать в FB2" href="{% url 'story_fb2' story.id %}" class="get fb2"></a>
+        <a title="Скачать в HTML" href="{% url 'story_html' story.id %}" class="get html"></a>
     </span>
     {% comment %}
     <span class="chapter-controls">
@@ -26,9 +27,7 @@
         <a title="Вверх" href="#" class="scon up"></a> 
     </span><a title="Отложить на потом" href="#" class="scon later"></a>
         <a title="Скачать в MOBI" href="#" class="get mobi"></a>
-        <a title="Скачать в FB2" href="#" class="get fb2"></a>
         <a title="Скачать в PDF" href="#" class="get pdf"></a>
-        <a title="Скачать в HTML" href="#" class="get html"></a>
         <a title="Скачать в TXT" href="#" class="get txt"></a>
     {% endcomment %}
 

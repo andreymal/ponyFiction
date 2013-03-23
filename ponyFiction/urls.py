@@ -187,7 +187,8 @@ urlpatterns += patterns('ponyFiction.views.stories',
     url(r'^story/(?P<pk>\d+)/approve/$', 'story_approve', name='story_approve'),
     # Закачка в FB2
     url(r'^story/(?P<pk>\d+)/download/fb2/$', 'story_fb2', name='story_fb2'),
-
+    # Закачка в HTML
+    url(r'^story/(?P<pk>\d+)/download/html/$', 'story_html', name='story_html'),
 )
 # Работа с главами
 urlpatterns += patterns('ponyFiction.views.chapters',

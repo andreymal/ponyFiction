@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+	<body>
+		<h1><a href="{% url 'story_view' story.id %}">{{ story.title }}</a></h1>
+		<h2>от {% include 'includes/story_authors_list.html' %}</h2>
+		<hr>
+		<h3>Оглавление</h3>
+		{% with chapters=story.chapter_set.all %}
+			<ul>
+				{% for chapter in chapters %}
+				<li>
+					<a href="#{{ chapter.order }}">{{ chapter.title }}</a>
+				</li>
+				{% endfor %}
+			</ul>
+			<hr>
+				{% for chapter in chapters %}
+					<a name="{{ chapter.order }}">
+					{% include 'includes/chapter_single.html' %}
+					<hr>
+				{% endfor %}
+		{% endwith %}
+	</body>
+</html>

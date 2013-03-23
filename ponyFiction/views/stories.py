@@ -131,17 +131,23 @@ class StoryEdit(UpdateView):
         context.update(extra_context)
         return context
 
-@cache_page(60 * 60)
+@cache_page(60 * 60 * 24)
 def story_fb2(request, pk):
     from lxml import etree
     from ponyFiction.filters import fb2
-    
     story = get_object_or_404(Story, pk=pk)
     chapters = story.chapter_set.order_by('order')
     chapters = [fb2.html_to_fb2(chapter.text_as_html, title = chapter.title) for chapter in chapters]
     doc = fb2.join_fb2_docs(chapters, title = story.title)
     data = etree.tostring(doc, encoding = 'utf8', xml_declaration = True)
-    
     response = HttpResponse(data, content_type = 'text/xml')
     response['Content-Disposition'] = 'attachment; filename=%s.fb2' % pk
+    return response
+
+@cache_page(60 * 60 * 24)
+def story_html(request, pk):
+    story = get_object_or_404(Story, pk=pk)
+    data = {'story': story}
+    response = render(request, 'clear_html.html', data)
+    response['Content-Disposition'] = 'attachment; filename=%s.html' % pk
     return response
