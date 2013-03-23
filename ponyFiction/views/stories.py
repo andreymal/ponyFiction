@@ -11,6 +11,7 @@ from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
 from ponyFiction.models import Story, CoAuthorsStory, StoryView, Activity
 from django.http.response import HttpResponse
+from django.views.decorators.cache import cache_page
 
 @csrf_protect
 def story_view(request, pk):
@@ -129,7 +130,8 @@ class StoryEdit(UpdateView):
                          }
         context.update(extra_context)
         return context
-    
+
+@cache_page(60 * 60)
 def story_fb2(request, pk):
     from lxml import etree
     from ponyFiction.filters import fb2
