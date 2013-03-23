@@ -1,0 +1,13 @@
+{% load url from future %}
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h3>Удаление рассказа</h3>
+</div>
+<div class="modal-body">
+	<p>Вы действительно хотите удалить рассказ «{{ story_title }}»?</p>
+	<p>Вся связанная статистика, главы, оценки и комментарии также будут безвозвратно удалены!</p>
+</div>
+<div class="modal-footer">
+	<button class="btn" data-dismiss="modal" aria-hidden="true">Отменить</button>
+	<a href="{% url 'story_delete' story_id %}" class="btn btn-danger story_delete">Удалить рассказ</a>
+</div>

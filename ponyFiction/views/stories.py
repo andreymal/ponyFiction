@@ -4,11 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
+from django.views.generic.edit import CreateView, UpdateView
 from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
-from ponyFiction.models import Story, CoAuthorsStory, Chapter, StoryView, Activity
-from ponyFiction.views.object_lists import ObjectList
+from ponyFiction.models import Story, CoAuthorsStory, StoryView, Activity
 
 @csrf_protect
 def story_view(request, story_id):
@@ -46,77 +47,51 @@ def story_view(request, story_id):
 
 @login_required
 @csrf_protect
-def story_work(request, story_id=False, edit=False, approve=False, publish=False, delete=False):
-    #if not story_id:
-   #     return story_add(request, data={})
-    story = get_object_or_404(Story, pk=story_id)
-    if story.is_editable_by(request.user):
-        if approve and request.user.is_staff:
-            if story.approved:
-                story.approved = False
-            else:
-                story.approved = True
-            story.save(update_fields=['approved'])
-            return redirect('author_dashboard')
-        if delete:
-            story.delete()
-            return redirect('author_dashboard')
-        if publish:
-            if story.draft:
-                story.draft = False
-            else:
-                story.draft = True
-            story.save(update_fields=['draft'])
-            return redirect('author_dashboard')
-        if edit:
-            return story_edit(request, story_id, data={})
+def story_delete(request, pk):
+    story = get_object_or_404(Story, pk=pk)
+    if story.is_editable_by(request.user) and request.user.is_staff:
+        if story.approved:
+            story.approved = False
+        else:
+            story.approved = True
+        story.save(update_fields=['approved'])
+        return redirect('author_dashboard')
     else:
         raise PermissionDenied
 
-
-def story_edit(request, story_id, data):
-    if request.POST:
-        if (('button_submit' in request.POST) or ('button_save_draft' in request.POST)):
-            form = StoryForm(request.POST, instance=Story.objects.get(pk=story_id))
-            if form.is_valid():
-                form.save()
-                return redirect('story_edit', story_id)
-        if 'button_delete' in request.POST:
-            Story.objects.get(pk=story_id).delete()
-            return redirect('author_dashboard')
+@login_required
+@csrf_protect
+def story_publish(request, pk):
+    story = get_object_or_404(Story, pk=pk)
+    if story.is_editable_by(request.user):
+        if story.draft:
+            story.draft = False
+        else:
+            story.draft = True
+        story.save(update_fields=['draft'])
+        return redirect('author_dashboard')
     else:
-        form = StoryForm(instance=Story.objects.get(pk=story_id))
-        
-    form.fields['button_submit'].initial = 'Сохранить изменения'
-    chapters = Chapter.objects.filter(story=story_id).order_by('order')
-    data.update({'form': form, 'story_edit': True, 'chapters': chapters, 'page_title' : u'Редактирование «%s»' % Story.objects.get(pk=story_id).title , 'story_id': story_id})
-    return render(request, 'story_work.html', data)
+        raise PermissionDenied
 
-class CommentsStory(ObjectList):
+@login_required
+@csrf_protect
+def story_approve(request, pk):
+    story = get_object_or_404(Story, pk=pk)
+    if story.is_editable_by(request.user):
+        story.delete()
+        return redirect('submitted')
+    else:
+        raise PermissionDenied
     
-    context_object_name = 'comments'
-    paginate_by = settings.COMMENTS_COUNT['author_page']
-            
-    @property
-    def template_name(self):
-        return 'includes/comments.html'
-    
-    @property
-    def page_title(self):
-        return None
-    
-    def get_queryset(self):
-        story = get_object_or_404(Story, pk=self.kwargs['story_id'])
-        return story.comment_set.all()
-    
-from django.views.generic.edit import CreateView
-
 class StoryAdd(CreateView):
     model = Story
     form_class = StoryForm
     template_name = 'story_work.html'
     initial={'finished': 0, 'freezed': 0, 'original': 1, 'rating': 4, 'size': 1, 'button_submit': u'Добавить рассказ'}
-    extra_context = {'page_title': u'Новый рассказ'}
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return CreateView.dispatch(self, request, *args, **kwargs)
     
     def form_valid(self, form):
         story = form.save()
@@ -125,5 +100,31 @@ class StoryAdd(CreateView):
     
     def get_context_data(self, **kwargs):
         context = super(StoryAdd, self).get_context_data(**kwargs)
-        context.update(self.extra_context)
+        extra_context = {'page_title': u'Новый рассказ'}
+        context.update(extra_context)
+        return context
+
+
+class StoryEdit(UpdateView):
+    model = Story
+    form_class = StoryForm
+    template_name = 'story_work.html'
+    initial={'button_submit': u'Сохранить изменения'}
+    
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return UpdateView.dispatch(self, request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        story = form.save()
+        return redirect('story_edit', story.id)
+    
+    def get_context_data(self, **kwargs):
+        context = super(StoryEdit, self).get_context_data(**kwargs)
+        extra_context = {
+                         'page_title': u'Редактирование «%s»' % context['story'].title,
+                         'story_edit': True,
+                         'chapters': context['story'].chapter_set.order_by('order')
+                         }
+        context.update(extra_context)
         return context

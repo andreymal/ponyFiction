@@ -34,6 +34,8 @@ function processComments(comments, page_current, num_pages) {
 function getComments(request) {
 	var page_current = $('#page_current').val() | 0;
 	var num_pages = $('#num_pages').val() | 0;
+	var re_story = new RegExp('/story/[0-9]+/');
+	var story_id = window.location.pathname.match(re_story)[1];
 	switch (request) {
 	case 'prev':
 		page_current--;
@@ -52,9 +54,8 @@ function getComments(request) {
 		success : function(response) {
 			processComments(response, go_page, num_pages);
 		},
-		error : getAjaxErrorHandler,
 		type : 'GET',
-		url : 'ajax/comments/page/' + go_page + '/'
+		url : '/ajax/comments/story/' + story_id + '/page/' + go_page + '/'
 	});
 }
 
@@ -88,24 +89,12 @@ function voteStory(request) {
 		return;
 	}
 	requestRunning = true;
-	// Читаем CSRF Cookie
-	var csrftoken = $.cookie('csrftoken');
-	// Конфигурируем заголовок AJAX-запроса
-	$.ajaxSetup({
-		crossDomain : false,
-		beforeSend : function(xhr, settings) {
-			if (!csrfSafeMethod(settings.type)) {
-				xhr.setRequestHeader("X-CSRFToken", csrftoken);
-			}
-		}
-	});
+
 	$.ajax({
-		cache : false,
 		data : {
 			vote : request
 		},
 		dataType : 'json',
-		error : getAjaxErrorHandler,
 		success : changeVote,
 		complete : function() {
 			requestRunning = false;
@@ -130,20 +119,7 @@ function changeVote(response) {
  * Добавление-удаление из избранного по AJAX
  */
 function favoriteStory() {
-	// Читаем CSRF Cookie
-	var csrftoken = $.cookie('csrftoken');
-	// Конфигурируем заголовок AJAX-запроса
-	$.ajaxSetup({
-		crossDomain : false,
-		beforeSend : function(xhr, settings) {
-			if (!csrfSafeMethod(settings.type)) {
-				xhr.setRequestHeader("X-CSRFToken", csrftoken);
-			}
-		}
-	});
 	$.ajax({
-		cache : false,
-		error : getAjaxErrorHandler,
 		success : changeFavorite,
 		type : 'POST',
 		url : 'favorite'
@@ -168,6 +144,15 @@ function changeFavorite(response) {
 
 // При загрузке страницы
 $(function() {
+	// Конфигурируем заголовок AJAX-запроса с CSRF Cookie
+	$.ajaxSetup({
+		cache : false,
+		crossDomain : false,
+		error : getAjaxErrorHandler,
+		beforeSend : function(request) {
+			request.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+		}
+	});
 	// Включаем карусель
 	$('#myCarousel').slides({
 		generatePagination : false,
@@ -273,22 +258,9 @@ $(function() {
 		$('#sortable_chapters').sortable({
 			// Действия при обновлении
 			update : function() {
-				// Читаем CSRF Cookie
-				var csrftoken = $.cookie('csrftoken');
-				// Конфигурируем заголовок AJAX-запроса
-				$.ajaxSetup({
-					crossDomain : false,
-					beforeSend : function(xhr, settings) {
-						if (!csrfSafeMethod(settings.type)) {
-							xhr.setRequestHeader("X-CSRFToken", csrftoken);
-						}
-					}
-				});
 				// Посылаем AJAX-запрос
 				$.ajax({
-					cache : false,
 					data : $('#sortable_chapters').sortable('serialize'),
-					error : getAjaxErrorHandler,
 					type : 'POST',
 					url : 'ajax'
 				});
@@ -343,6 +315,62 @@ $(function() {
 	});
 	$('#comments_goto_page').change(function() {
 		getComments($(this).val() | 0);
+	});
+	// AJAX-удаление рассказа
+	$('.story_delete').live('click', function(self) {
+		if (!(re_story.test(current_path))) {
+			self.stopImmediatePropagation();
+			self.preventDefault();
+			var url = '/ajax' + $(this).attr('href');
+			$.post(url, function(data) {
+				$('#story_' + data).slideUp('slow').remove();
+			}).success(function() {
+				$('.modal').modal('hide').remove();
+			});
+		} else {
+			$('.modal').modal('hide').remove();
+		}
+	});
+	// Отображение модального окна подтверждения
+	$('.story_delete_confirm').click(function(self) {
+		self.preventDefault();
+		var url = '/ajax' + $(this).attr('href') + 'confirm/';
+		if (url.indexOf('#') == 0) {
+			$(url).modal('open');
+		} else {
+			$.get(url, function(data) {
+				$('<div class="modal hide fade">' + data + '</div>').modal();
+			}).success(function() {
+				$('input:text:visible:first').focus();
+			});
+		}
+	});
+	// Одобрение глав по AJAX
+	$('.story_approve').click(function(self) {
+		self.preventDefault();
+		var url = '/ajax' + $(this).attr('href');
+		$.post(url, function(data) {
+			var btn = $('#story_' + data + ' .story_approve');
+			if (btn.hasClass('btn-success')) {
+				btn.removeClass('btn-success').text('Отменить');
+			} else {
+				btn.addClass('btn-success').text('Одобрить');
+			}
+		});
+	});
+	// Публикация глав по AJAX
+	$('.story_publish').click(function(self) {
+		self.preventDefault();
+		var url = '/ajax' + $(this).attr('href');
+		$.post(url, function(data) {
+			var btn = $('#story_' + data + ' .story_publish');
+			if (btn.hasClass('btn-primary')) {
+				btn.removeClass('btn-primary').text('В черновики');
+			} else {
+				btn.addClass('btn-primary').text('Опубликовать');
+			}
+		});
+
 	});
 	// Ещё какая-то ерунда
 	// ---

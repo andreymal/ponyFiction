@@ -4,7 +4,7 @@
 {% load story_comments_delta %}
 {% for story in stories %}
 	<!-- Вывод рассказа: начало -->
-	<div class="story-item">
+	<div class="story-item" id="story_{{ story.id }}">
 		<h3>
 			<a href="{% url 'story_view' story.id %}">{{ story.title }}</a> 
 			<sup><span class="upvotes">{{ story.vote_up_count }}</span> / <span class="downvotes">{{ story.vote_down_count }}</span></sup>

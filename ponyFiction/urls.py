@@ -6,12 +6,12 @@ from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 from ponyFiction import feeds
 from ponyFiction.forms.register import AuthorRegistrationForm
-from ponyFiction.views import search, ajax, author, comment, DirectTemplateView # TODO: заменить на это! 
+from ponyFiction.views import search, ajax, author, comment
 from ponyFiction.views.index import index
 from ponyFiction.views.object_lists import FavoritesList, SubmitsList, DeferredStoriesList
 from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments
 from registration.views import activate, register
-from ponyFiction.views.stories import CommentsStory, StoryAdd
+from ponyFiction.views.stories import StoryAdd, StoryEdit
 
 admin.autodiscover()
 
@@ -134,8 +134,16 @@ urlpatterns += patterns('',
 )
 # AJAX
 urlpatterns += patterns('',
-    url(r'^story/(?P<story_id>\d+)/ajax/comments/page/(?P<page>\d+)/$', CommentsStory.as_view()),
-    
+    # Подгрузка комментариев
+    url(r'^ajax/comments/story/(?P<story_id>\d+)/page/(?P<page>\d+)/$', ajax.CommentsStory.as_view()),
+    # Загрузка модального окна-подтверждения удаления рассказа
+    url(r'^ajax/story/(?P<story_id>\d+)/delete/confirm/$', ajax.ConfirmDeleteStory.as_view()),
+    # Удаление рассказа
+    url(r'^ajax/story/(?P<story_id>\d+)/delete/$', ajax.story_delete_ajax),
+    # Одобрение рассказа
+    url(r'^ajax/story/(?P<story_id>\d+)/approve/$', ajax.story_approve_ajax),
+    # Публикация рассказа
+    url(r'^ajax/story/(?P<story_id>\d+)/publish/$', ajax.story_publish_ajax),
     # AJAX-сортировка глав
     url(r'^story/(?P<story_id>\d+)/edit/ajax$', ajax.sort_chapters),
     # Голосование за рассказ
@@ -170,13 +178,14 @@ urlpatterns += patterns('ponyFiction.views.stories',
     # Добавление
     url(r'^story/add/$', StoryAdd.as_view(), name='story_add'),
     # Правка
-    url(r'^story/(?P<story_id>\d+)/edit/$', 'story_work', {'edit': True}, name='story_edit'),
-    # Отправка на публикацию
-    url(r'^story/(?P<story_id>\d+)/publish/$', 'story_work', {'publish': True}, name='story_publish'),
-    # Одобрение
-    url(r'^story/(?P<story_id>\d+)/approve/$', 'story_work', {'approve': True}, name='story_approve'),
+    url(r'^story/(?P<pk>\d+)/edit/$', StoryEdit.as_view(), name='story_edit'),
     # Удаление
-    url(r'^story/(?P<story_id>\d+)/delete/$', 'story_work', {'delete': True}, name='story_delete'),
+    url(r'^story/(?P<pk>\d+)/delete/$', 'story_delete', name='story_delete'),
+    # Отправка на публикацию
+    url(r'^story/(?P<pk>\d+)/publish/$', 'story_publish', name='story_publish'),
+    # Одобрение
+    url(r'^story/(?P<pk>\d+)/approve/$', 'story_approve', name='story_approve'),
+
 )
 # Работа с главами
 urlpatterns += patterns('ponyFiction.views.chapters',
@@ -192,7 +201,7 @@ urlpatterns += patterns('ponyFiction.views.chapters',
 
 # Другое
 urlpatterns += patterns('',
-    url(r'^not_found/$', DirectTemplateView.as_view(template_name='404.html')),
+    url(r'^not_found/$', TemplateView.as_view(template_name='404.html')),
     url(r'^bad_gateway/$', TemplateView.as_view(template_name='502.html')),
     url(r'^forbidden/$', TemplateView.as_view(template_name='403.html')),
     url(r'^internal_server_error/$', TemplateView.as_view(template_name='500.html')),

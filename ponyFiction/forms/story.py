@@ -123,12 +123,6 @@ class StoryForm(ModelForm):
         widget=ServiceButtonWidget(attrs={'class': 'btn btn-primary'}),
         initial = 'Сохранить'
     )
-    # Кнопка "Удалить"
-    button_delete = Field(
-        required=False,
-        widget=ServiceButtonWidget(attrs={'class': 'btn btn-danger'}),
-        initial='Удалить рассказ',
-    )
     # Метакласс
     class Meta:
         model = Story
