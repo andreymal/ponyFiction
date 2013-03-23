@@ -5,34 +5,35 @@ from ponyFiction.models import Character, Category, Classifier, Rating, Size
 from ponyFiction.widgets import ButtonWidget, ServiceButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesButtons, StoriesRadioButtons, StoriesServiceInput
 from ponyFiction.fields import SanitizedCharField
 
+
 class SearchForm(Form):
-    checkbox_attrs={
-           'btn_attrs': {'type': 'button', 'class': 'btn'},
-           'data_attrs': {'class': 'hidden'},
-           'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-checkbox'},
-           'data_container_attrs': {'class': 'buttons-data'},
-           }
-    radio_attrs={
-           'btn_attrs': {'type': 'button', 'class': 'btn'},
-           'data_attrs': {'class': 'hidden'},
-           'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-radio'},
-           'data_container_attrs': {'class': 'buttons-data'},
-           }
+    checkbox_attrs = {
+        'btn_attrs': {'type': 'button', 'class': 'btn'},
+        'data_attrs': {'class': 'hidden'},
+        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-checkbox'},
+        'data_container_attrs': {'class': 'buttons-data'},
+    }
+    radio_attrs = {
+        'btn_attrs': {'type': 'button', 'class': 'btn'},
+        'data_attrs': {'class': 'hidden'},
+        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-radio'},
+        'data_container_attrs': {'class': 'buttons-data'},
+    }
     img_attrs = {
-           'group_container_class': 'characters-group group-',
-           'data_attrs': {'class': 'hidden'},
-           'container_attrs': {'class': 'character-item'}
+        'group_container_class': 'characters-group group-',
+        'data_attrs': {'class': 'hidden'},
+        'container_attrs': {'class': 'character-item'}
     }
     # Строка поиска
     search_query = SanitizedCharField(
         required=False,
         widget=TextInput(
             attrs={
-               'size': 32,
-               'placeholder': 'Пинки-поиск',
-               'id': 'appendedInputButtons',
-               'class': 'span3',
-               'maxlength': 128,
+                'size': 32,
+                'placeholder': 'Пинки-поиск',
+                'id': 'appendedInputButtons',
+                'class': 'span3',
+                'maxlength': 128,
             }
         ),
         max_length=128,
@@ -43,9 +44,9 @@ class SearchForm(Form):
         required=False,
         widget=StoriesCheckboxSelectMultiple(
             attrs={
-                   'label_attrs': ['checkbox', 'inline', 'gen'],
-                   'label_id_related_attr': 'gen-',
-                   },
+                'label_attrs': ['checkbox', 'inline', 'gen'],
+                'label_id_related_attr': 'gen-',
+            },
         ),
     )
     # Персонажи
@@ -57,19 +58,19 @@ class SearchForm(Form):
     )
     # Оригинал/перевод
     originals_select = MultipleChoiceField(
-        choices=[(0, 'Перевод'),(1, 'Оригинал')],
+        choices=[(0, 'Перевод'), (1, 'Оригинал')],
         required=False,
         widget=StoriesButtons(attrs=checkbox_attrs),
     )
     # Статус рассказа
     finished_select = MultipleChoiceField(
-        choices=[(0, 'Не завершен'),(1, 'Завершен')],
+        choices=[(0, 'Не завершен'), (1, 'Завершен')],
         required=False,
         widget=StoriesButtons(attrs=checkbox_attrs),
     )
     # Активность рассказа
     freezed_select = MultipleChoiceField(
-        choices=[(0, 'Активен'),(1, 'Заморожен')],
+        choices=[(0, 'Активен'), (1, 'Заморожен')],
         required=False,
         widget=StoriesButtons(attrs=checkbox_attrs),
     )
@@ -96,12 +97,12 @@ class SearchForm(Form):
         required=False,
         widget=ButtonWidget(
             attrs={
-                   'type': 'button',
-                   'class': 'btn btn-collapse',
-                   'data-toggle': 'collapse',
-                   'data-target': '#more-info',
-                   'text': 'Еще более тонкий поиск'
-                   }
+                'type': 'button',
+                'class': 'btn btn-collapse',
+                'data-toggle': 'collapse',
+                'data-target': '#more-info',
+                'text': 'Еще более тонкий поиск'
+            }
         ),
     )
     # Кнопка "Развернуть фильтры"
@@ -109,12 +110,12 @@ class SearchForm(Form):
         required=False,
         widget=ButtonWidget(
             attrs={
-                   'type': 'button',
-                   'class': 'btn btn-collapse',
-                   'data-toggle': 'collapse',
-                   'data-target': '#more-filters',
-                   'text': 'Фильтры поиска'
-                   }
+                'type': 'button',
+                'class': 'btn btn-collapse',
+                'data-toggle': 'collapse',
+                'data-target': '#more-filters',
+                'text': 'Фильтры поиска'
+            }
         ),
     )
     # Кнопка "Развернуть сортировку"
@@ -122,14 +123,21 @@ class SearchForm(Form):
         required=False,
         widget=ButtonWidget(
             attrs={
-                   'type': 'button',
-                   'class': 'btn btn-collapse',
-                   'data-toggle': 'collapse',
-                   'data-target': '#more-sort',
-                   'text': 'Сортировка результатов'
-                   }
+                'type': 'button',
+                'class': 'btn btn-collapse',
+                'data-toggle': 'collapse',
+                'data-target': '#more-sort',
+                'text': 'Сортировка результатов'
+            }
         ),
     )
+    # Сортировка
+    sort_type = ChoiceField(
+        choices=[(0, 'Без сортировки'), (1, 'По дате'), (2, 'По размеру'), (3, 'По рейтингу'), (4, 'По комментам')],
+        required=False,
+        widget=StoriesRadioButtons(attrs=radio_attrs),
+    )
+    # bla
     button_submit = Field(
         required=False,
         widget=ServiceButtonWidget(attrs={'class': 'btn btn-primary'}),
@@ -139,11 +147,11 @@ class SearchForm(Form):
         required=False,
         widget=StoriesServiceInput(
             attrs={
-                   'type': 'reset',
-                   'class': 'btn',
-                   'id': 'reset_search',
-                   'value': 'Очистить',
-                   }
+                'type': 'reset',
+                'class': 'btn',
+                'id': 'reset_search',
+                'value': 'Очистить',
+            }
         ),
     )
     # Тип поиска

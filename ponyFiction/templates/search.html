@@ -19,7 +19,7 @@
 				<div class="padded">
 					<!-- Поле поиска -->
 					{{ form.search_query }}
-				
+
 					<!-- Тип поиска -->
 					<span class="bootstrap radio">{{ form.search_type }}</span>
 				</div>
@@ -34,18 +34,12 @@
 				
 				<!-- Тонкая настройка поиска -->
 				{{ form.button_advanced }}
-				
-				
-				<!--Начало спойлера -->
+
 				<div id="more-sort" class="collapse">
 				<h3>Сортировать по: <sup>Это пока не работает.</sup></h3>
-					<button class="btn">Дате публикации</button>
-					<button class="btn">Рейтингу</button>
-					<button class="btn">Размеру</button>
-					<button class="btn">Комментируемости</button>
-					
+					<!-- Тип сортировки -->
+					<div class="bootstrap radio">{{ form.sort_type }}</div>
 				</div>
-				<!-- Конец спойлера -->
 				
 				<!--Начало спойлера -->
 				<div id="more-filters" class="collapse">
