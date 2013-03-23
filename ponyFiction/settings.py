@@ -202,6 +202,10 @@ SANITIZER_CHAPTER_ALLOWED_ATTRIBUTES = {
     'a': ['href', 'rel', 'title'],
 }
 
+STORY_DOWNLOAD_FORMATS = (
+    'ponyFiction.downloads.fb2.FB2Download',
+)
+
 try:
     from local_settings import *
 except ImportError:

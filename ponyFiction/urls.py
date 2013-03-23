@@ -164,6 +164,7 @@ urlpatterns += patterns('ponyFiction.views.stories',
     url(r'^story/(?P<story_id>\d+)/approve/$', 'story_work', {'approve': True}, name='story_approve'),
     # Удаление
     url(r'^story/(?P<story_id>\d+)/delete/$', 'story_work', {'delete': True}, name='story_delete'),
+    url(r'^story/(?P<story_id>\d+)/download/(?P<filename>\w+)\.(?P<extension>[\w\.]+)$', 'story_download'),
 )
 # Работа с главами
 urlpatterns += patterns('ponyFiction.views.chapters',

@@ -17,13 +17,12 @@
     {% endif %}
     <span id="fav-msg"></span>
     
-    {% comment %}<span class="chapter-controls">
-        <a title="Скачать в MOBI" href="#" class="get mobi"></a>
-        <a title="Скачать в FB2" href="#" class="get fb2"></a>
-        <a title="Скачать в PDF" href="#" class="get pdf"></a>
-        <a title="Скачать в HTML" href="#" class="get html"></a>
-        <a title="Скачать в TXT" href="#" class="get txt"></a>
+    <span class="chapter-controls">
+        {% for d in story.list_downloads %}
+            <a title="Скачать в {{ d.format.name }}" href="{{ d.url }}" class="get {{ d.format.name|lower|slugify }}"></a>
+        {% endfor %}
     </span>
+    {% comment %}
     <span class="chapter-controls">
         <a title="Вниз" href="#" class="scon down"></a> 
         <a title="Вверх" href="#" class="scon up"></a> 

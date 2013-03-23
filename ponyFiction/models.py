@@ -246,6 +246,16 @@ class Story (models.Model):
     
     summary_as_html = filtered_property('summary', filter_html)
     notes_as_html = filtered_property('notes', filter_html)
+    
+    def list_downloads(self):
+        from .downloads import list_formats
+        downloads = []
+        for f in list_formats():
+            downloads.append({
+                'format': f,
+                'url': f.url(self),
+            })
+        return downloads
 
 class Chapter (models.Model):
 # Модель главы

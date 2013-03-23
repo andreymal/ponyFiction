@@ -8,6 +8,7 @@ from django.core.paginator import Paginator
 from ponyFiction.forms.story import StoryForm
 from ponyFiction.forms.comment import CommentForm
 from django.core.exceptions import PermissionDenied
+from django.http import Http404, HttpResponse
 
 @csrf_protect
 def story_view(request, story_id):
@@ -108,3 +109,29 @@ def story_edit(request, story_id, data):
     chapters = Chapter.objects.filter(story=story_id).order_by('order')
     data.update({'form': form, 'story_edit': True, 'chapters': chapters, 'page_title' : u'Редактирование «%s»' % Story.objects.get(pk=story_id).title , 'story_id': story_id})
     return render(request, 'story_work.html', data)
+
+def story_download(request, story_id, filename, extension):
+    from ..downloads import get_format
+    
+    fmt = get_format(extension)
+    if fmt is None:
+        raise Http404
+    
+    debug = 'debug' in request.META['QUERY_STRING']
+    
+    story = get_object_or_404(Story, pk=story_id)
+    data = fmt.render(
+        story = story,
+        filename = filename,
+        extension = extension,
+        debug = debug,
+    )
+    
+    response = HttpResponse(data)
+    if debug:
+        response['Content-Type'] = 'text/xml'
+    else:
+        response['Content-Type'] = 'application/octet-stream'
+        response['Content-Disposition'] = 'attachment; filename=%s.%s' % (filename, extension)
+        
+    return response
