@@ -3,8 +3,10 @@ from django.conf import settings
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from ponyFiction.models import Story, Category, Chapter, Comment
+from django.views.decorators.cache import cache_page
 
 @csrf_protect
+@cache_page(60 * 5)
 def index(request):
     page_title = 'Главная'
     categories = Category.objects.all()

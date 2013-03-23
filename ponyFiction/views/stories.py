@@ -49,7 +49,7 @@ def story_view(request, pk):
 
 @login_required
 @csrf_protect
-def story_delete(request, pk):
+def story_approve(request, pk):
     story = get_object_or_404(Story, pk=pk)
     if story.is_editable_by(request.user) and request.user.is_staff:
         if story.approved:
@@ -77,7 +77,7 @@ def story_publish(request, pk):
 
 @login_required
 @csrf_protect
-def story_approve(request, pk):
+def story_delete(request, pk):
     story = get_object_or_404(Story, pk=pk)
     if story.is_editable_by(request.user):
         story.delete()

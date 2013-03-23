@@ -12,7 +12,7 @@
 			{% if not story.approved %}
 				<a class="btn btn-success btn-mini story_approve" href="{% url 'story_approve' story.id %}">Одобрить</a>
 			{% else %}
-				<a class="btn btn-mini" href="{% url 'story_approve' story.id %}">Отменить</a>
+				<a class="btn btn-mini story_approve"" href="{% url 'story_approve' story.id %}">Отменить</a>
 			{% endif %}
 		{% endif %}
 	</span>

@@ -347,10 +347,15 @@ $(function() {
 	});
 	// Одобрение глав по AJAX
 	$('.story_approve').click(function(self) {
+		self.stopImmediatePropagation();
 		self.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
 		$.post(url, function(data) {
-			var btn = $('#story_' + data + ' .story_approve');
+			if (re_story.test(current_path)) {
+				var btn = $('.story_approve');
+			} else {
+				var btn = $('#story_' + data + ' .story_approve');
+			}
 			if (btn.hasClass('btn-success')) {
 				btn.removeClass('btn-success').text('Отменить');
 			} else {
@@ -358,12 +363,18 @@ $(function() {
 			}
 		});
 	});
+	
 	// Публикация глав по AJAX
 	$('.story_publish').click(function(self) {
+		self.stopImmediatePropagation();
 		self.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
 		$.post(url, function(data) {
-			var btn = $('#story_' + data + ' .story_publish');
+			if (re_story.test(current_path)) {
+				var btn = $('.story_publish');
+			} else {
+				var btn = $('#story_' + data + ' .story_publish');
+			}
 			if (btn.hasClass('btn-primary')) {
 				btn.removeClass('btn-primary').text('В черновики');
 			} else {
