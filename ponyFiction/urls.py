@@ -174,7 +174,7 @@ urlpatterns += patterns('',
 # Работа с рассказами
 urlpatterns += patterns('ponyFiction.views.stories',
     # Просмотр
-    url(r'^story/(?P<story_id>\d+)/$', 'story_view', name='story_view'),
+    url(r'^story/(?P<pk>\d+)/$', 'story_view', name='story_view'),
     # Добавление
     url(r'^story/add/$', StoryAdd.as_view(), name='story_add'),
     # Правка
@@ -185,6 +185,8 @@ urlpatterns += patterns('ponyFiction.views.stories',
     url(r'^story/(?P<pk>\d+)/publish/$', 'story_publish', name='story_publish'),
     # Одобрение
     url(r'^story/(?P<pk>\d+)/approve/$', 'story_approve', name='story_approve'),
+    # Закачка в FB2
+    url(r'^story/(?P<pk>\d+)/download/fb2/$', 'story_fb2', name='story_fb2'),
 
 )
 # Работа с главами

@@ -10,10 +10,11 @@ from django.views.generic.edit import CreateView, UpdateView
 from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
 from ponyFiction.models import Story, CoAuthorsStory, StoryView, Activity
+from django.http.response import HttpResponse
 
 @csrf_protect
-def story_view(request, story_id):
-    story = get_object_or_404(Story, pk=story_id)
+def story_view(request, pk):
+    story = get_object_or_404(Story, pk=pk)
     chapters = story.chapter_set.order_by('order')
     comments_list = story.comment_set.all()
     paged = Paginator(comments_list, settings.COMMENTS_COUNT['page'], orphans=settings.COMMENTS_ORPHANS)
@@ -40,7 +41,7 @@ def story_view(request, story_id):
     if (story.chapter_set.count() == 1 and request.user.is_authenticated()):
         view = StoryView.objects.create()
         view.author = request.user
-        view.story_id = story_id
+        view.story_id = pk
         view.chapter = story.chapter_set.all()[0]
         view.save()
     return render(request, 'story_view.html', data)
@@ -128,3 +129,17 @@ class StoryEdit(UpdateView):
                          }
         context.update(extra_context)
         return context
+    
+def story_fb2(request, pk):
+    from lxml import etree
+    from ponyFiction.filters import fb2
+    
+    story = get_object_or_404(Story, pk=pk)
+    chapters = story.chapter_set.order_by('order')
+    chapters = [fb2.html_to_fb2(chapter.text_as_html, title = chapter.title) for chapter in chapters]
+    doc = fb2.join_fb2_docs(chapters, title = story.title)
+    data = etree.tostring(doc, encoding = 'utf8', xml_declaration = True)
+    
+    response = HttpResponse(data, content_type = 'text/xml')
+    response['Content-Disposition'] = 'attachment; filename=%s.fb2' % pk
+    return response
