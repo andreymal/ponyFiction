@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 class BaseDownloadFormat(object):
     extension = None
     name = None
+    debug_content_type = 'text/plain'
     
     def __init__(self):
         assert self.extension is not None

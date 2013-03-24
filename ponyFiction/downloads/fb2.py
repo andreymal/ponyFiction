@@ -3,6 +3,7 @@ from .base import BaseDownloadFormat
 class FB2Download(BaseDownloadFormat):
     extension = 'fb2.zip'
     name = 'FB2'
+    debug_content_type = 'text/xml'
     
     def render(self, story, filename, extension, debug = False, **kw):
         import zipfile

@@ -306,6 +306,11 @@ def update_chapter_word_count(sender, instance, **kw):
     instance.words = filters.wordcount(filters.striptags(instance.text))
 pre_save.connect(update_chapter_word_count, sender = Chapter)
 
+def update_story_update_time(sender, instance, **kw):
+    story = Story.objects.get(id = instance.story_id)
+    story.save()
+pre_save.connect(update_story_update_time, sender = Chapter)
+
     
 class Comment(models.Model):
 # Модель комментария

@@ -9,6 +9,8 @@ from ponyFiction.forms.story import StoryForm
 from ponyFiction.forms.comment import CommentForm
 from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponse
+from django.core.files.base import ContentFile
+from fs.contrib.davfs.xmlobj import response
 
 @csrf_protect
 def story_view(request, story_id):
@@ -111,27 +113,39 @@ def story_edit(request, story_id, data):
     return render(request, 'story_work.html', data)
 
 def story_download(request, story_id, filename, extension):
+    from django.core.files.storage import default_storage as storage
     from ..downloads import get_format
     
+    debug = settings.DEBUG and 'debug' in request.META['QUERY_STRING']
+    
+    story = get_object_or_404(Story, pk=story_id)
     fmt = get_format(extension)
     if fmt is None:
         raise Http404
     
-    debug = 'debug' in request.META['QUERY_STRING']
+    url = fmt.url(story)
+    if url != request.path:
+        return redirect(url)
     
-    story = get_object_or_404(Story, pk=story_id)
-    data = fmt.render(
-        story = story,
-        filename = filename,
-        extension = extension,
-        debug = debug,
-    )
+    filepath = 'downloads/stories/%s/%s.%s' % (story_id, filename, extension)
     
-    response = HttpResponse(data)
-    if debug:
-        response['Content-Type'] = 'text/xml'
-    else:
-        response['Content-Type'] = 'application/octet-stream'
-        response['Content-Disposition'] = 'attachment; filename=%s.%s' % (filename, extension)
+    if (not storage.exists(filepath) or 
+        storage.modified_time(filepath) < story.updated or
+        debug):
         
-    return response
+        print '!!!!'
+        data = fmt.render(
+            story = story,
+            filename = filename,
+            extension = extension,
+            debug = debug,
+        )
+        if not debug:
+            storage.save(filepath, ContentFile(data))
+        
+    if not debug:
+        return redirect(storage.url(filepath))
+    else:
+        response = HttpResponse(data)
+        response['Content-Type'] = fmt.debug_content_type
+        return response
