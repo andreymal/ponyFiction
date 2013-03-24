@@ -2,7 +2,7 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from json import dumps
-from ponyFiction.models import Story, Chapter, Vote, Favorites
+from ponyFiction.models import Author, Story, Comment, Chapter, Vote, Favorites, Bookmark
 from ponyFiction.utils.misc import unicode_to_int_list
 from ponyFiction.views.object_lists import ObjectList
 from django.conf import settings
@@ -29,6 +29,26 @@ class CommentsStory(ObjectList):
         story = get_object_or_404(Story, pk=self.kwargs['story_id'])
         return story.comment_set.all()
     
+class CommentsAuthor(ObjectList):
+    ''' Подгрузка комментариев для профиля '''
+    context_object_name = 'comments'
+    paginate_by = settings.COMMENTS_COUNT['author_page']
+            
+    @property
+    def template_name(self):
+        return 'includes/comments.html'
+    
+    @property
+    def page_title(self):
+        return None
+    
+    def get_queryset(self):
+        if self.kwargs['user_id'] is None:
+            return Comment.objects.filter(story__authors=self.request.user.id)
+        else:
+            author = get_object_or_404(Author, pk=self.kwargs['user_id'])
+            return author.comment_set.all()
+
 class ConfirmDeleteStory(TemplateView):
     ''' Отрисовка модального окна подтверждения удаления рассказа '''
     
@@ -79,8 +99,35 @@ def story_approve_ajax(request, story_id):
         return HttpResponse(story_id)
     else:
         raise PermissionDenied
-    
 
+@login_required
+@csrf_protect
+def story_bookmark_ajax(request, story_id):
+    ''' Добавление рассказа в закладки '''
+
+    story = get_object_or_404(Story, pk=story_id)
+    if request.is_ajax() and request.method == 'POST':
+        (bookmark, created) = Bookmark.objects.get_or_create(story=story, author=request.user)
+        if not created:
+            bookmark.delete()
+        return HttpResponse(story_id)
+    else:
+        raise PermissionDenied
+
+@login_required
+@csrf_protect
+def story_favorite_ajax(request, story_id):
+    ''' Добавление рассказа в избранное '''
+
+    story = get_object_or_404(Story, pk=story_id)
+    if request.is_ajax() and request.method == 'POST':
+        (favorite, created) = Favorites.objects.get_or_create(story=story, author=request.user)
+        if not created:
+            favorite.delete()
+        return HttpResponse(story_id)
+    else:
+        raise PermissionDenied
+    
 def sort_chapters(request, story_id):
     try:
         story = Story.objects.get(pk=story_id)    
@@ -137,22 +184,3 @@ def story_vote(request, story_id):
                 vote.minus = True
             vote.save(update_fields=['plus', 'minus'])
         return HttpResponse(dumps([story.vote_up_count(), story.vote_down_count()]), status=200)
-    
-def favorites_work(request, story_id, chapter_id=None):
-    try:
-        story = Story.objects.get(pk=story_id)    
-        assert request.method == 'POST'
-        assert request.is_ajax()
-    except Story.DoesNotExist:
-        return HttpResponse("Story doesn't exist!", status=404)
-    except AssertionError:
-        return redirect('index')
-    else:
-        if not request.user.is_authenticated():
-            return HttpResponse('Unauthorized user!', status=401)            
-        if Favorites.objects.filter(author=request.user, story=story).exists():
-            Favorites.objects.get(author=request.user, story=story).delete()
-            return HttpResponse('0', status=200)
-        else:
-            Favorites.objects.create(author=request.user, story=story)
-            return HttpResponse('1', status=200)

@@ -69,20 +69,19 @@ class SubmitsList(ObjectList):
     def get_queryset(self):
         return Story.submitted.all()
 
-class DeferredStoriesList(ObjectList):
+class BookmarksList(ObjectList):
     
     @method_decorator(login_required())
     def dispatch(self, request, *args, **kwargs):
-        return super(DeferredStoriesList, self).dispatch(request, *args, **kwargs)
+        return super(BookmarksList, self).dispatch(request, *args, **kwargs)
     
     @property
     def template_name(self):
-        return 'favorites.html'
+        return 'bookmarks.html'
 
     @property
     def page_title(self):
-        return u'Закладки: рассказы'
+        return u'Закладки'
     
     def get_queryset(self):
-        return self.request.user.deferred_story_set.all()
-    
+        return self.request.user.bookmarked_story_set.all()

@@ -3,8 +3,16 @@ from django import template
 register = template.Library()
 
 @register.filter
-def faved(story, author):
+def favorited(story, author):
     return bool(story.favorites_story_related_set.filter(author=author))
+
+@register.filter
+def bookmarked(story, author):
+    return bool(story.bookmarks_related_set.filter(author=author))
+
+@register.filter
+def chapter_readed(chapter, author):
+    return bool(chapter.chapter_views_set.filter(author=author))
 
 @register.filter
 def is_editable_by(story, author):

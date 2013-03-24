@@ -1,10 +1,11 @@
 {% load stories %}
 <div class="story-panel">
     {% if user.is_authenticated %}
-        <a title="В избранное" id="favstar" class="scon fav{% if story|faved:user.id %} faved{% endif %}"></a>
+    	<a title="В избранное" href="{% url 'story_favorite' story.id %}" class="story_favorite scon favorite{% if story|favorited:user.id %} favorited{% endif %}"></a>
+        <a title="Отложить на потом" href="{% url 'story_bookmark' story.id %}" class="story_bookmark scon bookmark{% if story|bookmarked:user.id %} bookmarked{% endif %}"></a>
     {% endif %} 
     {% if not story.finished %}
-        <a title="Подписаться на новые главы по RSS" href="{% url 'feeds_atom_story' story.id %}" class="scon feed"></a>
+        <a title="Подписаться на новые главы по RSS" href="{% url 'feeds_story' story.id %}" class="scon feed"></a>
     {% endif %}
     {% if prev_chapter or next_chapter %}
     <span class="chapter-switch">
@@ -14,9 +15,7 @@
     {% endif %}
     {% if not chapter and not allchapters %}
         <a href="{% url 'chapter_view_all' story.id %}">Все главы одной страницей</a>	
-    {% endif %}
-    <span id="fav-msg"></span>
-    
+    {% endif %}   
     <span class="chapter-controls">
         <a title="Скачать в FB2" href="{% url 'story_fb2' story.id %}" class="get fb2"></a>
         <a title="Скачать в HTML" href="{% url 'story_html' story.id %}" class="get html"></a>
@@ -25,12 +24,13 @@
     <span class="chapter-controls">
         <a title="Вниз" href="#" class="scon down"></a> 
         <a title="Вверх" href="#" class="scon up"></a> 
-    </span><a title="Отложить на потом" href="#" class="scon later"></a>
+    </span>
         <a title="Скачать в MOBI" href="#" class="get mobi"></a>
         <a title="Скачать в PDF" href="#" class="get pdf"></a>
         <a title="Скачать в TXT" href="#" class="get txt"></a>
     {% endcomment %}
-
+	<span class="story_bookmark_msg"></span>
+    <span class="story_favorite_msg"></span>
     {% if chapter or chapters %}
     <span class="chapter-controls">
         <select class="select-font">

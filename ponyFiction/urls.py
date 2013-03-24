@@ -8,7 +8,7 @@ from ponyFiction import feeds
 from ponyFiction.forms.register import AuthorRegistrationForm
 from ponyFiction.views import search, ajax, author, comment
 from ponyFiction.views.index import index
-from ponyFiction.views.object_lists import FavoritesList, SubmitsList, DeferredStoriesList
+from ponyFiction.views.object_lists import FavoritesList, SubmitsList, BookmarksList
 from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments
 from registration.views import activate, register
 from ponyFiction.views.stories import StoryAdd, StoryEdit
@@ -36,8 +36,8 @@ urlpatterns += patterns('',
 )
 # Закладки
 urlpatterns += patterns('',
-    url(r'^deferred/$', DeferredStoriesList.as_view(), name='deferred'),
-    url(r'^deferred/page/(?P<page>\d+)/$', DeferredStoriesList.as_view(), name='deferred_page'),
+    url(r'^bookmarks/$', BookmarksList.as_view(), name='bookmarks'),
+    url(r'^bookmarks/page/(?P<page>\d+)/$', BookmarksList.as_view(), name='bookmarks_page'),
 )
 # Ленты
 urlpatterns += patterns('',
@@ -48,15 +48,14 @@ urlpatterns += patterns('',
     url(r'^stream/comments/$', StreamComments.as_view(), name='stream_comments'),
     url(r'^stream/comments/page/(?P<page>\d+)/$', StreamComments.as_view(), name='stream_comments_page'),
 )
-urlpatterns += patterns('',
-    url(r'^accounts/(?P<user_id>\d+)/ajax/comments/page/(?P<page>\d+)/$', author.CommentsAuthor.as_view()),
-    url(r'^accounts/profile/ajax/comments/page/(?P<page>\d+)/$', author.CommentsAuthor.as_view(), {'user_id': None}),
-)        
+    
 
 # Обработка пользовательских адресов
 urlpatterns += patterns('',
-    url(r'^accounts/(?P<user_id>\d+)/$', author.author_info, name='author_overview'),
-    url(r'^accounts/profile/$', author.author_info, name='author_dashboard'),
+    url(r'^accounts/(?P<user_id>\d+)/$', author.author_info, {'comments_page': 1}, name='author_overview'),
+    url(r'^accounts/(?P<user_id>\d+)/comments/page/(?P<comments_page>\d+)/$', author.author_info, name='author_overview_comments_paged'),
+    url(r'^accounts/profile/$', author.author_info, {'user_id': None, 'comments_page': 1}, name='author_dashboard'),
+    url(r'^accounts/profile/comments/page/(?P<comments_page>\d+)/$', author.author_info, name='author_dashboard_comments_paged'),
     url(r'^accounts/profile/edit/$', author.author_edit, name='author_profile_edit'),
     
     url(r'^accounts/registration/$',
@@ -134,8 +133,11 @@ urlpatterns += patterns('',
 )
 # AJAX
 urlpatterns += patterns('',
-    # Подгрузка комментариев
-    url(r'^ajax/comments/story/(?P<story_id>\d+)/page/(?P<page>\d+)/$', ajax.CommentsStory.as_view()),
+    # Подгрузка комментариев для рассказа
+    url(r'^ajax/story/(?P<story_id>\d+)/comments/page/(?P<page>\d+)/$', ajax.CommentsStory.as_view()),
+    # Подгрузка комментариев для профиля
+    url(r'^ajax/accounts/(?P<user_id>\d+)/comments/page/(?P<page>\d+)/$', ajax.CommentsAuthor.as_view()),
+    url(r'^ajax/accounts/profile/comments/page/(?P<page>\d+)/$', ajax.CommentsAuthor.as_view(), {'user_id': None}),
     # Загрузка модального окна-подтверждения удаления рассказа
     url(r'^ajax/story/(?P<story_id>\d+)/delete/confirm/$', ajax.ConfirmDeleteStory.as_view()),
     # Удаление рассказа
@@ -144,17 +146,19 @@ urlpatterns += patterns('',
     url(r'^ajax/story/(?P<story_id>\d+)/approve/$', ajax.story_approve_ajax),
     # Публикация рассказа
     url(r'^ajax/story/(?P<story_id>\d+)/publish/$', ajax.story_publish_ajax),
+    # Добавление в закладки рассказа
+    url(r'^ajax/story/(?P<story_id>\d+)/bookmark$', ajax.story_bookmark_ajax),
+    # Добавление в избранное рассказа
+    url(r'^ajax/story/(?P<story_id>\d+)/favorite', ajax.story_favorite_ajax),
+    # Добавление в избранное главы (workaround, пока добавляется весь рассказ)
+    url(r'^ajax/story/(?P<story_id>\d+)/chapter/\d+/favorite', ajax.story_favorite_ajax),
+    
+    
     # AJAX-сортировка глав
     url(r'^story/(?P<story_id>\d+)/edit/ajax$', ajax.sort_chapters),
     # Голосование за рассказ
     url(r'^story/(?P<story_id>\d+)/vote$', ajax.story_vote, name='story_vote'),
-    # Добавление в избранное рассказа
-    url(r'^story/(?P<story_id>\d+)/favorite$', ajax.favorites_work, name='favorites_work'),
-    # Добавление в избранное главы (workaround, пока добавляется весь рассказ)
-    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_id>\d+)/favorite$', ajax.favorites_work, name='favorites_work'),
-
 )
-
 
 # Комментирование
 urlpatterns += patterns('',
@@ -163,18 +167,17 @@ urlpatterns += patterns('',
 
 # RSS
 urlpatterns += patterns('', 
-    url(r'^feeds/rss/stories/$', feeds.stories_rss(), name='feeds_rss_stories'),
-    url(r'^feeds/atom/stories/$', feeds.stories_atom(), name='feeds_atom_stories'),
-    url(r'^feeds/rss/chapters/$', feeds.chapters_rss(), name='feeds_rss_chapters'),
-    url(r'^feeds/atom/chapters/$', feeds.chapters_atom(), name='feeds_atom_chapters'),
-    url(r'^feeds/rss/story/(?P<story_id>\d+)/$', feeds.story_chapters_rss(), name='feeds_rss_story'),
-    url(r'^feeds/atom/story/(?P<story_id>\d+)/$', feeds.story_chapters_atom(), name='feeds_atom_story'),
+    url(r'^feeds/stories/$', feeds.stories(), name='feeds_stories'),
+    url(r'^feeds/chapters/$', feeds.chapters(), name='feeds_chapters'),
+    url(r'^feeds/story/(?P<story_id>\d+)/$', feeds.story(), name='feeds_story'),
 )
 
 # Работа с рассказами
 urlpatterns += patterns('ponyFiction.views.stories',
     # Просмотр
-    url(r'^story/(?P<pk>\d+)/$', 'story_view', name='story_view'),
+    url(r'^story/(?P<pk>\d+)/$', 'story_view', {'comments_page': 1}, name='story_view'),
+    # Просмотр с подгрузкой определенной страницы комментариев
+    url(r'^story/(?P<pk>\d+)/comments/page/(?P<comments_page>\d+)/$', 'story_view', name='story_view_comments_paged'),
     # Добавление
     url(r'^story/add/$', StoryAdd.as_view(), name='story_add'),
     # Правка
@@ -185,6 +188,10 @@ urlpatterns += patterns('ponyFiction.views.stories',
     url(r'^story/(?P<pk>\d+)/publish/$', 'story_publish', name='story_publish'),
     # Одобрение
     url(r'^story/(?P<pk>\d+)/approve/$', 'story_approve', name='story_approve'),
+    # Добавление в избранное
+    url(r'^story/(?P<pk>\d+)/favorite$', 'story_favorite', name='story_favorite'),
+    # Добавление в закладки
+    url(r'^story/(?P<pk>\d+)/bookmark$', 'story_bookmark', name='story_bookmark'),
     # Закачка в FB2
     url(r'^story/(?P<pk>\d+)/download/fb2/$', 'story_fb2', name='story_fb2'),
     # Закачка в HTML

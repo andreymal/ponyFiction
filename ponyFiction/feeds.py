@@ -6,12 +6,13 @@ from django.conf import settings
 from django.utils.feedgenerator import Atom1Feed
 from django.shortcuts import get_object_or_404
 
-class stories_rss(Feed):
+class stories(Feed):
     title = 'Новые рассказы - Библиотека EveryPony.ru'
     link = '/new/stories/'
-    description = 'Новые главы фанфиков'
+    subtitle = 'Новые главы фанфиков'
     title_template = 'feeds/stories_title.html'
     description_template = 'feeds/stories_description.html'
+    feed_type = Atom1Feed
 
     def items(self):
         return Story.objects.order_by('-date')[:settings.RSS['stories']]
@@ -19,16 +20,13 @@ class stories_rss(Feed):
     def item_link(self, item):
         return "/story/%i/" % item.id
 
-class stories_atom(stories_rss):
-    feed_type = Atom1Feed
-    subtitle = stories_rss.description
-
-class chapters_rss(Feed):
+class chapters(Feed):
     title = 'Обновления глав - Библиотека EveryPony.ru'
     link = '/new/chapters/'
-    description = 'Новые главы рассказов'
+    subtitle = 'Новые главы рассказов'
     title_template = 'feeds/chapters_title.html'
     description_template = 'feeds/chapters_description.html'
+    feed_type = Atom1Feed
 
     def items(self):
         return Chapter.objects.order_by('-date')[:settings.RSS['chapters']]
@@ -36,14 +34,10 @@ class chapters_rss(Feed):
     def item_link(self, item):
         return "/story/%i/chapter/%i/" % (item.story_id, item.order)
 
-class chapters_atom(chapters_rss):
-    feed_type = Atom1Feed
-    subtitle = chapters_rss.description
-    
-class story_chapters_rss(Feed):
-    
+class story(Feed):    
     title_template = 'feeds/chapters_title.html'
     description_template = 'feeds/chapters_description.html'
+    feed_type = Atom1Feed
     
     def get_object(self, request, story_id):
         return get_object_or_404(Story, pk=story_id)
@@ -54,7 +48,7 @@ class story_chapters_rss(Feed):
     def link(self, obj):
         return '/story/%i/' % obj.id
     
-    def description(self, obj):
+    def subtitle(self, obj):
         return obj.title
 
     def items(self, obj):
@@ -62,7 +56,3 @@ class story_chapters_rss(Feed):
     
     def item_link(self, item):
         return "/story/%i/chapter/%i/" % (item.story_id, item.order)
-
-class story_chapters_atom(story_chapters_rss):
-    feed_type = Atom1Feed
-    subtitle = chapters_rss.description

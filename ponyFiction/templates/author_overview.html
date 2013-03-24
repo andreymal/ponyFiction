@@ -54,12 +54,12 @@
 	</div>
   
 	<div class="span4">
-    	{% if comments.count > 0 %}
+    	{% if comments_count > 0 %}
     		<h2>Комментарии автора ({{ comments_count }})</h2>
 	    	<div id="comments-list">
 			{% include "includes/comments.html" %}
     		</div>
-			{% include "includes/comments_pagination.html" %}
+			{% include "includes/comments_pagination_author_overview.html" %}
 		{% endif %}
 	</div>
   	

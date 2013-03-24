@@ -196,7 +196,7 @@ class Story (models.Model):
     finished = models.BooleanField(default=False, verbose_name="Оконченность рассказа")
     freezed = models.BooleanField(default=False, verbose_name='Статус "заморозки"')
     favorites = models.ManyToManyField(Author, through='Favorites', blank=True, null=True, related_name="favorites_story_set", verbose_name="Избранность")
-    deferred = models.ManyToManyField(Author, through='DeferredStory', blank=True, null=True, related_name="deferred_story_set", verbose_name="Отложённость")
+    bookmarks = models.ManyToManyField(Author, through='Bookmark', blank=True, null=True, related_name="bookmarked_story_set", verbose_name="Отложённость")
     in_series = models.ManyToManyField(Series, through='InSeriesPermissions', blank=True, null=True, verbose_name="Принадлежность к серии")
     mark = models.PositiveSmallIntegerField(default=0, verbose_name="Оценка")
     notes = models.TextField(max_length=4096, blank=True, verbose_name="Заметки к рассказу")
@@ -248,7 +248,6 @@ class Chapter (models.Model):
 # Модель главы
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
     draft = models.BooleanField(default=True, verbose_name="Черновик")
-    deferred = models.ManyToManyField(Author, through='DeferredChapter', blank=True, null=True, related_name="deferred_chapter_set", verbose_name="Отложённость")
     story = models.ForeignKey(Story, null=True, on_delete=models.CASCADE, verbose_name="Отношение к рассказу")
     mark = models.PositiveSmallIntegerField(default=0, verbose_name="Оценка")
     notes = models.TextField(blank=True, verbose_name="Заметки к главе")
@@ -344,10 +343,10 @@ class Favorites(models.Model):
     def __unicode__(self):
         return "%s: %s [%s]" % (self.author.username, self.story.title, self.date)    
 
-class DeferredStory(models.Model):
+class Bookmark(models.Model):
     
     author = models.ForeignKey(Author, null=True, verbose_name="Автор")
-    story = models.ForeignKey('Story', related_name="deferred_story_related_set", null=True, verbose_name="Рассказ")
+    story = models.ForeignKey(Story, related_name="bookmarks_related_set", null=True, verbose_name="Рассказ")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления в список для прочтения")
     
     class Meta:
@@ -356,19 +355,6 @@ class DeferredStory(models.Model):
     
     def __unicode__(self):
             return u"%s | %s" % (self.author.username, self.story.title)
-
-class DeferredChapter(models.Model):
-    
-    author = models.ForeignKey(Author, null=True, verbose_name="Автор")
-    chapter = models.ForeignKey('Chapter', related_name="deferred_chapter_related_set", null=True, verbose_name="Рассказ")
-    date = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления в список для прочтения")
-    
-    class Meta:
-        verbose_name = "закладка главы"
-        verbose_name_plural = "закладки главы"
-    
-    def __unicode__(self):
-            return u"%s | %s" % (self.author.username, self.chapter.title)
 
 
 class StoryView(models.Model):

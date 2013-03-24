@@ -14,13 +14,14 @@ from django.http.response import HttpResponse
 from django.views.decorators.cache import cache_page
 
 @csrf_protect
-def story_view(request, pk):
+def story_view(request, pk, comments_page):
     story = get_object_or_404(Story, pk=pk)
     chapters = story.chapter_set.order_by('order')
     comments_list = story.comment_set.all()
     paged = Paginator(comments_list, settings.COMMENTS_COUNT['page'], orphans=settings.COMMENTS_ORPHANS)
     num_pages = paged.num_pages
-    comments = paged.page(1)
+    page_current = int(comments_page) if (0 < int(comments_page) <= num_pages) else 1
+    comments = paged.page(page_current)
     page_title = story.title
     comment_form = CommentForm()
     if request.user.is_authenticated():
@@ -35,6 +36,7 @@ def story_view(request, pk):
        'comments' : comments,
        'chapters' : chapters,
        'num_pages' : num_pages,
+       'page_current' : page_current,
        'page_title' : page_title,
        'comment_form': comment_form
        }
@@ -48,7 +50,6 @@ def story_view(request, pk):
     return render(request, 'story_view.html', data)
 
 @login_required
-@csrf_protect
 def story_approve(request, pk):
     story = get_object_or_404(Story, pk=pk)
     if story.is_editable_by(request.user) and request.user.is_staff:
@@ -57,12 +58,11 @@ def story_approve(request, pk):
         else:
             story.approved = True
         story.save(update_fields=['approved'])
-        return redirect('author_dashboard')
+        return redirect('submitted')
     else:
         raise PermissionDenied
 
 @login_required
-@csrf_protect
 def story_publish(request, pk):
     story = get_object_or_404(Story, pk=pk)
     if story.is_editable_by(request.user):
@@ -76,15 +76,32 @@ def story_publish(request, pk):
         raise PermissionDenied
 
 @login_required
-@csrf_protect
 def story_delete(request, pk):
     story = get_object_or_404(Story, pk=pk)
     if story.is_editable_by(request.user):
         story.delete()
-        return redirect('submitted')
+        return redirect('index')
     else:
         raise PermissionDenied
-    
+
+@login_required
+def story_favorite(request, pk):
+    from ponyFiction.models import Favorites
+    story = get_object_or_404(Story, pk=pk)
+    (favorite, created) = Favorites.objects.get_or_create(story=story, author=request.user)
+    if not created:
+        favorite.delete()
+    return redirect('favorites', request.user.id)
+
+@login_required
+def story_bookmark(request, pk):
+    from ponyFiction.models import Bookmark
+    story = get_object_or_404(Story, pk=pk)
+    (bookmark, created) = Bookmark.objects.get_or_create(story=story, author=request.user)
+    if not created:
+        bookmark.delete()
+    return redirect('bookmarks')
+
 class StoryAdd(CreateView):
     model = Story
     form_class = StoryForm

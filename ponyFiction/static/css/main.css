@@ -433,11 +433,16 @@ opacity:0.75;
 .down { background:transparent url('../i/down.png') no-repeat 0 0; }
 .smaller { background:transparent url('../i/smaller.png') no-repeat 0 0; }
 .bigger { background:transparent url('../i/bigger.png') no-repeat 0 0; }
-.fav { background:transparent url('../i/star.png') no-repeat 0 0; }
-.later { background:transparent url('../i/bookmark.png') no-repeat 0 0; }
+.favorite { background:transparent url('../i/star.png') no-repeat 0 0; }
+.bookmark { background:transparent url('../i/bookmark.png') no-repeat 0 0; }
 .feed  { background:transparent url('../i/feed.png') no-repeat 0 0; }
-.feed:hover, .faved, .scon.fav:hover, .bookmarked, .later:hover { background-position:0 -16px; opacity:1; }
-
+.feed:hover, .favorited, .scon.favorite:hover, .bookmarked, .bookmark:hover { background-position:0 -16px; opacity:1; }
+p.meta .chapter-controls {
+padding: 2px;
+}
+.alert-mini {
+padding: 3px;
+}
 
 /* Series page */
 .series-item {
@@ -723,7 +728,7 @@ margin:10px 0;
 }
 #pagination .input-xlarge {
 margin-bottom: -1px;
-width:30px;
+width:50px;
 text-align:center;
 }
 

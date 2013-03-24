@@ -9,7 +9,7 @@
 			<li>&nbsp;</li>
 		</ul>
 
-		<a title="Подписаться на RSS поток" href="{% url 'feeds_atom_stories' %}" class="rss"></a>
+		<a title="Подписаться на RSS поток" href="{% url 'feeds_stories' %}" class="rss"></a>
 		<a title="Твиттер Everypony.ru" href="https://twitter.com/#!/everypony_ru" class="twitter"></a>
     
 		<ul class="main-menu">
@@ -40,7 +40,7 @@
   	
   		{% if user.is_authenticated %}
     		<li><a href="{% url 'favorites' user.id %}">Избранное</a></li>
-    		<li><a href="{% url 'deferred' %}">Закладки</a></li>
+    		<li><a href="{% url 'bookmarks' %}">Закладки</a></li>
     		<li class="right"><a href="{% url 'auth_logout' %}">Выход</a></li>
     		<li class="right"><a href="{% url 'author_overview' user.id %}">Профиль</a></li>
     		<li class="right"><a class="active" href="{% url 'author_dashboard' %}">Кабинет автора</a></li>

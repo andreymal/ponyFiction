@@ -1,64 +1,13 @@
-/**
- * Обработка AJAX-подгрузки комментариев
- * 
- * @param comments_array
- *            array JSON-массив переданных комментариев
- * @param request
- *            mixed Указатель текущей страницы комментариев
- */
-function processComments(comments, page_current, num_pages) {
-	// Проставляем текущий номер страницы в зависимости от указателя
-	$('#page_current').val(page_current);
-	// Обновляем плейсхолдер и текущий номер страницы
-	$('#comments_goto_page').val('').attr('placeholder',
-			page_current + ' / ' + num_pages);
-	// Очищаем предыдущие комментарии, вставляем, показываем.
-	$('#comments-list').fadeOut('slow').empty().append(comments).fadeIn();
-	// Скрываем ненужные элементы управления
-	if (page_current == 1) {
-		$('#ajax_prev_comment').addClass('hidden');
-		$('#ajax_next_comment').removeClass('hidden');
-	} else if (page_current == num_pages) {
-		$('#ajax_next_comment').addClass('hidden');
-		$('#ajax_prev_comment').removeClass('hidden');
-	} else {
-		$('#ajax_next_comment').removeClass('hidden');
-		$('#ajax_prev_comment').removeClass('hidden');
-	}
-
-}
-
-/**
- * Подгрузка комментариев по AJAX
- */
-function getComments(request) {
-	var page_current = $('#page_current').val() | 0;
-	var num_pages = $('#num_pages').val() | 0;
-	var re_story = new RegExp('/story/[0-9]+/');
-	var story_id = window.location.pathname.match(re_story)[1];
-	switch (request) {
-	case 'prev':
-		page_current--;
-		var go_page = (page_current > 0) ? page_current : 1;
-		break;
-	case 'next':
-		page_current++;
-		var go_page = (page_current <= num_pages) ? page_current : num_pages;
-		break;
-	default:
-		var go_page = (0 < request | 0 <= num_pages) ? request | 0 : 1;
-		break;
-	}
-	$.ajax({
-		dataType : 'html',
-		success : function(response) {
-			processComments(response, go_page, num_pages);
-		},
-		type : 'GET',
-		url : '/ajax/comments/story/' + story_id + '/page/' + go_page + '/'
-	});
-}
-
+// Глобальные регулярки и прочий нужный почти везде стафф
+current_path = window.location.pathname;
+re_storyadd = new RegExp('/story/add/')
+re_storyedit = new RegExp('/story/[0-9]+/edit/')
+re_search = new RegExp('/search/(.+)?');
+re_chapteredit = new RegExp('/story/[0-9]+/chapter/[0-9]+/edit/');
+re_chapteradd = new RegExp('/story/[0-9]+/chapter/add/');
+re_story = new RegExp('/story/[0-9]+/');
+re_account = new RegExp('^/accounts/[0-9]+/');
+re_profile = new RegExp('^/accounts/profile/');
 /**
  * Обработчик ошибок AJAX-подгрузки
  * 
@@ -75,9 +24,179 @@ function getAjaxErrorHandler(XMLHttpRequest, ajaxOptions, thrownError) {
 	console.warn(thrownError);
 }
 
-// Функция проверки CRSF-безопасности
-function csrfSafeMethod(method) {
-	return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+/**
+ * Обработка AJAX-подгрузки комментариев
+ * 
+ * @param comments
+ *            string HTML-код переданных комментариев
+ * @param page_current
+ *            int Текущая страница комментариев
+ * @param num_pages
+ *            int Число страниц комментариев
+ */
+function processComments(comments, page_current) {
+	var num_pages = $('#num_pages').val();
+	var prev_link = $('#ajax_prev_comment');
+	var next_link = $('#ajax_next_comment');
+	var re_link = new RegExp('(.+)comments/page/[0-9]+/$');
+	var new_href_prev_link = prev_link.attr('href').match(re_link)[1]
+			+ 'comments/page/' + (page_current - 1) + '/';
+	var new_href_next_link = next_link.attr('href').match(re_link)[1]
+			+ 'comments/page/' + (page_current + 1) + '/';
+	prev_link.attr('href', new_href_prev_link);
+	next_link.attr('href', new_href_next_link);
+	$('#comments-list').fadeOut('slow').empty().append(comments).fadeIn();
+	$('#ajax_pages_comment').text(page_current + '/' + num_pages);
+	if (page_current == 1) {
+		prev_link.addClass('hidden');
+		next_link.removeClass('hidden');
+	} else if (page_current == num_pages) {
+		next_link.addClass('hidden');
+		prev_link.removeClass('hidden');
+	} else {
+		next_link.removeClass('hidden');
+		prev_link.removeClass('hidden');
+	}
+
+}
+
+/**
+ * Обработка AJAX-изменения публикации рассказа
+ * 
+ * @param response
+ *            int ID рассказа
+ */
+function processPublish(response) {
+	if (re_story.test(current_path)) {
+		var btn = $('.story_publish');
+	} else {
+		var btn = $('#story_' + response + ' .story_publish');
+	}
+	if (btn.hasClass('btn-primary')) {
+		var text = 'В черновики';
+	} else {
+		var text = 'Опубликовать';
+	}
+	btn.text(text).toggleClass('btn-primary');
+}
+/**
+ * Обработка AJAX-изменения одобрения рассказа
+ * 
+ * @param response
+ *            int ID рассказа
+ */
+function processApprove(response) {
+	if (re_story.test(current_path)) {
+		var btn = $('.story_approve');
+	} else {
+		var btn = $('#story_' + response + ' .story_approve');
+	}
+	if (btn.hasClass('btn-primary')) {
+		var text = 'Отменить';
+	} else {
+		var text = 'Одобрить';
+	}
+	btn.text(text).toggleClass('btn-success');
+}
+/**
+ * Обработка AJAX-изменения закладки рассказа
+ * 
+ * @param response
+ *            int ID рассказа
+ */
+function processBookmark(response) {
+	if (re_story.test(current_path)) {
+		var btn = $('.story_bookmark');
+		var msg_container = $('.story_bookmark ~ .story_bookmark_msg');
+	} else {
+		var btn = $('#story_' + response + ' .story_bookmark');
+		var msg_container = $('#story_' + response
+				+ ' .story_bookmark ~ .story_bookmark_msg');
+	}
+	if (btn.hasClass('bookmarked')) {
+		var text = 'Рассказ удален из закладок';
+	} else {
+		var text = 'Рассказ добавлен в закладки';
+	}
+	btn.toggleClass('bookmarked');
+	msg_container.append('<span class="alert alert-warning alert-mini">' + text
+			+ '</span>');
+	msg_container.children().animate({
+		opacity : 0.01
+	}, 3000, function() {
+		msg_container.children().remove();
+	});
+
+}
+
+/**
+ * Обработка AJAX-изменения избранности рассказа
+ * 
+ * @param response
+ *            int ID рассказа
+ */
+function processFavorite(response) {
+	if (re_story.test(current_path)) {
+		var btn = $('.story_favorite');
+		var msg_container = $('.story_favorite ~ .story_favorite_msg');
+	} else {
+		var btn = $('#story_' + response + ' .story_favorite');
+		var msg_container = $('#story_' + response
+				+ ' .story_favorite ~ .story_favorite_msg');
+	}
+	if (btn.hasClass('favorited')) {
+		var text = 'Рассказ удален из избранного';
+	} else {
+		var text = 'Рассказ добавлен в избранное';
+	}
+	btn.toggleClass('favorited');
+	msg_container.append('<span class="alert alert-warning alert-mini">' + text
+			+ '</span>');
+	msg_container.children().animate({
+		opacity : 0.01
+	}, 3000, function() {
+		msg_container.children().remove();
+	});
+
+}
+
+/**
+ * Подгрузка комментариев по AJAX
+ * 
+ * @param request
+ *            int Адрес страницы подгрузки
+ */
+function getComments(url) {
+	var re_page = new RegExp('/comments/page/([0-9]+)/$');
+	var go_page = url.match(re_page)[1] | 0;
+	$.ajax({
+		type : 'GET',
+		dataType : 'html',
+		success : function(response) {
+			processComments(response, go_page);
+		},
+		url : url
+	});
+}
+/**
+ * Удаление рассказа по AJAX
+ * 
+ * @param self
+ *            object Кнопка удаления
+ */
+function processStoryDelete(self) {
+	if (!(re_story.test(current_path))) {
+		self.stopImmediatePropagation();
+		self.preventDefault();
+		var url = '/ajax' + $(this).attr('href');
+		$.post(url, function(data) {
+			$('#story_' + data).slideUp('slow').remove();
+		}).success(function() {
+			$('.modal').modal('hide').remove();
+		});
+	} else {
+		$('.modal').modal('hide').remove();
+	}
 }
 
 /**
@@ -113,32 +232,6 @@ function changeVote(response) {
 		opacity : 0.1
 	}, 3500, function() {
 		$('#vote-msg span').remove();
-	});
-}
-/**
- * Добавление-удаление из избранного по AJAX
- */
-function favoriteStory() {
-	$.ajax({
-		success : changeFavorite,
-		type : 'POST',
-		url : 'favorite'
-	});
-}
-// Обработка добавления-удаления из избранного
-function changeFavorite(response) {
-	$('#favstar').toggleClass('faved');
-	if (response == '0') {
-		var text = 'Рассказ удален из избранного';
-	} else if (response == '1') {
-		var text = 'Рассказ добавлен в избранное';
-	}
-	$('#fav-msg').append(
-			'<span class="alert alert-success">' + text + '</span>')
-	$('#fav-msg span').animate({
-		opacity : 0.1
-	}, 3500, function() {
-		$('#fav-msg span').remove();
 	});
 }
 
@@ -236,14 +329,6 @@ $(function() {
 						'value', '');
 				$('.span8').slideUp();
 			});
-	var current_path = window.location.pathname;
-	var re_storyadd = new RegExp('/story/add/')
-	var re_storyedit = new RegExp('/story/[0-9]+/edit/')
-	var re_search = new RegExp('/search/(.+)?');
-	var re_chapteredit = new RegExp('/story/[0-9]+/chapter/[0-9]+/edit/');
-	var re_chapteradd = new RegExp('/story/[0-9]+/chapter/add/');
-	var re_story = new RegExp('/story/[0-9]+/');
-
 	// На странице поиска...
 	if (re_search.test(window.location.pathname)) {
 		$('input[name="characters_select"][checked="checked"]').parent()
@@ -283,9 +368,6 @@ $(function() {
 	$('#vote-down').click(function() {
 		voteStory('-1');
 	});
-	$('#favstar').click(function() {
-		favoriteStory()
-	});
 	// Переключение размера и типа шрифта
 	var font_selector = $('.select-font');
 	var size_selector = $('.select-size');
@@ -307,30 +389,20 @@ $(function() {
 			chapter_text.removeClass('small-font').addClass('big-font');
 	});
 	// Управление AJAX-пагинацией
-	$('#ajax_next_comment').click(function() {
-		getComments('next');
+	$('#ajax_next_comment').click(function(self) {
+		self.stopImmediatePropagation();
+		self.preventDefault();
+		var url = '/ajax' + $(this).attr('href');
+		getComments(url);
 	});
-	$('#ajax_prev_comment').click(function() {
-		getComments('prev');
-	});
-	$('#comments_goto_page').change(function() {
-		getComments($(this).val() | 0);
+	$('#ajax_prev_comment').click(function(self) {
+		self.stopImmediatePropagation();
+		self.preventDefault();
+		var url = '/ajax' + $(this).attr('href');
+		getComments(url);
 	});
 	// AJAX-удаление рассказа
-	$('.story_delete').live('click', function(self) {
-		if (!(re_story.test(current_path))) {
-			self.stopImmediatePropagation();
-			self.preventDefault();
-			var url = '/ajax' + $(this).attr('href');
-			$.post(url, function(data) {
-				$('#story_' + data).slideUp('slow').remove();
-			}).success(function() {
-				$('.modal').modal('hide').remove();
-			});
-		} else {
-			$('.modal').modal('hide').remove();
-		}
-	});
+	$('.story_delete').live('click', processStoryDelete);
 	// Отображение модального окна подтверждения
 	$('.story_delete_confirm').click(function(self) {
 		self.preventDefault();
@@ -350,38 +422,28 @@ $(function() {
 		self.stopImmediatePropagation();
 		self.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
-		$.post(url, function(data) {
-			if (re_story.test(current_path)) {
-				var btn = $('.story_approve');
-			} else {
-				var btn = $('#story_' + data + ' .story_approve');
-			}
-			if (btn.hasClass('btn-success')) {
-				btn.removeClass('btn-success').text('Отменить');
-			} else {
-				btn.addClass('btn-success').text('Одобрить');
-			}
-		});
+		$.post(url, processApprove);
 	});
-	
 	// Публикация глав по AJAX
 	$('.story_publish').click(function(self) {
 		self.stopImmediatePropagation();
 		self.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
-		$.post(url, function(data) {
-			if (re_story.test(current_path)) {
-				var btn = $('.story_publish');
-			} else {
-				var btn = $('#story_' + data + ' .story_publish');
-			}
-			if (btn.hasClass('btn-primary')) {
-				btn.removeClass('btn-primary').text('В черновики');
-			} else {
-				btn.addClass('btn-primary').text('Опубликовать');
-			}
-		});
-
+		$.post(url, processPublish);
+	});
+	// Добавление в закладки по AJAX
+	$('.story_bookmark').click(function(self) {
+		self.stopImmediatePropagation();
+		self.preventDefault();
+		var url = '/ajax' + $(this).attr('href');
+		$.post(url, processBookmark);
+	});
+	// Добавление в избранное по AJAX
+	$('.story_favorite').click(function(self) {
+		self.stopImmediatePropagation();
+		self.preventDefault();
+		var url = '/ajax' + $(this).attr('href');
+		$.post(url, processFavorite);
 	});
 	// Ещё какая-то ерунда
 	// ---
