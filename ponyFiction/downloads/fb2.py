@@ -35,7 +35,7 @@ class FB2Download(BaseDownloadFormat):
     def _get_annotation_doc(self, story):
         from ..filters import fb2
         
-        doc = fb2.html_to_fb2('<html><head><annotation>%s</annotation></head></html>' % story.summary_as_html)
+        doc = fb2.html_to_fb2('<html><head><annotation>%s</annotation></head><body></body></html>' % story.summary_as_html)
         for body in doc.xpath('//body'):
             body.getparent().remove(body)
             
