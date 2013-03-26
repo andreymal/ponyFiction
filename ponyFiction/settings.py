@@ -138,11 +138,11 @@ SPHINX_CONFIG = {
 COMMENTS_COUNT = {
                   'page' : 50,
                   'main' : 5,
-                  'stream' : 10,
+                  'stream' : 50,
                   'author_page': 10
                   }
-STORIES_COUNT = {'page' : 10, 'main' : 5, 'stream' : 10, 'load': 10}
-CHAPTERS_COUNT = {'page' : 10, 'main' : 5, 'stream' : 10, 'load': 10}
+STORIES_COUNT = {'page' : 10, 'main' : 10, 'stream' : 20}
+CHAPTERS_COUNT = {'page' : 10, 'main' : 10, 'stream' : 20}
 COMMENTS_ORPHANS = 5
 RSS = {'stories': 20, 'chapters': 20, 'comments': 100}
 AUTH_USER_MODEL = 'ponyFiction.Author'

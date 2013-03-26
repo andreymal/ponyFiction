@@ -15,7 +15,7 @@ class CommentsStory(ObjectList):
     ''' Подгрузка комментариев к рассказу'''
     
     context_object_name = 'comments'
-    paginate_by = settings.COMMENTS_COUNT['author_page']
+    paginate_by = settings.COMMENTS_COUNT['page']
 
     @property
     def template_name(self):
