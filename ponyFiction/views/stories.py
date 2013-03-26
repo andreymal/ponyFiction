@@ -133,7 +133,6 @@ def story_download(request, story_id, filename, extension):
         storage.modified_time(filepath) < story.updated or
         debug):
         
-        print '!!!!'
         data = fmt.render(
             story = story,
             filename = filename,

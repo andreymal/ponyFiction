@@ -6,3 +6,4 @@ sphinx
 env
 db.sqlite
 local_settings.py
+ponyFiction/media
