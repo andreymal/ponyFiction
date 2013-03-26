@@ -1,19 +1,21 @@
 // Глобальные регулярки и прочий нужный почти везде стафф
 current_path = window.location.pathname;
 re_story = new RegExp('^/story/[0-9]+/(?:comments/page/[0-9]+/)?$');
-re_storyadd = new RegExp('^/story/add/$');
-re_storyedit = new RegExp('^/story/[0-9]+/edit/$');
-re_chapteredit = new RegExp('^/story/[0-9]+/chapter/[0-9]+/edit/$');
-re_chapteradd = new RegExp('^/story/[0-9]+/chapter/add/$');
-re_account = new RegExp('^/accounts/[0-9]+/(?:comments/page/[0-9]+/)?$');
-re_profile = new RegExp('^/accounts/profile/(?:comments/page/[0-9]+/)?$');
+re_story_add = new RegExp('^/story/add/$');
+re_story_edit = new RegExp('^/story/[0-9]+/edit/$');
+re_chapter_edit = new RegExp('^/story/[0-9]+/chapter/[0-9]+/edit/$');
+re_chapter_add = new RegExp('^/story/[0-9]+/chapter/add/$');
+re_author_overview = new RegExp('^/accounts/[0-9]+/(?:comments/page/[0-9]+/)?$');
+re_author_dashboard = new RegExp(
+		'^/accounts/profile/(?:comments/page/[0-9]+/)?$');
+re_registration = new RegExp('^/accounts/registration/(.+)?');
 re_search = new RegExp('^/search/(.+)?');
-re_favorites = new RegExp('^/favorites/(.+)?');
+re_favorites = new RegExp('^/accounts/[0-9]+/favorites/(.+)?');
 re_bookmarks = new RegExp('^/bookmarks/(.+)?');
 re_submitted = new RegExp('^/submitted/(.+)?');
-
 re_help = new RegExp('^/help/$');
 re_terms = new RegExp('^/terms/$');
+
 /**
  * Обработчик ошибок AJAX-подгрузки
  * 
@@ -206,6 +208,35 @@ function processStoryDelete(self) {
 }
 
 /**
+ * Декорация меню навигации в зависимости от текущей страницы
+ */
+function decorateNavbar() {
+	if (current_path == '/') {
+		$('#nav_index').addClass('active');
+	} else if (re_search.test(current_path)) {
+		$('#nav_search').addClass('active');
+	} else if (re_help.test(current_path)) {
+		$('#nav_help').addClass('active');
+	} else if (re_favorites.test(current_path)) {
+		$('#nav_favorites').addClass('active');
+	} else if (re_bookmarks.test(current_path)) {
+		$('#nav_bookmarks').addClass('active');
+	} else if (re_submitted.test(current_path)) {
+		$('#nav_submitted').addClass('active');
+	} else if (re_story_add.test(current_path)) {
+		$('#nav_story_add').addClass('active');
+	} else if (re_author_dashboard.test(current_path)) {
+		$('#nav_author_dashboard').addClass('active');
+	} else if (re_author_overview.test(current_path)) {
+		$('#nav_author_overview').addClass('active');
+	} else if (re_registration.test(current_path)) {
+		$('#nav_registration').addClass('active');
+	} else if (re_terms.test(current_path)) {
+		$('#nav_terms').addClass('active');
+	}
+}
+
+/**
  * Голосование за рассказ по AJAX
  */
 requestRunning = false;
@@ -243,6 +274,8 @@ function changeVote(response) {
 
 // При загрузке страницы
 $(function() {
+	// Декорируем навигацию
+	decorateNavbar();
 	// Конфигурируем заголовок AJAX-запроса с CSRF Cookie
 	$.ajaxSetup({
 		cache : false,
@@ -341,7 +374,7 @@ $(function() {
 				.children('img').addClass('ui-selected');
 	}
 	// На странице добавления или редактирования рассказа
-	if (re_storyedit.test(current_path) || re_storyadd.test(current_path)) {
+	if (re_story_edit.test(current_path) || re_story_add.test(current_path)) {
 		$('#id_notes').markItUp(mySettings);
 		$('.character-item input[checked="checked"]').prev().addClass(
 				'ui-selected');
@@ -359,21 +392,17 @@ $(function() {
 	}
 	// На странице справки
 	if (re_help.test(current_path)) {
-		$('a.tab_inline[data-toggle="tab"]')
-				.click(
-						function() {
-							var href = $($(this)['context']).attr('href');
-							$('.nav-simple li').removeClass(
-									'active');
-							$(
-									'.nav-simple li a[href="'
-											+ href + '"]').parent().addClass(
-									'active');
+		$('a.tab_inline[data-toggle="tab"]').click(
+				function() {
+					var href = $($(this)['context']).attr('href');
+					$('.nav-simple li').removeClass('active');
+					$('.nav-simple li a[href="' + href + '"]').parent()
+							.addClass('active');
 
-						});
+				});
 	}
 	// На странице добавления или редактирования главы
-	if (re_chapteredit.test(current_path) || re_chapteradd.test(current_path)) {
+	if (re_chapter_edit.test(current_path) || re_chapter_add.test(current_path)) {
 		$('#id_text').markItUp(mySettings);
 		$('#id_notes').markItUp(mySettings);
 	}
