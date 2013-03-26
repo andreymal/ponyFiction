@@ -9,6 +9,9 @@ from ponyFiction.apis.sphinxapi import SphinxClient, SPH_SORT_EXTENDED
 from ponyFiction.utils.misc import pagination_ranges, SetBoolSphinxFilter, SetObjSphinxFilter
 from django.shortcuts import redirect
 
+sort_types = {1: "id DESC, ", 2: "size DESC, ", 3: "rating DESC, ", 4: "comments DESC, "}
+
+
 def search_main(request):
     if request.method == 'GET':
         return search_form(request)
@@ -19,11 +22,13 @@ def search_main(request):
     else:
         raise Http404
 
+
 @csrf_protect
 def search_form(request):
     form = SearchForm()
     data = {'form': form, 'page_title': 'Поиск рассказов'}
     return render(request, 'search.html', data)
+
 
 @csrf_protect
 def search_action(request, postform):
@@ -37,7 +42,8 @@ def search_action(request, postform):
     chapters = []
     # Если форма правильная, работаем дальше, если нет, отображаем снова.
     if postform.is_valid():
-        search_type =  postform.cleaned_data['search_type']
+        search_type = postform.cleaned_data['search_type']
+        sort_type = postform.cleaned_data['sort_type']
         data['search_type'] = search_type
         initial_data['search_type'] = int(search_type)
     else:
@@ -60,12 +66,16 @@ def search_action(request, postform):
     sphinx.SetLimits(offset, settings.SPHINX_CONFIG['number'], settings.SPHINX_CONFIG['max'], settings.SPHINX_CONFIG['cutoff'])
     sphinx.SetSelect('id')
     # TODO: Сортировка, yay!
-    sphinx.SetSortMode(SPH_SORT_EXTENDED, '@weight DESC, @id DESC')
-    # Словарь результатов 
+    sort_type_string = ""
+    for sort_id in sort_type:
+        sort_type_string = sort_type_string + sort_types[int(sort_id)]
+    sort_type_string = sort_type_string + "@weight DESC, @id DESC"
+    sphinx.SetSortMode(SPH_SORT_EXTENDED, sort_type_string)
+    # Словарь результатов
     result = []
     initial_data['search_query'] = postform.cleaned_data['search_query']
     if search_type == '0':
-        # Установка весов для полей рассказов   
+        # Установка весов для полей рассказов
         sphinx.SetFieldWeights(settings.SPHINX_CONFIG['weights_stories'])
         # Фильтрация
         initial_data.update(SetObjSphinxFilter(sphinx, 'category_id', 'categories_select', postform))
@@ -87,7 +97,7 @@ def search_action(request, postform):
             else:
                 result.append(story)
     else:
-        # Установка весов для полей глав  
+        # Установка весов для полей глав
         sphinx.SetFieldWeights(settings.SPHINX_CONFIG['weights_chapters'])
         # Запрос поиска глав
         raw_result = sphinx.Query(postform.cleaned_data['search_query'], 'chapters')
@@ -98,7 +108,7 @@ def search_action(request, postform):
             except Chapter.DoesNotExist:
                 pass
             else:
-                text=[]
+                text = []
                 text.append(chapter.text)
                 excerpt = sphinx.BuildExcerpts(text, 'chapters', postform.cleaned_data['search_query'], settings.SPHINX_CONFIG['excerpts_opts'])
                 excerpts.append(excerpt[0])
@@ -115,18 +125,19 @@ def search_action(request, postform):
     # Закрываем за собой сокет
     sphinx.Close()
     return render(request, 'search.html', data)
-  
+
+
 def search_simple(request, search_type, search_id):
     if search_type == 'character':
-        bound_data={'characters_select': [search_id], 'search_type': 0}
+        bound_data = {'characters_select': [search_id], 'search_type': 0}
     elif search_type == 'category':
-        bound_data={'categories_select': [search_id], 'search_type': 0}
+        bound_data = {'categories_select': [search_id], 'search_type': 0}
     elif search_type == 'classifier':
-        bound_data={'classifications_select': [search_id], 'search_type': 0}
+        bound_data = {'classifications_select': [search_id], 'search_type': 0}
     elif search_type == 'rating':
-        bound_data={'ratings_select': [search_id], 'search_type': 0}
+        bound_data = {'ratings_select': [search_id], 'search_type': 0}
     elif search_type == 'size':
-        bound_data={'sizes_select': [search_id], 'search_type': 0}
+        bound_data = {'sizes_select': [search_id], 'search_type': 0}
     else:
         return search_form(request)
     postform = SearchForm(bound_data)

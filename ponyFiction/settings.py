@@ -132,7 +132,7 @@ SPHINX_CONFIG = {
     'max' : 1000,
     'cutoff' : 1000,
     'excerpts_opts' : {'chunk_separator' : '…', 'limit' : 2048, 'around' : 10, 'html_strip_mode' : 'strip'},
-    'weights_stories' : {'title' : 100, 'summary' : 50, 'notes' : 25},
+    'weights_stories' : {'title' : 100, 'summary' : 50, 'notes' : 25, 'username': 150},
     'weights_chapters' : {'text' : 100, 'title' : 50, 'notes' : 25}
     }
 COMMENTS_COUNT = {
