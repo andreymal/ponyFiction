@@ -7,11 +7,11 @@ pre_normalize_html = xslt_transform_function('pre-normalize-html.xslt')
 post_normalize_html = xslt_transform_function('post-normalize-html.xslt')
 
 @html_doc_transform
-def normalize_html(doc):
-    doc = pre_normalize_html(doc)
+def normalize_html(doc, **kw):
+    doc = pre_normalize_html(doc, **kw)
     doc = split_elements(doc, separators = ['p-splitter'])
     # TODO: squash nested paragraph attributes
-    doc = post_normalize_html(doc)
+    doc = post_normalize_html(doc, **kw)
     return doc
 
 @html_doc_transform

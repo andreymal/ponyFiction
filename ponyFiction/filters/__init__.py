@@ -15,7 +15,7 @@ def filter_html(text,
                 tags = settings.SANITIZER_ALLOWED_TAGS,
                 attributes = settings.SANITIZER_ALLOWED_ATTRIBUTES):
     
-    text = html_doc_to_string(normalize_html(text))
+    text = html_doc_to_string(normalize_html(text, convert_linebreaks = True))
     text = typo(text)
     text = bleach.clean(text,
         tags = tags,

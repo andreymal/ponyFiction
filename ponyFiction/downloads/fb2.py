@@ -12,7 +12,7 @@ class FB2Download(BaseDownloadFormat):
         from ..filters import fb2
         
         chapters = story.chapter_set.order_by('order')
-        chapters = [fb2.html_to_fb2(c.text_as_html) for c in chapters]
+        chapters = [fb2.html_to_fb2(c.text_as_html, title = c.title) for c in chapters]
         chapters = [self._get_annotation_doc(story)] + chapters
         
         doc = fb2.join_fb2_docs(
@@ -37,7 +37,7 @@ class FB2Download(BaseDownloadFormat):
         from ..filters import fb2
         
         doc = fb2.html_to_fb2('<html><head><annotation>%s</annotation></head><body></body></html>' % story.summary_as_html)
-        for body in doc.xpath('//body'):
+        for body in doc.xpath('//fb2:body', namespaces = { 'fb2': 'http://www.gribuser.ru/xml/fictionbook/2.0' }):
             body.getparent().remove(body)
             
         return doc

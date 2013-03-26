@@ -36,6 +36,8 @@ def transform_xslt_params(kw):
             value = etree.XSLT.strparam(value)
         elif type(value) in (int, long, float):
             value = str(value)
+        elif type(value) is bool:
+            value = 'true()' if value else 'false()'
         else:
             raise TypeError(key)
         kw[key] = value
