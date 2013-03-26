@@ -1,13 +1,19 @@
 // Глобальные регулярки и прочий нужный почти везде стафф
 current_path = window.location.pathname;
-re_storyadd = new RegExp('/story/add/')
-re_storyedit = new RegExp('/story/[0-9]+/edit/')
-re_search = new RegExp('/search/(.+)?');
-re_chapteredit = new RegExp('/story/[0-9]+/chapter/[0-9]+/edit/');
-re_chapteradd = new RegExp('/story/[0-9]+/chapter/add/');
-re_story = new RegExp('/story/[0-9]+/');
-re_account = new RegExp('^/accounts/[0-9]+/');
-re_profile = new RegExp('^/accounts/profile/');
+re_story = new RegExp('^/story/[0-9]+/(?:comments/page/[0-9]+/)?$');
+re_storyadd = new RegExp('^/story/add/$');
+re_storyedit = new RegExp('^/story/[0-9]+/edit/$');
+re_chapteredit = new RegExp('^/story/[0-9]+/chapter/[0-9]+/edit/$');
+re_chapteradd = new RegExp('^/story/[0-9]+/chapter/add/$');
+re_account = new RegExp('^/accounts/[0-9]+/(?:comments/page/[0-9]+/)?$');
+re_profile = new RegExp('^/accounts/profile/(?:comments/page/[0-9]+/)?$');
+re_search = new RegExp('^/search/(.+)?');
+re_favorites = new RegExp('^/favorites/(.+)?');
+re_bookmarks = new RegExp('^/bookmarks/(.+)?');
+re_submitted = new RegExp('^/submitted/(.+)?');
+
+re_help = new RegExp('^/help/$');
+re_terms = new RegExp('^/terms/$');
 /**
  * Обработчик ошибок AJAX-подгрузки
  * 
@@ -334,7 +340,7 @@ $(function() {
 		$('input[name="characters_select"][checked="checked"]').parent()
 				.children('img').addClass('ui-selected');
 	}
-	// На странице добавления или редактирования истории...
+	// На странице добавления или редактирования рассказа
 	if (re_storyedit.test(current_path) || re_storyadd.test(current_path)) {
 		$('#id_notes').markItUp(mySettings);
 		$('.character-item input[checked="checked"]').prev().addClass(
@@ -343,7 +349,6 @@ $(function() {
 		$('#sortable_chapters').sortable({
 			// Действия при обновлении
 			update : function() {
-				// Посылаем AJAX-запрос
 				$.ajax({
 					data : $('#sortable_chapters').sortable('serialize'),
 					type : 'POST',
@@ -352,9 +357,24 @@ $(function() {
 			}
 		});
 	}
+	// На странице справки
+	if (re_help.test(current_path)) {
+		$('a.tab_inline[data-toggle="tab"]')
+				.click(
+						function() {
+							var href = $($(this)['context']).attr('href');
+							$('.nav-simple li').removeClass(
+									'active');
+							$(
+									'.nav-simple li a[href="'
+											+ href + '"]').parent().addClass(
+									'active');
+
+						});
+	}
 	// На странице добавления или редактирования главы
 	if (re_chapteredit.test(current_path) || re_chapteradd.test(current_path)) {
-		$('.chapter-textarea').markItUp(mySettings);
+		$('#id_text').markItUp(mySettings);
 		$('#id_notes').markItUp(mySettings);
 	}
 	// На странице рассказа

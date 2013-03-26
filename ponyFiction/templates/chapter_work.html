@@ -16,7 +16,7 @@
 		{% else %}
 			<h1>Редактирование главы рассказа «{{ story.title }}»</h1>
 		{% endif %}
-		<p>Перед добавлением главы рекомендуем прочитать <a href="{% url 'terms' %}">правила</a>, <a href="{% url 'help' %}">инструкции</a> и <a href="{% url 'faq' %}">FAQ</a>. Они сделают вашу жизнь и жизни читателей проще.</p>
+		<p>Перед добавлением главы рекомендуем прочитать <a href="{% url 'terms' %}">правила</a> и <a href="{% url 'help' %}">справку</a>. Они сделают вашу жизнь и жизни читателей проще.</p>
 		<form method="POST" enctype="multipart/form-data" name="search" id="searchform" class="form-horizontal">
 		{% csrf_token %}
 			<fieldset>
@@ -24,40 +24,40 @@
 				<div class="control-group{% if form.title.errors %} error{% endif %}">
 					<label class="control-label">{{ form.title.label }}</label>
 					<div class="controls">{{ form.title }}
-					{% if form.title.errors %}
-						{% for error in form.title.errors %}
-						<span class="help-inline">{{ error }}</span>
-						{% endfor %}
-					{% else %}
-						<span class="help-inline small">{{ form.title.help_text }}</span>
-					{% endif %}
-          </div>
+						{% if form.title.errors %}
+							{% for error in form.title.errors %}
+							<span class="help-inline">{{ error }}</span>
+							{% endfor %}
+						{% else %}
+							<span class="help-inline small">{{ form.title.help_text }}</span>
+						{% endif %}
+          			</div>
 				</div>
 				<!-- Заметки к главе -->
 			    <div class="control-group{% if form.notes.errors %} error{% endif %}">
 					<label class="control-label">{{ form.notes.label }}</label>
 					<div class="controls">{{ form.notes }}
-					{% if form.notes.errors %}
-						{% for error in form.notes.errors %}
-						<span class="help-inline">{{ error }}</span>
-						{% endfor %}
-					{% else %}
-						<span class="help-inline small">{{ form.notes.help_text }}</span>
-					{% endif %}
-          </div>
+						{% if form.notes.errors %}
+							{% for error in form.notes.errors %}
+							<span class="help-inline">{{ error }}</span>
+							{% endfor %}
+						{% else %}
+							<span class="help-inline small">{{ form.notes.help_text }}</span>
+						{% endif %}
+          			</div>
 				</div>
 				<!-- Текст главы -->
 			    <div class="control-group{% if form.text.errors %} error{% endif %}">
 					<label class="control-label">{{ form.text.label }}</label>
 					<div class="controls">{{ form.text }}
-					{% if form.text.errors %}
-						{% for error in form.text.errors %}
-						<span class="help-inline">{{ error }}</span>
-						{% endfor %}
-					{% else %}
-						<!--<span class="help-inline small">-->{{ form.text.help_text }}<!--</span>-->
-					{% endif %}
-          </div>
+						{% if form.text.errors %}
+							{% for error in form.text.errors %}
+							<span class="help-inline">{{ error }}</span>
+							{% endfor %}
+						{% else %}
+							<!--<span class="help-inline small">-->{{ form.text.help_text }}<!--</span>-->
+						{% endif %}
+          			</div>
 				</div>
 				<div class="form-actions notop">
 					{{ form.button_submit }}

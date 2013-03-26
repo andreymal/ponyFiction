@@ -215,9 +215,8 @@ urlpatterns += patterns('',
     url(r'^bad_gateway/$', TemplateView.as_view(template_name='502.html')),
     url(r'^forbidden/$', TemplateView.as_view(template_name='403.html')),
     url(r'^internal_server_error/$', TemplateView.as_view(template_name='500.html')),
-    url(r'^faq/$', TemplateView.as_view(template_name='faq.html', get_context_data=lambda: {'page_title': 'FAQ'}), name='faq'),
     url(r'^terms/$', TemplateView.as_view(template_name='terms.html', get_context_data=lambda: {'page_title': 'Правила'}), name='terms'),
-    url(r'^help/$', TemplateView.as_view(template_name='help.html', get_context_data=lambda: {'page_title': 'Помощь'}), name='help'),
+    url(r'^help/$', TemplateView.as_view(template_name='help.html', get_context_data=lambda: {'page_title': 'Справка'}), name='help'),
 )
 if settings.DEBUG:
     urlpatterns += patterns('',
