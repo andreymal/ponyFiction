@@ -756,7 +756,9 @@ input.hidden {
 .nav-pills.nav-simple>li>a:hover {
 	color: #0088cc;
 }
-
+.nav-pills.nav-simple>li.active>a:hover {
+	color: #ffffff;
+}
 /* Registration form */
 .registration-form {
 	
@@ -784,7 +786,9 @@ input.hidden {
 .collapse {
 	font-size: 12px;
 }
-
+.collapse-normal {
+	font-size: 14px!important;
+}
 .story-page .collapse {
 	background-color: #fff;
 }
