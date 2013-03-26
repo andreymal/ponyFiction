@@ -35,11 +35,14 @@
 				<!-- Тонкая настройка поиска -->
 				{{ form.button_advanced }}
 
+				<!--Начало спойлера -->
 				<div id="more-sort" class="collapse">
-				<h3>Сортировать по: <sup>Это пока не работает.</sup></h3>
+				<h3>Сортировать по: </h3>
+					
 					<!-- Тип сортировки -->
-					<div class="bootstrap radio">{{ form.sort_type }}</div>
+					<span class="padded bootstrap checkboxes">{{ form.sort_type }}</span>
 				</div>
+				<!-- Конец спойлера -->
 				
 				<!--Начало спойлера -->
 				<div id="more-filters" class="collapse">

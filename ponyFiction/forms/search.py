@@ -132,10 +132,10 @@ class SearchForm(Form):
         ),
     )
     # Сортировка
-    sort_type = ChoiceField(
-        choices=[(0, 'Без сортировки'), (1, 'По дате'), (2, 'По размеру'), (3, 'По рейтингу'), (4, 'По комментам')],
+    sort_type = MultipleChoiceField(
+        choices=[(1, 'По дате'), (2, 'По размеру'), (3, 'По рейтингу'), (4, 'По комментам')],
         required=False,
-        widget=StoriesRadioButtons(attrs=radio_attrs),
+        widget=StoriesButtons(attrs=checkbox_attrs),
     )
     # bla
     button_submit = Field(

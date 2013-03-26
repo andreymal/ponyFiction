@@ -5,9 +5,11 @@ from django.views.decorators.csrf import csrf_protect
 from ponyFiction.models import Story, Chapter
 from ponyFiction.forms.search import SearchForm
 from ponyFiction import settings as settings
-from ponyFiction.apis.sphinxapi import SphinxClient, SPH_SORT_RELEVANCE, SPH_SORT_ATTR_DESC, SPH_SORT_ATTR_ASC, SPH_SORT_TIME_SEGMENTS, SPH_SORT_EXTENDED
+from ponyFiction.apis.sphinxapi import SphinxClient, SPH_SORT_EXTENDED
 from ponyFiction.utils.misc import pagination_ranges, SetBoolSphinxFilter, SetObjSphinxFilter
 from django.shortcuts import redirect
+
+sort_types = {1: "id DESC, ", 2: "size DESC, ", 3: "rating DESC, ", 4: "comments DESC, "}
 
 
 def search_main(request):
@@ -64,17 +66,11 @@ def search_action(request, postform):
     sphinx.SetLimits(offset, settings.SPHINX_CONFIG['number'], settings.SPHINX_CONFIG['max'], settings.SPHINX_CONFIG['cutoff'])
     sphinx.SetSelect('id')
     # TODO: Сортировка, yay!
-    if sort_type == 0:
-        sphinx.SetSortMode(SPH_SORT_RELEVANCE)
-    if sort_type == 1:
-        sphinx.SetSortMode(SPH_SORT_TIME_SEGMENTS, 'date')
-    if sort_type == 2:
-        sphinx.SetSortMode(SPH_SORT_ATTR_DESC, 'size_id')
-    if sort_type == 3:
-        sphinx.SetSortMode(SPH_SORT_ATTR_DESC, 'rating_id')
-    if sort_type == 4:
-        sphinx.SetSortMode(SPH_SORT_EXTENDED, '@weight DESC, @id DESC')
-    #sphinx.SetSortMode( SPH_SORT_ATTR_DESC, 'size_id' )
+    sort_type_string = ""
+    for sort_id in sort_type:
+        sort_type_string = sort_type_string + sort_types[int(sort_id)]
+    sort_type_string = sort_type_string + "@weight DESC, @id DESC"
+    sphinx.SetSortMode(SPH_SORT_EXTENDED, sort_type_string)
     # Словарь результатов
     result = []
     initial_data['search_query'] = postform.cleaned_data['search_query']
