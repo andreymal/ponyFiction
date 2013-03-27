@@ -12,7 +12,7 @@
     <FictionBook xmlns:xlink="http://www.w3.org/1999/xlink">
         <xsl:call-template name="create-fb2-description">
             <xsl:with-param name="annotation">
-                <xsl:apply-templates select="head/annotation" mode="section-content"/>
+                <xsl:apply-templates select="body/annotation" mode="section-content"/>
             </xsl:with-param>
         </xsl:call-template>
         <body>
@@ -36,6 +36,10 @@
 
 <xsl:template match="p" mode="paragraphs">
     <p><xsl:apply-templates select="node()" mode="body"/></p>
+</xsl:template>
+
+<xsl:template match="node()" mode="paragraphs">
+    <xsl:apply-templates select="node()" mode="paragraphs"/>
 </xsl:template>
 
 <xsl:template match="i|em" mode="body">

@@ -8,17 +8,19 @@
     <xsl:param name="convert_linebreaks" select="false()"/>
     <xsl:param name="br_to_p" select="false()"/>
     
-<xsl:template match="body">
+<xsl:template match="*[@block-element]">
+    <p-splitter/>
     <xsl:copy>
-        <!-- <xsl:apply-templates match="@*"/> -->
-        <p><xsl:apply-templates match="node()"/></p>
+        <xsl:apply-templates select="@*"/>
+        <p root-paragraph="true"><xsl:apply-templates select="node()"/></p>
     </xsl:copy>
+    <p-splitter/>
 </xsl:template>
     
 <xsl:template match="p">
     <p-splitter/>
     <xsl:copy>
-        <xsl:apply-templates match="@*|node()"/>
+        <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
     <p-splitter/>
 </xsl:template>
@@ -85,7 +87,7 @@
 
         <xsl:otherwise>
             <xsl:copy>
-                <xsl:apply-templates match="@*|node()"/>
+                <xsl:apply-templates select="@*|node()"/>
             </xsl:copy>
         </xsl:otherwise>
 
@@ -94,7 +96,7 @@
 
 <xsl:template match="@*|node()">
     <xsl:copy>
-        <xsl:apply-templates match="@*|node()"/>
+        <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
 </xsl:template>
     

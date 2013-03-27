@@ -36,8 +36,9 @@ class FB2Download(BaseDownloadFormat):
     def _get_annotation_doc(self, story):
         from ..filters import fb2
         
-        doc = fb2.html_to_fb2('<html><head><annotation>%s</annotation></head><body></body></html>' % story.summary_as_html)
+        doc = fb2.html_to_fb2('<annotation>%s</annotation>' % story.summary_as_html)
         for body in doc.xpath('//fb2:body', namespaces = { 'fb2': 'http://www.gribuser.ru/xml/fictionbook/2.0' }):
             body.getparent().remove(body)
             
         return doc
+    

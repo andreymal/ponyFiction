@@ -1,4 +1,5 @@
 from lxml import etree
+import lxml.html.defs
 from ..base import xslt_transform_loader, html_doc_transform
 
 xslt_transform_function = xslt_transform_loader(__file__)
@@ -6,39 +7,52 @@ xslt_transform_function = xslt_transform_loader(__file__)
 pre_normalize_html = xslt_transform_function('pre-normalize-html.xslt')
 post_normalize_html = xslt_transform_function('post-normalize-html.xslt')
 
+block_elements = lxml.html.defs.block_tags | frozenset(['footnote'])
+
 @html_doc_transform
-def normalize_html(doc, **kw):
+def normalize_html(doc, block_elements = block_elements, **kw):
+    for e in doc.xpath('//' + '|//'.join(block_elements)):
+        e.attrib['block-element'] = 'true'
+    
     doc = pre_normalize_html(doc, **kw)
-    doc = split_elements(doc, separators = ['p-splitter'])
+    doc = split_elements(
+        doc,
+        separators = ['p-splitter'],
+        block_elements = block_elements
+    )
     # TODO: squash nested paragraph attributes
     doc = post_normalize_html(doc, **kw)
     return doc
 
 @html_doc_transform
-def split_elements(doc, separators = []):
-    body = doc.xpath('//body')[0]
-    children = body[:]
-    body[:] = []
-    
-    body.extend(f 
-        for e in children
-        for f in iter_splitted_elements(e, separators)
-    )
-    
+def split_elements(doc, separators = [], block_elements = lxml.html.defs.block_tags):
+    block_elements = (block_elements | frozenset(['body'])) - frozenset(['p'])
+    for body in doc.xpath('//body'):
+        list(iter_splitted_elements(body, separators, block_elements))
     return doc
     
     
-def iter_splitted_elements(element, separators):
+def iter_splitted_elements(element, separators, block_elements):
     children = element.getchildren()
     if len(children) == 0:
         yield element
         return
     
     tag = element.tag
+    if tag in block_elements:
+        children = element[:]
+        element[:] = []
+        element.extend(f 
+            for e in children
+            for f in iter_splitted_elements(e, separators, block_elements)
+        )
+        yield element
+        return
+    
     attrib = dict(element.attrib)
     accum = []
     for d in children:
-        for e in iter_splitted_elements(d, separators):
+        for e in iter_splitted_elements(d, separators, block_elements):
             if e.tag in separators:
                 if len(accum) > 0:
                     x = etree.Element(tag, attrib)

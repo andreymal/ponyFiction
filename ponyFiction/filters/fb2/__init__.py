@@ -1,4 +1,5 @@
 import lxml.etree as etree
+import lxml.html.defs
 from ..base import xslt_transform_loader
 from ..html import normalize_html
 
@@ -10,7 +11,10 @@ _html_to_fb2 = xslt_transform_function('html-to-fb2.xslt')
 _join_fb2_docs = xslt_transform_function('join-fb2-docs.xslt')
 
 def html_to_fb2(doc, **kw):
-    doc = normalize_html(doc, br_to_p = True)
+    block_elements = lxml.html.defs.block_tags
+    block_elements |= frozenset(['annotation', 'footnote'])
+    
+    doc = normalize_html(doc, br_to_p = True, block_elements = block_elements)
     doc = _html_to_fb2(doc, **kw)
     return doc
 
