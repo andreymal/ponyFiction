@@ -15,7 +15,7 @@ class stories(Feed):
     feed_type = Atom1Feed
 
     def items(self):
-        return Story.objects.order_by('-date')[:settings.RSS['stories']]
+        return Story.objects.published.order_by('-date')[:settings.RSS['stories']]
     
     def item_link(self, item):
         return "/story/%i/" % item.id
@@ -29,7 +29,7 @@ class chapters(Feed):
     feed_type = Atom1Feed
 
     def items(self):
-        return Chapter.objects.order_by('-date')[:settings.RSS['chapters']]
+        return Chapter.objects.filter(story__in=Story.objects.published).order_by('-date')[:settings.RSS['chapters']]
     
     def item_link(self, item):
         return "/story/%i/chapter/%i/" % (item.story_id, item.order)
@@ -40,7 +40,7 @@ class story(Feed):
     feed_type = Atom1Feed
     
     def get_object(self, request, story_id):
-        return get_object_or_404(Story, pk=story_id)
+        return get_object_or_404(Story.objects.published, pk=story_id)
     
     def title(self, obj):
         return obj.title

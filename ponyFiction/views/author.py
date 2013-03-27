@@ -22,10 +22,10 @@ def author_info(request, user_id, comments_page):
         author = get_object_or_404(Author, pk=user_id)
         comments_list = author.comment_set.all()
         data['page_title'] = u'Автор: %s' % author.username
-        data['stories'] = author.story_set.filter(draft=False, approved=True)
+        data['stories'] = author.story_set.published()
         template = 'author_overview.html'
     comments_count = comments_list.count()
-    published_stories = Story.published.filter(authors=author).count()
+    published_stories = Story.objects.published.filter(authors=author).count()
     series = author.series_set.all()
     votes = [Vote.objects.filter(plus=True).filter(story__authors__id=author.id).count(),
              Vote.objects.filter(minus=True).filter(story__authors__id=author.id).count()]

@@ -6,7 +6,8 @@ from .filters import filter_html, filter_chapter_html, filtered_property
 from django.db.models.signals import pre_save
 
 class Author(AbstractUser):
-# Модель автора     
+    """ Модель автора """
+    
     bio = models.TextField(max_length=2048, blank=True, verbose_name="О себе")
     jabber = models.EmailField(max_length=75, blank=True, verbose_name="Jabber")
     skype = models.CharField(max_length=256, blank=True, verbose_name="Skype ID")
@@ -24,7 +25,7 @@ class Author(AbstractUser):
     bio_as_html = filtered_property('bio', filter_html)
 
 class CharacterGroup(models.Model):
-# Модель группы персонажа
+    """ Модель группы персонажа """
 
     name = models.CharField(max_length=256, verbose_name="Название группы")
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание группы")
@@ -37,7 +38,7 @@ class CharacterGroup(models.Model):
         verbose_name_plural = "Группы персонажей"
         
 class Character(models.Model):
-# Модель персонажа
+    """ Модель персонажа """
     
     description = models.TextField(max_length=4096, blank=True, verbose_name="Биография")
     name = models.CharField(max_length=256, verbose_name="Имя")
@@ -51,7 +52,7 @@ class Character(models.Model):
         verbose_name_plural = "персонажи"
 
 class Category(models.Model):
-# Модель категории
+    """ Модель категории """
     
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
@@ -64,7 +65,7 @@ class Category(models.Model):
         verbose_name_plural = "категории"
 
 class Classifier(models.Model):
-# Модель классификатора
+    """ Модель классификатора """
    
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
@@ -77,7 +78,7 @@ class Classifier(models.Model):
         verbose_name_plural = "классификаторы"
 
 class Size(models.Model):
-# Модель размера
+    """ Модель размера """
 
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
@@ -90,7 +91,7 @@ class Size(models.Model):
         verbose_name_plural = "размеры"
 
 class Rating(models.Model):
-# Модель рейтинга
+    """ Модель рейтинга """
     
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
@@ -104,7 +105,7 @@ class Rating(models.Model):
         verbose_name_plural = "рейтинги"
     
 class BetaReading(models.Model):
-# Промежуточная модель хранения взаимосвязей рассказов, бета-читателей и результатов вычитки
+    """ Промежуточная модель хранения взаимосвязей рассказов, бета-читателей и результатов вычитки """
 
     beta = models.ForeignKey(Author, null=True, verbose_name="Бета")
     story = models.ForeignKey('Story', null=True, verbose_name="История вичитки")
@@ -122,7 +123,8 @@ class BetaReading(models.Model):
 
 
 class InSeriesPermissions(models.Model):
-# Промежуточная модель хранения взаимосвязей рассказов, серий и разрешений на добавления рассказов в серии
+    """ Промежуточная модель хранения взаимосвязей рассказов, серий и разрешений на добавления рассказов в серии """
+    
     story = models.ForeignKey('Story', null=True, verbose_name="Рассказ")
     series = models.ForeignKey('Series', null=True, verbose_name="Серия")
     order = models.PositiveSmallIntegerField(default=1, verbose_name="Порядок рассказов в серии")
@@ -134,6 +136,8 @@ class InSeriesPermissions(models.Model):
         verbose_name_plural = "добавления в серию"
 
 class CoAuthorsStory(models.Model):
+    """ Промежуточная модель хранения взаимосвязей авторства рассказов (включая соавторов) """
+
     author = models.ForeignKey(Author, verbose_name="Автор")
     story = models.ForeignKey('Story', verbose_name="Рассказ")
     approved = models.BooleanField(default=False, verbose_name="Подтверждение")
@@ -142,6 +146,8 @@ class CoAuthorsStory(models.Model):
         return '%s %s' % (self.author.username, self.story.title)
     
 class CoAuthorsSeries(models.Model):
+    """ Промежуточная модель хранения взаимосвязей авторства серий (включая соавторов) """
+    
     author = models.ForeignKey(Author, null=True, verbose_name="Автор")
     series = models.ForeignKey('Series', null=True, verbose_name="Серия")
     approved = models.BooleanField(default=False, verbose_name="Подтверждение")
@@ -150,7 +156,7 @@ class CoAuthorsSeries(models.Model):
         return '%s %s' % (self.author.username, self.series.title)
 
 class Series(models.Model):
-# Модель серии
+    """ Модель серии """
    
     authors = models.ManyToManyField(Author, through='CoAuthorsSeries', verbose_name=u"Авторы")
     cover = models.BooleanField(default=False, verbose_name="Наличие обложки")
@@ -173,17 +179,59 @@ class Series(models.Model):
     def __unicode__(self):
         return self.title
 
-
-class PublishedManager(models.Manager):
+    
+class StoryQuerySet(models.query.QuerySet):
+    from datetime import datetime, timedelta
+    last = datetime.now() - timedelta(weeks=1)
+    
+    @property
+    def published(self):
+        return self.filter(draft=False, approved=True)
+    
+    @property
+    def submitted(self):
+        return self.filter(draft=False, approved=False)
+    
+    @property
+    def good(self):
+        return self.annotate(votes_up=Count('vote__plus'), votes_down=Count('vote__minus'), votes_all=Count('vote')).exclude(votes_all__gte=20, votes_down__gte=F('votes_all') * 0.5)
+    
+    @property
+    def last_week(self):
+        return self.filter(date__gte=self.last)
+    
+    @property
+    def accessible(self):
+        from django.db.models import Q
+        return self.filter(Q(date__gte=self.last)|Q(draft=False, approved=True))
+    
+class StoryManager(models.Manager):
     def get_query_set(self):
-        return super(PublishedManager, self).get_query_set().annotate(votes_up=Count('vote__plus'), votes_down=Count('vote__minus'), votes_all=Count('vote')).exclude(votes_all__gte=20, votes_down__gte=F('votes_all')*0.5).filter(draft=False, approved=True)
+        return StoryQuerySet(self.model, using=self._db)
 
-class SubmittedManager(models.Manager):
-    def get_query_set(self):
-        return super(SubmittedManager, self).get_query_set().filter(draft=False, approved=False)
+    @property
+    def published(self):
+        return self.get_query_set().published
+    
+    @property
+    def submitted(self):
+        return self.get_query_set().submitted
+    
+    @property
+    def good(self):
+        return self.get_query_set().good
+    
+    @property
+    def last_week(self):
+        return self.get_query_set().last_week
+    
+    @property
+    def accessible(self):
+        return self.get_query_set().accessible
     
 class Story (models.Model):
-# Модель рассказа
+    """ Модель рассказа """
+    
     authors = models.ManyToManyField(Author, null=True, through='CoAuthorsStory', verbose_name=u"Авторы")
     betas = models.ManyToManyField(Author, through='BetaReading', related_name="beta_set", verbose_name=u"Бета-читатели")
     characters = models.ManyToManyField(Character, blank=True, null=True, verbose_name='Персонажи')
@@ -208,9 +256,7 @@ class Story (models.Model):
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     vote = models.ManyToManyField('Vote', null=True, verbose_name="Голоса за рассказ")
 
-    objects = models.Manager()
-    published = PublishedManager()
-    submitted = SubmittedManager()
+    objects = StoryManager()
     
     class Meta:
         verbose_name = "рассказ"
@@ -220,10 +266,10 @@ class Story (models.Model):
         return u"[+%s/-%s] %s" % (self.vote_up_count(), self.vote_down_count(), self.title)
     
     def vote_up_count(self):
-        return self.vote.filter(plus = True).count()
+        return self.vote.filter(plus=True).count()
     
     def vote_down_count(self):
-        return self.vote.filter(minus = True).count()
+        return self.vote.filter(minus=True).count()
 
     # Количество просмотров
     def views(self):
@@ -245,7 +291,8 @@ class Story (models.Model):
     notes_as_html = filtered_property('notes', filter_html)
 
 class Chapter (models.Model):
-# Модель главы
+    """ Модель главы """
+    
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
     draft = models.BooleanField(default=True, verbose_name="Черновик")
     story = models.ForeignKey(Story, null=True, on_delete=models.CASCADE, verbose_name="Отношение к рассказу")
@@ -266,13 +313,13 @@ class Chapter (models.Model):
 
     def get_prev_chapter(self):
         try:
-            return self.story.chapter_set.filter(order__lt = self.order).latest('order')
+            return self.story.chapter_set.filter(order__lt=self.order).latest('order')
         except Chapter.DoesNotExist:
             return None
 
     def get_next_chapter(self):
         try:
-            return self.story.chapter_set.filter(order__gt = self.order)[0:1].get()
+            return self.story.chapter_set.filter(order__gt=self.order)[0:1].get()
         except Chapter.DoesNotExist:
             return None
         
@@ -290,11 +337,12 @@ class Chapter (models.Model):
 def update_chapter_word_count(sender, instance, **kw):
     from django.template import defaultfilters as filters
     instance.words = filters.wordcount(filters.striptags(instance.text))
-pre_save.connect(update_chapter_word_count, sender = Chapter)
+pre_save.connect(update_chapter_word_count, sender=Chapter)
 
     
 class Comment(models.Model):
-# Модель комментария
+    """ Модель комментария """
+    
     author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE, verbose_name="Автор комментария")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
     story = models.ForeignKey(Story, null=True, on_delete=models.CASCADE, verbose_name="Отношение к рассказу")
@@ -312,7 +360,8 @@ class Comment(models.Model):
     text_as_html = filtered_property('text', filter_html)
 
 class Vote(models.Model):
-# Модель голосований
+    """ Модель голосований """
+    
     author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE, verbose_name="Автор голоса")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата голосования")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
@@ -331,7 +380,8 @@ class Vote(models.Model):
             return "%s [-] story '%s'" % (self.author.username, self.story_set.all()[0].title)
     
 class Favorites(models.Model):
-# Модель избранного
+    """ Модель избранного """
+    
     author = models.ForeignKey(Author, null=True, verbose_name="Автор")
     story = models.ForeignKey('Story', related_name="favorites_story_related_set", null=True, verbose_name="Рассказ")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления в избранное")
@@ -344,6 +394,7 @@ class Favorites(models.Model):
         return "%s: %s [%s]" % (self.author.username, self.story.title, self.date)    
 
 class Bookmark(models.Model):
+    """ Модель закладок """
     
     author = models.ForeignKey(Author, null=True, verbose_name="Автор")
     story = models.ForeignKey(Story, related_name="bookmarks_related_set", null=True, verbose_name="Рассказ")
@@ -358,7 +409,8 @@ class Bookmark(models.Model):
 
 
 class StoryView(models.Model):
-# Модель просмотров
+    """ Модель просмотров """
+    
     author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE, verbose_name="Автор просмотра")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата просмотра")
     story = models.ForeignKey(Story, related_name="story_views_set", null=True, verbose_name="Рассказ")
@@ -373,7 +425,8 @@ class StoryView(models.Model):
 
 
 class Activity(models.Model):
-# Модель отслеживания активности
+    """ Модель отслеживания активности """
+    
     author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE, verbose_name="Автор просмотра")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата последнего просмотра автором")
     story = models.ForeignKey(Story, related_name="story_activity_set", null=True, verbose_name="Рассказ")

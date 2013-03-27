@@ -105,7 +105,7 @@ def story_approve_ajax(request, story_id):
 def story_bookmark_ajax(request, story_id):
     ''' Добавление рассказа в закладки '''
 
-    story = get_object_or_404(Story, pk=story_id)
+    story = get_object_or_404(Story.objects.published(), pk=story_id)
     if request.is_ajax() and request.method == 'POST':
         (bookmark, created) = Bookmark.objects.get_or_create(story=story, author=request.user)
         if not created:
@@ -119,7 +119,7 @@ def story_bookmark_ajax(request, story_id):
 def story_favorite_ajax(request, story_id):
     ''' Добавление рассказа в избранное '''
 
-    story = get_object_or_404(Story, pk=story_id)
+    story = get_object_or_404(Story.objects.published(), pk=story_id)
     if request.is_ajax() and request.method == 'POST':
         (favorite, created) = Favorites.objects.get_or_create(story=story, author=request.user)
         if not created:
@@ -127,10 +127,11 @@ def story_favorite_ajax(request, story_id):
         return HttpResponse(story_id)
     else:
         raise PermissionDenied
-    
+
+# TODO: Быстро, решительно переписать всю ересь ниже!
 def sort_chapters(request, story_id):
     try:
-        story = Story.objects.get(pk=story_id)    
+        story = Story.objects.accessible.get(pk=story_id)    
         assert request.POST
         assert request.is_ajax()
     except Story.DoesNotExist:
@@ -155,7 +156,7 @@ def sort_chapters(request, story_id):
 
 def story_vote(request, story_id):
     try:
-        story = Story.objects.get(pk=story_id)    
+        story = Story.objects.published.get(pk=story_id)    
         assert request.POST
         assert request.is_ajax()
     except Story.DoesNotExist:

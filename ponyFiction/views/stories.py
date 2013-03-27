@@ -3,19 +3,25 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
+from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic.edit import CreateView, UpdateView
 from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
 from ponyFiction.models import Story, CoAuthorsStory, StoryView, Activity
-from django.http.response import HttpResponse
-from django.views.decorators.cache import cache_page
 
 @csrf_protect
 def story_view(request, pk, comments_page):
-    story = get_object_or_404(Story, pk=pk)
+    try:
+        story = Story.objects.accessible.get(pk=pk)
+    except Story.DoesNotExist:
+        story = get_object_or_404(Story, pk=pk)
+        if not story.is_editable_by(request.user):
+            raise PermissionDenied
+    
     chapters = story.chapter_set.order_by('order')
     comments_list = story.comment_set.all()
     paged = Paginator(comments_list, settings.COMMENTS_COUNT['page'], orphans=settings.COMMENTS_ORPHANS)
@@ -87,7 +93,7 @@ def story_delete(request, pk):
 @login_required
 def story_favorite(request, pk):
     from ponyFiction.models import Favorites
-    story = get_object_or_404(Story, pk=pk)
+    story = get_object_or_404(Story.objects.published(), pk=pk)
     (favorite, created) = Favorites.objects.get_or_create(story=story, author=request.user)
     if not created:
         favorite.delete()
@@ -96,7 +102,7 @@ def story_favorite(request, pk):
 @login_required
 def story_bookmark(request, pk):
     from ponyFiction.models import Bookmark
-    story = get_object_or_404(Story, pk=pk)
+    story = get_object_or_404(Story.objects.published(), pk=pk)
     (bookmark, created) = Bookmark.objects.get_or_create(story=story, author=request.user)
     if not created:
         bookmark.delete()

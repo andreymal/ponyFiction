@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_protect
-from ponyFiction.models import Story, Chapter, StoryView
-from ponyFiction.forms.chapter import ChapterForm
-from django.db.models import F, Max
 from django.core.exceptions import PermissionDenied
+from django.db.models import F, Max
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.csrf import csrf_protect
+from ponyFiction.forms.chapter import ChapterForm
+from ponyFiction.models import Story, Chapter, StoryView
 
 def chapter_view(request, story_id=False, chapter_order=False):
-    if chapter_order:
+    try:
+        story = Story.objects.accessible.get(pk=story_id)
+    except Story.DoesNotExist:
         story = get_object_or_404(Story, pk=story_id)
+        if not story.is_editable_by(request.user):
+            raise PermissionDenied
+    if chapter_order:
         chapter = get_object_or_404(story.chapter_set, order=chapter_order)
         page_title = chapter.title[0:80]+' : '+chapter.story.title
         prev_chapter = chapter.get_prev_chapter()
@@ -29,7 +34,6 @@ def chapter_view(request, story_id=False, chapter_order=False):
                 chapter = chapter,
             )
     else:
-        story = get_object_or_404(Story, pk=story_id)
         chapters = story.chapter_set.order_by('order')
         page_title = story.title+u' – все главы'
         data = {
@@ -45,7 +49,7 @@ def chapter_view(request, story_id=False, chapter_order=False):
             )
     return render(request, 'chapter_view.html', data) 
     
-
+# TODO: Переписать этот ужас на CBGV, как в stories.py, добавить ajax по вкусу
 @login_required
 @csrf_protect
 def chapter_work(request, story_id=False, chapter_id=False):

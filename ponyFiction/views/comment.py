@@ -1,16 +1,21 @@
-from django.views.decorators.csrf import csrf_protect
-from ponyFiction.models import Story
-from ponyFiction.forms.comment import CommentForm
+# -*- coding: utf-8 -*-
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_protect
+from ponyFiction.forms.comment import CommentForm
+from ponyFiction.models import Story
 
 @login_required
 @csrf_protect
 def comment_story(request, story_id=False):
     try:
-        story = Story.objects.get(pk=story_id)
+        story = Story.objects.accessible.get(pk=story_id)
     except Story.DoesNotExist:
-        return redirect('index')
+        story = get_object_or_404(Story, pk=story_id)
+        if not story.is_editable_by(request.user):
+            raise PermissionDenied
     else:
         author = request.user 
         comment_form = CommentForm(request.POST)

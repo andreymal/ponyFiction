@@ -67,7 +67,10 @@ class SubmitsList(ObjectList):
         return u'Новые поступления'
     
     def get_queryset(self):
-        return Story.submitted.all()
+        if self.request.user.is_staff:
+            return Story.objects.submitted.all()
+        else:
+            return Story.objects.submitted.last_week()
 
 class BookmarksList(ObjectList):
     
