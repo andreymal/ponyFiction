@@ -58,7 +58,7 @@ def story_view(request, pk, comments_page):
 @login_required
 def story_approve(request, pk):
     story = get_object_or_404(Story, pk=pk)
-    if story.is_editable_by(request.user) and request.user.is_staff:
+    if request.user.is_staff:
         if story.approved:
             story.approved = False
         else:
@@ -129,7 +129,7 @@ class StoryAdd(CreateView):
         context.update(extra_context)
         return context
 
-
+# TODO: нет проверки пользователя!
 class StoryEdit(UpdateView):
     model = Story
     form_class = StoryForm
@@ -143,6 +143,13 @@ class StoryEdit(UpdateView):
     def form_valid(self, form):
         story = form.save()
         return redirect('story_edit', story.id)
+    
+    def get_object(self, queryset=None):
+        story = UpdateView.get_object(self, queryset=queryset)
+        if story.is_editable_by(self.request.user):
+            return story
+        else:
+            raise PermissionDenied
     
     def get_context_data(self, **kwargs):
         context = super(StoryEdit, self).get_context_data(**kwargs)

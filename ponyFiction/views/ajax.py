@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
+from django.views.decorators.csrf import csrf_protect
+from django.views.generic.base import TemplateView
 from json import dumps
 from ponyFiction.models import Author, Story, Comment, Chapter, Vote, Favorites, Bookmark
 from ponyFiction.utils.misc import unicode_to_int_list
 from ponyFiction.views.object_lists import ObjectList
-from django.conf import settings
-from django.views.generic.base import TemplateView
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_protect
-from django.core.exceptions import PermissionDenied
 
 class CommentsStory(ObjectList):
     ''' Подгрузка комментариев к рассказу'''
@@ -57,7 +57,7 @@ class ConfirmDeleteStory(TemplateView):
     def get_context_data(self, **kwargs):
         story = get_object_or_404(Story, pk=self.kwargs['story_id'])
         return {'story_id': story.id, 'story_title': story.title}
-    
+ 
 @login_required
 @csrf_protect
 def story_delete_ajax(request, story_id):
@@ -90,7 +90,7 @@ def story_approve_ajax(request, story_id):
     ''' Одобрение рассказа по AJAX '''
     
     story = get_object_or_404(Story, pk=story_id)
-    if story.is_editable_by(request.user) and request.is_ajax() and request.method == 'POST' and request.user.is_staff:
+    if request.user.is_staff and request.is_ajax() and request.method == 'POST':
         if story.approved:
             story.approved = False
         else:
