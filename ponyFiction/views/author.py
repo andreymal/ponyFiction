@@ -28,8 +28,8 @@ def author_info(request, user_id=None):
     comments_count = comments_list.count()
     published_stories = Story.published.filter(authors=author).count()
     series = author.series_set.all()
-    votes = [Vote.objects.filter(direction=True).filter(story__authors__id=author.id).count(),
-             Vote.objects.filter(direction=False).filter(story__authors__id=author.id).count()]
+    votes = [Vote.objects.filter(plus=True).filter(story__authors__id=author.id).count(),
+             Vote.objects.filter(minus=True).filter(story__authors__id=author.id).count()]
     paged = Paginator(comments_list, settings.COMMENTS_COUNT['page'], orphans=settings.COMMENTS_ORPHANS)
     comments = paged.page(1).object_list
     num_pages = paged.num_pages

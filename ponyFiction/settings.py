@@ -164,7 +164,7 @@ STORIES_COUNT = {'page' : 10, 'main' : 5, 'stream' : 10, 'load': 10}
 CHAPTERS_COUNT = {'page' : 10, 'main' : 5, 'stream' : 10, 'load': 10}
 COMMENTS_ORPHANS = 5
 RSS = {'stories': 20, 'chapters': 20, 'comments': 100}
-CUSTOM_USER_MODEL = 'ponyFiction.Author'
+AUTH_USER_MODEL = 'ponyFiction.Author'
 AUTHENTICATION_BACKENDS = ('ponyFiction.auth_backends.AuthorModelBackend',)
 ACCOUNT_ACTIVATION_DAYS = 5
 EMAIL_HOST = 'localhost'
@@ -191,7 +191,7 @@ SANITIZER_ALLOWED_ATTRIBUTES = {
 SANITIZER_CHAPTER_ALLOWED_TAGS = [
     'b', 'i', 'strong', 'em', 's', 'u',
     'h3', 'h4', 'h5',
-    'p', 'br', 'hr', 'footnote',
+    'p', 'span', 'br', 'hr', 'footnote',
     'img', 'a',
     'ul', 'ol', 'li',
     'blockquote', 'sup', 'sub', 'pre', 'small', 'tt'
@@ -200,7 +200,9 @@ SANITIZER_CHAPTER_ALLOWED_TAGS = [
 SANITIZER_CHAPTER_ALLOWED_ATTRIBUTES = {
     'img': ['src', 'alt', 'title', 'width', 'height'],
     'a': ['href', 'rel', 'title'],
-    'footnote': ['id'],
+    'span': ['align'],
+    'p': ['align'],
+	'footnote': ['id'],
 }
 
 STORY_DOWNLOAD_FORMATS = (

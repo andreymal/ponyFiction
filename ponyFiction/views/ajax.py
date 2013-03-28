@@ -208,7 +208,7 @@ def sort_chapters(request, story_id):
 
 def story_vote(request, story_id):
     try:
-        story = Story.published.get(pk=story_id)    
+        story = Story.objects.get(pk=story_id)    
         assert request.POST
         assert request.is_ajax()
     except Story.DoesNotExist:
@@ -224,10 +224,18 @@ def story_vote(request, story_id):
         try:
             vote = story.vote.get(author=request.user)
         except Vote.DoesNotExist:
-            story.vote.add(Vote.objects.create(author=request.user, ip=request.META['REMOTE_ADDR'], direction=direction))
+            if direction:
+                story.vote.add(Vote.objects.create(author=request.user, ip=request.META['REMOTE_ADDR'], plus=True))
+            else:
+                story.vote.add(Vote.objects.create(author=request.user, ip=request.META['REMOTE_ADDR'], minus=True))
         else:
-            vote.direction = direction
-            vote.save(update_fields=['direction'])
+            if direction:
+                vote.plus = True
+                vote.minus = None
+            else:
+                vote.plus = None
+                vote.minus = True
+            vote.save(update_fields=['plus', 'minus'])
         return HttpResponse(dumps([story.vote_up_count(), story.vote_down_count()]), status=200)
     
 def favorites_work(request, story_id, chapter_id=None):

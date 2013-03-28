@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.db.models import Count, Sum
-from django.contrib.auth.models import User, UserManager
+from django.db.models import Count, Sum, F
+from django.contrib.auth.models import AbstractUser
 from .filters import filter_html, filter_chapter_html, filtered_property
 from django.db.models.signals import pre_save
 
-class Author(User):
+class Author(AbstractUser):
 # Модель автора     
     bio = models.TextField(max_length=2048, blank=True, verbose_name="О себе")
     jabber = models.EmailField(max_length=75, blank=True, verbose_name="Jabber")
@@ -13,9 +13,6 @@ class Author(User):
     tabun = models.CharField(max_length=256, blank=True, verbose_name="Табун")
     forum = models.URLField(max_length=200, blank=True, verbose_name="Форум")
     vk = models.URLField(max_length=200, blank=True, verbose_name="VK")
-    
-    # Используем UserManager для доступа к методам User 
-    objects = UserManager()
     
     def __unicode__(self):
         return self.username
@@ -179,7 +176,7 @@ class Series(models.Model):
 
 class PublishedManager(models.Manager):
     def get_query_set(self):
-        return super(PublishedManager, self).get_query_set().filter(draft=False, approved=True)
+        return super(PublishedManager, self).get_query_set().annotate(votes_up=Count('vote__plus'), votes_down=Count('vote__minus'), votes_all=Count('vote')).exclude(votes_all__gte=20, votes_down__gte=F('votes_all')*0.5).filter(draft=False, approved=True)
 
 class SubmittedManager(models.Manager):
     def get_query_set(self):
@@ -220,14 +217,14 @@ class Story (models.Model):
         verbose_name_plural = "рассказы"
 
     def __unicode__(self):
-        return self.title
+        return u"[+%s/-%s] %s" % (self.vote_up_count(), self.vote_down_count(), self.title)
     
     def vote_up_count(self):
-        return self.vote.filter(direction = True).count()
+        return self.vote.filter(plus = True).count()
     
     def vote_down_count(self):
-        return self.vote.filter(direction = False).count()
-    
+        return self.vote.filter(minus = True).count()
+
     # Количество просмотров
     def views(self):
         return self.story_views_set.values('author').annotate(Count('author')).count()
@@ -290,7 +287,6 @@ class Chapter (models.Model):
             return None
         
     # Количество просмотров
-    # FIXME: Эта функция не отлажена и НЕ оптимальна!
     def views(self):
         return self.chapter_views_set.values('author').annotate(Count('author')).count()
 
@@ -336,16 +332,17 @@ class Vote(models.Model):
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата голосования")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     ip = models.GenericIPAddressField(default='0.0.0.0', verbose_name="IP автора")
-    direction = models.BooleanField(default=True, verbose_name="Направление")
+    plus = models.NullBooleanField(null=True, verbose_name="Плюс")
+    minus = models.NullBooleanField(null=True, verbose_name="Минус")
     
     class Meta:
         verbose_name = "голос"
         verbose_name_plural = "голоса"
     
     def __unicode__(self):
-        if self.direction:
+        if self.plus is not None:
             return "%s [+] story '%s'" % (self.author.username, self.story_set.all()[0].title)
-        else:
+        if self.minus is not None:
             return "%s [-] story '%s'" % (self.author.username, self.story_set.all()[0].title)
     
 class Favorites(models.Model):

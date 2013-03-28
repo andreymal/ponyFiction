@@ -4,7 +4,7 @@
     
 <xsl:template match="
             p[not(@root-paragraph)] | text |
-            p[not(.//text()[normalize-space(.) != '']) or .//img] |
+            p[not(.//text()[normalize-space(.) != ''] or .//img)] |
             p[.//*/@block-element]
         ">
     <xsl:apply-templates/>

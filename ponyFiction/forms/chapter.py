@@ -8,8 +8,8 @@ class ChapterForm(ModelForm):
     Форма добавления новой главы к рассказу
     TODO: Добавить "заметки к главе" 
     """
-    textarea_dict = {'class': 'input-xlarge chapter-textarea'}
-    attrs_dict = {'class': 'input-xlarge'}
+    textarea_dict = {'class': 'input-xxlarge chapter-textarea'}
+    attrs_dict = {'class': 'input-xxlarge'}
     # Название
     title = CharField(
         required=True,
