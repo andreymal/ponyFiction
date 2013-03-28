@@ -3,6 +3,10 @@ sphinx
 .project
 .pydevproject
 .settings
+*.pyc
+*.swp
 env
 db.sqlite
 local_settings.py
+.idea
+db.py
