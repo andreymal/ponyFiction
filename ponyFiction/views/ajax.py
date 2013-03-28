@@ -57,6 +57,15 @@ class ConfirmDeleteStory(TemplateView):
     def get_context_data(self, **kwargs):
         story = get_object_or_404(Story, pk=self.kwargs['story_id'])
         return {'story_id': story.id, 'story_title': story.title}
+    
+class ConfirmDeleteChapter(TemplateView):
+    """ Отрисовка модального окна подтверждения удаления главы """
+    
+    template_name = 'includes/chapter_delete_confirm.html'
+    
+    def get_context_data(self, **kwargs):
+        chapter = get_object_or_404(Chapter, pk=self.kwargs['chapter_id'])
+        return {'chapter_id': chapter.id, 'chapter_title': chapter.title, 'story_title': chapter.story.title}
  
 @login_required
 @csrf_protect
@@ -183,5 +192,18 @@ def author_approve_ajax(request, user_id):
             author.approved = True
         author.save(update_fields=['approved'])
         return HttpResponse('Done')
+    else:
+        raise PermissionDenied
+    
+@login_required
+@csrf_protect
+def chapter_delete_ajax(request, chapter_id):
+    """ Удаление главы по AJAX """
+    
+    if request.is_ajax() and request.method == 'POST':
+        chapter = get_object_or_404(Chapter, pk=chapter_id)
+        if chapter.story.is_editable_by(request.user):
+            chapter.delete()
+            return HttpResponse(chapter_id)
     else:
         raise PermissionDenied

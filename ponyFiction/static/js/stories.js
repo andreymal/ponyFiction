@@ -221,6 +221,33 @@ function processStoryDelete(self) {
 		$('.modal').modal('hide').remove();
 	}
 }
+/**
+ * Удаление главы по AJAX
+ * 
+ * @param self
+ *            object Кнопка удаления
+ */
+function processChapterDelete(self) {
+	self.stopImmediatePropagation();
+	self.preventDefault();
+	var url = '/ajax' + $(this).attr('href');
+	$('#sortable_chapters').sortable('destroy');
+	$.post(url, function(data) {
+		$('#chapters_' + data).slideUp('slow').remove();
+	}).success(function() {
+		$('.modal').modal('hide').remove();
+		$('#sortable_chapters').sortable({
+			// Действия при обновлении
+			update : function() {
+				$.ajax({
+					data : $('#sortable_chapters').sortable('serialize'),
+					type : 'POST',
+					url : 'ajax'
+				});
+			}
+		});
+	});
+}
 
 /**
  * Декорация меню навигации в зависимости от текущей страницы
@@ -406,9 +433,10 @@ $(function() {
 	// На странице добавления или редактирования рассказа
 	if (re_story_edit.test(current_path) || re_story_add.test(current_path)) {
 		$('#id_notes').markItUp(mySettings);
+		// Простановка классов для изображений персонажей
 		$('.character-item input[checked="checked"]').prev().addClass(
 				'ui-selected');
-		// ...подключаем возможность сортировки глав "на лету"
+		// Сортировка глав
 		$('#sortable_chapters').sortable({
 			// Действия при обновлении
 			update : function() {
@@ -419,6 +447,28 @@ $(function() {
 				});
 			}
 		});
+		// Отображение модального окна подтверждения удаления главы
+		$('.chapter_delete_confirm').click(
+				function(self) {
+					self.stopImmediatePropagation();
+					self.preventDefault();
+					var url = '/ajax' + $(this).attr('href') + 'confirm/';
+					if (url.indexOf('#') == 0) {
+						$(url).modal('open');
+					} else {
+						$.get(
+								url,
+								function(data) {
+									$(
+											'<div class="modal hide fade">'
+													+ data + '</div>').modal();
+								}).success(function() {
+							$('input:text:visible:first').focus();
+						});
+					}
+				});
+		// AJAX-удаление главы
+		$('.chapter_delete').live('click', processChapterDelete);
 	}
 	// На странице справки
 	if (re_help.test(current_path)) {
@@ -488,8 +538,9 @@ $(function() {
 	});
 	// AJAX-удаление рассказа
 	$('.story_delete').live('click', processStoryDelete);
-	// Отображение модального окна подтверждения
+	// Отображение модального окна подтверждения удаления рассказа
 	$('.story_delete_confirm').click(function(self) {
+		self.stopImmediatePropagation();
 		self.preventDefault();
 		var url = '/ajax' + $(this).attr('href') + 'confirm/';
 		if (url.indexOf('#') == 0) {

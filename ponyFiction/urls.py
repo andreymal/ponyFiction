@@ -158,7 +158,11 @@ urlpatterns += patterns('',
     url(r'^ajax/story/(?P<story_id>\d+)/vote/(?P<direction>\w+)/$', ajax.story_vote_ajax),
     # Одобрение автора
     url(r'^ajax/accounts/(?P<user_id>\d+)/approve/$', ajax.author_approve_ajax),
-
+    # Загрузка модального окна-подтверждения удаления главы
+    url(r'^ajax/chapter/(?P<chapter_id>\d+)/delete/confirm/$', ajax.ConfirmDeleteChapter.as_view()),
+    # Удаление главы
+    url(r'^ajax/chapter/(?P<chapter_id>\d+)/delete/$', ajax.chapter_delete_ajax),
+    
     # AJAX-сортировка глав
     url(r'^story/(?P<story_id>\d+)/edit/ajax$', ajax.chapter_sort),
 )
