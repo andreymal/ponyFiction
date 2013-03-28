@@ -268,11 +268,29 @@ function changeVote(response) {
 		$('#vote-msg span').remove();
 	});
 }
+/**
+ * Ротатор шапок
+ */
+function rotateLogo() {
+	var len = 9
+	if ($.cookie('stories_gr') == null) {
+		var stories_gr = Math.floor(Math.random() * len) + 1;
+		$.cookie('stories_gr', stories_gr, {
+			expires : 1
+		});
+	} else {
+		var stories_gr = $.cookie('stories_gr');
+	}
+	var new_image = "url(/static/i/logopics/logopic-" + stories_gr + ".jpg)";
+	$('.logopic').css('background-image', new_image);
+}
 
 // При загрузке страницы
 $(function() {
 	// Декорируем навигацию
 	decorateNavbar();
+	// Включаем ротатор шапок
+	rotateLogo();
 	// Конфигурируем заголовок AJAX-запроса с CSRF Cookie
 	$.ajaxSetup({
 		cache : false,

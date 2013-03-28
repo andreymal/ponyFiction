@@ -95,7 +95,6 @@ class StoriesButtons(CheckboxSelectMultiple):
         output.append(data)
         return mark_safe(u'\n'.join(output))
 
-   
 class StoriesRadioFieldRenderer(RadioFieldRenderer):
     def render(self):
         attrs = self.attrs

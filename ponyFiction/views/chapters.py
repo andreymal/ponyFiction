@@ -4,10 +4,9 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Max
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView
 from ponyFiction.forms.chapter import ChapterForm
 from ponyFiction.models import Story, Chapter, StoryView
-from django.core.urlresolvers import reverse
 
 def chapter_view(request, story_id=False, chapter_order=False):
     try:
