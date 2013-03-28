@@ -56,6 +56,7 @@ def story_view(request, pk, comments_page):
     return render(request, 'story_view.html', data)
 
 @login_required
+@csrf_protect
 def story_approve(request, pk):
     story = get_object_or_404(Story, pk=pk)
     if request.user.is_staff:
@@ -69,6 +70,7 @@ def story_approve(request, pk):
         raise PermissionDenied
 
 @login_required
+@csrf_protect
 def story_publish(request, pk):
     story = get_object_or_404(Story, pk=pk)
     if story.is_editable_by(request.user):
@@ -91,6 +93,7 @@ def story_delete(request, pk):
         raise PermissionDenied
 
 @login_required
+@csrf_protect
 def story_favorite(request, pk):
     from ponyFiction.models import Favorites
     story = get_object_or_404(Story.objects.published, pk=pk)
@@ -100,6 +103,7 @@ def story_favorite(request, pk):
     return redirect('favorites', request.user.id)
 
 @login_required
+@csrf_protect
 def story_bookmark(request, pk):
     from ponyFiction.models import Bookmark
     story = get_object_or_404(Story.objects.published, pk=pk)
@@ -109,6 +113,7 @@ def story_bookmark(request, pk):
     return redirect('bookmarks')
 
 @login_required
+@csrf_protect
 def story_vote(request, pk, direction):
     story = get_object_or_404(Story.objects.published, pk=pk)
     if story.is_editable_by(request.user):
@@ -136,6 +141,9 @@ class StoryAdd(CreateView):
     
     def form_valid(self, form):
         story = form.save()
+        if self.request.user.approved:
+            story.approved = True
+            story.save(update_fields=['approved'])
         CoAuthorsStory.objects.create(story = story, author = self.request.user, approved = True)
         return redirect('story_edit', story.id)
     
@@ -153,6 +161,7 @@ class StoryEdit(UpdateView):
     story = None
     
     @method_decorator(login_required)
+    @method_decorator(csrf_protect)
     def dispatch(self, request, *args, **kwargs):
         return UpdateView.dispatch(self, request, *args, **kwargs)
     

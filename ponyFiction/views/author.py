@@ -2,10 +2,11 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_protect
 from ponyFiction.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm 
 from ponyFiction.models import Author, Story, Comment, Vote, StoryView
+from django.core.exceptions import PermissionDenied
 
 @login_required
 @csrf_protect
@@ -22,7 +23,7 @@ def author_info(request, user_id, comments_page):
         author = get_object_or_404(Author, pk=user_id)
         comments_list = author.comment_set.all()
         data['page_title'] = u'Автор: %s' % author.username
-        data['stories'] = author.story_set.published()
+        data['stories'] = author.story_set.published
         template = 'author_overview.html'
     comments_count = comments_list.count()
     published_stories = Story.objects.published.filter(authors=author).count()
@@ -75,3 +76,17 @@ def author_edit(request):
     password_form = AuthorEditPasswordForm(author=author, prefix='password_form')
     data.update({'profile_form': profile_form, 'email_form': email_form, 'password_form': password_form})
     return render(request, 'author_profile_edit.html', data)
+
+@login_required
+@csrf_protect
+def author_approve(request, user_id):
+    if request.user.is_staff:
+        author = get_object_or_404(Author, pk=user_id)
+        if author.approved:
+            author.approved = False
+        else:
+            author.approved = True
+        author.save(update_fields=['approved'])
+        return redirect('author_overview', user_id)
+    else:
+        raise PermissionDenied

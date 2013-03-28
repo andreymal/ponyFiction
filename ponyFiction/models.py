@@ -15,6 +15,8 @@ class Author(AbstractUser):
     forum = models.URLField(max_length=200, blank=True, verbose_name="Форум")
     vk = models.URLField(max_length=200, blank=True, verbose_name="VK")
     
+    approved = models.BooleanField(default=False, verbose_name="Проверенный автор")
+    
     def __unicode__(self):
         return self.username
     

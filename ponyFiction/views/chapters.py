@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic.edit import CreateView, UpdateView
 from ponyFiction.forms.chapter import ChapterForm
 from ponyFiction.models import Story, Chapter, StoryView
+from django.views.decorators.csrf import csrf_protect
 
 def chapter_view(request, story_id=False, chapter_order=False):
     try:
@@ -58,6 +59,7 @@ class ChapterAdd(CreateView):
     story = None
     
     @method_decorator(login_required)
+    @method_decorator(csrf_protect)
     def dispatch(self, request, *args, **kwargs):
         self.story = get_object_or_404(Story, pk=kwargs['story_id'])
         if self.story.is_editable_by(request.user):
@@ -107,6 +109,7 @@ class ChapterEdit(UpdateView):
         return context
 
 @login_required
+@csrf_protect
 def chapter_delete(request, pk):
     chapter = get_object_or_404(Chapter, pk=pk)
     story_id = chapter.story.id

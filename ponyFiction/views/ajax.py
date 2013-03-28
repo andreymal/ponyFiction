@@ -170,3 +170,16 @@ def chapter_sort(request, story_id):
     else:
         raise PermissionDenied
 
+@login_required
+@csrf_protect
+def author_approve_ajax(request, user_id):
+    if request.user.is_staff and request.is_ajax() and request.method == 'POST':
+        author = get_object_or_404(Author, pk=user_id)
+        if author.approved:
+            author.approved = False
+        else:
+            author.approved = True
+        author.save(update_fields=['approved'])
+        return HttpResponse('Done')
+    else:
+        raise PermissionDenied

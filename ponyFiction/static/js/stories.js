@@ -104,7 +104,22 @@ function processApprove(response) {
 	} else {
 		var text = 'Одобрить';
 	}
-	btn.text(text).toggleClass('btn-success');
+	btn.text(text).toggleClass('btn-primary');
+}
+/**
+ * Обработка AJAX-изменения одобрения автора
+ * 
+ * @param response
+ *            int ID рассказа
+ */
+function processAuthorApprove(response) {
+	var btn = $('#author_approve');
+	if (btn.hasClass('btn-primary')) {
+		var text = 'Не проверен';
+	} else {
+		var text = 'Проверен';
+	}
+	btn.text(text).toggleClass('btn-primary');
 }
 /**
  * Обработка AJAX-изменения закладки рассказа
@@ -514,6 +529,13 @@ $(function() {
 		self.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
 		$.post(url, processFavorite);
+	});
+	// Одобрение автора по AJAX
+	$('#author_approve').click(function(self) {
+		self.stopImmediatePropagation();
+		self.preventDefault();
+		var url = '/ajax' + $(this).attr('href');
+		$.post(url, processAuthorApprove);
 	});
 	// Ещё какая-то ерунда
 	// ---
