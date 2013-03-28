@@ -6,17 +6,22 @@
 		<ul class="breadcrumb">
 			<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
 			<li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>
-			<li><a href="{% url 'story_edit' story.id %}">Редактирование «{{ story.title }}»</a> <span class="divider">/</span></li>
-			<li class="active">Добавление главы</li>
+			{% if story %}
+				<li><a href="{% url 'story_edit' story.id %}">Редактирование «{{ story.title }}»</a> <span class="divider">/</span></li>
+				<li class="active">Добавление новой главы</li>
+			{% else %}
+				<li><a href="{% url 'story_edit' chapter.story.id %}">Редактирование «{{ chapter.story.title }}»</a> <span class="divider">/</span></li>
+				<li class="active">Редактирование главы «{{ chapter.title }}»</li>
+			{% endif %}
 		</ul>
 	</div>
 	<div class="span12">
-		{% if not chapter_edit %}
-			<h1>Добавление новой главы к рассказу «{{ story.title }}»</h1>
+		{% if story %}
+			<h1>Добавление новой главы</h1>
+			<p>Перед добавлением главы рекомендуем прочитать <a href="{% url 'terms' %}">правила</a> и <a href="{% url 'help' %}">справку</a>. Они сделают вашу жизнь и жизни читателей проще.</p>
 		{% else %}
-			<h1>Редактирование главы рассказа «{{ story.title }}»</h1>
+			<h1>Редактирование главы «{{ chapter.title }}»</h1>
 		{% endif %}
-		<p>Перед добавлением главы рекомендуем прочитать <a href="{% url 'terms' %}">правила</a> и <a href="{% url 'help' %}">справку</a>. Они сделают вашу жизнь и жизни читателей проще.</p>
 		<form method="POST" enctype="multipart/form-data" name="search" id="searchform" class="form-horizontal">
 		{% csrf_token %}
 			<fieldset>
@@ -61,25 +66,6 @@
 				</div>
 				<div class="form-actions notop">
 					{{ form.button_submit }}
-      				{% if chapter_edit %}
-	      				<!-- Псевдокнопка активации модального окна подтверждения -->
-	      				<input href="#delete_story" class="btn btn-danger" type="button" data-toggle="modal" value="Удалить главу">
-	      				<!-- Modal -->
-						<div id="delete_story" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-							<div class="modal-header">
-						    	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-						    	<h3 id="myModalLabel">Удаление главы</h3>
-							</div>
-							<div class="modal-body">
-								<p>Вы действительно хотите удалить главу?</p>
-								<p>Вся связанная статистика, оценки и комментарии также будут безвозвратно удалены!</p>
-							</div>
-							<div class="modal-footer">
-								<button class="btn" data-dismiss="modal" aria-hidden="true">Отменить</button>
-								{{ form.button_delete }}
-							</div>
-						</div>
-					{% endif %}
 				</div>
 			</fieldset>
 		</form>
@@ -93,8 +79,13 @@
 		<ul class="breadcrumb">
 			<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
 			<li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>
-			<li><a href="{% url 'story_edit' story.id %}">Редактирование «{{ story.title }}»</a> <span class="divider">/</span></li>
-			<li class="active">Добавление главы</li>
+			{% if story %}
+				<li><a href="{% url 'story_edit' story.id %}">Редактирование «{{ story.title }}»</a> <span class="divider">/</span></li>
+				<li class="active">Добавление новой главы</li>
+			{% else %}
+				<li><a href="{% url 'story_edit' chapter.story.id %}">Редактирование «{{ chapter.story.title }}»</a> <span class="divider">/</span></li>
+				<li class="active">Редактирование главы «{{ chapter.title }}»</li>
+			{% endif %}
 		</ul>
 	</div>
 </div>

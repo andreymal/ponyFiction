@@ -93,7 +93,7 @@ def story_delete(request, pk):
 @login_required
 def story_favorite(request, pk):
     from ponyFiction.models import Favorites
-    story = get_object_or_404(Story.objects.published(), pk=pk)
+    story = get_object_or_404(Story.objects.published, pk=pk)
     (favorite, created) = Favorites.objects.get_or_create(story=story, author=request.user)
     if not created:
         favorite.delete()
@@ -102,11 +102,27 @@ def story_favorite(request, pk):
 @login_required
 def story_bookmark(request, pk):
     from ponyFiction.models import Bookmark
-    story = get_object_or_404(Story.objects.published(), pk=pk)
+    story = get_object_or_404(Story.objects.published, pk=pk)
     (bookmark, created) = Bookmark.objects.get_or_create(story=story, author=request.user)
     if not created:
         bookmark.delete()
     return redirect('bookmarks')
+
+@login_required
+def story_vote(request, pk, direction):
+    story = get_object_or_404(Story.objects.published, pk=pk)
+    if story.is_editable_by(request.user):
+        redirect('story_view', pk)
+    vote = story.vote.get_or_create(author=request.user)[0]
+    if direction:
+        vote.plus = True
+        vote.minus = None
+    else:
+        vote.plus = None
+        vote.minus = True
+    vote.save(update_fields=['plus', 'minus'])
+    story.vote.add(vote)
+    return redirect('story_view', pk)
 
 class StoryAdd(CreateView):
     model = Story
@@ -129,12 +145,12 @@ class StoryAdd(CreateView):
         context.update(extra_context)
         return context
 
-# TODO: нет проверки пользователя!
 class StoryEdit(UpdateView):
     model = Story
     form_class = StoryForm
     template_name = 'story_work.html'
     initial={'button_submit': u'Сохранить изменения'}
+    story = None
     
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -145,18 +161,18 @@ class StoryEdit(UpdateView):
         return redirect('story_edit', story.id)
     
     def get_object(self, queryset=None):
-        story = UpdateView.get_object(self, queryset=queryset)
-        if story.is_editable_by(self.request.user):
-            return story
+        self.story = UpdateView.get_object(self, queryset=queryset)
+        if self.story.is_editable_by(self.request.user):
+            return self.story
         else:
             raise PermissionDenied
     
     def get_context_data(self, **kwargs):
         context = super(StoryEdit, self).get_context_data(**kwargs)
         extra_context = {
-                         'page_title': u'Редактирование «%s»' % context['story'].title,
+                         'page_title': u'Редактирование «%s»' % self.story.title,
                          'story_edit': True,
-                         'chapters': context['story'].chapter_set.order_by('order')
+                         'chapters': self.story.chapter_set.order_by('order')
                          }
         context.update(extra_context)
         return context

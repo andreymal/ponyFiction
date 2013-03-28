@@ -12,6 +12,7 @@ from ponyFiction.views.object_lists import FavoritesList, SubmitsList, Bookmarks
 from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments
 from registration.views import activate, register
 from ponyFiction.views.stories import StoryAdd, StoryEdit
+from ponyFiction.views.chapters import ChapterAdd, ChapterEdit
 
 admin.autodiscover()
 
@@ -152,12 +153,12 @@ urlpatterns += patterns('',
     url(r'^ajax/story/(?P<story_id>\d+)/favorite', ajax.story_favorite_ajax),
     # Добавление в избранное главы (workaround, пока добавляется весь рассказ)
     url(r'^ajax/story/(?P<story_id>\d+)/chapter/\d+/favorite', ajax.story_favorite_ajax),
-    
+    # Голосование за рассказ
+    url(r'^ajax/story/(?P<story_id>\d+)/vote/(?P<direction>\w+)/$', ajax.story_vote_ajax),
     
     # AJAX-сортировка глав
-    url(r'^story/(?P<story_id>\d+)/edit/ajax$', ajax.sort_chapters),
-    # Голосование за рассказ
-    url(r'^story/(?P<story_id>\d+)/vote$', ajax.story_vote, name='story_vote'),
+    #url(r'^story/(?P<story_id>\d+)/edit/ajax$', ajax.chapter_sort),
+
 )
 
 # Комментирование
@@ -192,6 +193,9 @@ urlpatterns += patterns('ponyFiction.views.stories',
     url(r'^story/(?P<pk>\d+)/favorite$', 'story_favorite', name='story_favorite'),
     # Добавление в закладки
     url(r'^story/(?P<pk>\d+)/bookmark$', 'story_bookmark', name='story_bookmark'),
+    # Голосование за рассказ
+    url(r'^story/(?P<pk>\d+)/vote/plus/$', 'story_vote', {'direction': True}, name='story_vote_plus'),
+    url(r'^story/(?P<pk>\d+)/vote/minus/$', 'story_vote', {'direction': False}, name='story_vote_minus'),
     # Закачка в FB2
     url(r'^story/(?P<pk>\d+)/download/fb2/$', 'story_fb2', name='story_fb2'),
     # Закачка в HTML
@@ -204,9 +208,11 @@ urlpatterns += patterns('ponyFiction.views.chapters',
     # Просмотр всех глав
     url(r'^story/(?P<story_id>\d+)/chapter/all/$', 'chapter_view', name='chapter_view_all'),
     # Добавление
-    url(r'^story/(?P<story_id>\d+)/chapter/add/$', 'chapter_work', name='chapter_add'),
+    url(r'^story/(?P<story_id>\d+)/chapter/add/$', ChapterAdd.as_view(), name='chapter_add'),
     # Правка
-    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_id>\d+)/edit/$', 'chapter_work', name='chapter_edit'),
+    url(r'^chapter/(?P<pk>\d+)/edit/$', ChapterEdit.as_view(), name='chapter_edit'),
+    # Удаление
+    url(r'^chapter/(?P<pk>\d+)/delete/$', 'chapter_delete', name='chapter_delete'),
 )
 
 # Другое

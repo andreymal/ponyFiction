@@ -3,7 +3,7 @@ current_path = window.location.pathname;
 re_story = new RegExp('^/story/[0-9]+/(?:comments/page/[0-9]+/)?$');
 re_story_add = new RegExp('^/story/add/$');
 re_story_edit = new RegExp('^/story/[0-9]+/edit/$');
-re_chapter_edit = new RegExp('^/story/[0-9]+/chapter/[0-9]+/edit/$');
+re_chapter_edit = new RegExp('^/chapter/[0-9]+/edit/$');
 re_chapter_add = new RegExp('^/story/[0-9]+/chapter/add/$');
 re_author_overview = new RegExp('^/accounts/[0-9]+/(?:comments/page/[0-9]+/)?$');
 re_author_dashboard = new RegExp(
@@ -15,7 +15,7 @@ re_bookmarks = new RegExp('^/bookmarks/(.+)?');
 re_submitted = new RegExp('^/submitted/(.+)?');
 re_help = new RegExp('^/help/$');
 re_terms = new RegExp('^/terms/$');
-
+requestRunning = false;
 /**
  * Обработчик ошибок AJAX-подгрузки
  * 
@@ -239,27 +239,24 @@ function decorateNavbar() {
 /**
  * Голосование за рассказ по AJAX
  */
-requestRunning = false;
-function voteStory(request) {
+function processVote(url) {
 	if (requestRunning) {
 		return;
 	}
 	requestRunning = true;
-
 	$.ajax({
-		data : {
-			vote : request
-		},
 		dataType : 'json',
 		success : changeVote,
 		complete : function() {
 			requestRunning = false;
 		},
 		type : 'POST',
-		url : 'vote'
+		url : url
 	});
 }
-// Обработка смены количества голосов
+/**
+ * Обработка смены количества голосов
+ */
 function changeVote(response) {
 	$('#vote-up').text(response[0]);
 	$('#vote-down').text(response[1]);
@@ -409,14 +406,20 @@ $(function() {
 	// На странице рассказа
 	if (re_story.test(current_path)) {
 		$('#id_text').markItUp(mySettings);
+		// Голосование
+		$('#vote-up').click(function(self) {
+			self.stopImmediatePropagation();
+			self.preventDefault();
+			var url = '/ajax' + $(this).attr('href');
+			processVote(url);
+		});
+		$('#vote-down').click(function(self) {
+			self.stopImmediatePropagation();
+			self.preventDefault();
+			var url = '/ajax' + $(this).attr('href');
+			processVote(url);
+		});
 	}
-	// Голосование
-	$('#vote-up').click(function() {
-		voteStory('1');
-	});
-	$('#vote-down').click(function() {
-		voteStory('-1');
-	});
 	// Переключение размера и типа шрифта
 	var font_selector = $('.select-font');
 	var size_selector = $('.select-size');

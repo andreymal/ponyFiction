@@ -70,9 +70,8 @@ class StoriesImgSelect(SelectMultiple):
         return mark_safe(u'<span%s>%s%s</span>' % (flatatt(container_attrs), item_image, rendered_cb))
 
 class StoriesButtons(CheckboxSelectMultiple):
-    # TODO: Проверить на баги
+
     def render(self, name, value, attrs=None):
-        # TODO: Оптимизировать (зебро)код, убрать неЛунаугодную ересь
         if value is None: value = []
         attrs = self.attrs
         btn_attrs = attrs.pop('btn_attrs', {})
@@ -90,7 +89,6 @@ class StoriesButtons(CheckboxSelectMultiple):
             cb = CheckboxInput(data_attrs, check_test=lambda x: x in value)
             rendered_cb = cb.render(name, option_value)
             data_container.append(rendered_cb)
-        # TODO: Упростить, убрав излишний код 
         btn = '<div%s>%s</div>' % (flatatt(btn_container_attrs), join(btn_container))
         data = '<div%s>%s</div>' % (flatatt(data_container_attrs), join(data_container))
         output.append(btn)
@@ -103,13 +101,12 @@ class StoriesRadioFieldRenderer(RadioFieldRenderer):
         attrs = self.attrs
         name = self.name
         value = self.value
-        # TODO: Переписать!
         if (value == 'True'):
             value = 1
         elif (value == 'False'):
             value = 0
         else: 
-            value = int(value) if value else False
+            value = int(value)
             
         btn_attrs = attrs.pop('btn_attrs', {})
         data_attrs = attrs.pop('data_attrs', {})
@@ -129,7 +126,6 @@ class StoriesRadioFieldRenderer(RadioFieldRenderer):
                     rb = StoriesServiceInput(attrs=dict(data_attrs, type='radio', name=name, value=option_value))
             rendered_rb = rb.render(name, value)
             data_container.append(rendered_rb)       
-        # TODO: Упростить, убрав излишний код 
         btn = '<div%s>%s</div>' % (flatatt(btn_container_attrs), join(btn_container))
         data = '<div%s>%s</div>' % (flatatt(data_container_attrs), join(data_container))
         output.append(btn)

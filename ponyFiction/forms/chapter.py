@@ -4,27 +4,25 @@ from ponyFiction.models import Chapter
 from ponyFiction.widgets import ServiceButtonWidget
 
 class ChapterForm(ModelForm):
-    """
-    Форма добавления новой главы к рассказу
-    TODO: Добавить "заметки к главе" 
-    """
+    """ Форма добавления новой главы к рассказу """
     textarea_dict = {'class': 'input-xxlarge chapter-textarea'}
     attrs_dict = {'class': 'input-xxlarge'}
     # Название
     title = CharField(
         required=True,
-        widget=TextInput(attrs=dict(attrs_dict, maxlength=512, placeholder= 'Заголовок новой главы')),
+        widget=TextInput(attrs=dict(attrs_dict, maxlength=512, placeholder='Заголовок новой главы')),
         label='Название',
         max_length=512,
         error_messages={'required': 'Пожалуйста, назовите новую главу вашего рассказа'},
     )
-    text=CharField(
+    # Текст главы'
+    text = CharField(
         widget=Textarea(attrs=dict(textarea_dict, placeholder='Текст новой главы')),
         label='Текст главы',
         required=False,
     )
     # Заметки к главе
-    notes=CharField(
+    notes = CharField(
         required=False,
         widget=Textarea(attrs=dict(attrs_dict, rows=4, cols=10, maxlength=4096, placeholder='Заметки к главе')),
         max_length=4096,
@@ -35,12 +33,6 @@ class ChapterForm(ModelForm):
     button_submit = Field(
         required=False,
         widget=ServiceButtonWidget(attrs={'class': 'btn btn-primary'}),
-    )
-    # Кнопка "Удалить"
-    button_delete = Field(
-        required=False,
-        widget=ServiceButtonWidget(attrs={'class': 'btn btn-danger'}),
-        initial='Удалить главу',
     )
     # Метакласс
     class Meta:

@@ -68,7 +68,7 @@ class SubmitsList(ObjectList):
     
     def get_queryset(self):
         if self.request.user.is_staff:
-            return Story.objects.submitted.all()
+            return Story.objects.submitted()
         else:
             return Story.objects.submitted.last_week()
 

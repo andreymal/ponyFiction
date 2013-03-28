@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-# Лямбды и прочая хрень
-from datetime import datetime
 import re
-dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime) else None
 
 # TODO: переписать код!
 

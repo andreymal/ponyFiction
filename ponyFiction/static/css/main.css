@@ -1015,6 +1015,7 @@ h1 img,.userpic {
 
 .footer .nav.nav-pills.nav-main {
 	padding: 0px 20px;
+	background: transparent;
 }
 
 .footer .nav.nav-pills.nav-main li p {

@@ -65,7 +65,7 @@ def search_action(request, postform):
     # Лимиты поиска
     sphinx.SetLimits(offset, settings.SPHINX_CONFIG['number'], settings.SPHINX_CONFIG['max'], settings.SPHINX_CONFIG['cutoff'])
     sphinx.SetSelect('id')
-    # TODO: Сортировка, yay!
+    # Сортировка
     sort_type_string = ""
     for sort_id in sort_type:
         sort_type_string = sort_type_string + sort_types[int(sort_id)]

@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models import F, Max
+from django.db.models import Max
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.decorators.csrf import csrf_protect
+from django.utils.decorators import method_decorator
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from ponyFiction.forms.chapter import ChapterForm
 from ponyFiction.models import Story, Chapter, StoryView
+from django.core.urlresolvers import reverse
 
 def chapter_view(request, story_id=False, chapter_order=False):
     try:
@@ -48,78 +50,69 @@ def chapter_view(request, story_id=False, chapter_order=False):
                 story_id = story_id,
             )
     return render(request, 'chapter_view.html', data) 
+
+class ChapterAdd(CreateView):
+    model = Chapter
+    form_class = ChapterForm
+    template_name = 'chapter_work.html'
+    initial={'button_submit': u'Добавить'}
+    story = None
     
-# TODO: Переписать этот ужас на CBGV, как в stories.py, добавить ajax по вкусу
-@login_required
-@csrf_protect
-def chapter_work(request, story_id=False, chapter_id=False):
-    # Если передан id рассказа и такой рассказ есть
-    story = get_object_or_404(Story, pk=story_id)
-    if story.is_editable_by(request.user):
-        # Работаем с главами
-        if (chapter_id and Chapter.objects.filter(story=story_id, id=chapter_id).exists()):
-            # Редактируем главу
-            return chapter_edit(request, story_id, chapter_id)
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.story = get_object_or_404(Story, pk=kwargs['story_id'])
+        if self.story.is_editable_by(request.user):
+            return CreateView.dispatch(self, request, *args, **kwargs)
         else:
-            # Иначе добавляем ее
-            return chapter_add(request, story_id)
-    # Иначе - на главную
-    raise PermissionDenied
+            raise PermissionDenied
+    
+    def form_valid(self, form):
+        chapter = form.save(commit=False)
+        chapter.story = self.story
+        chapter.order = (self.story.chapter_set.aggregate(o=Max('order'))['o'] or 0) + 1
+        chapter.save()
+        return redirect('chapter_edit', chapter.id)
+    
+    def get_context_data(self, **kwargs):
+        context = super(ChapterAdd, self).get_context_data(**kwargs)
+        extra_context = {'page_title': u'Добавить новую главу', 'story': self.story}
+        context.update(extra_context)
+        return context
 
-def chapter_add(request, story_id):
-    data = {}
-    story = Story.objects.get(pk=story_id)
-    if request.POST:
-        # Создание новой главы рассказа на основании данных формы
-        form = ChapterForm(request.POST)
-        if form.is_valid():
-            chapter = form.save(commit=False)
-            chapter.story = story
-            chapter.order = (story.chapter_set.aggregate(o=Max('order'))['o'] or 0) + 1
-            chapter.save()
-            # Перенаправление на страницу редактирования в случае успеха
-            return redirect('chapter_edit', story.id, chapter.id)
-    else:
-        # Отправка пустой формы для добавления рассказа.
-        form = ChapterForm()
-        data['page_title'] = 'Добавить новую главу'
-        form.fields['button_submit'].initial = 'Добавить'
-    """
-    К данным шаблона добавляем форму
-    Пустую - в случае новой главы
-    Предварительно заполненную неправильно - в случае ошибки при добавлении
-    """
-    data['form'] = form
-    data['story'] = story
-    return render(request, 'chapter_work.html', data)
+class ChapterEdit(UpdateView):
+    model = Chapter
+    form_class = ChapterForm
+    template_name = 'chapter_work.html'
+    initial={'button_submit': u'Сохранить изменения'}
+    chapter = None
+    
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return UpdateView.dispatch(self, request, *args, **kwargs)
+    
+    def get_object(self, queryset=None):
+        self.chapter = UpdateView.get_object(self, queryset=queryset)
+        if self.chapter.story.is_editable_by(self.request.user):
+            return self.chapter
+        else:
+            raise PermissionDenied
+    
+    def form_valid(self, form):
+        self.chapter = form.save()
+        return redirect('chapter_edit', self.chapter.id)
 
-def chapter_edit(request, story_id, chapter_id):
-    data={}
-    story = Story.objects.get(pk=story_id)
-    chapter = Chapter.objects.get(story=story_id, id=chapter_id)
-    if request.POST:
-        if 'button_submit' in request.POST:
-            # Редактирование существующей главы рассказа
-            form = ChapterForm(request.POST, instance=chapter)
-            if form.is_valid():
-                chapter = form.save()
-        if 'button_delete' in request.POST:
-            story.chapter_set.filter(order__gt=chapter.order).update(order=F('order')-1)
-            chapter.delete()
-            return redirect('story_edit', story_id)
+    def get_context_data(self, **kwargs):
+        context = super(ChapterEdit, self).get_context_data(**kwargs)
+        extra_context = {'page_title': u'Редактирование «%s»' % self.chapter.title, 'chapter': self.chapter}
+        context.update(extra_context)
+        return context
+
+@login_required
+def chapter_delete(request, pk):
+    chapter = get_object_or_404(Chapter, pk=pk)
+    story_id = chapter.story.id
+    if chapter.story.is_editable_by(request.user):
+        chapter.delete()
+        return redirect('story_edit', story_id)
     else:
-        # Отправка предварительно заполненной формы с главой
-        form = ChapterForm(instance=chapter)
-    """
-    К данным шаблона добавляем форму
-    Предварительно заполненную - в случае успешного редактирования или начальной отправки
-    """
-    form.fields['button_submit'].initial = 'Сохранить изменения'
-    data.update(
-        form = form,
-        chapter_edit = True,
-        page_title = u'Редактирование «%s»' % chapter.title,
-        story = story,
-        chapter = chapter,
-    )
-    return render(request, 'chapter_work.html', data)
+        raise PermissionDenied
