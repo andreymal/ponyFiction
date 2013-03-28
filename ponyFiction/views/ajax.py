@@ -79,11 +79,13 @@ def story_publish_ajax(request, story_id):
     if request.is_ajax() and request.method == 'POST':
         story = get_object_or_404(Story, pk=story_id)
         if story.is_editable_by(request.user):
+            if (request.user.approved and not story.approved):
+                story.approved = True
             if story.draft:
                 story.draft = False
             else:
                 story.draft = True
-            story.save(update_fields=['draft'])
+            story.save(update_fields=['draft', 'approved'])
             return HttpResponse(story_id)
     else:
         raise PermissionDenied

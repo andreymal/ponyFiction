@@ -49,7 +49,7 @@ class FavoritesList(ObjectList):
             return u'Избранное автора %s' % self.author.username
 
     def get_queryset(self):
-        return self.author.favorites_story_set.filter(draft=False, approved=True).order_by('-favorites_story_related_set__date')
+        return self.author.favorites_story_set.published.order_by('-favorites_story_related_set__date')
     
 
 class SubmitsList(ObjectList):
@@ -68,9 +68,9 @@ class SubmitsList(ObjectList):
     
     def get_queryset(self):
         if self.request.user.is_staff:
-            return Story.objects.submitted()
+            return Story.objects.submitted
         else:
-            return Story.objects.submitted.last_week()
+            return Story.objects.submitted.last_week
 
 class BookmarksList(ObjectList):
     

@@ -74,11 +74,13 @@ def story_approve(request, pk):
 def story_publish(request, pk):
     story = get_object_or_404(Story, pk=pk)
     if story.is_editable_by(request.user):
+        if (request.user.approved and not story.approved):
+            story.approved = True
         if story.draft:
             story.draft = False
         else:
             story.draft = True
-        story.save(update_fields=['draft'])
+        story.save(update_fields=['draft', 'approved'])
         return redirect('author_dashboard')
     else:
         raise PermissionDenied
@@ -141,9 +143,6 @@ class StoryAdd(CreateView):
     
     def form_valid(self, form):
         story = form.save()
-        if self.request.user.approved:
-            story.approved = True
-            story.save(update_fields=['approved'])
         CoAuthorsStory.objects.create(story = story, author = self.request.user, approved = True)
         return redirect('story_edit', story.id)
     
