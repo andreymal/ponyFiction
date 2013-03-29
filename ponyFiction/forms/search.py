@@ -38,6 +38,30 @@ class SearchForm(Form):
         ),
         max_length=128,
     )
+    # Минимальный размер
+    search_min_size = SanitizedCharField(
+        required=False,
+        widget=TextInput(
+            attrs={
+                'size': 8,
+                'placeholder': 'Размер',
+                'class': 'span3',
+                'maxlength': 8,
+            }
+        ),
+    )
+    # Максимальный размер
+    search_max_size = SanitizedCharField(
+        required=False,
+        widget=TextInput(
+            attrs={
+                'size': 8,
+                'placeholder': 'Размер',
+                'class': 'span3',
+                'maxlength': 8,
+            }
+        ),
+    )
     # Жанры
     categories_select = ModelMultipleChoiceField(
         queryset=Category.objects.all(),

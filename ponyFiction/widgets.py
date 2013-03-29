@@ -8,22 +8,27 @@ from django.utils.safestring import mark_safe
 from django.forms.util import flatatt
 from ponyFiction import settings as settings
 
+
 class ButtonWidget(Widget):
     def render(self, name=None, value=None, attrs=None):
         attrs = self.attrs
         text = attrs.pop('text', '')
         return mark_safe(u'<button%s>%s</button>' % (flatatt(attrs), force_unicode(text)))
-    
+
+
 class ServiceButtonWidget(Input):
     input_type = 'submit'
+
 
 class StoriesServiceInput(Widget):
     def render(self, name=None, value=None, attrs=None):
         return mark_safe(u'<input%s />' % flatatt(self.attrs))
 
+
 class StoriesCheckboxSelectMultiple(CheckboxSelectMultiple):
     def render(self, name, value, attrs=None):
-        if value is None: value = []
+        if value is None:
+            value = []
         value = map(int, value)
         attrs = self.attrs
         label_attrs = attrs.pop('label_attrs', None)
@@ -32,22 +37,24 @@ class StoriesCheckboxSelectMultiple(CheckboxSelectMultiple):
         if label_attrs is not None:
             label_class = '%s' % join(label_attrs, ' ')
         else:
-            label_class = ''        
+            label_class = ''
         for (option_value, option_label) in self.choices:
             cb = CheckboxInput(attrs, check_test=lambda x: x in value)
             rendered_cb = cb.render(name, option_value)
             option_label = force_unicode(option_label)
             if label_id_related_attr:
-                label_id_related_class = ' '+label_id_related_attr+'%s '% option_value
+                label_id_related_class = ' '+label_id_related_attr+'%s ' % option_value
             else:
-                label_id_related_class = ''                
+                label_id_related_class = ''
             label_class_final = ' class="%s%s"' % (label_class, label_id_related_class)
             output.append(u'<label%s>%s %s</label>' % (label_class_final, rendered_cb, option_label))
         return mark_safe(u'\n'.join(output))
 
+
 class StoriesImgSelect(SelectMultiple):
     def render(self, name, value, attrs=None, choices=()):
-        if value is None: value = []
+        if value is None:
+            value = []
         value = map(int, value)
         output = []
         attrs = self.attrs
@@ -69,10 +76,11 @@ class StoriesImgSelect(SelectMultiple):
         rendered_cb = cb.render(name, option_value)
         return mark_safe(u'<span%s>%s%s</span>' % (flatatt(container_attrs), item_image, rendered_cb))
 
-class StoriesButtons(CheckboxSelectMultiple):
 
+class StoriesButtons(CheckboxSelectMultiple):
     def render(self, name, value, attrs=None):
-        if value is None: value = []
+        if value is None:
+            value = []
         attrs = self.attrs
         btn_attrs = attrs.pop('btn_attrs', {})
         data_attrs = attrs.pop('data_attrs', {})
@@ -95,6 +103,7 @@ class StoriesButtons(CheckboxSelectMultiple):
         output.append(data)
         return mark_safe(u'\n'.join(output))
 
+
 class StoriesRadioFieldRenderer(RadioFieldRenderer):
     def render(self):
         attrs = self.attrs
@@ -104,9 +113,8 @@ class StoriesRadioFieldRenderer(RadioFieldRenderer):
             value = 1
         elif (value == 'False'):
             value = 0
-        else: 
-            value = int(value)
-            
+        else:
+            value = int(value) if value else False
         btn_attrs = attrs.pop('btn_attrs', {})
         data_attrs = attrs.pop('data_attrs', {})
         btn_container_attrs = attrs.pop('btn_container_attrs', {})
@@ -124,12 +132,13 @@ class StoriesRadioFieldRenderer(RadioFieldRenderer):
             else:
                     rb = StoriesServiceInput(attrs=dict(data_attrs, type='radio', name=name, value=option_value))
             rendered_rb = rb.render(name, value)
-            data_container.append(rendered_rb)       
+            data_container.append(rendered_rb)
         btn = '<div%s>%s</div>' % (flatatt(btn_container_attrs), join(btn_container))
         data = '<div%s>%s</div>' % (flatatt(data_container_attrs), join(data_container))
         output.append(btn)
         output.append(data)
         return mark_safe(u'\n'.join(output))
+
 
 class StoriesRadioButtons(RadioSelect):
     renderer = StoriesRadioFieldRenderer

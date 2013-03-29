@@ -24,8 +24,6 @@
 					<span class="bootstrap radio">{{ form.search_type }}</span>
 				</div>
 				
-				
-				
 				<!-- Сортировка результатов поиска -->
 				{{ form.button_sort }}
 				
@@ -70,7 +68,8 @@
 				<div class="padded bootstrap checkboxes">{{ form.freezed_select }}</div>
 						
 				<!-- Размер -->
-				<div class="padded bootstrap checkboxes">{{ form.sizes_select }}</div>
+				<div><h3>От </h3>{{ form.search_min_size }}<h3> до </h3>{{ form.search_max_size }}<h3> слов.</h3></div>
+				<!--<div class="padded bootstrap checkboxes">{{ form.sizes_select }}</div>-->
 				
 				<!-- Рейтинг -->
 				<div class="padded bootstrap checkboxes">{{ form.ratings_select }}</div>

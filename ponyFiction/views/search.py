@@ -6,7 +6,7 @@ from ponyFiction.models import Story, Chapter
 from ponyFiction.forms.search import SearchForm
 from ponyFiction import settings as settings
 from ponyFiction.apis.sphinxapi import SphinxClient, SPH_SORT_EXTENDED
-from ponyFiction.utils.misc import pagination_ranges, SetBoolSphinxFilter, SetObjSphinxFilter
+from ponyFiction.utils.misc import pagination_ranges, SetBoolSphinxFilter, SetObjSphinxFilter, SetRangeSphinxFilter
 from django.shortcuts import redirect
 
 sort_types = {1: "id DESC, ", 2: "size DESC, ", 3: "rating DESC, ", 4: "comments DESC, "}
@@ -82,7 +82,7 @@ def search_action(request, postform):
         initial_data.update(SetObjSphinxFilter(sphinx, 'classifier_id', 'classifications_select', postform))
         initial_data.update(SetObjSphinxFilter(sphinx, 'character_id', 'characters_select', postform))
         initial_data.update(SetObjSphinxFilter(sphinx, 'rating_id', 'ratings_select', postform))
-        initial_data.update(SetObjSphinxFilter(sphinx, 'size_id', 'sizes_select', postform))
+        initial_data.update(SetRangeSphinxFilter(sphinx, 'size', 'search_min_size', 'search_max_size', postform))
         initial_data.update(SetBoolSphinxFilter(sphinx, 'original', 'originals_select', postform))
         initial_data.update(SetBoolSphinxFilter(sphinx, 'finished', 'finished_select', postform))
         initial_data.update(SetBoolSphinxFilter(sphinx, 'freezed', 'freezed_select', postform))
