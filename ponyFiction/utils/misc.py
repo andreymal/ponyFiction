@@ -173,18 +173,19 @@ def SetBoolSphinxFilter(sphinx, filter_name, field_name, oldform):
 def SetRangeSphinxFilter(sphinx, filter_name, field_name_min, field_name_max, oldform):
     min_value = oldform.cleaned_data[field_name_min]
     max_value = oldform.cleaned_data[field_name_max]
-    # try:
-    min_selector = int(min_value) if min_value else False
-    max_selector = int(max_value) if max_value else False
-    # except:
-    #     min_selector = False
-    #     max_selector = False
-    # else:
-    if min_selector and max_selector:
+    # Если пустое начальное значение, то выставляем его в 0
+    if min_value == '':
+        min_selector = 0
+    else:
+        min_selector = int(min_value)
+    # Если пустое конечное значение, то исключаем все значения меньше начального
+    if max_value == '':
+        sphinx.SetFilterRange(filter_name, 0, min_selector, True)
+        return {field_name_min: min_selector}
+    else:
+        max_selector = int(max_value)
         sphinx.SetFilterRange(filter_name, min_selector, max_selector)
         return {field_name_min: min_selector, field_name_max: max_selector}
-    else:
-        return {}
 
 
 def SetObjSphinxFilter(sphinx, filter_name, field_name, oldform):
@@ -201,4 +202,5 @@ def SetObjSphinxFilter(sphinx, filter_name, field_name, oldform):
             return {}
 
 
-def make_p(s): return "<p>" + re.sub('\n[\s\n]*\n', '</p><p>', s) + "</p>\n"
+def make_p(s):
+    return "<p>" + re.sub('\n[\s\n]*\n', '</p><p>', s) + "</p>\n"
