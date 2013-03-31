@@ -12,7 +12,7 @@ class FB2Download(BaseDownloadFormat):
         from ..filters import fb2
         
         chapters = story.chapter_set.order_by('order')
-        chapters = [fb2.html_to_fb2(c.text_as_html, title = c.title) for c in chapters]
+        chapters = [fb2.html_to_fb2(c.get_filtered_chapter_text(), title = c.title) for c in chapters]
         chapters = [self._get_annotation_doc(story)] + chapters
         
         doc = fb2.join_fb2_docs(

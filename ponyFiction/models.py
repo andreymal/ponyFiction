@@ -2,8 +2,12 @@
 from django.db import models
 from django.db.models import Count, Sum, F
 from django.contrib.auth.models import AbstractUser
-from .filters import filter_html, filter_chapter_html, filtered_property
+from .filters import filter_html, filtered_html_property
 from django.db.models.signals import pre_save
+from django.utils.safestring import mark_safe
+from ponyFiction.filters.base import html_doc_to_string
+from ponyFiction.filters.html import footnotes_to_html
+from django.conf import settings
 
 class Author(AbstractUser):
 # Модель автора     
@@ -21,7 +25,7 @@ class Author(AbstractUser):
         verbose_name = "автор"
         verbose_name_plural = "авторы"
         
-    bio_as_html = filtered_property('bio', filter_html)
+    bio_as_html = filtered_html_property('bio', filter_html)
 
 class CharacterGroup(models.Model):
 # Модель группы персонажа
@@ -241,8 +245,8 @@ class Story (models.Model):
     def is_editable_by(self, author):
         return author.is_staff or self.authors.filter(id=author.id).exists()
     
-    summary_as_html = filtered_property('summary', filter_html)
-    notes_as_html = filtered_property('notes', filter_html)
+    summary_as_html = filtered_html_property('summary', filter_html)
+    notes_as_html = filtered_html_property('notes', filter_html)
     
     def list_downloads(self):
         from .downloads import list_formats
@@ -293,8 +297,20 @@ class Chapter (models.Model):
     def is_editable_by(self, author):
         return self.story.is_editable_by(author)
     
-    text_as_html = filtered_property('text', filter_chapter_html)
-    notes_as_html = filtered_property('notes', filter_html)
+    notes_as_html = filtered_html_property('notes', filter_html)
+    
+    @property
+    def text_as_html(self):
+        doc = self.get_filtered_chapter_text()
+        doc = footnotes_to_html(doc)  
+        return mark_safe(html_doc_to_string(doc)) 
+    
+    def get_filtered_chapter_text(self):
+        return filter_html(
+            self.text,
+            tags = settings.SANITIZER_CHAPTER_ALLOWED_TAGS,
+            attributes = settings.SANITIZER_CHAPTER_ALLOWED_ATTRIBUTES,
+        )
     
 
 def update_chapter_word_count(sender, instance, **kw):
@@ -324,7 +340,7 @@ class Comment(models.Model):
     def __unicode__(self):
         return self.text
     
-    text_as_html = filtered_property('text', filter_html)
+    text_as_html = filtered_html_property('text', filter_html)
 
 class Vote(models.Model):
 # Модель голосований

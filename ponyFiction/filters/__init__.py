@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 from django.conf import settings
 from ..utils.typographus import typo
 from .base import html_doc_to_string
-from .html import normalize_html
+from .html import normalize_html, footnotes_to_html
 
 
 
@@ -20,15 +20,11 @@ def filter_html(text,
     text = bleach.clean(text,
         tags = tags,
         attributes = attributes
-    ) 
-    return mark_safe(text)
-
-filter_chapter_html = functools.partial(filter_html,
-                                        tags = settings.SANITIZER_CHAPTER_ALLOWED_TAGS,
-                                        attributes = settings.SANITIZER_CHAPTER_ALLOWED_ATTRIBUTES)
+    )
+    return text
     
-def filtered_property(name, filter_):
+def filtered_html_property(name, filter_):
     def fn(self):
-        return filter_(getattr(self, name))
+        return mark_safe(html_doc_to_string(filter_(getattr(self, name))))
     return property(fn)
     

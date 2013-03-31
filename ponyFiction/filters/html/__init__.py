@@ -4,6 +4,8 @@ from ..base import xslt_transform_loader, html_doc_transform
 
 xslt_transform_function = xslt_transform_loader(__file__)
 
+footnotes_to_html = xslt_transform_function('footnotes.xslt')
+
 pre_normalize_html = xslt_transform_function('pre-normalize-html.xslt')
 post_normalize_html = xslt_transform_function('post-normalize-html.xslt')
 
