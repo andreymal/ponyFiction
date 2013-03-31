@@ -11,7 +11,7 @@ class BaseDownloadFormat(object):
         assert self.name is not None
     
     def url(self, story):
-        from unidecode import unidecode
+        from ..utils.unidecode import unidecode
         return reverse(
             'ponyFiction.views.stories.story_download',
             kwargs = dict(
