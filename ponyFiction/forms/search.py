@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.forms import Field, Form, ModelMultipleChoiceField, MultipleChoiceField, TextInput, ChoiceField, CharField
+from django.forms import Field, Form, ModelMultipleChoiceField, MultipleChoiceField, TextInput, ChoiceField, IntegerField
 from ponyFiction.fields import GroupedModelChoiceField
 from ponyFiction.models import Character, Category, Classifier, Rating, Size
-from ponyFiction.widgets import ButtonWidget, ServiceButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesButtons, StoriesRadioButtons, StoriesServiceInput
+from ponyFiction.widgets import NumberInput, ButtonWidget, ServiceButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesButtons, StoriesRadioButtons, StoriesServiceInput
 from ponyFiction.fields import SanitizedCharField
 
 
@@ -39,30 +39,34 @@ class SearchForm(Form):
         max_length=128,
     )
     # Минимальный размер
-    search_min_size = CharField(
+    search_min_size = IntegerField(
         required=False,
-        widget=TextInput(
+        widget=NumberInput(
             attrs={
                 'size': 8,
                 'placeholder': 'От',
                 'class': 'span3',
                 'maxlength': 8,
+                'min': 0,
+                'max': 99999000,
+                'step': 1000,
             }
         ),
-        max_length=8,
     )
     # Максимальный размер
-    search_max_size = CharField(
+    search_max_size = IntegerField(
         required=False,
-        widget=TextInput(
+        widget=NumberInput(
             attrs={
                 'size': 8,
                 'placeholder': 'До',
                 'class': 'span3',
                 'maxlength': 8,
+                'min': 0,
+                'max': 99999000,
+                'step': 1000,
             }
         ),
-        max_length=8,
     )
     # Жанры
     categories_select = ModelMultipleChoiceField(

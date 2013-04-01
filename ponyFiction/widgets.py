@@ -2,11 +2,16 @@
 from django.forms import SelectMultiple, CheckboxSelectMultiple, Widget
 from itertools import chain
 from string import join
-from django.forms.widgets import CheckboxInput, Input, RadioFieldRenderer, RadioSelect
+from django.forms.widgets import CheckboxInput, Input, RadioFieldRenderer, RadioSelect, TextInput
 from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
 from django.forms.util import flatatt
 from ponyFiction import settings as settings
+
+
+# Убрать при первой возможности..
+class NumberInput(TextInput):
+    input_type = 'number'
 
 
 class ButtonWidget(Widget):

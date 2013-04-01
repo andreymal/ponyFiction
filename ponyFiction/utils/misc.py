@@ -174,12 +174,12 @@ def SetRangeSphinxFilter(sphinx, filter_name, field_name_min, field_name_max, ol
     min_value = oldform.cleaned_data[field_name_min]
     max_value = oldform.cleaned_data[field_name_max]
     # Если пустое начальное значение, то выставляем его в 0
-    if min_value == '':
+    if min_value is None or min_value < 0:
         min_selector = 0
     else:
         min_selector = int(min_value)
     # Если пустое конечное значение, то исключаем все значения меньше начального
-    if max_value == '':
+    if max_value is None or max_value < 0:
         sphinx.SetFilterRange(filter_name, 0, min_selector, True)
         return {field_name_min: min_selector}
     else:
