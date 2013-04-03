@@ -9,7 +9,7 @@ from django.forms.util import flatatt
 from ponyFiction import settings as settings
 
 
-# Убрать при первой возможности..
+# Убрать при первой возможности
 class NumberInput(TextInput):
     input_type = 'number'
 

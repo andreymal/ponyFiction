@@ -522,7 +522,7 @@ label.gen input {
 }
 
 /* Storypanel */
-.story-panel {
+.storypanel {
 	width: 100%;
 	margin-left: -12px;
 	background-color: #fff;
@@ -534,7 +534,7 @@ label.gen input {
 	font-size: 12px;
 }
 
-.story-panel select {
+.storypanel select {
 	height: auto;
 	font-size: 11px;
 	margin-bottom: 0;

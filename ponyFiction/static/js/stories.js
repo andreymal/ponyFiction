@@ -591,3 +591,47 @@ $(function() {
 	// Ещё какая-то ерунда
 	// ---
 });
+
+
+// Floating menu
+$(function() {
+    var storypanel = $('#story_panel');
+    var storypanelHomeY = storypanel.offset().top;
+    var isFixed = false;
+    var $w = $(window);
+    $w.scroll(function() {
+        var scrollTop = $w.scrollTop();
+        var shouldBeFixed = scrollTop > storypanelHomeY;
+        $('#story_panel').css('opacity: 1');
+        $("#wrapper").hover(function() {
+        if (isFixed){
+            $(this).find("#story_panel").stop().animate({ opacity: 1 });
+        }
+        },function() {
+        if (isFixed){
+            $(this).find("#story_panel").stop().animate({ opacity: 0 }); 
+        }
+        }); 
+        // Когда скролл есть
+        if (shouldBeFixed && !isFixed) {
+            storypanel.css({
+                position: 'fixed',
+                top: 0,
+                left: storypanel.offset().left+12,
+                width: storypanel.width(),
+                opacity: 0
+            });
+
+            isFixed = true;
+        }
+        // Когда скролла нет
+        else if (!shouldBeFixed && isFixed)
+        {
+            storypanel.css({
+                position: 'static',
+                opacity: 1.0
+            });
+            isFixed = false;
+        }
+    });
+});
