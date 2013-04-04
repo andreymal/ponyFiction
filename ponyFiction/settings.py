@@ -207,6 +207,7 @@ SANITIZER_CHAPTER_ALLOWED_ATTRIBUTES = {
 
 STORY_DOWNLOAD_FORMATS = (
     'ponyFiction.downloads.fb2.FB2Download',
+    'ponyFiction.downloads.html.HTMLDownload',
 )
 
 try:

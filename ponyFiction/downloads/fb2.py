@@ -1,13 +1,11 @@
-from .base import BaseDownloadFormat
+from .base import ZipFileDownloadFormat
 
-class FB2Download(BaseDownloadFormat):
+class FB2Download(ZipFileDownloadFormat):
     extension = 'fb2.zip'
     name = 'FB2'
     debug_content_type = 'text/xml'
     
-    def render(self, story, filename, extension, debug = False, **kw):
-        import zipfile
-        from cStringIO import StringIO
+    def render_fb2(self, story, **kw):
         import lxml.etree as etree
         from ..filters import fb2
         
@@ -20,18 +18,11 @@ class FB2Download(BaseDownloadFormat):
             title = story.title,
             author_name = story.authors.all()[0].username, # TODO: multiple authors
         )
-        data = etree.tostring(doc, encoding = 'utf8', xml_declaration = True)
-        
-        if not debug:
-            buf = StringIO()
-            
-            zf = zipfile.ZipFile(buf, mode = 'w', compression = zipfile.ZIP_DEFLATED)
-            zf.writestr(filename + '.fb2', data)
-            zf.close()
-        
-            data = buf.getvalue()
-        
-        return data
+        return etree.tostring(doc, encoding = 'utf8', xml_declaration = True)
+    
+    def render_zip_contents(self, zipfile, filename, **kw):
+        data = self.render_fb2(**kw)
+        zipfile.writestr(filename + '.fb2', data)
         
     def _get_annotation_doc(self, story):
         from ..filters import fb2
@@ -41,4 +32,10 @@ class FB2Download(BaseDownloadFormat):
             body.getparent().remove(body)
             
         return doc
+    
+    def render(self, **kw):
+        if kw.get('debug'):
+            return self.render_fb2(**kw)
+        else:
+            return super(FB2Download, self).render(**kw)
     
