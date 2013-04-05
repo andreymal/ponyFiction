@@ -1,5 +1,6 @@
 import re
 from django.core.urlresolvers import reverse
+from django.template.loader import render_to_string
 
 class BaseDownloadFormat(object):
     extension = None
@@ -20,8 +21,14 @@ class BaseDownloadFormat(object):
             )
         )
         
+    @property
+    def slug(self):
+        return slugify(self.name.lower())
+        
         
 class ZipFileDownloadFormat(BaseDownloadFormat):
+    chapter_encoding = 'utf8'
+    
     def render(self, **kw):
         import zipfile
         from cStringIO import StringIO
@@ -34,6 +41,26 @@ class ZipFileDownloadFormat(BaseDownloadFormat):
             zf.close()
     
         return buf.getvalue() 
+    
+    def render_zip_contents(self, zipfile, story, filename, **kw):
+        ext = self.chapter_extension
+        
+        chapters = story.chapter_set.order_by('order')
+        num_width = len(str(chapters.count()))
+        for i, chapter in enumerate(chapters.iterator()):
+            data = render_to_string(
+                self.chapter_template,
+                {
+                    'chapter': chapter,
+                    'story': story,
+                },
+            ).encode(self.chapter_encoding)
+            
+            name = slugify(chapter.title)
+            num = str(i+1).rjust(num_width, '0')
+            arcname = str('%s/%s_%s.%s' % (filename, num, name, ext))
+            
+            zipfile.writestr(arcname, data)
         
         
 def slugify(s):

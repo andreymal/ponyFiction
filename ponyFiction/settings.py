@@ -205,10 +205,12 @@ SANITIZER_CHAPTER_ALLOWED_ATTRIBUTES = {
 	'footnote': ['id'],
 }
 
-STORY_DOWNLOAD_FORMATS = (
+STORY_DOWNLOAD_FORMATS = reversed((
     'ponyFiction.downloads.fb2.FB2Download',
     'ponyFiction.downloads.html.HTMLDownload',
-)
+    #'ponyFiction.downloads.txt.TXTDownload',
+    #'ponyFiction.downloads.txt.TXT_CP1251Download',
+))
 
 try:
     from local_settings import *

@@ -19,7 +19,7 @@
     
     <span class="chapter-controls">
         {% for d in story.list_downloads %}
-            <a title="Скачать в {{ d.format.name }}" href="{{ d.url }}" class="get {{ d.format.name|lower|slugify }}"></a>
+            <a title="Скачать в {{ d.format.name }}" href="{{ d.url }}" class="get {{ d.format.slug }}"></a>
         {% endfor %}
     </span>
     {% comment %}
