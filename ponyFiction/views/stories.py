@@ -6,12 +6,13 @@ from django.core.paginator import Paginator
 from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic.edit import CreateView, UpdateView
 from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
 from ponyFiction.models import Story, CoAuthorsStory, StoryView, Activity
+from django.http import Http404
+from django.core.files.base import ContentFile
 
 @csrf_protect
 def story_view(request, pk, comments_page):
