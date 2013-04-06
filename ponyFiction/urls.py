@@ -202,10 +202,6 @@ urlpatterns += patterns('ponyFiction.views.stories',
     # Голосование за рассказ
     url(r'^story/(?P<pk>\d+)/vote/plus/$', 'story_vote', {'direction': True}, name='story_vote_plus'),
     url(r'^story/(?P<pk>\d+)/vote/minus/$', 'story_vote', {'direction': False}, name='story_vote_minus'),
-    # Закачка в FB2
-    url(r'^story/(?P<pk>\d+)/download/fb2/$', 'story_fb2', name='story_fb2'),
-    # Закачка в HTML
-    url(r'^story/(?P<pk>\d+)/download/html/$', 'story_html', name='story_html'),
 )
 # Работа с главами
 urlpatterns += patterns('ponyFiction.views.chapters',
