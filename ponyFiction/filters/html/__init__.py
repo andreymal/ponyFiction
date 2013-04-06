@@ -9,7 +9,7 @@ footnotes_to_html = xslt_transform_function('footnotes.xslt')
 pre_normalize_html = xslt_transform_function('pre-normalize-html.xslt')
 post_normalize_html = xslt_transform_function('post-normalize-html.xslt')
 
-block_elements = lxml.html.defs.block_tags | frozenset(['footnote'])
+block_elements = (lxml.html.defs.block_tags | frozenset(['footnote', 'body'])) - frozenset(['p'])
 
 @html_doc_transform
 def normalize_html(doc, block_elements = block_elements, **kw):
