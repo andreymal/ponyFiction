@@ -16,29 +16,48 @@
     />
     
 <xsl:template match="footnote">
-    <p id="{@id}" class="footnote">
+    <div>
+		<xsl:apply-templates select="@*"/>
+		<xsl:if test="not(@class)">
+			<xsl:attribute name="class">footnote</xsl:attribute>
+		</xsl:if>
+		
         <a name="{@id}"></a>
         
-        <xsl:value-of select="concat('[', count(preceding::footnote)+1, '] ')"/>
-        <span class="footnote-back-links">
-        <xsl:for-each select="key('anchors', @id)">
-            <a>
-                <xsl:attribute name="href">#<xsl:value-of select="generate-id(.)"/></xsl:attribute>
-                <xsl:value-of select="position()"/>
-            </a>
-            <xsl:choose>
-                <xsl:when test="position() != last()">
-                    <xsl:text>, </xsl:text>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:text> </xsl:text>
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:for-each>
-        </span>
+        <xsl:if test="not(p[not(preceding-sibling::node())])">
+			<xsl:call-template name="back-links"/>
+		</xsl:if>
         
         <xsl:apply-templates select="node()"/>
-    </p>
+    </div>
+</xsl:template>
+
+<xsl:template match="footnote/p[not(preceding-sibling::node())]">
+	<xsl:copy>
+        <xsl:apply-templates select="@*"/>
+		<xsl:call-template name="back-links"/>
+        <xsl:apply-templates select="node()"/>
+    </xsl:copy>
+</xsl:template>
+
+<xsl:template name="back-links">
+	<xsl:value-of select="concat('[', count(preceding::footnote)+1, '] ')"/>
+	<span class="footnote-back-links">
+	<xsl:for-each select="key('anchors', ancestor-or-self::footnote[last()]/@id)">
+		<a>
+			<xsl:attribute name="href">#<xsl:value-of select="generate-id(.)"/></xsl:attribute>
+			<xsl:value-of select="position()"/>
+		</a>
+		<xsl:choose>
+			<xsl:when test="position() != last()">
+				<xsl:text>, </xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text> </xsl:text>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:for-each>
+	</span>
 </xsl:template>
 
 <xsl:template match="a[starts-with(@href, '#')][key('footnotes', substring-after(@href, '#'))]">
