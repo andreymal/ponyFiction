@@ -15,8 +15,8 @@ def filter_html(text,
                 tags = settings.SANITIZER_ALLOWED_TAGS,
                 attributes = settings.SANITIZER_ALLOWED_ATTRIBUTES):
     
-    text = typo(text)
     doc = normalize_html(text, convert_linebreaks = True)
+    doc = typo(html_doc_to_string(doc))
     doc = _filter_html(doc,
         tags = tags,
         attributes = attributes
