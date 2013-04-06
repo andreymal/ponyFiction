@@ -18,8 +18,9 @@
         <a href="{% url 'chapter_view_all' story.id %}">Все главы одной страницей</a>	
     {% endif %}   
     <span class="chapter-controls">
-        <a title="Скачать в FB2" href="{% url 'story_fb2' story.id %}" class="get fb2"></a>
-        <a title="Скачать в HTML" href="{% url 'story_html' story.id %}" class="get html"></a>
+        {% for d in story.list_downloads %}
+            <a title="Скачать в {{ d.format.name }}" href="{{ d.url }}" class="get {{ d.format.slug }}"></a>
+        {% endfor %}
     </span>
     {% comment %}
     <span class="chapter-controls">

@@ -1,0 +1,7 @@
+{% autoescape off %}{{ story.title|upper }}
+
+{{ chapter.title }}
+  
+
+{{ chapter.text|striptags }}
+{% endautoescape %}

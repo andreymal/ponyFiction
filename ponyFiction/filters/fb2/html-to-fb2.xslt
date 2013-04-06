@@ -12,7 +12,7 @@
     <FictionBook xmlns:xlink="http://www.w3.org/1999/xlink">
         <xsl:call-template name="create-fb2-description">
             <xsl:with-param name="annotation">
-                <xsl:apply-templates select="head/annotation" mode="section-content"/>
+                <xsl:apply-templates select="body/annotation" mode="section-content"/>
             </xsl:with-param>
         </xsl:call-template>
         <body>
@@ -31,26 +31,15 @@
 </xsl:template>
 
 <xsl:template match="body|footnote|annotation" mode="section-content">
-    <xsl:choose>
-        <xsl:when test="not(p)">
-            <p><xsl:apply-templates select="node()" mode="body"/></p>
-        </xsl:when>
-        <xsl:otherwise>
-            <xsl:apply-templates select="node()" mode="paragraphs"/>
-        </xsl:otherwise>
-    </xsl:choose>
+    <xsl:apply-templates select="p" mode="paragraphs"/>
 </xsl:template>
 
 <xsl:template match="p" mode="paragraphs">
     <p><xsl:apply-templates select="node()" mode="body"/></p>
 </xsl:template>
 
-<xsl:template match="footnote" mode="paragraphs"/>
-
-<xsl:template match="text()[not(normalize-space())]" mode="paragraphs"/>
-
 <xsl:template match="node()" mode="paragraphs">
-    <p><xsl:apply-templates select="." mode="body"/></p>
+    <xsl:apply-templates select="node()" mode="paragraphs"/>
 </xsl:template>
 
 <xsl:template match="i|em" mode="body">
