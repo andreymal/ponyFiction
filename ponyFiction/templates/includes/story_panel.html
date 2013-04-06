@@ -16,7 +16,12 @@
     {% endif %}
     {% if not chapter and not allchapters %}
         <a href="{% url 'chapter_view_all' story.id %}">Все главы одной страницей</a>	
-    {% endif %}
+    {% endif %}   
+    <span class="chapter-controls">
+        {% for d in story.list_downloads %}
+            <a title="Скачать в {{ d.format.name }}" href="{{ d.url }}" class="get {{ d.format.slug }}"></a>
+        {% endfor %}
+    </span>
     {% comment %}
     <span class="chapter-controls">
         <a title="Вниз" href="#" class="scon down"></a> 

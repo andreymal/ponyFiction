@@ -6,12 +6,13 @@ from django.core.paginator import Paginator
 from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic.edit import CreateView, UpdateView
 from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
 from ponyFiction.models import Story, CoAuthorsStory, StoryView, Activity
+from django.http import Http404
+from django.core.files.base import ContentFile
 
 @csrf_protect
 def story_view(request, pk, comments_page):
@@ -184,3 +185,40 @@ class StoryEdit(UpdateView):
                          }
         context.update(extra_context)
         return context
+
+def story_download(request, story_id, filename, extension):
+    from django.core.files.storage import default_storage as storage
+    from ..downloads import get_format
+    
+    debug = settings.DEBUG and 'debug' in request.META['QUERY_STRING']
+    
+    story = get_object_or_404(Story, pk=story_id)
+    fmt = get_format(extension)
+    if fmt is None:
+        raise Http404
+    
+    url = fmt.url(story)
+    if url != request.path:
+        return redirect(url)
+    
+    filepath = 'downloads/stories/%s/%s.%s' % (story_id, filename, extension)
+    
+    if (not storage.exists(filepath) or 
+        storage.modified_time(filepath) < story.updated or
+        debug):
+        
+        data = fmt.render(
+            story = story,
+            filename = filename,
+            extension = extension,
+            debug = debug,
+        )
+        if not debug:
+            storage.save(filepath, ContentFile(data))
+        
+    if not debug:
+        return redirect(storage.url(filepath))
+    else:
+        response = HttpResponse(data)
+        response['Content-Type'] = fmt.debug_content_type
+        return response
