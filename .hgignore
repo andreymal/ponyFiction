@@ -10,3 +10,4 @@ db.sqlite
 local_settings.py
 .idea
 db.py
+ponyFiction/media

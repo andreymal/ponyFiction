@@ -172,7 +172,7 @@ SANITIZER_ALLOWED_ATTRIBUTES = {
 SANITIZER_CHAPTER_ALLOWED_TAGS = [
     'b', 'i', 'strong', 'em', 's', 'u',
     'h3', 'h4', 'h5',
-    'p', 'span', 'br', 'hr',
+    'p', 'span', 'br', 'hr', 'footnote',
     'img', 'a',
     'ul', 'ol', 'li',
     'blockquote', 'sup', 'sub', 'pre', 'small', 'tt'
@@ -183,6 +183,7 @@ SANITIZER_CHAPTER_ALLOWED_ATTRIBUTES = {
     'a': ['href', 'rel', 'title'],
     'span': ['align'],
     'p': ['align'],
+	'footnote': ['id'],
 }
 
 CACHES = {
@@ -191,6 +192,13 @@ CACHES = {
         'LOCATION': '127.0.0.1:11211',
     }
 }
+
+STORY_DOWNLOAD_FORMATS = reversed((
+    'ponyFiction.downloads.fb2.FB2Download',
+    'ponyFiction.downloads.html.HTMLDownload',
+    #'ponyFiction.downloads.txt.TXTDownload',
+    #'ponyFiction.downloads.txt.TXT_CP1251Download',
+))
 
 try:
     from local_settings import *

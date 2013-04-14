@@ -36,6 +36,8 @@ def transform_xslt_params(kw):
             value = etree.XSLT.strparam(value)
         elif type(value) in (int, long, float):
             value = str(value)
+        elif type(value) is bool:
+            value = 'true()' if value else 'false()'
         else:
             raise TypeError(key)
         kw[key] = value
@@ -61,9 +63,11 @@ def xslt_transform_loader(file_path):
     return factory    
     
 def html_doc_to_string(doc):
+    if isinstance(doc, basestring):
+        return doc
+    
     body = doc.xpath('//body')
     if len(body) < 1: return ''
     body = body[0]
     doc = ''.join([(body.text or '')] + [etree.tounicode(elem, method='html') for elem in body.getchildren()])
-    doc = re.subn(r'&#x([0-9a-fA-F]+);', lambda x: unichr(int(x.groups()[0], 16)), doc)[0]
     return doc 

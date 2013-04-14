@@ -1,10 +1,10 @@
 Django==1.5
 MySQL-python==1.2.4
 argparse==1.2.1
-bleach==1.2.1
 django-debug-toolbar==0.9.4
 html5lib==0.95
 lxml==3.1.0
 py-bcrypt==0.2
 python-memcached==1.48
 wsgiref==0.1.2
+unidecode==0.04.12
