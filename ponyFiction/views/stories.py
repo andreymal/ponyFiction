@@ -200,7 +200,6 @@ def story_download(request, story_id, filename, extension):
     url = fmt.url(story)
     if url != request.path:
         return redirect(url)
-    
     filepath = 'downloads/stories/%s/%s.%s' % (story_id, filename, extension)
     
     if (not storage.exists(filepath) or 
