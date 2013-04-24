@@ -24,7 +24,7 @@ def story_view(request, pk, comments_page):
             raise PermissionDenied
     
     chapters = story.chapter_set.order_by('order')
-    comments_list = story.comment_set.all()
+    comments_list = story.comment_set.order_by('-date').all()
     paged = Paginator(comments_list, settings.COMMENTS_COUNT['page'], orphans=settings.COMMENTS_ORPHANS)
     num_pages = paged.num_pages
     page_current = int(comments_page) if (0 < int(comments_page) <= num_pages) else 1

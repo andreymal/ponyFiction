@@ -14,14 +14,14 @@ def author_info(request, user_id, comments_page):
     data = {}
     if user_id is None:
         author = request.user
-        comments_list = Comment.objects.filter(story__authors=request.user.id)
+        comments_list = Comment.objects.filter(story__authors=request.user.id).order_by('-date')
         data['all_views'] = StoryView.objects.filter(story__authors=author).count()
         data['page_title'] = 'Мой кабинет'
         data['stories'] = author.story_set.all()
         template = 'author_dashboard.html'
     else:
         author = get_object_or_404(Author, pk=user_id)
-        comments_list = author.comment_set.all()
+        comments_list = author.comment_set.order_by('-date')
         data['page_title'] = u'Автор: %s' % author.username
         data['stories'] = author.story_set.published
         template = 'author_overview.html'

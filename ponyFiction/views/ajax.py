@@ -27,7 +27,7 @@ class CommentsStory(ObjectList):
     
     def get_queryset(self):
         story = get_object_or_404(Story, pk=self.kwargs['story_id'])
-        return story.comment_set.all()
+        return story.comment_set.order_by('-date')
     
 class CommentsAuthor(ObjectList):
     """ Подгрузка комментариев для профиля """
@@ -47,7 +47,7 @@ class CommentsAuthor(ObjectList):
             return Comment.objects.filter(story__authors=self.request.user.id)
         else:
             author = get_object_or_404(Author, pk=self.kwargs['user_id'])
-            return author.comment_set.all()
+            return author.comment_set.order_by('-date')
 
 class ConfirmDeleteStory(TemplateView):
     """ Отрисовка модального окна подтверждения удаления рассказа """

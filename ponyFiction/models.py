@@ -443,7 +443,7 @@ class Bookmark(models.Model):
 
 class StoryView(models.Model):
     """ Модель просмотров """
-    
+    # NOTE: Будет расширена и переименована для серий
     author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE, verbose_name="Автор просмотра")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата просмотра")
     story = models.ForeignKey(Story, related_name="story_views_set", null=True, verbose_name="Рассказ")
