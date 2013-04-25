@@ -15,5 +15,5 @@ def chapter_readed(chapter, author):
     return bool(chapter.chapter_views_set.filter(author=author))
 
 @register.filter
-def is_editable_by(story, author):
-    return story.is_editable_by(author)
+def editable_by(story, author):
+    return story.editable_by(author)

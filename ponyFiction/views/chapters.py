@@ -14,7 +14,7 @@ def chapter_view(request, story_id=False, chapter_order=False):
         story = Story.objects.accessible.get(pk=story_id)
     except Story.DoesNotExist:
         story = get_object_or_404(Story, pk=story_id)
-        if not story.is_editable_by(request.user):
+        if not story.editable_by(request.user):
             raise PermissionDenied
     if chapter_order:
         chapter = get_object_or_404(story.chapter_set, order=chapter_order)
@@ -62,7 +62,7 @@ class ChapterAdd(CreateView):
     @method_decorator(csrf_protect)
     def dispatch(self, request, *args, **kwargs):
         self.story = get_object_or_404(Story, pk=kwargs['story_id'])
-        if self.story.is_editable_by(request.user):
+        if self.story.editable_by(request.user):
             return CreateView.dispatch(self, request, *args, **kwargs)
         else:
             raise PermissionDenied
@@ -93,7 +93,7 @@ class ChapterEdit(UpdateView):
     
     def get_object(self, queryset=None):
         self.chapter = UpdateView.get_object(self, queryset=queryset)
-        if self.chapter.story.is_editable_by(self.request.user):
+        if self.chapter.story.editable_by(self.request.user):
             return self.chapter
         else:
             raise PermissionDenied
@@ -113,7 +113,7 @@ class ChapterEdit(UpdateView):
 def chapter_delete(request, pk):
     chapter = get_object_or_404(Chapter, pk=pk)
     story_id = chapter.story.id
-    if chapter.story.is_editable_by(request.user):
+    if chapter.story.editable_by(request.user):
         chapter.delete()
         return redirect('story_edit', story_id)
     else:

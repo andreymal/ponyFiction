@@ -74,7 +74,7 @@ def story_delete_ajax(request, story_id):
     
     if request.is_ajax() and request.method == 'POST':
         story = get_object_or_404(Story, pk=story_id)
-        if story.is_editable_by(request.user):
+        if story.editable_by(request.user):
             story.delete()
             return HttpResponse(story_id)
     else:
@@ -87,7 +87,7 @@ def story_publish_ajax(request, story_id):
     
     if request.is_ajax() and request.method == 'POST':
         story = get_object_or_404(Story, pk=story_id)
-        if story.is_editable_by(request.user):
+        if (story.editable_by(request.user) and story.publishable):
             if (request.user.approved and not story.approved):
                 story.approved = True
             if story.draft:
@@ -148,8 +148,8 @@ def story_vote_ajax(request, story_id, direction):
     if request.is_ajax() and request.method == 'POST':
         story = get_object_or_404(Story.objects.published, pk=story_id)
         direction = True if (direction == 'plus') else False
-        if story.is_editable_by(request.user):
-            return HttpResponse(dumps([story.vote_up_count(), story.vote_down_count()]))
+        if story.editable_by(request.user):
+            return HttpResponse(dumps([story.vote_up_count, story.vote_down_count]))
         vote = story.vote.get_or_create(author=request.user)[0]
         if direction:
             vote.plus = True
@@ -159,7 +159,7 @@ def story_vote_ajax(request, story_id, direction):
             vote.minus = True
         vote.save(update_fields=['plus', 'minus'])
         story.vote.add(vote)
-        return HttpResponse(dumps([story.vote_up_count(), story.vote_down_count()]))
+        return HttpResponse(dumps([story.vote_up_count, story.vote_down_count]))
     else:
         raise PermissionDenied
     
@@ -168,7 +168,7 @@ def story_vote_ajax(request, story_id, direction):
 def chapter_sort(request, story_id):
     """ Сортировка глав """
     story = get_object_or_404(Story.objects.accessible, pk=story_id)
-    if story.is_editable_by(request.user) and request.is_ajax() and request.method == 'POST':
+    if story.editable_by(request.user) and request.is_ajax() and request.method == 'POST':
         new_order = unicode_to_int_list(request.POST.getlist('chapters[]'))
         if (not new_order or story.chapter_set.count() != len(new_order)):
                 return HttpResponse('Bad request. Incorrect list!', status=400)
@@ -202,7 +202,7 @@ def chapter_delete_ajax(request, chapter_id):
     
     if request.is_ajax() and request.method == 'POST':
         chapter = get_object_or_404(Chapter, pk=chapter_id)
-        if chapter.story.is_editable_by(request.user):
+        if chapter.story.editable_by(request.user):
             chapter.delete()
             return HttpResponse(chapter_id)
     else:

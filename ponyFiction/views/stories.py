@@ -20,7 +20,7 @@ def story_view(request, pk, comments_page):
         story = Story.objects.accessible.get(pk=pk)
     except Story.DoesNotExist:
         story = get_object_or_404(Story, pk=pk)
-        if not story.is_editable_by(request.user):
+        if not story.editable_by(request.user):
             raise PermissionDenied
     
     chapters = story.chapter_set.order_by('order')
@@ -33,10 +33,10 @@ def story_view(request, pk, comments_page):
     comment_form = CommentForm()
     if request.user.is_authenticated():
         activity = Activity.objects.get_or_create(author_id=request.user.id, story=story)[0]
-        activity.last_views = story.views()
+        activity.last_views = story.views
         activity.last_comments = comments_list.count()
-        activity.last_vote_up = story.vote_up_count()
-        activity.last_vote_down = story.vote_down_count()
+        activity.last_vote_up = story.vote_up_count
+        activity.last_vote_down = story.vote_down_count
         activity.save()
     data = {
        'story' : story,
@@ -74,7 +74,7 @@ def story_approve(request, pk):
 @csrf_protect
 def story_publish(request, pk):
     story = get_object_or_404(Story, pk=pk)
-    if story.is_editable_by(request.user):
+    if (story.editable_by(request.user) and story.publishable):
         if (request.user.approved and not story.approved):
             story.approved = True
         if story.draft:
@@ -89,7 +89,7 @@ def story_publish(request, pk):
 @login_required
 def story_delete(request, pk):
     story = get_object_or_404(Story, pk=pk)
-    if story.is_editable_by(request.user):
+    if story.editable_by(request.user):
         story.delete()
         return redirect('index')
     else:
@@ -119,7 +119,7 @@ def story_bookmark(request, pk):
 @csrf_protect
 def story_vote(request, pk, direction):
     story = get_object_or_404(Story.objects.published, pk=pk)
-    if story.is_editable_by(request.user):
+    if story.editable_by(request.user):
         redirect('story_view', pk)
     vote = story.vote.get_or_create(author=request.user)[0]
     if direction:
@@ -136,7 +136,7 @@ class StoryAdd(CreateView):
     model = Story
     form_class = StoryForm
     template_name = 'story_work.html'
-    initial={'finished': 0, 'freezed': 0, 'original': 1, 'rating': 4, 'size': 1, 'button_submit': u'Добавить рассказ'}
+    initial={'finished': 0, 'freezed': 0, 'original': 1, 'rating': 4, 'button_submit': u'Добавить рассказ'}
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -171,7 +171,7 @@ class StoryEdit(UpdateView):
     
     def get_object(self, queryset=None):
         self.story = UpdateView.get_object(self, queryset=queryset)
-        if self.story.is_editable_by(self.request.user):
+        if self.story.editable_by(self.request.user):
             return self.story
         else:
             raise PermissionDenied

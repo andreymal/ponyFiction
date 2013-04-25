@@ -14,7 +14,7 @@ def comment_story(request, story_id=False):
         story = Story.objects.accessible.get(pk=story_id)
     except Story.DoesNotExist:
         story = get_object_or_404(Story, pk=story_id)
-        if not story.is_editable_by(request.user):
+        if not story.editable_by(request.user):
             raise PermissionDenied
     else:
         author = request.user 

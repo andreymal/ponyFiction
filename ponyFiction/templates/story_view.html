@@ -42,7 +42,6 @@
 		<div id="more-info" class="collapse">
 			<p>
 				Рейтинг: <a href="{% url 'search_simple' 'rating' story.rating.id %}">{{ story.rating.name }}</a><br/>
-    			Размер: <a href="{% url 'search_simple' 'size' story.size.id %}">{{ story.size.name }}</a><br/>
     			События: {% for classifier in story.classifications.all %}<a href="{% url 'search_simple' 'classifier' classifier.id %}">{{ classifier.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}<br/>
     			Просмотров: {{ story.views }}<br/> Опубликован: {{ story.date|date:"d.m.Y" }}<br/> Изменен: {{ story.updated|timesince }} назад
     		</p>

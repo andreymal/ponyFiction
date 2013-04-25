@@ -107,19 +107,6 @@
 						{% endif %}
           			</div>
 				</div>
-				<!-- Размер -->
-				<div class="control-group{% if form.size.errors %} error{% endif %}">
-					<label class="control-label">{{ form.size.label }}</label>
-					<div class="controls bootstrap radio">{{ form.size }}
-						{% if form.size.errors %}
-							{% for error in form.size.errors %}
-								<span class="help-inline">{{ error }}</span>
-							{% endfor %}
-						{% else %}
-							<span class="help-inline small">{{ form.size.help_text }}</span>
-						{% endif %}
-	          		</div>
-				</div>
 				<!-- Оригинал/перевод -->
 				<div class="control-group{% if form.original.errors %} error{% endif %}">
 					<label class="control-label">{{ form.original.label }}</label>

@@ -9,7 +9,7 @@ TEMPLATE_DEBUG = DEBUG
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
-DEBUG_TOOLBAR_CONFIG ={'INTERCEPT_REDIRECTS' : False}
+DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS' : False}
 MANAGERS = ADMINS
 
 DATABASES = {
@@ -68,16 +68,16 @@ WSGI_APPLICATION = 'ponyFiction.wsgi.application'
 
 import os.path
 TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(__file__), 'templates').replace('\\','/'),
+    os.path.join(os.path.dirname(__file__), 'templates').replace('\\', '/'),
 )
 
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    #'django.contrib.sites',
-    #'django.contrib.messages',
-    #'django.contrib.staticfiles',
+    # 'django.contrib.sites',
+    # 'django.contrib.messages',
+    # 'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     
     # Uncomment the next line to enable admin documentation:
@@ -193,11 +193,13 @@ CACHES = {
     }
 }
 
+PUBLISH_SIZE_LIMIT = 1000
+
 STORY_DOWNLOAD_FORMATS = reversed((
     'ponyFiction.downloads.fb2.FB2Download',
     'ponyFiction.downloads.html.HTMLDownload',
-    #'ponyFiction.downloads.txt.TXTDownload',
-    #'ponyFiction.downloads.txt.TXT_CP1251Download',
+    # 'ponyFiction.downloads.txt.TXTDownload',
+    # 'ponyFiction.downloads.txt.TXT_CP1251Download',
 ))
 
 try:

@@ -1,19 +1,19 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
-from ponyFiction.models import Author, Character, CharacterGroup, Category, Classifier, Size, Rating, Series, Story, Chapter, Comment, BetaReading
+from ponyFiction.models import Author, Character, CharacterGroup, Category, Classifier, Rating, Series, Story, Chapter, Comment, BetaReading
 
 """
 class StoryAdmin(admin.ModelAdmin):
     date_hierarchy = 'date'
-    fields = ('title','summary','notes',('rating','size'),('finished','freezed','original'),'authors')  
+    fields = ('title','summary','notes',('rating'),('finished','freezed','original'),'authors')  
     search_fields = ['title', 'summary', 'totes']
     filter_horizontal = ('authors',)
     radio_fields = {'size': admin.HORIZONTAL, 'rating' : admin.HORIZONTAL} 
 admin.site.register(Story, StoryAdmin)
 """
 
-models = [Character, CharacterGroup, Category, Classifier, Size, Rating, Series, Story, Chapter, Comment, BetaReading]
+models = [Character, CharacterGroup, Category, Classifier, Rating, Series, Story, Chapter, Comment, BetaReading]
 
 
 

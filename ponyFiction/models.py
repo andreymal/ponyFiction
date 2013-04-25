@@ -83,19 +83,6 @@ class Classifier(models.Model):
         verbose_name = "классификатор"
         verbose_name_plural = "классификаторы"
 
-class Size(models.Model):
-    """ Модель размера """
-
-    description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
-    name = models.CharField(max_length=256, verbose_name="Название")
-    
-    def __unicode__(self):
-        return self.name
-    
-    class Meta:
-        verbose_name = "размер"
-        verbose_name_plural = "размеры"
-
 class Rating(models.Model):
     """ Модель рейтинга """
     
@@ -257,7 +244,6 @@ class Story (models.Model):
     original = models.BooleanField(default=True, verbose_name="Статус оригинала")
     rating = models.ForeignKey(Rating, null=True, verbose_name="Рейтинг")
     summary = models.TextField(max_length=4096, verbose_name="Общее описание")
-    size = models.ForeignKey(Size, null=True, verbose_name="Размер")
     title = models.CharField(max_length=512, verbose_name="Название")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     vote = models.ManyToManyField('Vote', null=True, verbose_name="Голоса за рассказ")
@@ -269,19 +255,23 @@ class Story (models.Model):
         verbose_name_plural = "рассказы"
 
     def __unicode__(self):
-        return u"[+%s/-%s] %s" % (self.vote_up_count(), self.vote_down_count(), self.title)
+        return u"[+%s/-%s] %s" % (self.vote_up_count, self.vote_down_count, self.title)
     
+    @property
     def vote_up_count(self):
         return self.vote.filter(plus=True).count()
     
+    @property
     def vote_down_count(self):
         return self.vote.filter(minus=True).count()
 
     # Количество просмотров
+    @property
     def views(self):
         return self.story_views_set.values('author').annotate(Count('author')).count()
     
     # Количество слов
+    @property
     def words(self):
         return self.chapter_set.aggregate(Sum('words'))['words__sum']
     
@@ -290,8 +280,13 @@ class Story (models.Model):
         return self.story_activity_set.get(author_id=author).last_comments
     
     # Проверка авторства
-    def is_editable_by(self, author):
+    def editable_by(self, author):
         return author.is_staff or self.authors.filter(id=author.id).exists()
+    
+    # Проверка возможности публикации
+    @property
+    def publishable(self):
+        return True if self.words > settings['PUBLISH_SIZE_LIMIT'] else False
     
     summary_as_html = filtered_html_property('summary', filter_html)
     notes_as_html = filtered_html_property('notes', filter_html)
@@ -318,7 +313,7 @@ class Chapter (models.Model):
     title = models.CharField(max_length=512, verbose_name="Название")
     text = models.TextField(blank=True, verbose_name="Текст главы")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
-    words = models.IntegerField(default=0, verbose_name="Количество слов в рассказе")
+    words = models.IntegerField(default=0, verbose_name="Количество слов в главе")
     
     class Meta:
         verbose_name = "глава"
@@ -340,11 +335,12 @@ class Chapter (models.Model):
             return None
         
     # Количество просмотров
+    @property
     def views(self):
         return self.chapter_views_set.values('author').annotate(Count('author')).count()
 
-    def is_editable_by(self, author):
-        return self.story.is_editable_by(author)
+    def editable_by(self, author):
+        return self.story.editable_by(author)
     
     notes_as_html = filtered_html_property('notes', filter_html)
     

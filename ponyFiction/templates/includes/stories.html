@@ -54,7 +54,7 @@
 					{% for chapter in story.chapter_set.all %}
 						<li>
 							<a class="chapter-title" href="{% url 'chapter_view_single' story.id chapter.order %}">{{ chapter.title }}</a> 
-							{% if story|is_editable_by:user %}
+							{% if story|editable_by:user %}
 								<sup><a class="edit-link" href="{% url 'chapter_edit' chapter.id %}">Редактировать</a></sup>
 							{% endif %}
 							<br/>

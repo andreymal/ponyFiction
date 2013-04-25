@@ -136,8 +136,6 @@ def search_simple(request, search_type, search_id):
         bound_data = {'classifications_select': [search_id], 'search_type': 0}
     elif search_type == 'rating':
         bound_data = {'ratings_select': [search_id], 'search_type': 0}
-    elif search_type == 'size':
-        bound_data = {'sizes_select': [search_id], 'search_type': 0}
     else:
         return search_form(request)
     postform = SearchForm(bound_data)

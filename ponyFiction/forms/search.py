@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.forms import Field, Form, ModelMultipleChoiceField, MultipleChoiceField, TextInput, ChoiceField, IntegerField
 from ponyFiction.fields import GroupedModelChoiceField
-from ponyFiction.models import Character, Category, Classifier, Rating, Size
+from ponyFiction.models import Character, Category, Classifier, Rating
 from ponyFiction.widgets import NumberInput, ButtonWidget, ServiceButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesButtons, StoriesRadioButtons, StoriesServiceInput
 from ponyFiction.fields import SanitizedCharField
 
@@ -101,12 +101,6 @@ class SearchForm(Form):
     # Активность рассказа
     freezed_select = MultipleChoiceField(
         choices=[(0, 'Активен'), (1, 'Заморожен')],
-        required=False,
-        widget=StoriesButtons(attrs=checkbox_attrs),
-    )
-    # Размеры
-    sizes_select = ModelMultipleChoiceField(
-        queryset=Size.objects.all(),
         required=False,
         widget=StoriesButtons(attrs=checkbox_attrs),
     )

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.forms import CharField, ChoiceField, Field, ModelForm, ModelChoiceField, ModelMultipleChoiceField, TextInput, Textarea
 from ponyFiction.fields import GroupedModelChoiceField
-from ponyFiction.models import Character, Category, Classifier, Rating, Size, Story
+from ponyFiction.models import Character, Category, Classifier, Rating, Story
 from ponyFiction.widgets import ServiceButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesRadioButtons
 
 class StoryForm(ModelForm):
@@ -100,15 +100,6 @@ class StoryForm(ModelForm):
         max_length=4096,
         label='Заметки',
     )
-    # Размер
-    size = ModelChoiceField(
-        required=True,
-        empty_label=None,
-        queryset=Size.objects.all(),
-        widget=StoriesRadioButtons(attrs=radio_attrs),
-        label='Размер',
-        error_messages={'required': 'Нужно обязательно указать размер рассказа!'},
-    )
     # Название
     title = CharField(
         required=True,
@@ -127,4 +118,4 @@ class StoryForm(ModelForm):
     class Meta:
         model = Story
         fields = ('characters', 'categories', 'classifications', 'finished',
-                  'freezed', 'original', 'rating', 'summary', 'notes', 'size', 'title')
+                  'freezed', 'original', 'rating', 'summary', 'notes', 'title')
