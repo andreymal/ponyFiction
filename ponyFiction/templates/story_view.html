@@ -36,16 +36,16 @@
 		{% if story.notes %}
 			<p>Заметки к рассказу: {{ story.notes_as_html }}</p>
 		{% endif %}
-  		
-  		<button class="btn btn-collapse btn-small" data-toggle="collapse" data-target="#more-info">Подробности и статистика</button>
-		
-		<div id="more-info" class="collapse">
+			
+		<blockquote class="more-info">
+			<p><strong>Подробности и статистика</strong></p>	
 			<p>
-				Рейтинг: <a href="{% url 'search_simple' 'rating' story.rating.id %}">{{ story.rating.name }}</a><br/>
+				Рейтинг — <a href="{% url 'search_simple' 'rating' story.rating.id %}">{{ story.rating.name }}</a><br/>
     			События: {% for classifier in story.classifications.all %}<a href="{% url 'search_simple' 'classifier' classifier.id %}">{{ classifier.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}<br/>
-    			Просмотров: {{ story.views }}<br/> Опубликован: {{ story.date|date:"d.m.Y" }}<br/> Изменен: {{ story.updated|timesince }} назад
+    			{{ story.words|rupluralize:'слово,слова,слов' }}, {{ story.views|rupluralize:'просмотр,просмотра,просмотров' }}<br/>
+    			Опубликован: {{ story.date|date:"d.m.Y" }}, последнее изменение – {{ story.updated|timesince }} назад
     		</p>
-  		</div>
+  		</blockquote>
   		
   		<div class="story-chapters">
   			{% if chapters.count > 1 %}

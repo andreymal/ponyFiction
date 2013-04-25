@@ -423,6 +423,10 @@ label.gen input {
 	margin-top: 12px;
 }
 
+.more-info p {
+	font-size: 12px;
+}
+
 #story_chapters {
 	list-style-type: none;
 	margin-left: 0;

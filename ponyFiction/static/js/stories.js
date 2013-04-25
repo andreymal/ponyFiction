@@ -1,6 +1,7 @@
 // Глобальные регулярки и прочий нужный почти везде стафф
 current_path = window.location.pathname;
 re_story = new RegExp('^/story/[0-9]+/(?:comments/page/[0-9]+/)?$');
+re_chapter = new RegExp('^/story/[0-9]+/chapter/[0-9]+/$');
 re_story_add = new RegExp('^/story/add/$');
 re_story_edit = new RegExp('^/story/[0-9]+/edit/$');
 re_chapter_edit = new RegExp('^/chapter/[0-9]+/edit/$');
@@ -326,7 +327,101 @@ function rotateLogo() {
 	var new_image = "url(/static/i/logopics/logopic-" + stories_gr + ".jpg)";
 	$('.logopic').css('background-image', new_image);
 }
+/**
+ * Плавающая панелька
+ */
+function floatingPanel() {
+	var storypanel = $('#story_panel');
+	var storypanelHomeY = storypanel.offset().top;
+	var isFixed = false;
+	var $w = $(window);
+	$w.scroll(function() {
+		var scrollTop = $w.scrollTop();
+		var shouldBeFixed = scrollTop > storypanelHomeY;
+		$('#story_panel').css('opacity: 1');
+		$("#wrapper").hover(function() {
+			if (isFixed) {
+				$(this).find("#story_panel").stop().animate({
+					opacity : 1
+				});
+			}
+		}, function() {
+			if (isFixed) {
+				$(this).find("#story_panel").stop().animate({
+					opacity : 0
+				});
+			}
+		});
+		// Когда скролл есть
+		if (shouldBeFixed && !isFixed) {
+			storypanel.css({
+				position : 'fixed',
+				top : 0,
+				left : storypanel.offset().left + 12,
+				width : storypanel.width(),
+				opacity : 0
+			});
+			isFixed = true;
+		}
+		// Когда скролла нет
+		else if (!shouldBeFixed && isFixed) {
+			storypanel.css({
+				position : 'static',
+				opacity : 1.0
+			});
+			isFixed = false;
+		}
+	});
+}
+/**
+ * Обработка состояний BootStrap Elements
+ * 
+ * @TODO Всерьёз заняться оптимизированием кода!
+ */
+function activateBootstrap() {
+	var group = $(this);
+	var buttons_container = $('.buttons-visible', group)
+	var data_container = $('.buttons-data', group)
 
+	if (group.hasClass('checkboxes')) {
+		var type = 'checkboxes'
+	} else if (group.hasClass('radio')) {
+		var type = 'radio'
+	}
+	// Обработка проставленных заранее чекбоксов и радиоселектов
+	$('input', data_container).each(
+			function() {
+				var input = $(this);
+				value = input.attr('value')
+				checked = Boolean(input.attr('checked'))
+				if (checked) {
+					buttons_container.children('button[value=' + value + ']')
+							.addClass('active');
+				}
+			});
+	// Onclick-обработчик
+	$('button', buttons_container).each(
+			function() {
+				var button = $(this);
+				button.live('click', function() {
+					value = button.attr('value');
+					if (type == 'checkboxes') {
+						input = $('input:checkbox[value=' + value + ']',
+								data_container);
+						selected = Boolean($('input:checked[value=' + value
+								+ ']', data_container).length);
+						selected ? input.removeAttr('checked') : input.attr(
+								'checked', 'checked');
+					} else if (type == 'radio') {
+						input = $('input:radio[value=' + value + ']',
+								data_container);
+						all_inputs = $('input:radio', data_container);
+						all_inputs.removeAttr('checked');
+						input.attr('checked', 'checked');
+					}
+				});
+			});
+}
 // При загрузке страницы
 $(function() {
 	// Декорируем навигацию
@@ -350,61 +445,7 @@ $(function() {
 		hoverPause : true,
 	});
 	// Включаем обработку BootStrap Buttons
-	// TODO: Всерьёз заняться оптимизированием кода!
-	$('.bootstrap').each(
-			function() {
-				var group = $(this);
-				var buttons_container = $('.buttons-visible', group)
-				var data_container = $('.buttons-data', group)
-
-				if (group.hasClass('checkboxes')) {
-					var type = 'checkboxes'
-				} else if (group.hasClass('radio')) {
-					var type = 'radio'
-				}
-				// Обработка проставленных заранее чекбоксов и радиоселектов
-				$('input', data_container).each(
-						function() {
-							var input = $(this);
-							value = input.attr('value')
-							checked = Boolean(input.attr('checked'))
-							if (checked) {
-								buttons_container.children(
-										'button[value=' + value + ']')
-										.addClass('active');
-							}
-						});
-				// Onclick-обработчик
-				$('button', buttons_container).each(
-						function() {
-							var button = $(this);
-							button.live('click',
-									function() {
-										value = button.attr('value');
-										if (type == 'checkboxes') {
-											input = $('input:checkbox[value='
-													+ value + ']',
-													data_container);
-											selected = Boolean($(
-													'input:checked[value='
-															+ value + ']',
-													data_container).length);
-											selected ? input
-													.removeAttr('checked')
-													: input.attr('checked',
-															'checked');
-										} else if (type == 'radio') {
-											input = $('input:radio[value='
-													+ value + ']',
-													data_container);
-											all_inputs = $('input:radio',
-													data_container);
-											all_inputs.removeAttr('checked');
-											input.attr('checked', 'checked');
-										}
-									});
-						});
-			});
+	$('.bootstrap').each(activateBootstrap);
 	// Подключаем обработку выбора персонажей
 	$(".character-item").click(function() {
 		if (Boolean($(this).children('input:checked').length)) {
@@ -503,6 +544,11 @@ $(function() {
 			processVote(url);
 		});
 	}
+	// На странице рассказа или главы
+	if (re_story.test(current_path) || re_chapter.test(current_path)) {
+		// Подключаем динамическое состояние панели
+		floatingPanel();
+	}
 	// Переключение размера и типа шрифта
 	var font_selector = $('.select-font');
 	var size_selector = $('.select-size');
@@ -590,48 +636,4 @@ $(function() {
 	});
 	// Ещё какая-то ерунда
 	// ---
-});
-
-
-// Floating menu
-$(function() {
-    var storypanel = $('#story_panel');
-    var storypanelHomeY = storypanel.offset().top;
-    var isFixed = false;
-    var $w = $(window);
-    $w.scroll(function() {
-        var scrollTop = $w.scrollTop();
-        var shouldBeFixed = scrollTop > storypanelHomeY;
-        $('#story_panel').css('opacity: 1');
-        $("#wrapper").hover(function() {
-        if (isFixed){
-            $(this).find("#story_panel").stop().animate({ opacity: 1 });
-        }
-        },function() {
-        if (isFixed){
-            $(this).find("#story_panel").stop().animate({ opacity: 0 }); 
-        }
-        }); 
-        // Когда скролл есть
-        if (shouldBeFixed && !isFixed) {
-            storypanel.css({
-                position: 'fixed',
-                top: 0,
-                left: storypanel.offset().left+12,
-                width: storypanel.width(),
-                opacity: 0
-            });
-
-            isFixed = true;
-        }
-        // Когда скролла нет
-        else if (!shouldBeFixed && isFixed)
-        {
-            storypanel.css({
-                position: 'static',
-                opacity: 1.0
-            });
-            isFixed = false;
-        }
-    });
 });
