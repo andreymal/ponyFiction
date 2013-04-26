@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.forms import Field, Form, ModelMultipleChoiceField, MultipleChoiceField, TextInput, ChoiceField, IntegerField
+from django.forms import Field, Form, ModelMultipleChoiceField, MultipleChoiceField, TextInput, ChoiceField, IntegerField, CharField
 from ponyFiction.fields import GroupedModelChoiceField
 from ponyFiction.models import Character, Category, Classifier, Rating
 from ponyFiction.widgets import NumberInput, ButtonWidget, ServiceButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesButtons, StoriesRadioButtons, StoriesServiceInput
-from ponyFiction.fields import SanitizedCharField
-
 
 class SearchForm(Form):
     checkbox_attrs = {
@@ -25,7 +23,7 @@ class SearchForm(Form):
         'container_attrs': {'class': 'character-item'}
     }
     # Строка поиска
-    search_query = SanitizedCharField(
+    search_query = CharField(
         required=False,
         widget=TextInput(
             attrs={
