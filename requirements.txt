@@ -2,7 +2,7 @@ Django==1.5
 MySQL-python==1.2.4
 Unidecode==0.04.12
 argparse==1.2.1
--e git://github.com/jbalogh/django-cache-machine.git@fd9c7efbd14dfb78f278d7b270cfe7a9da1b79b7#egg=django_cache_machine-dev
+-e git://github.com/Suor/django-cacheops.git@7d0fc79600ed09d97211f87015846f1afb7146fb#egg=django_cacheops-dev
 django-debug-toolbar==0.9.4
 django-registration==0.8
 html5lib==0.95
@@ -11,4 +11,6 @@ lxml==3.1.0
 py-bcrypt==0.2
 python-memcached==1.48
 readline==6.2.4.1
+redis==2.7.3
+simplejson==3.1.3
 wsgiref==0.1.2

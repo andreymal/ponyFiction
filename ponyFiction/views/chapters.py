@@ -36,7 +36,7 @@ def chapter_view(request, story_id=False, chapter_order=False):
                 chapter = chapter,
             )
     else:
-        chapters = story.chapter_set.order_by('order')
+        chapters = story.chapter_set.order_by('order').cache()
         page_title = story.title+u' – все главы'
         data = {
             'story': story,

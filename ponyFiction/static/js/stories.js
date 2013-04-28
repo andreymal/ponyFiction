@@ -1,7 +1,7 @@
 // Глобальные регулярки и прочий нужный почти везде стафф
 current_path = window.location.pathname;
 re_story = new RegExp('^/story/[0-9]+/(?:comments/page/[0-9]+/)?$');
-re_chapter = new RegExp('^/story/[0-9]+/chapter/[0-9]+/$');
+re_chapter = new RegExp('^/story/[0-9]+/chapter/(?:[0-9]+|all)/$');
 re_story_add = new RegExp('^/story/add/$');
 re_story_edit = new RegExp('^/story/[0-9]+/edit/$');
 re_chapter_edit = new RegExp('^/chapter/[0-9]+/edit/$');

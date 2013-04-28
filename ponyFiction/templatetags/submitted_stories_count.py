@@ -4,4 +4,4 @@ register = template.Library()
 
 @register.simple_tag
 def submitted_stories_count():
-    return Story.objects.submitted.count()
+    return Story.objects.submitted.all().cache().count()

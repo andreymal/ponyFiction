@@ -27,7 +27,7 @@ class CommentsStory(ObjectList):
     
     def get_queryset(self):
         story = get_object_or_404(Story, pk=self.kwargs['story_id'])
-        return story.comment_set.order_by('-date')
+        return story.comment_set.order_by('-date').cache()
     
 class CommentsAuthor(ObjectList):
     """ Подгрузка комментариев для профиля """
@@ -44,10 +44,10 @@ class CommentsAuthor(ObjectList):
     
     def get_queryset(self):
         if self.kwargs['user_id'] is None:
-            return Comment.objects.filter(story__authors=self.request.user.id)
+            return Comment.objects.filter(story__authors=self.request.user.id).cache()
         else:
             author = get_object_or_404(Author, pk=self.kwargs['user_id'])
-            return author.comment_set.order_by('-date')
+            return author.comment_set.order_by('-date').cache()
 
 class ConfirmDeleteStory(TemplateView):
     """ Отрисовка модального окна подтверждения удаления рассказа """

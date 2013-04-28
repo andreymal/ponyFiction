@@ -15,9 +15,9 @@ def author_info(request, user_id, comments_page):
     if user_id is None:
         author = request.user
         comments_list = Comment.objects.filter(story__authors=request.user.id).order_by('-date')
-        data['all_views'] = StoryView.objects.filter(story__authors=author).count()
+        data['all_views'] = StoryView.objects.filter(story__authors=author).cache().count()
         data['page_title'] = 'Мой кабинет'
-        data['stories'] = author.story_set.all()
+        data['stories'] = author.story_set.all().cache()
         template = 'author_dashboard.html'
     else:
         author = get_object_or_404(Author, pk=user_id)
@@ -25,11 +25,11 @@ def author_info(request, user_id, comments_page):
         data['page_title'] = u'Автор: %s' % author.username
         data['stories'] = author.story_set.published
         template = 'author_overview.html'
-    comments_count = comments_list.count()
-    published_stories = Story.objects.published.filter(authors=author).count()
-    series = author.series_set.all()
-    votes = [Vote.objects.filter(plus=True).filter(story__authors__id=author.id).count(),
-             Vote.objects.filter(minus=True).filter(story__authors__id=author.id).count()]
+    comments_count = comments_list.cache().count()
+    published_stories = Story.objects.published.filter(authors=author).cache().count()
+    series = author.series_set.all().cache()
+    votes = [Vote.objects.filter(plus=True).filter(story__authors__id=author.id).cache().count(),
+             Vote.objects.filter(minus=True).filter(story__authors__id=author.id).cache().count()]
     comments_paged = Paginator(comments_list, settings.COMMENTS_COUNT['author_page'], orphans=settings.COMMENTS_ORPHANS)
     num_pages = comments_paged.num_pages
     page_current = int(comments_page) if (0 < int(comments_page) <= num_pages) else 1

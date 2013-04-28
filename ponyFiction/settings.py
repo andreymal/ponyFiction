@@ -72,6 +72,7 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'cacheops',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -206,3 +207,31 @@ try:
     from local_settings import *
 except ImportError:
     pass
+
+CACHEOPS_REDIS = {
+    'host': 'localhost',
+    'port': 6379,
+    #'db': 1,
+    'socket_timeout': 3,
+}
+CACHEOPS = {
+    # Автоматически кешировать все User.objects.get() на 15 минут
+    # В том числе доступ через request.user и  post.author,
+    # где Post.author - foreign key к auth.User
+    'auth.user': ('get', 60*15),
+    
+    # Кеш рассказов
+    'ponyFiction.Story': ('get', 60*60*3),
+
+    # Кеш глав
+    'ponyFiction.Chapter': ('get', 60*60*3),
+  
+    
+    # Автоматически кешировать все запросы 
+    # к остальным моделям django.contrib.auth на час
+    'auth.*': ('all', 60*60),
+
+    # Включить ручное кеширование для оставшихся моделей на 15 минут
+    # Инвалидация по-прежнему автоматическая.
+    '*.*': ('just_enable', 60*60),
+}

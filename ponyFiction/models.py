@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Count, Sum, F
-from django.contrib.auth.models import AbstractUser
-from .filters import filter_html, filtered_html_property
 from django.db.models.signals import pre_save
 from django.utils.safestring import mark_safe
+from ponyFiction.filters import filter_html, filtered_html_property
 from ponyFiction.filters.base import html_doc_to_string
 from ponyFiction.filters.html import footnotes_to_html
-from django.conf import settings
 
 class Author(AbstractUser):
     """ Модель автора """
