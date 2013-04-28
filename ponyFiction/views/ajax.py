@@ -87,7 +87,7 @@ def story_publish_ajax(request, story_id):
     
     if request.is_ajax() and request.method == 'POST':
         story = get_object_or_404(Story, pk=story_id)
-        if (story.editable_by(request.user) and story.publishable):
+        if (story.editable_by(request.user) and (story.publishable or request.user.is_staff)):
             if (request.user.approved and not story.approved):
                 story.approved = True
             if story.draft:

@@ -69,7 +69,7 @@ def story_approve(request, pk):
 @csrf_protect
 def story_publish(request, pk):
     story = get_object_or_404(Story, pk=pk)
-    if (story.editable_by(request.user) and story.publishable):
+    if (story.editable_by(request.user) and (story.publishable or request.user.is_staff)):
         if (request.user.approved and not story.approved):
             story.approved = True
         if story.draft:

@@ -1,7 +1,7 @@
 {% load stories %}
 {% if story|editable_by:user %}
 	<span class="story-control-btn">
-		{% if story.publishable %}
+		{% if story.publishable or user.is_staff %}
 			{% if story.draft %}
 				<a class="btn btn-primary btn-mini story_publish" href="{% url 'story_publish' story.id %}">Опубликовать</a>
 			{% else %}
