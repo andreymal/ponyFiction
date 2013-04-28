@@ -3,7 +3,6 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Count, Sum, F
-from django.db.models.signals import pre_save
 from django.utils.safestring import mark_safe
 from ponyFiction.filters import filter_html, filtered_html_property
 from ponyFiction.filters.base import html_doc_to_string
@@ -356,18 +355,6 @@ class Chapter (models.Model):
             tags = settings.SANITIZER_CHAPTER_ALLOWED_TAGS,
             attributes = settings.SANITIZER_CHAPTER_ALLOWED_ATTRIBUTES,
         )
-    
-
-def update_chapter_word_count(sender, instance, **kw):
-    from django.template import defaultfilters as filters
-    instance.words = filters.wordcount(filters.striptags(instance.text))
-pre_save.connect(update_chapter_word_count, sender=Chapter)
-
-def update_story_update_time(sender, instance, **kw):
-    story = Story.objects.get(id = instance.story_id)
-    story.save()
-pre_save.connect(update_story_update_time, sender = Chapter)
-
     
 class Comment(models.Model):
     """ Модель комментария """

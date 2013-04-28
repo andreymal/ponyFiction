@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
-import re
 
 # TODO: переписать код!
-
-#  get pretty paginator ranges
-#  return dict with 3 ranges of indexes [1...num_pages] and 2 dots flags, and current pagenum
-#  (head_range, dots1, locality_range, dots2, tail_range)
-
 
 def pagination_ranges(
     num_pages,             # sumary page numbers
@@ -200,7 +194,3 @@ def SetObjSphinxFilter(sphinx, filter_name, field_name, oldform):
             return {field_name: selector}
         else:
             return {}
-
-
-def make_p(s):
-    return "<p>" + re.sub('\n[\s\n]*\n', '</p><p>', s) + "</p>\n"

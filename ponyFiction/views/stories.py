@@ -2,17 +2,18 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
+from django.http import Http404
 from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic.edit import CreateView, UpdateView
+from ponyFiction import signals
 from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
-from ponyFiction.models import Story, CoAuthorsStory, StoryView, Activity
-from django.http import Http404
-from django.core.files.base import ContentFile
+from ponyFiction.models import Story, CoAuthorsStory, StoryView, Author
 
 @csrf_protect
 def story_view(request, pk, comments_page):
@@ -31,13 +32,7 @@ def story_view(request, pk, comments_page):
     comments = paged.page(page_current)
     page_title = story.title
     comment_form = CommentForm()
-    if request.user.is_authenticated():
-        activity = Activity.objects.get_or_create(author_id=request.user.id, story=story)[0]
-        activity.last_views = story.views
-        activity.last_comments = comments_list.count()
-        activity.last_vote_up = story.vote_up_count
-        activity.last_vote_down = story.vote_down_count
-        activity.save()
+    signals.story_viewed.send(sender=Author, instance=request.user, story=story, comments_count=comments_list.count())
     data = {
        'story' : story,
        'comments' : comments,

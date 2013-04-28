@@ -225,8 +225,7 @@ CACHEOPS = {
 
     # Кеш глав
     'ponyFiction.Chapter': ('get', 60*60*3),
-  
-    
+
     # Автоматически кешировать все запросы 
     # к остальным моделям django.contrib.auth на час
     'auth.*': ('all', 60*60),
