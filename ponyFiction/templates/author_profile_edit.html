@@ -10,94 +10,131 @@
 			<li class="active">{{ page_title }}</li>
 		</ul>   
 	</div>
+	
 	<div class="span12">
 		<h1>{{ page_title }}</h1>
-		<form action="" method="POST" enctype="multipart/form-data" class="form-horizontal">
-		{% csrf_token %}
-			<fieldset>
-				<legend>Основное
-					{% if profile_ok %}
-						<div><small>Профиль успешно обновлен</small></div>
-					{% endif %}
-				</legend>
-				{% for field in profile_form %}
-					<div class="control-group{% if field.errors %} error{% endif %}">
-						<label class="control-label">{{ field.label }}</label>
-						<div class="controls">
-							{{ field }}
-							{% if field.errors %}
-								{% for error in field.errors %}
-									<span class="help-inline">{{ error }}</span>
-								{% endfor %}
-							{% else %}
-								<span class="help-inline small">{{ field.help_text }}</span>
+		<div class="alert-mini green">
+			{% if profile_ok %}Профиль успешно обновлен{% endif %}
+			{% if email_ok %}Адрес электронной почты успешно обновлен{% endif %}
+			{% if password_ok %}Новый пароль установлен{% endif %}				
+		</div>
+		<div class="tabbable">
+			<ul class="nav nav-pills nav-simple">
+				<li class="active">
+					<a href="#main" data-toggle="tab">Основное</a>
+				</li>
+				<li>
+					<a href="#mail" data-toggle="tab">Почта</a>
+				</li>
+				<li>
+					<a href="#security" data-toggle="tab">Безопасность</a>
+				</li>
+				<li>
+					<a href="#personal" data-toggle="tab">Личные настройки</a>
+				</li>
+			</ul>
+			<div class="tab-content">
+			
+				<div class="tab-pane active" id="main">
+					<form action="" method="POST" enctype="multipart/form-data" class="form-horizontal">
+						{% csrf_token %}
+						<fieldset>
+							<legend>Основное</legend>
+							{% for field in profile_form %}
+								<div class="control-group{% if field.errors %} error{% endif %}">
+									<label class="control-label">{{ field.label }}</label>
+									<div class="controls">
+										{{ field }}
+										{% if field.errors %}
+											{% for error in field.errors %}
+												<span class="help-inline">{{ error }}</span>
+											{% endfor %}
+										{% else %}
+											<span class="help-inline small">{{ field.help_text }}</span>
+										{% endif %}
+									</div>
+								</div>
+							{% endfor %}
+							{% if profile_form.non_field_errors %}
+								<div class="control-group error"><span class="help-inline">{{ form.non_field_errors.0 }}</span></div>
 							{% endif %}
-						</div>
-					</div>
-				{% endfor %}
-				{% if profile_form.non_field_errors %}
-					<div class="control-group error"><span class="help-inline">{{ form.non_field_errors.0 }}</span></div>
-				{% endif %}
-				<div class="form-actions">
-					<button class="btn btn-primary" type="submit" name="save_profile">Сохранить профиль</button>
+							<div class="form-actions">
+								<button class="btn btn-primary" type="submit" name="save_profile">Сохранить профиль</button>
+							</div>
+						</fieldset>
+					</form>
 				</div>
-				<legend>Безопасность
-					{% if email_ok %}
-						<div><small>Адрес электронной почты успешно обновлен</small></div>
-					{% endif %}				</legend>
-				{% for field in email_form %}
-					<div class="control-group{% if field.errors %} error{% endif %}">
-						<label class="control-label">{{ field.label }}</label>
-						<div class="controls">
-							{{ field }}
-							{% if field.errors %}
-								{% for error in field.errors %}
-									<span class="help-inline">{{ error }}</span>
-								{% endfor %}
-							{% else %}
-								<span class="help-inline small">{{ field.help_text }}</span>
+						
+				<div class="tab-pane" id="mail">
+					<form action="" method="POST" enctype="multipart/form-data" class="form-horizontal">
+						{% csrf_token %}
+						<fieldset>
+						<legend>Почта</legend>
+							{% for field in email_form %}
+								<div class="control-group{% if field.errors %} error{% endif %}">
+									<label class="control-label">{{ field.label }}</label>
+									<div class="controls">
+										{{ field }}
+										{% if field.errors %}
+											{% for error in field.errors %}
+												<span class="help-inline">{{ error }}</span>
+											{% endfor %}
+										{% else %}
+											<span class="help-inline small">{{ field.help_text }}</span>
+										{% endif %}
+									</div>
+								</div>
+							{% endfor %}
+							{% if email_form.non_field_errors %}
+								<div class="control-group error"><span class="help-inline">{{ form.non_field_errors.0 }}</span></div>
 							{% endif %}
-						</div>
-					</div>
-				{% endfor %}
-				{% if email_form.non_field_errors %}
-					<div class="control-group error"><span class="help-inline">{{ form.non_field_errors.0 }}</span></div>
-				{% endif %}
-				<div class="form-actions">
-					<button class="btn btn-primary" type="submit" name="save_email">Сменить e-mail</button>
+							<div class="form-actions">
+								<button class="btn btn-primary" type="submit" name="save_email">Сменить e-mail</button>
+							</div>
+						</fieldset>
+					</form>
 				</div>
-				<legend>Смена пароля
-					{% if password_ok %}
-						<div><small>Новый пароль установлен</small></div>
-					{% endif %}				</legend>
-				{% for field in password_form %}
-					<div class="control-group{% if field.errors %} error{% endif %}">
-						<label class="control-label">{{ field.label }}</label>
-						<div class="controls">
-							{{ field }}
-							{% if field.errors %}
-								{% for error in field.errors %}
-									<span class="help-inline">{{ error }}</span>
-								{% endfor %}
-							{% else %}
-								<span class="help-inline small">{{ field.help_text }}</span>
+						
+				<div class="tab-pane" id="security">
+					<form action="" method="POST" enctype="multipart/form-data" class="form-horizontal">
+						{% csrf_token %}
+						<fieldset>
+							<legend>Безопасность</legend>
+							{% for field in password_form %}
+								<div class="control-group{% if field.errors %} error{% endif %}">
+									<label class="control-label">{{ field.label }}</label>
+									<div class="controls">
+										{{ field }}
+										{% if field.errors %}
+											{% for error in field.errors %}
+												<span class="help-inline">{{ error }}</span>
+											{% endfor %}
+										{% else %}
+											<span class="help-inline small">{{ field.help_text }}</span>
+										{% endif %}
+									</div>
+								</div>
+							{% endfor %}
+							{% if password_form_nfe %}
+								<div class="control-group error">
+									{% for error in password_form_nfe %}
+										<span class="help-inline">{{ error }}</span>
+									{% endfor %}
+								</div>
 							{% endif %}
-						</div>
-					</div>
-				{% endfor %}
-				{% if password_form_nfe %}
-					<div class="control-group error">
-						{% for error in password_form_nfe %}
-							<span class="help-inline">{{ error }}</span>
-						{% endfor %}
-					</div>
-				{% endif %}
-				<div class="form-actions">
-					<button class="btn btn-primary" type="submit" name="save_password">Сменить пароль</button>
+							<div class="form-actions">
+								<button class="btn btn-primary" type="submit" name="save_password">Сменить пароль</button>
+							</div>
+						</fieldset>
+					</form>
 				</div>
-			</fieldset>
-		</form>
-	</div>
+						
+				<div class="tab-pane" id="personal">
+				</div>
+			</div>
+		</div>
+	</div>		
+
 	<div class="span12">
 		<ul class="breadcrumb">
 			<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
