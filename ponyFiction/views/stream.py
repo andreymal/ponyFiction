@@ -16,7 +16,7 @@ class StreamStories(ObjectList):
         return u'Лента добавлений'
     
     def get_queryset(self):
-        return Story.objects.published.order_by('-date').cache()
+        return Story.objects.accessible(self.request.user).order_by('-date').cache()
     
 class StreamChapters(ObjectList):
     
@@ -32,7 +32,7 @@ class StreamChapters(ObjectList):
         return u'Лента обновлений'
     
     def get_queryset(self):
-        return Chapter.objects.filter(story__in=Story.objects.published).order_by('-date').cache()
+        return Chapter.objects.filter(story__in=Story.objects.accessible(self.request.user)).order_by('-date').cache()
     
 class StreamComments(ObjectList):
     
@@ -48,4 +48,4 @@ class StreamComments(ObjectList):
         return u'Лента комментариев'
     
     def get_queryset(self):
-        return Comment.objects.filter(story__in=Story.objects.published).order_by('-date').cache()
+        return Comment.objects.filter(story__in=Story.objects.accessible(self.request.user)).order_by('-date').cache()

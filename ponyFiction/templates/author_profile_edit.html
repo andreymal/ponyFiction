@@ -16,7 +16,8 @@
 		<div class="alert-mini green">
 			{% if profile_ok %}Профиль успешно обновлен{% endif %}
 			{% if email_ok %}Адрес электронной почты успешно обновлен{% endif %}
-			{% if password_ok %}Новый пароль установлен{% endif %}				
+			{% if password_ok %}Новый пароль установлен{% endif %}
+			{% if prefs_ok %}Личные настройки сохранены{% endif %}				
 		</div>
 		<div class="tabbable">
 			<ul class="nav nav-pills nav-simple">
@@ -130,6 +131,16 @@
 				</div>
 						
 				<div class="tab-pane" id="personal">
+					<form action="" method="POST" enctype="multipart/form-data" class="form-horizontal">
+						{% csrf_token %}
+						<fieldset>
+							<legend>Не показывать рассказы:</legend>
+							<div class="padded bootstrap checkboxes">{{ prefs_form.excluded_categories }}</div>
+							<div class="form-actions">
+								<button class="btn btn-primary" type="submit" name="save_prefs">Сохранить личные настройки</button>
+							</div>
+						</fieldset>
+					</form>
 				</div>
 			</div>
 		</div>

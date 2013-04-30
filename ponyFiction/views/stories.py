@@ -14,11 +14,13 @@ from ponyFiction import signals
 from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
 from ponyFiction.models import Story, CoAuthorsStory, StoryView, Author
+from cacheops.invalidation import invalidate_obj
 
 @csrf_protect
 def story_view(request, pk, comments_page):
+    
     try:
-        story = Story.objects.accessible.get(pk=pk)
+        story = Story.objects.accessible(request.user).get(pk=pk)
     except Story.DoesNotExist:
         story = get_object_or_404(Story, pk=pk)
         if not story.editable_by(request.user):
@@ -94,26 +96,28 @@ def story_delete(request, pk):
 @csrf_protect
 def story_favorite(request, pk):
     from ponyFiction.models import Favorites
-    story = get_object_or_404(Story.objects.published, pk=pk)
+    story = get_object_or_404(Story.objects.accessible(request.user), pk=pk)
     (favorite, created) = Favorites.objects.get_or_create(story=story, author=request.user)
     if not created:
         favorite.delete()
+    invalidate_obj(story)
     return redirect('favorites', request.user.id)
 
 @login_required
 @csrf_protect
 def story_bookmark(request, pk):
     from ponyFiction.models import Bookmark
-    story = get_object_or_404(Story.objects.published, pk=pk)
+    story = get_object_or_404(Story.objects.accessible(request.user), pk=pk)
     (bookmark, created) = Bookmark.objects.get_or_create(story=story, author=request.user)
     if not created:
         bookmark.delete()
+    invalidate_obj(story)
     return redirect('bookmarks')
 
 @login_required
 @csrf_protect
 def story_vote(request, pk, direction):
-    story = get_object_or_404(Story.objects.published, pk=pk)
+    story = get_object_or_404(Story.objects.accessible(request.user), pk=pk)
     if story.editable_by(request.user):
         redirect('story_view', pk)
     vote = story.vote.get_or_create(author=request.user)[0]
@@ -131,7 +135,7 @@ class StoryAdd(CreateView):
     model = Story
     form_class = StoryForm
     template_name = 'story_work.html'
-    initial={'finished': 0, 'freezed': 0, 'original': 1, 'rating': 4, 'button_submit': u'Добавить рассказ'}
+    initial = {'finished': 0, 'freezed': 0, 'original': 1, 'rating': 4, 'button_submit': u'Добавить рассказ'}
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -139,7 +143,7 @@ class StoryAdd(CreateView):
     
     def form_valid(self, form):
         story = form.save()
-        CoAuthorsStory.objects.create(story = story, author = self.request.user, approved = True)
+        CoAuthorsStory.objects.create(story=story, author=self.request.user, approved=True)
         return redirect('story_edit', story.id)
     
     def get_context_data(self, **kwargs):
@@ -152,7 +156,7 @@ class StoryEdit(UpdateView):
     model = Story
     form_class = StoryForm
     template_name = 'story_work.html'
-    initial={'button_submit': u'Сохранить изменения'}
+    initial = {'button_submit': u'Сохранить изменения'}
     story = None
     
     @method_decorator(login_required)
@@ -202,10 +206,10 @@ def story_download(request, story_id, filename, extension):
         debug):
         
         data = fmt.render(
-            story = story,
-            filename = filename,
-            extension = extension,
-            debug = debug,
+            story=story,
+            filename=filename,
+            extension=extension,
+            debug=debug,
         )
         if not debug:
             storage.save(filepath, ContentFile(data))

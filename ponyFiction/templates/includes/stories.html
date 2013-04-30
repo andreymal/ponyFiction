@@ -51,7 +51,7 @@
 		{% if not story.finished or story.finished and story.chapter_set.count > 1 %}
 			<div id="story-{{ story.id }}" class="collapse">
 				<ul class="chapters-list">
-					{% for chapter in story.chapter_set.all %}
+					{% for chapter in story.chapter_set.all|order_by:"order" %}
 						<li>
 							<a class="chapter-title" href="{% url 'chapter_view_single' story.id chapter.order %}">{{ chapter.title }}</a> 
 							{% if story|editable_by:user %}

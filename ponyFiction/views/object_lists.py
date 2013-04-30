@@ -49,7 +49,7 @@ class FavoritesList(ObjectList):
             return u'Избранное автора %s' % self.author.username
 
     def get_queryset(self):
-        return self.author.favorites_story_set.published.order_by('-favorites_story_related_set__date').cache()
+        return self.author.favorites_story_set.accessible(self.request.user).order_by('-favorites_story_related_set__date')
     
 
 class SubmitsList(ObjectList):

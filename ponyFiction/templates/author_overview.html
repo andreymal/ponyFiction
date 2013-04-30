@@ -22,8 +22,8 @@
 			{% endif %}
 		</h1>
 	    <p>
-		    {% if published_stories > 0 %}
-		    	Написал <b>{{ published_stories|rupluralize:'рассказ,рассказа,рассказов' }}</b>
+		    {% if stories.count > 0 %}
+		    	Написал <b>{{ stories.count|rupluralize:'рассказ,рассказа,рассказов' }}</b>
 		    {% else %}
 		    	Пока ничего не написал
 		    {% endif %}

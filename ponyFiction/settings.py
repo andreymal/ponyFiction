@@ -11,7 +11,6 @@ ADMINS = (
 )
 DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS' : False}
 MANAGERS = ADMINS
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -56,7 +55,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
@@ -79,10 +77,6 @@ INSTALLED_APPS = (
     # 'django.contrib.sites',
     # 'django.contrib.messages',
     # 'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
-    
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
     'ponyFiction',
     'django.contrib.admin',
     'debug_toolbar',
@@ -157,7 +151,7 @@ EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'noreply@stories.everypony.ru'
 RECAPTCHA_PUBLIC_KEY = '6LfbstoSAAAAAAcFIteoZTld24mt3s6_sODZnc8J'
 RECAPTCHA_PRIVATE_KEY = '6LfbstoSAAAAAHHN9jYw9Lp9lsunQCILAyAYgoxz'
-SANITIZER_ALLOWED_TAGS = [
+ALLOWED_TAGS = [
     'b', 'i', 'strong', 'em', 's', 'u',
     'p', 'br', 'hr',
     'a',
@@ -165,12 +159,12 @@ SANITIZER_ALLOWED_TAGS = [
     'blockquote', 'sup', 'sub', 'pre', 'small', 'tt'
 ]
 
-SANITIZER_ALLOWED_ATTRIBUTES = {
+ALLOWED_ATTRIBUTES = {
     'img': ['src', 'alt', 'title', 'width', 'height'],
     'a': ['href', 'rel', 'title'],
 }
 
-SANITIZER_CHAPTER_ALLOWED_TAGS = [
+CHAPTER_ALLOWED_TAGS = [
     'b', 'i', 'strong', 'em', 's', 'u',
     'h3', 'h4', 'h5',
     'p', 'span', 'br', 'hr', 'footnote',
@@ -179,7 +173,7 @@ SANITIZER_CHAPTER_ALLOWED_TAGS = [
     'blockquote', 'sup', 'sub', 'pre', 'small', 'tt'
 ]
 
-SANITIZER_CHAPTER_ALLOWED_ATTRIBUTES = {
+CHAPTER_ALLOWED_ATTRIBUTES = {
     'img': ['src', 'alt', 'title', 'width', 'height'],
     'a': ['href', 'rel', 'title'],
     'span': ['align'],
@@ -211,26 +205,19 @@ except ImportError:
 CACHEOPS_REDIS = {
     'host': 'localhost',
     'port': 6379,
-    #'db': 1,
     'socket_timeout': 3,
 }
 CACHEOPS = {
-    # Автоматически кешировать все User.objects.get() на 15 минут
-    # В том числе доступ через request.user и  post.author,
-    # где Post.author - foreign key к auth.User
     'auth.user': ('get', 60*15),
-    
-    # Кеш рассказов
     'ponyFiction.Story': ('get', 60*60*3),
-
-    # Кеш глав
     'ponyFiction.Chapter': ('get', 60*60*3),
-
-    # Автоматически кешировать все запросы 
-    # к остальным моделям django.contrib.auth на час
+    'ponyFiction.Comment': ('get', 60*60*3),
+    
+    'ponyFiction.Character': ('all', 60*60*24*30),
+    'ponyFiction.Category': ('all', 60*60*24*30),
+    'ponyFiction.Classifier': ('all', 60*60*24*30),
+    'ponyFiction.Rating': ('all', 60*60*24*30),
+    
     'auth.*': ('all', 60*60),
-
-    # Включить ручное кеширование для оставшихся моделей на 15 минут
-    # Инвалидация по-прежнему автоматическая.
     '*.*': ('just_enable', 60*60),
 }

@@ -1,43 +1,23 @@
 # -*- coding: utf-8 -*-
-from django.forms.models import ModelChoiceIterator
-from django.forms import ModelChoiceField, ModelMultipleChoiceField
-from itertools import groupby
+from django.db.models import CommaSeparatedIntegerField, SubfieldBase
+from ponyFiction.utils.misc import unicode_to_int_list
 
-class GroupedModelChoiceIterator(ModelChoiceIterator):
-    def __iter__(self):
-        if self.field.empty_label is not None:
-            yield (u"", self.field.empty_label)
-        if self.field.cache_choices:
-            if self.field.choice_cache is None:
-                self.field.choice_cache = [
-                    (group, [self.choice(ch) for ch in choices])
-                        for group,choices in groupby(self.queryset.all(),
-                            key=lambda row: getattr(row, self.field.group_by_field))
-                ]
-            for choice in self.field.choice_cache:
-                yield choice
-        else:
-            for group, choices in groupby(self.queryset.order_by('group'), lambda row: getattr(row, self.field.group_by_field)):
-                yield (group, [self.choice(ch) for ch in choices])
-
-class GroupedModelChoiceField(ModelMultipleChoiceField):
-    def __init__(self, queryset, group_by_field, group_label=None, *args, **kwargs):
-        """
-        group_by_field is the name of a field on the model
-        group_label is a function to return a label for each choice group
-        """
-        super(GroupedModelChoiceField, self).__init__(queryset, *args, **kwargs)
-        self.group_by_field = group_by_field
-        if group_label is None:
-            self.group_label = lambda group: group
-        else:
-            self.group_label = group_label
+class SeparatedValuesField(CommaSeparatedIntegerField):
+    __metaclass__ = SubfieldBase
+    token = ','
     
-    def _get_choices(self):
-        """
-        Exactly as per ModelChoiceField except returns new iterator class
-        """
-        if hasattr(self, '_choices'):
-            return self._choices
-        return GroupedModelChoiceIterator(self)
-    choices = property(_get_choices, ModelChoiceField._set_choices)
+    def to_python(self, value):
+        if not value:
+            return []
+        if isinstance(value, list):
+            return unicode_to_int_list(value)
+        return unicode_to_int_list(value.split(self.token))
+
+    def get_db_prep_value(self, value, *args, **kwargs):
+        if not value: return
+        assert(isinstance(value, list) or isinstance(value, tuple))
+        return self.token.join([unicode(s) for s in value])
+
+    def value_to_string(self, obj):
+        value = self._get_val_from_obj(obj)
+        return self.get_db_prep_value(value)

@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models import Max
+from django.db.models import Max, F
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic.edit import CreateView, UpdateView
 from ponyFiction.forms.chapter import ChapterForm
 from ponyFiction.models import Story, Chapter, StoryView
 from django.views.decorators.csrf import csrf_protect
+from cacheops.invalidation import invalidate_obj
 
 def chapter_view(request, story_id=False, chapter_order=False):
     try:
-        story = Story.objects.accessible.get(pk=story_id)
+        story = Story.objects.accessible(request.user).get(pk=story_id)
     except Story.DoesNotExist:
         story = get_object_or_404(Story, pk=story_id)
         if not story.editable_by(request.user):
@@ -112,9 +113,12 @@ class ChapterEdit(UpdateView):
 @csrf_protect
 def chapter_delete(request, pk):
     chapter = get_object_or_404(Chapter, pk=pk)
-    story_id = chapter.story.id
+    story = chapter.story
     if chapter.story.editable_by(request.user):
+        story.chapter_set.filter(order__gt=chapter.order).update(order=F('order')-1)
+        for ch in story.chapter_set.filter(order__gt=chapter.order):
+            invalidate_obj(ch)
         chapter.delete()
-        return redirect('story_edit', story_id)
+        return redirect('story_edit', story.id)
     else:
         raise PermissionDenied

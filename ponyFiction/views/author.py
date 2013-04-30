@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_protect
-from ponyFiction.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm 
-from ponyFiction.models import Author, Story, Comment, Vote, StoryView
+from ponyFiction.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm, AuthorEditPrefsForm
+from ponyFiction.models import Author, Comment, Vote, Story, StoryView
 from django.core.exceptions import PermissionDenied
 
 @login_required
@@ -14,19 +14,18 @@ def author_info(request, user_id, comments_page):
     data = {}
     if user_id is None:
         author = request.user
-        comments_list = Comment.objects.filter(story__authors=request.user.id).order_by('-date')
+        comments_list = Comment.objects.filter(story__authors=request.user.id).order_by('-date').cache()
         data['all_views'] = StoryView.objects.filter(story__authors=author).cache().count()
         data['page_title'] = 'Мой кабинет'
-        data['stories'] = author.story_set.all().cache()
+        stories = author.story_set.all().cache()
         template = 'author_dashboard.html'
     else:
         author = get_object_or_404(Author, pk=user_id)
-        comments_list = author.comment_set.order_by('-date')
+        comments_list = author.comment_set.filter(story__in=Story.objects.accessible(request.user)).order_by('-date').cache()
         data['page_title'] = u'Автор: %s' % author.username
-        data['stories'] = author.story_set.published
+        stories = author.story_set.accessible(request.user)
         template = 'author_overview.html'
-    comments_count = comments_list.cache().count()
-    published_stories = Story.objects.published.filter(authors=author).cache().count()
+    comments_count = comments_list.count()
     series = author.series_set.all().cache()
     votes = [Vote.objects.filter(plus=True).filter(story__authors__id=author.id).cache().count(),
              Vote.objects.filter(minus=True).filter(story__authors__id=author.id).cache().count()]
@@ -36,7 +35,7 @@ def author_info(request, user_id, comments_page):
     comments = comments_paged.page(page_current)
     data.update({
             'author' : author,
-            'published_stories': published_stories,
+            'stories': stories,
             'series' : series,
             'comments' : comments,
             'page_current': page_current,
@@ -45,7 +44,6 @@ def author_info(request, user_id, comments_page):
             'votes': votes
             })
     return render(request, template, data)
-
 
 @login_required
 @csrf_protect
@@ -71,10 +69,17 @@ def author_edit(request):
                 data['password_ok'] = True
             else:
                 data['password_form_nfe'] = password_form.non_field_errors()
+        if 'save_prefs' in request.POST:
+            prefs_form = AuthorEditPrefsForm(request.POST, author=author, prefix='prefs_form')
+            if prefs_form.is_valid():
+                prefs_form.save()
+                data['prefs_ok'] = True
+                
     profile_form = AuthorEditProfileForm(instance=author, prefix='profile_form')
     email_form = AuthorEditEmailForm(author=author, prefix='email_form')
     password_form = AuthorEditPasswordForm(author=author, prefix='password_form')
-    data.update({'profile_form': profile_form, 'email_form': email_form, 'password_form': password_form})
+    prefs_form = AuthorEditPrefsForm(author=author, prefix='prefs_form')
+    data.update({'profile_form': profile_form, 'email_form': email_form, 'password_form': password_form, 'prefs_form': prefs_form})
     return render(request, 'author_profile_edit.html', data)
 
 @login_required

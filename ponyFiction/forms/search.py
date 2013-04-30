@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.forms import Field, Form, ModelMultipleChoiceField, MultipleChoiceField, TextInput, ChoiceField, IntegerField, CharField
-from ponyFiction.fields import GroupedModelChoiceField
+from ponyFiction.forms.fields import GroupedModelChoiceField
 from ponyFiction.models import Character, Category, Classifier, Rating
 from ponyFiction.widgets import NumberInput, ButtonWidget, ServiceButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesButtons, StoriesRadioButtons, StoriesServiceInput
 

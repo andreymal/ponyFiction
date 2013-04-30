@@ -12,8 +12,8 @@ from ponyFiction.filters.base import html_doc_transform, transform_xslt_params
 empty_lines_re = re.compile(r'\n[\s\n]*\n')
 
 def filter_html(text,
-                tags = settings.SANITIZER_ALLOWED_TAGS,
-                attributes = settings.SANITIZER_ALLOWED_ATTRIBUTES):
+                tags = settings.ALLOWED_TAGS,
+                attributes = settings.ALLOWED_ATTRIBUTES):
     
     doc = normalize_html(text, convert_linebreaks = True)
     doc = typo(html_doc_to_string(doc))

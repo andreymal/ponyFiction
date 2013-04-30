@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Count, Sum, F
 from django.utils.safestring import mark_safe
+from ponyFiction.fields import SeparatedValuesField
 from ponyFiction.filters import filter_html, filtered_html_property
 from ponyFiction.filters.base import html_doc_to_string
 from ponyFiction.filters.html import footnotes_to_html
@@ -17,8 +18,8 @@ class Author(AbstractUser):
     tabun = models.CharField(max_length=256, blank=True, verbose_name="Табун")
     forum = models.URLField(max_length=200, blank=True, verbose_name="Форум")
     vk = models.URLField(max_length=200, blank=True, verbose_name="VK")
-    
     approved = models.BooleanField(default=False, verbose_name="Проверенный автор")
+    excluded_categories = SeparatedValuesField(max_length=200, null=True, verbose_name="Скрытые категории")
     
     def __unicode__(self):
         return self.username
@@ -192,10 +193,13 @@ class StoryQuerySet(models.query.QuerySet):
     def last_week(self):
         return self.filter(date__gte=self.last)
     
-    @property
-    def accessible(self):
+    def accessible(self, user):
         from django.db.models import Q
-        return self.filter(Q(date__gte=self.last)|Q(draft=False, approved=True))
+        qs = self.filter(Q(date__gte=self.last)|Q(draft=False, approved=True))
+        if user.is_anonymous():
+            return qs
+        else:
+            return qs.exclude(categories__in=user.excluded_categories)
     
 class StoryManager(models.Manager):
     def get_query_set(self):
@@ -217,9 +221,8 @@ class StoryManager(models.Manager):
     def last_week(self):
         return self.get_query_set().last_week
     
-    @property
-    def accessible(self):
-        return self.get_query_set().accessible
+    def accessible(self, user):
+        return self.get_query_set().accessible(user)
     
 class Story (models.Model):
     """ Модель рассказа """
@@ -352,8 +355,8 @@ class Chapter (models.Model):
     def get_filtered_chapter_text(self):
         return filter_html(
             self.text,
-            tags = settings.SANITIZER_CHAPTER_ALLOWED_TAGS,
-            attributes = settings.SANITIZER_CHAPTER_ALLOWED_ATTRIBUTES,
+            tags = settings.CHAPTER_ALLOWED_TAGS,
+            attributes = settings.CHAPTER_ALLOWED_ATTRIBUTES,
         )
     
 class Comment(models.Model):
