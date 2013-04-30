@@ -20,6 +20,7 @@ class Author(AbstractUser):
     vk = models.URLField(max_length=200, blank=True, verbose_name="VK")
     approved = models.BooleanField(default=False, verbose_name="Проверенный автор")
     excluded_categories = SeparatedValuesField(max_length=200, null=True, verbose_name="Скрытые категории")
+    detail_view = models.BooleanField(default=False, verbose_name="Детальное отображение рассказов")
     
     def __unicode__(self):
         return self.username

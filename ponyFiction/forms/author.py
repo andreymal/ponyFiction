@@ -2,8 +2,9 @@
 from ponyFiction.models import Author, Category
 from django.forms import CharField, EmailField, Form, ModelForm, PasswordInput, RegexField, TextInput, Textarea, ValidationError, URLField
 from ponyFiction.utils.misc import obj_to_int_list
-from ponyFiction.widgets import StoriesButtons
+from ponyFiction.widgets import StoriesButtons, StoriesRadioButtons
 from django.forms.models import ModelMultipleChoiceField
+from django.forms.fields import ChoiceField
 
 class AuthorEditProfileForm(ModelForm):
     attrs_dict = {'class': 'input-xlarge'}
@@ -66,24 +67,37 @@ class AuthorEditPrefsForm(Form):
         'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-checkbox'},
         'data_container_attrs': {'class': 'buttons-data'},
     }
-
+    radio_attrs = {
+        'btn_attrs': {'type': 'button', 'class': 'btn'},
+        'data_attrs': {'class': 'hidden'},
+        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-radio'},
+        'data_container_attrs': {'class': 'buttons-data'},
+    }
     excluded_categories = ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         required=False,
         widget=StoriesButtons(attrs=checkbox_attrs),
     )
-
+    
+    detail_view = ChoiceField(
+        choices=[(0, 'Кратко'), (1, 'Подробно')],
+        required=False,
+        widget=StoriesRadioButtons(attrs=radio_attrs),
+    )
+    
     def __init__(self, *args, **kwargs):
         self.author = kwargs.pop('author', None)
         super(AuthorEditPrefsForm, self).__init__(*args, **kwargs)
         if self.author:
             self.fields['excluded_categories'].initial = self.author.excluded_categories
+            self.fields['detail_view'].initial = self.author.detail_view
     
     def save(self):
         author = self.author
         excluded_categories = self.cleaned_data['excluded_categories'] 
         author.excluded_categories = obj_to_int_list(excluded_categories)
-        author.save(update_fields=['excluded_categories'])
+        author.detail_view = bool(int(self.cleaned_data['detail_view']))
+        author.save(update_fields=['excluded_categories', 'detail_view'])
     
 class AuthorEditEmailForm(Form):
     attrs_dict = {'class': 'input-xlarge'}

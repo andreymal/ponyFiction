@@ -38,7 +38,7 @@
 				<h3>Сортировать по: </h3>
 					
 					<!-- Тип сортировки -->
-					<span class="padded bootstrap checkboxes">{{ form.sort_type }}</span>
+					<span class="padded bootstrap checkbox">{{ form.sort_type }}</span>
 				</div>
 				<!-- Конец спойлера -->
 				
@@ -60,19 +60,19 @@
 				<h3>Дополнительные настройки поиска:</h3>
 				
 				<!-- Оригинал/перевод -->
-				<div class="padded bootstrap checkboxes">{{ form.originals_select }}</div>
+				<div class="padded bootstrap checkbox">{{ form.originals_select }}</div>
 
 				<!-- Статус рассказа -->
-				<div class="padded bootstrap checkboxes">{{ form.finished_select }}</div>
+				<div class="padded bootstrap checkbox">{{ form.finished_select }}</div>
 
 				<!-- Заморожен/активен -->
-				<div class="padded bootstrap checkboxes">{{ form.freezed_select }}</div>
+				<div class="padded bootstrap checkbox">{{ form.freezed_select }}</div>
 
 				<!-- Размер -->
 				<div class="padded"><h4>Размер рассказа</h4>{{ form.search_min_size }}<br>{{ form.search_max_size }}</h4></div>
 				
 				<!-- Рейтинг -->
-				<div class="padded bootstrap checkboxes">{{ form.ratings_select }}</div>
+				<div class="padded bootstrap checkbox">{{ form.ratings_select }}</div>
 				
 				<!-- События -->
 				<div class="control-group"><label class="control-label">События</label><div class="controls events">{{ form.classifications_select }}</div></div>

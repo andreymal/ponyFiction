@@ -383,8 +383,8 @@ function activateBootstrap() {
 	var buttons_container = $('.buttons-visible', group)
 	var data_container = $('.buttons-data', group)
 
-	if (group.hasClass('checkboxes')) {
-		var type = 'checkboxes'
+	if (group.hasClass('checkbox')) {
+		var type = 'checkbox'
 	} else if (group.hasClass('radio')) {
 		var type = 'radio'
 	}
@@ -405,7 +405,7 @@ function activateBootstrap() {
 				var button = $(this);
 				button.live('click', function() {
 					value = button.attr('value');
-					if (type == 'checkboxes') {
+					if (type == 'checkbox') {
 						input = $('input:checkbox[value=' + value + ']',
 								data_container);
 						selected = Boolean($('input:checked[value=' + value

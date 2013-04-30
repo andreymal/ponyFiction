@@ -16,6 +16,6 @@ def index(request):
             'stories' : stories,
             'chapters' : chapters,
             'comments' : comments,
-            'page_title' : page_title
+            'page_title' : page_title,
             }
     return render(request, 'index.html', data)

@@ -36,19 +36,20 @@
 					{% endfor %}
 				</span>
 				{{ story.words|rupluralize:'слово,слова,слов' }} от {% include 'includes/story_authors_list.html' %}
-				{% if detailed_view %}
-					<p>{% if story.chapter_set.count == 1 %}{{ story.chapter_set.all.0.views|rupluralize:'просмотр,просмотра,просмотров' }}{% endif %}, {{ story.comment_set.count|rupluralize:'комментарий,комментария,комментариев' }}</p>
-				{% endif %}
-				{% if story|story_comments_delta:user > 0 %}
+				{% if user.detail_view %}
+					<br/>
+					<span>
+					{% if story.chapter_set.count == 1 %}{{ story.chapter_set.all.0.views|rupluralize:'просмотр,просмотра,просмотров' }}, {% endif %}{{ story.comment_set.count|rupluralize:'комментарий,комментария,комментариев' }}
+					</span>
+					{% if story|story_comments_delta:user > 0 %}
 					(<span class="green">+{{ story|story_comments_delta:user }}</span>)
+					{% endif %}
 				{% endif %}
 			{% endspaceless %}
 		</p>
 		<p>{{ story.summary_as_html|striptags }}</p>
-		{% if story.chapter_set.count > 1 %}
+		{% if user.detail_view and story.chapter_set.count > 1 %}
 			<button class="btn btn-collapse btn-small" data-toggle="collapse" data-target="#story-{{ story.id }}">Показать {{ story.chapter_set.count|rupluralize:'главу,главы,глав' }}</button>
-		{% endif %}  
-		{% if not story.finished or story.finished and story.chapter_set.count > 1 %}
 			<div id="story-{{ story.id }}" class="collapse">
 				<ul class="chapters-list">
 					{% for chapter in story.chapter_set.all|order_by:"order" %}

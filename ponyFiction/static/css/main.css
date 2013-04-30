@@ -763,6 +763,11 @@ input.hidden {
 .nav-pills.nav-simple>li.active>a:hover {
 	color: #ffffff;
 }
+.bootstrap > label {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
 /* Registration form */
 .registration-form {
 	
