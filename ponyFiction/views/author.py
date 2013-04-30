@@ -21,9 +21,9 @@ def author_info(request, user_id, comments_page):
         template = 'author_dashboard.html'
     else:
         author = get_object_or_404(Author, pk=user_id)
-        comments_list = author.comment_set.filter(story__in=Story.objects.accessible(request.user)).order_by('-date').cache()
+        comments_list = author.comment_set.filter(story__in=Story.objects.accessible(user=request.user)).order_by('-date').cache()
         data['page_title'] = u'Автор: %s' % author.username
-        stories = author.story_set.accessible(request.user)
+        stories = author.story_set.accessible(user=request.user)
         template = 'author_overview.html'
     comments_count = comments_list.count()
     series = author.series_set.all().cache()

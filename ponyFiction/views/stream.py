@@ -16,7 +16,7 @@ class StreamStories(ObjectList):
         return u'Лента добавлений'
     
     def get_queryset(self):
-        return Story.objects.accessible(self.request.user).order_by('-date').cache()
+        return Story.objects.accessible(user=self.request.user).order_by('-date')
     
 class StreamChapters(ObjectList):
     

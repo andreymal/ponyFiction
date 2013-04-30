@@ -123,7 +123,7 @@ def story_bookmark_ajax(request, story_id):
     """ Добавление рассказа в закладки """
     
     if request.is_ajax() and request.method == 'POST':
-        story = get_object_or_404(Story.objects.accessible(request.user), pk=story_id)
+        story = get_object_or_404(Story.objects.accessible(user=request.user), pk=story_id)
         (bookmark, created) = Bookmark.objects.get_or_create(story=story, author=request.user)
         if not created:
             bookmark.delete()
@@ -137,7 +137,7 @@ def story_bookmark_ajax(request, story_id):
 def story_favorite_ajax(request, story_id):
     """ Добавление рассказа в избранное """
     if request.is_ajax() and request.method == 'POST':
-        story = get_object_or_404(Story.objects.accessible(request.user), pk=story_id)
+        story = get_object_or_404(Story.objects.accessible(user=request.user), pk=story_id)
         (favorite, created) = Favorites.objects.get_or_create(story=story, author=request.user)
         if not created:
             favorite.delete()
@@ -150,7 +150,7 @@ def story_favorite_ajax(request, story_id):
 @csrf_protect
 def story_vote_ajax(request, story_id, direction):
     if request.is_ajax() and request.method == 'POST':
-        story = get_object_or_404(Story.objects.accessible(request.user), pk=story_id)
+        story = get_object_or_404(Story.objects.accessible(user=request.user), pk=story_id)
         direction = True if (direction == 'plus') else False
         if story.editable_by(request.user):
             return HttpResponse(dumps([story.vote_up_count, story.vote_down_count]))
@@ -171,7 +171,7 @@ def story_vote_ajax(request, story_id, direction):
 @csrf_protect
 def chapter_sort(request, story_id):
     """ Сортировка глав """
-    story = get_object_or_404(Story.objects.accessible(request.user), pk=story_id)
+    story = get_object_or_404(Story.objects.accessible(user=request.user), pk=story_id)
     if story.editable_by(request.user) and request.is_ajax() and request.method == 'POST':
         new_order = unicode_to_int_list(request.POST.getlist('chapters[]'))
         if (not new_order or story.chapter_set.count() != len(new_order)):

@@ -11,7 +11,7 @@ from ponyFiction.models import Story
 @csrf_protect
 def comment_story(request, story_id=False):
     try:
-        story = Story.objects.accessible(request.user).get(pk=story_id)
+        story = Story.objects.accessible(user=request.user).get(pk=story_id)
     except Story.DoesNotExist:
         story = get_object_or_404(Story, pk=story_id)
         if not story.editable_by(request.user):

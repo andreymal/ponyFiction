@@ -20,7 +20,7 @@ from cacheops.invalidation import invalidate_obj
 def story_view(request, pk, comments_page):
     
     try:
-        story = Story.objects.accessible(request.user).get(pk=pk)
+        story = Story.objects.accessible(user=request.user).get(pk=pk)
     except Story.DoesNotExist:
         story = get_object_or_404(Story, pk=pk)
         if not story.editable_by(request.user):
@@ -96,7 +96,7 @@ def story_delete(request, pk):
 @csrf_protect
 def story_favorite(request, pk):
     from ponyFiction.models import Favorites
-    story = get_object_or_404(Story.objects.accessible(request.user), pk=pk)
+    story = get_object_or_404(Story.objects.accessible(user=request.user), pk=pk)
     (favorite, created) = Favorites.objects.get_or_create(story=story, author=request.user)
     if not created:
         favorite.delete()
@@ -107,7 +107,7 @@ def story_favorite(request, pk):
 @csrf_protect
 def story_bookmark(request, pk):
     from ponyFiction.models import Bookmark
-    story = get_object_or_404(Story.objects.accessible(request.user), pk=pk)
+    story = get_object_or_404(Story.objects.accessible(user=request.user), pk=pk)
     (bookmark, created) = Bookmark.objects.get_or_create(story=story, author=request.user)
     if not created:
         bookmark.delete()
@@ -117,7 +117,7 @@ def story_bookmark(request, pk):
 @login_required
 @csrf_protect
 def story_vote(request, pk, direction):
-    story = get_object_or_404(Story.objects.accessible(request.user), pk=pk)
+    story = get_object_or_404(Story.objects.accessible(user=request.user), pk=pk)
     if story.editable_by(request.user):
         redirect('story_view', pk)
     vote = story.vote.get_or_create(author=request.user)[0]

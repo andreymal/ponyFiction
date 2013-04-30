@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models import Count, Sum, F
+from django.db.models import Count, Sum, F, Q
 from django.utils.safestring import mark_safe
 from ponyFiction.fields import SeparatedValuesField
 from ponyFiction.filters import filter_html, filtered_html_property
@@ -194,36 +194,25 @@ class StoryQuerySet(models.query.QuerySet):
     def last_week(self):
         return self.filter(date__gte=self.last)
     
-    def accessible(self, user):
-        from django.db.models import Q
+    def accessible(self, *args, **kwargs):
+        user = kwargs['user']
         qs = self.filter(Q(date__gte=self.last)|Q(draft=False, approved=True))
         if user.is_anonymous():
             return qs
         else:
             return qs.exclude(categories__in=user.excluded_categories)
+
+        #return self.filter(Q(date__gte=self.last)|Q(draft=False, approved=True))
     
 class StoryManager(models.Manager):
     def get_query_set(self):
         return StoryQuerySet(self.model, using=self._db)
 
-    @property
-    def published(self):
-        return self.get_query_set().published
-    
-    @property
-    def submitted(self):
-        return self.get_query_set().submitted
-    
-    @property
-    def good(self):
-        return self.get_query_set().good
-    
-    @property
-    def last_week(self):
-        return self.get_query_set().last_week
-    
-    def accessible(self, user):
-        return self.get_query_set().accessible(user)
+    def __getattr__(self, attr, *args, **kwargs):
+        try:
+            return getattr(self.__class__, attr, *args, **kwargs)
+        except AttributeError:
+            return getattr(self.get_query_set(), attr, *args, **kwargs)
     
 class Story (models.Model):
     """ Модель рассказа """
@@ -290,6 +279,10 @@ class Story (models.Model):
     @property
     def publishable(self):
         return True if self.words > settings['PUBLISH_SIZE_LIMIT'] else False
+    
+    @property
+    def nsfw(self):
+        return True if self.rating.id == 1 else False
     
     summary_as_html = filtered_html_property('summary', filter_html)
     notes_as_html = filtered_html_property('notes', filter_html)
