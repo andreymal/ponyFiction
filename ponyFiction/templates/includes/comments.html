@@ -8,4 +8,8 @@
 			{{ comment.date|timesince }} назад {% if not story %} о <a href="{% url 'story_view' comment.story_id %}"><b>{{ comment.story.title }}</b></a>{% endif %}
 		</p>
 	</div>
+{% empty %}
+	<p class="comment">
+		<h3>Здесь пока ничего нет</h3>
+	</p>
 {% endfor %}

@@ -65,13 +65,15 @@
 			{% endif %}
 		</div>
 		<!-- Вывод комментариев: начало -->
-		<div id="comments">
-      		<h3>Комментарии ({{ story.comment_set.count }})</h3>
-	      	<div id="comments-list">
-	      		{% include 'includes/comments.html' %}
+		{% if story.comment_set.count > 0 %}
+			<div id="comments">
+	      		<h3>Комментарии ({{ story.comment_set.count }})</h3>
+		      	<div id="comments-list">
+		      		{% include 'includes/comments.html' %}
+		      	</div>
+				{% include 'includes/comments_pagination_story.html' %}
 	      	</div>
-			{% include 'includes/comments_pagination_story.html' %}
-      	</div>
+      	{% endif %}
       	<!-- Вывод комментариев: конец -->
       	<!-- Вывод формы: начало -->
       	<form action="{% url 'comment_story' story.id %}" method="POST" enctype="multipart/form-data" class="">
