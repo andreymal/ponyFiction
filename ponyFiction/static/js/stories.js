@@ -548,6 +548,10 @@ $(function() {
 	if (re_story.test(current_path) || re_chapter.test(current_path)) {
 		// Подключаем динамическое состояние панели
 		floatingPanel();
+		// Средство от горящих крупов
+		if ($('#wrapper').hasClass('nsfw')) {
+			$('#nsfwModal').modal();
+		}
 	}
 	// Переключение размера и типа шрифта
 	var font_selector = $('.select-font');

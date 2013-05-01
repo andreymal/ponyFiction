@@ -21,6 +21,7 @@ class Author(AbstractUser):
     approved = models.BooleanField(default=False, verbose_name="Проверенный автор")
     excluded_categories = SeparatedValuesField(max_length=200, null=True, verbose_name="Скрытые категории")
     detail_view = models.BooleanField(default=False, verbose_name="Детальное отображение рассказов")
+    nsfw_allowed = models.BooleanField(default=False, verbose_name="NSFW без предупреждения")
     
     def __unicode__(self):
         return self.username
@@ -89,8 +90,7 @@ class Rating(models.Model):
     
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
-    warning = models.TextField(max_length=2048, blank=True, verbose_name="Предупреждение")
-    
+        
     def __unicode__(self):
         return self.name
     

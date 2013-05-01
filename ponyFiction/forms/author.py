@@ -78,26 +78,31 @@ class AuthorEditPrefsForm(Form):
         required=False,
         widget=StoriesButtons(attrs=checkbox_attrs),
     )
-    
     detail_view = ChoiceField(
         choices=[(0, 'Кратко'), (1, 'Подробно')],
         required=False,
         widget=StoriesRadioButtons(attrs=radio_attrs),
     )
-    
+    nsfw_allowed = ChoiceField(
+        choices=[(0, 'Показать'), (1, 'Скрыть')],
+        required=False,
+        widget=StoriesRadioButtons(attrs=radio_attrs),
+    )
     def __init__(self, *args, **kwargs):
         self.author = kwargs.pop('author', None)
         super(AuthorEditPrefsForm, self).__init__(*args, **kwargs)
         if self.author:
             self.fields['excluded_categories'].initial = self.author.excluded_categories
             self.fields['detail_view'].initial = self.author.detail_view
-    
+            self.fields['nsfw_allowed'].initial = self.author.nsfw_allowed
+
     def save(self):
         author = self.author
         excluded_categories = self.cleaned_data['excluded_categories'] 
         author.excluded_categories = obj_to_int_list(excluded_categories)
         author.detail_view = bool(int(self.cleaned_data['detail_view']))
-        author.save(update_fields=['excluded_categories', 'detail_view'])
+        author.nsfw_allowed = bool(int(self.cleaned_data['nsfw_allowed']))
+        author.save(update_fields=['excluded_categories', 'detail_view', 'nsfw_allowed'])
     
 class AuthorEditEmailForm(Form):
     attrs_dict = {'class': 'input-xlarge'}
