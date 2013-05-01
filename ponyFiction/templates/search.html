@@ -19,24 +19,18 @@
 				<div class="padded">
 					<!-- Поле поиска -->
 					{{ form.search_query }}
-
 					<!-- Тип поиска -->
 					<span class="bootstrap radio">{{ form.search_type }}</span>
 				</div>
-				
 				<!-- Сортировка результатов поиска -->
 				{{ form.button_sort }}
-				
 				<!-- Фильтры поиска -->
 				{{ form.button_filters }}
-				
 				<!-- Тонкая настройка поиска -->
 				{{ form.button_advanced }}
-
 				<!--Начало спойлера -->
 				<div id="more-sort" class="collapse">
-				<h3>Сортировать по: </h3>
-					
+					<h4>Сортировать</h4>
 					<!-- Тип сортировки -->
 					<span class="padded bootstrap checkbox">{{ form.sort_type }}</span>
 				</div>
@@ -44,45 +38,50 @@
 				
 				<!--Начало спойлера -->
 				<div id="more-filters" class="collapse">
-				<!-- Жанры -->
-				<h3>Фильтровать по:</h3>
-				<p class="genres-select">{{ form.categories_select }}</p>
-				
-				<!-- Персонажи -->
-				<div class="characters-select" >{{ form.characters_select }}</div>
-
+					<h3>Фильтры поиска</h3>
+					<h4>Жанры</h4>
+					<p class="genres-select">{{ form.categories_select }}</p>
+					<h4>Персонажи</h4>
+					<div class="characters-select" >{{ form.characters_select }}</div>
 				</div>
 				<!-- Конец спойлера -->
 				
 				<!--Начало спойлера -->
 				<div id="more-info" class="collapse">
-				
-				<h3>Дополнительные настройки поиска:</h3>
-				
-				<!-- Оригинал/перевод -->
-				<div class="padded bootstrap checkbox">{{ form.originals_select }}</div>
-
-				<!-- Статус рассказа -->
-				<div class="padded bootstrap checkbox">{{ form.finished_select }}</div>
-
-				<!-- Заморожен/активен -->
-				<div class="padded bootstrap checkbox">{{ form.freezed_select }}</div>
-
-				<!-- Размер -->
-				<div class="padded"><h4>Размер рассказа</h4>{{ form.search_min_size }}<br>{{ form.search_max_size }}</h4></div>
-				
-				<!-- Рейтинг -->
-				<div class="padded bootstrap checkbox">{{ form.ratings_select }}</div>
-				
-				<!-- События -->
-				<div class="control-group"><label class="control-label">События</label><div class="controls events">{{ form.classifications_select }}</div></div>
-					
+					<h3>Дополнительные настройки поиска:</h3>
+					<div class="padded bootstrap checkbox">
+						<h4>Происхождение</h4>
+						{{ form.originals_select }}
+					</div>
+					<div class="padded bootstrap checkbox">
+						<h4>Статус рассказа</h4>
+						{{ form.finished_select }}
+					</div>
+					<div class="padded bootstrap checkbox">
+						<h4>Активность</h4>
+						{{ form.freezed_select }}
+					</div>
+					<div class="padded bootstrap checkbox">
+						<h4>Рейтинг</h4>
+						{{ form.ratings_select }}
+					</div>
+					<div class="padded medium-input">
+						<h4>Размер рассказа</h4>
+						{{ form.search_min_size }}—{{ form.search_max_size }}
+					</div>
+					<div class="control-group">
+						<div class="padded medium-input">
+							<h4>События</h4>
+						</div>
+						<div class="controls events">
+							{{ form.classifications_select }}
+						</div>
+					</div>	
 				</div>
 				<!-- Конец спойлера -->
 				
 				<!-- Отправка формы -->
 				<p class="form-sumbit">{{ form.button_submit }} {{ form.button_reset }}</p>
-				
 			</fieldset>
 		</form>
 		</div>

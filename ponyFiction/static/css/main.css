@@ -693,6 +693,14 @@ p.meta .chapter-controls {
 	margin-top: 12px;
 }
 
+.padded.medium-input {
+	padding-left: 20px;
+}
+
+.padded.medium-input > input {
+  margin: 0 8px;
+  width: 100px;
+}
 /* === Editing, Forms, Active elements, Buttons === */
 /* Forms and stuff */
 .checkbox.inline+.checkbox.inline {
