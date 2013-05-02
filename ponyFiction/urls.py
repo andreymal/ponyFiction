@@ -13,6 +13,7 @@ from ponyFiction.views.stream import StreamStories, StreamChapters, StreamCommen
 from registration.views import activate, register
 from ponyFiction.views.stories import StoryAdd, StoryEdit
 from ponyFiction.views.chapters import ChapterAdd, ChapterEdit
+from ponyFiction.views.comment import CommentEdit, CommentAdd, CommentDelete
 
 admin.autodiscover()
 
@@ -167,9 +168,15 @@ urlpatterns += patterns('',
     url(r'^story/(?P<story_id>\d+)/edit/ajax$', ajax.chapter_sort),
 )
 
-# Комментирование
+# Работа с комментариями
 urlpatterns += patterns('',
-    url(r'^story/(?P<story_id>\d+)/comment$', comment.comment_story, name='comment_story'),
+    # Добавление
+    url(r'^story/(?P<story_id>\d+)/comment/add/$', CommentAdd.as_view(), name='comment_add'),
+    # Редактирование
+    url(r'^story/(?P<story_id>\d+)/comment/(?P<pk>\d+)/edit/$', CommentEdit.as_view(), name='comment_edit'),
+    # Удаление
+    url(r'^story/(?P<story_id>\d+)/comment/(?P<pk>\d+)/delete/$', CommentDelete.as_view(), name='comment_delete'),
+
 )
 
 # RSS
@@ -210,7 +217,7 @@ urlpatterns += patterns('ponyFiction.views.chapters',
     # Просмотр одной
     url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/$','chapter_view', name='chapter_view_single'),
     # Просмотр всех глав
-    url(r'^story/(?P<story_id>\d+)/chapter/all/$', 'chapter_view', name='chapter_view_all'),
+    url(r'^shtory/(?P<story_id>\d+)/chapter/all/$', 'chapter_view', name='chapter_view_all'),
     # Добавление
     url(r'^story/(?P<story_id>\d+)/chapter/add/$', ChapterAdd.as_view(), name='chapter_add'),
     # Правка
@@ -218,6 +225,7 @@ urlpatterns += patterns('ponyFiction.views.chapters',
     # Удаление
     url(r'^chapter/(?P<pk>\d+)/delete/$', 'chapter_delete', name='chapter_delete'),
 )
+
 
 # Другое
 urlpatterns += patterns('',

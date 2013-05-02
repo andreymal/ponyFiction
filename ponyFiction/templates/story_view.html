@@ -74,9 +74,10 @@
 				{% include 'includes/comments_pagination_story.html' %}
 	      	</div>
       	{% endif %}
+      	<a href="{% url 'comment_add' story.id %}" class="btn btn-primary">Добавить комментарий</a>
       	<!-- Вывод комментариев: конец -->
-      	<!-- Вывод формы: начало -->
-      	<form action="{% url 'comment_story' story.id %}" method="POST" enctype="multipart/form-data" class="">
+      	<!-- Вывод формы: начало
+      	<form action="{% url 'comment_add' story.id %}" method="POST" enctype="multipart/form-data" class="">
       	{% csrf_token %}
 	      	<legend>Добавить комментарий</legend>
 	      	<div class="control-group">

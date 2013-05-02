@@ -138,6 +138,7 @@ class StoryAdd(CreateView):
     initial = {'finished': 0, 'freezed': 0, 'original': 1, 'rating': 4, 'button_submit': u'Добавить рассказ'}
 
     @method_decorator(login_required)
+    @method_decorator(csrf_protect)
     def dispatch(self, request, *args, **kwargs):
         return CreateView.dispatch(self, request, *args, **kwargs)
     

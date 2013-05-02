@@ -89,6 +89,7 @@ class ChapterEdit(UpdateView):
     chapter = None
     
     @method_decorator(login_required)
+    @method_decorator(csrf_protect)
     def dispatch(self, request, *args, **kwargs):
         return UpdateView.dispatch(self, request, *args, **kwargs)
     
@@ -109,6 +110,7 @@ class ChapterEdit(UpdateView):
         context.update(extra_context)
         return context
 
+# TODO: Переработать на POST?
 @login_required
 @csrf_protect
 def chapter_delete(request, pk):

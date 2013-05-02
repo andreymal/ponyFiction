@@ -1,0 +1,30 @@
+{% extends "common.html" %}
+{% load url from future %}
+{% block content %}
+<div class="row">
+	<div class="span8">
+    <ul class="breadcrumb">
+      <li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+      <li><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> <span class="divider">/</span></li>
+      <li class="active">{{ page_title }}</li>
+    </ul>   
+	<h1>{{ page_title }}</h1>
+	<form method="POST" enctype="multipart/form-data" class="">
+  		{% csrf_token %}
+      	<div class="control-group">
+			<div class="controls">	
+				{{ form.text }}			
+			</div>
+			<div class="controls">
+				{{ form.button_submit }}
+			</div>
+		</div>
+	</form>
+    <ul class="breadcrumb">
+      <li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+      <li><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> <span class="divider">/</span></li>
+      <li class="active">{{ page_title }}</li>
+    </ul>
+	</div>
+</div>
+{% endblock %}

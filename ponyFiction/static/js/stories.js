@@ -6,6 +6,8 @@ re_story_add = new RegExp('^/story/add/$');
 re_story_edit = new RegExp('^/story/[0-9]+/edit/$');
 re_chapter_edit = new RegExp('^/chapter/[0-9]+/edit/$');
 re_chapter_add = new RegExp('^/story/[0-9]+/chapter/add/$');
+re_comment_add = new RegExp('^/story/[0-9]+/comment/add/$');
+re_comment_edit = new RegExp('^/story/[0-9]+/comment/[0-9]+/edit/$');
 re_author_overview = new RegExp('^/accounts/[0-9]+/(?:comments/page/[0-9]+/)?$');
 re_author_dashboard = new RegExp(
 		'^/accounts/profile/(?:comments/page/[0-9]+/)?$');
@@ -315,7 +317,7 @@ function changeVote(response) {
  * Ротатор шапок
  */
 function rotateLogo() {
-	var len = 9
+	var len = 8
 	if ($.cookie('stories_gr') == null) {
 		var stories_gr = Math.floor(Math.random() * len) + 1;
 		$.cookie('stories_gr', stories_gr, {
@@ -438,12 +440,10 @@ $(function() {
 		}
 	});
 	// Включаем карусель
-	$('#myCarousel').slides({
-		generatePagination : false,
-		play : 5000,
-		pause : 2500,
-		hoverPause : true,
-	});
+	/*
+	 * $('#myCarousel').slides({ generatePagination : false, play : 5000, pause :
+	 * 2500, hoverPause : true, });
+	 */
 	// Включаем обработку BootStrap Buttons
 	$('.bootstrap').each(activateBootstrap);
 	// Подключаем обработку выбора персонажей
@@ -510,6 +510,10 @@ $(function() {
 				});
 		// AJAX-удаление главы
 		$('.chapter_delete').live('click', processChapterDelete);
+	}
+	// На странице работы с комментариями
+	if (re_comment_add.test(current_path) || re_comment_edit.test(current_path)) {
+		$('#id_text').markItUp(mySettings);
 	}
 	// На странице справки
 	if (re_help.test(current_path)) {

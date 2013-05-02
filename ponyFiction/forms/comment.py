@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from ponyFiction.models import Comment
 from django.forms import ModelForm, Textarea 
-from django.forms.fields import CharField
+from django.forms.fields import CharField, Field
+from ponyFiction.widgets import ServiceButtonWidget
 
 class CommentForm(ModelForm):
     attrs_dict = {'class': 'span4'}
@@ -10,6 +11,11 @@ class CommentForm(ModelForm):
         max_length=8192,
         label='Добавить комментарий',
         required=False,
+    )
+    # Кнопка "Отправить"
+    button_submit = Field(
+        required=False,
+        widget=ServiceButtonWidget(attrs={'class': 'btn btn-primary'}),
     )
     class Meta:
         model = Comment

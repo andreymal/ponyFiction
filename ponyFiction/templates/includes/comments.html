@@ -1,5 +1,8 @@
 {% for comment in comments %}
 	<div class="story-item">
+		{% if story %}
+			{% include 'includes/comment_control_buttons.html' %}
+		{% endif %}
 		<p class="comment">
 			{{ comment.text_as_html|safe }}
 		</p>

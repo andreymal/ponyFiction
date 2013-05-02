@@ -1,0 +1,6 @@
+{% if user.is_staff %}
+	<span class="story-control-btn">
+		<a class="btn btn-warning btn-mini" href="{% url 'comment_edit' story.id comment.id %}">Редактировать</a>
+		<a class="btn btn-danger btn-mini" href="{% url 'comment_delete' story.id comment.id %}">Удалить</a>
+	</span>
+{% endif %}

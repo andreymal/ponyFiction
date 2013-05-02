@@ -3,26 +3,99 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
+from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from ponyFiction.forms.comment import CommentForm
-from ponyFiction.models import Story
+from ponyFiction.models import Story, Comment
 
-@login_required
-@csrf_protect
-def comment_story(request, story_id=False):
-    try:
-        story = Story.objects.accessible(user=request.user).get(pk=story_id)
-    except Story.DoesNotExist:
-        story = get_object_or_404(Story, pk=story_id)
-        if not story.editable_by(request.user):
+class CommentAdd(CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'comment_work.html'
+    initial={'button_submit': u'Добавить'}
+    comment = None
+    story = None
+    
+    @method_decorator(login_required)
+    @method_decorator(csrf_protect)
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            self.story = Story.objects.accessible(user=request.user).get(pk=kwargs['story_id'])
+        except Story.DoesNotExist:
+            self.story = get_object_or_404(Story, pk=kwargs['story_id'])
+            if not self.story.editable_by(self.request.user):
+                raise PermissionDenied
+        else:
+            return CreateView.dispatch(self, request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        comment = form.save(commit=False)
+        comment.story = self.story
+        comment.author = self.request.user
+        comment.ip = self.request.META['REMOTE_ADDR']
+        comment.save()
+        return redirect('story_view', self.kwargs['story_id'])
+    
+    def get_context_data(self, **kwargs):
+        context = super(CommentAdd, self).get_context_data(**kwargs)
+        extra_context = {'page_title': u'Добавить новый комментарий', 'story': self.story}
+        context.update(extra_context)
+        return context
+    
+class CommentEdit(UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'comment_work.html'
+    initial={'button_submit': u'Сохранить изменения'}
+    comment = None
+    
+    @method_decorator(login_required)
+    @method_decorator(csrf_protect)
+    def dispatch(self, request, *args, **kwargs):
+        return UpdateView.dispatch(self, request, *args, **kwargs)
+    
+    def get_object(self, queryset=None):
+        self.comment = UpdateView.get_object(self, queryset=queryset)
+        if self.comment.editable_by(self.request.user):
+            return self.comment
+        else:
             raise PermissionDenied
-    else:
-        author = request.user 
-        comment_form = CommentForm(request.POST)
-        ip = request.META['REMOTE_ADDR']
-        new_comment = comment_form.save(commit=False)
-        new_comment.author = author
-        new_comment.story = story
-        new_comment.ip = ip
-        new_comment.save()
-        return redirect('story_view', story_id)
+    
+    def form_valid(self, form):
+        self.comment = form.save()
+        return redirect('story_view', self.comment.story.id)
+
+    def get_context_data(self, **kwargs):
+        context = super(CommentEdit, self).get_context_data(**kwargs)
+        extra_context = {'page_title': u'Редактировать комментарий', 'story': self.comment.story}
+        context.update(extra_context)
+        return context
+
+class CommentDelete(DeleteView):
+    model = Comment
+    comment = None
+    template_name = 'comment_confirm_delete.html'
+    
+    @method_decorator(login_required)
+    @method_decorator(csrf_protect)
+    def dispatch(self, request, *args, **kwargs):
+        return DeleteView.dispatch(self, request, *args, **kwargs)
+    
+    def get_object(self, queryset=None):
+        self.comment = DeleteView.get_object(self, queryset=queryset)
+        if self.comment.editable_by(self.request.user):
+            return self.comment
+        else:
+            raise PermissionDenied
+        
+    def delete(self, request, *args, **kwargs):
+        self.comment = self.get_object()
+        self.comment.delete()
+        return redirect('story_view', self.kwargs['story_id'])
+            
+    def get_context_data(self, **kwargs):
+        context = super(CommentDelete, self).get_context_data(**kwargs)
+        extra_context = {'page_title': u'Подтверждение удаления комментария', 'story': self.comment.story}
+        context.update(extra_context)
+        return context

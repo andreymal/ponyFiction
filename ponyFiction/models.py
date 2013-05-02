@@ -370,6 +370,9 @@ class Comment(models.Model):
     def __unicode__(self):
         return self.text
     
+    def editable_by(self, author):
+        return author.is_staff
+    
     text_as_html = filtered_html_property('text', filter_html)
 
 class Vote(models.Model):

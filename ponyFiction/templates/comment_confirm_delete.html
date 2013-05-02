@@ -1,0 +1,38 @@
+{% extends "common.html" %}
+{% load url from future %}
+{% block content %}
+<div class="row">
+	<div class="span8">
+    <ul class="breadcrumb">
+      <li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+      <li><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> <span class="divider">/</span></li>
+      <li class="active">{{ page_title }}</li>
+    </ul>   
+	<h1>{{ page_title }}</h1>
+	
+	<div class="story-item">
+		<p class="comment">
+			{{ comment.text_as_html|safe }}
+		</p>
+		<p class="meta">
+			<a class="authorlink" href="{% url 'author_overview' comment.author_id %}">{{ comment.author.username }}</a> 
+			{{ comment.date|timesince }} назад {% if not story %} о <a href="{% url 'story_view' comment.story_id %}"><b>{{ comment.story.title }}</b></a>{% endif %}
+		</p>
+	</div>
+
+	<form method="POST" enctype="multipart/form-data">
+  		{% csrf_token %}
+      	<div class="control-group">
+			<div class="controls">
+				<input type="submit" class="btn btn-danger" value="Удалить комментарий">
+			</div>
+		</div>
+	</form>
+    <ul class="breadcrumb">
+      <li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+      <li><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> <span class="divider">/</span></li>
+      <li class="active">{{ page_title }}</li>
+    </ul>
+	</div>
+</div>
+{% endblock %}
