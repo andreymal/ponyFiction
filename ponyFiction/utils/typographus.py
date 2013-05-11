@@ -155,18 +155,6 @@ def compile_ruleset(*ruleset):
     return result
 
 
-rules_strict = compile_ruleset(
-    
-    # много пробелов или табуляций -> один пробел
-    # XXX: отключено, так как убирает переводы строк
-    #(r'%s+' % space, u' '),
-    
-    # запятые после "а" и "но"
-    (ur'(?<=[^,])(?=\s(?:а|но)\s)', ur','),
-    
-    )
-
-
 rules_symbols = compile_ruleset(
     
     # пробелы между знаками препинания - нафик не нужны
@@ -408,7 +396,7 @@ class Typographus:
         if (string.strip() == ''):
             return ''
         
-        for rule_set in (rules_strict, rules_main, rules_symbols, rules_braces,
+        for rule_set in (rules_main, rules_symbols, rules_braces,
                          rules_quotes, rules_smiles, final_cleanup):
             string = reduce(lambda string, rule: rule(string), rule_set, string)
         
