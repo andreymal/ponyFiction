@@ -278,7 +278,7 @@ class Story (models.Model):
     # Проверка возможности публикации
     @property
     def publishable(self):
-        return True if self.words > settings['PUBLISH_SIZE_LIMIT'] else False
+        return True if self.words > settings.PUBLISH_SIZE_LIMIT else False
     
     @property
     def nsfw(self):

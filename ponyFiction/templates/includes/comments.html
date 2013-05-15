@@ -1,14 +1,15 @@
+{% spaceless %}
 {% for comment in comments %}
-	<div class="story-item">
+	<div id="comment_{{ comment.id}}" class="story-item">
 		{% if story %}
 			{% include 'includes/comment_control_buttons.html' %}
 		{% endif %}
-		<p class="comment">
+		<div class="comment">
 			{{ comment.text_as_html|safe }}
-		</p>
+		</div>
 		<p class="meta">
 			<a class="authorlink" href="{% url 'author_overview' comment.author_id %}">{{ comment.author.username }}</a> 
-			{{ comment.date|timesince }} назад {% if not story %} о <a href="{% url 'story_view' comment.story_id %}"><b>{{ comment.story.title }}</b></a>{% endif %}
+			{{ comment.date|timesince }} назад{% if not story %} о <a href="{% url 'story_view' comment.story_id %}"><b>{{ comment.story.title }}</b></a>{% endif %}
 		</p>
 	</div>
 {% empty %}
@@ -16,3 +17,4 @@
 		<h3>Здесь пока ничего нет</h3>
 	</p>
 {% endfor %}
+{% endspaceless %}

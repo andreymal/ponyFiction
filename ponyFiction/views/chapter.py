@@ -4,7 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Max, F
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from ponyFiction.forms.chapter import ChapterForm
 from ponyFiction.models import Story, Chapter, StoryView
 from django.views.decorators.csrf import csrf_protect
@@ -30,6 +30,7 @@ def chapter_view(request, story_id=False, chapter_order=False):
            'page_title' : page_title,
            'allchapters': False
         }
+        # TODO: signalz!
         if request.user.is_authenticated():
             StoryView.objects.create(
                 author = request.user,
@@ -110,17 +111,38 @@ class ChapterEdit(UpdateView):
         context.update(extra_context)
         return context
 
-# TODO: Переработать на POST?
-@login_required
-@csrf_protect
-def chapter_delete(request, pk):
-    chapter = get_object_or_404(Chapter, pk=pk)
-    story = chapter.story
-    if chapter.story.editable_by(request.user):
-        story.chapter_set.filter(order__gt=chapter.order).update(order=F('order')-1)
-        for ch in story.chapter_set.filter(order__gt=chapter.order):
-            invalidate_obj(ch)
-        chapter.delete()
-        return redirect('story_edit', story.id)
-    else:
-        raise PermissionDenied
+
+class ChapterDelete(DeleteView):
+    model = Chapter
+    chapter = None
+    story = None
+    chapter_id = None
+    template_name = 'chapter_confirm_delete.html'
+    
+    @method_decorator(login_required)
+    @method_decorator(csrf_protect)
+    def dispatch(self, request, *args, **kwargs):
+        return DeleteView.dispatch(self, request, *args, **kwargs)
+    
+    def get_object(self, queryset=None):
+        self.chapter = DeleteView.get_object(self, queryset=queryset)
+        self.story = self.chapter.story
+        self.chapter_id = self.chapter.id
+        if self.story.editable_by(self.request.user):
+            return self.chapter
+        else:
+            raise PermissionDenied
+    
+    def delete(self, request, *args, **kwargs):
+        self.chapter = self.get_object()
+        self.story.chapter_set.filter(order__gt=self.chapter.order).update(order=F('order')-1)
+        for chapter in self.story.chapter_set.filter(order__gt=self.chapter.order):
+            invalidate_obj(chapter)
+        self.chapter.delete()
+        return redirect('story_edit', self.story.id)
+    
+    def get_context_data(self, **kwargs):
+        context = super(ChapterDelete, self).get_context_data(**kwargs)
+        extra_context = {'page_title': u'Подтверждение удаления главы', 'story': self.story, 'chapter': self.chapter}
+        context.update(extra_context)
+        return context

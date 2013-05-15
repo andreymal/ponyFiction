@@ -211,9 +211,9 @@ function getComments(url) {
  *            object Кнопка удаления
  */
 function processStoryDelete(self) {
+	self.stopImmediatePropagation();
+	self.preventDefault();
 	if (!(re_story.test(current_path))) {
-		self.stopImmediatePropagation();
-		self.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
 		$.post(url, function(data) {
 			$('#story_' + data).slideUp('slow').remove();
@@ -222,6 +222,7 @@ function processStoryDelete(self) {
 		});
 	} else {
 		$('.modal').modal('hide').remove();
+		window.location = '/';
 	}
 }
 /**
@@ -236,19 +237,75 @@ function processChapterDelete(self) {
 	var url = '/ajax' + $(this).attr('href');
 	$('#sortable_chapters').sortable('destroy');
 	$.post(url, function(data) {
-		$('#chapters_' + data).slideUp('slow').remove();
+		$('#chapter_' + data).slideUp('slow').remove();
 	}).success(function() {
 		$('.modal').modal('hide').remove();
-		$('#sortable_chapters').sortable({
-			// Действия при обновлении
-			update : function() {
-				$.ajax({
-					data : $('#sortable_chapters').sortable('serialize'),
-					type : 'POST',
-					url : 'ajax'
-				});
+		enableChaptersSortability();
+	});
+}
+/**
+ * Отображение модального окна для AJAX
+ * 
+ * @param self
+ *            event Событие
+ */
+function processAJAXModal(self) {
+	self.stopImmediatePropagation();
+	self.preventDefault();
+	$('.modal:hidden').remove(); // Fix fox clear DOM
+	var url = '/ajax' + $(this).attr('href');
+	var modal = $('<div class="modal hide fade"></div>');
+	$.get(url, function(data) {
+		modal.html(data).on('show', function() {
+			var textarea = $('textarea', this);
+			if (textarea.length) {
+				textarea.markItUp(mySettings);
 			}
-		});
+		}).modal();
+	});
+}
+/**
+ * Удаление комментария по AJAX
+ * 
+ * @param self
+ *            event Событие
+ */
+function processCommentDelete(self) {
+	self.stopImmediatePropagation();
+	self.preventDefault();
+	var url = '/ajax' + $(this).attr('href');
+	$.post(url, function(data) {
+		$('#comment_' + data).slideUp('slow').remove();
+	}).success(function() {
+		$('.modal').modal('hide').remove();
+	});
+}
+/**
+ * Отправка комментария по AJAX
+ * 
+ * @param self
+ *            event Событие
+ */
+function processCommentSend(self) {
+	self.stopImmediatePropagation();
+	self.preventDefault();
+	form = $('.modal form');
+	var url = '/ajax' + form.attr('action');
+	$.ajax({
+		type : "POST",
+		url : url,
+		data : form.serialize(),
+		success : function(data) {
+			var new_comment = $(data);
+			var new_text = $('div.comment', new_comment);
+			var target = $('#' + new_comment.attr('id') + ' div.comment');
+			if (target.length) {
+				target.replaceWith(new_text);
+			} else {
+				$('#comments-list').prepend(new_comment);
+			}
+			$('.modal').modal('hide').remove();
+		}
 	});
 }
 
@@ -330,6 +387,20 @@ function rotateLogo() {
 	$('.logopic').css('background-image', new_image);
 }
 /**
+ * Сортировка глав
+ */
+function enableChaptersSortability() {
+	$('#sortable_chapters').sortable({
+		update : function() {
+			$.ajax({
+				data : $('#sortable_chapters').sortable('serialize'),
+				type : 'POST',
+				url : 'ajax'
+			});
+		}
+	});
+}
+/**
  * Плавающая панелька
  */
 function floatingPanel() {
@@ -405,7 +476,7 @@ function activateBootstrap() {
 	$('button', buttons_container).each(
 			function() {
 				var button = $(this);
-				button.live('click', function() {
+				button.on('click', function() {
 					value = button.attr('value');
 					if (type == 'checkbox') {
 						input = $('input:checkbox[value=' + value + ']',
@@ -478,38 +549,11 @@ $(function() {
 		$('.character-item input[checked="checked"]').prev().addClass(
 				'ui-selected');
 		// Сортировка глав
-		$('#sortable_chapters').sortable({
-			// Действия при обновлении
-			update : function() {
-				$.ajax({
-					data : $('#sortable_chapters').sortable('serialize'),
-					type : 'POST',
-					url : 'ajax'
-				});
-			}
-		});
-		// Отображение модального окна подтверждения удаления главы
-		$('.chapter_delete_confirm').click(
-				function(self) {
-					self.stopImmediatePropagation();
-					self.preventDefault();
-					var url = '/ajax' + $(this).attr('href') + 'confirm/';
-					if (url.indexOf('#') == 0) {
-						$(url).modal('open');
-					} else {
-						$.get(
-								url,
-								function(data) {
-									$(
-											'<div class="modal hide fade">'
-													+ data + '</div>').modal();
-								}).success(function() {
-							$('input:text:visible:first').focus();
-						});
-					}
-				});
+		enableChaptersSortability();
 		// AJAX-удаление главы
-		$('.chapter_delete').live('click', processChapterDelete);
+		$(document).on('click', '.chapter_delete', processAJAXModal);
+		$(document).on('click', '.ajax_chapter_delete:visible',
+				processChapterDelete);
 	}
 	// На странице работы с комментариями
 	if (re_comment_add.test(current_path) || re_comment_edit.test(current_path)) {
@@ -547,6 +591,16 @@ $(function() {
 			var url = '/ajax' + $(this).attr('href');
 			processVote(url);
 		});
+		// Добавление комментария
+		$(document).on('click', '.comment_add', processAJAXModal);
+		// Редактирование комментария
+		$(document).on('click', '.comment_edit', processAJAXModal);
+		// Отправка комментария
+		$(document).on('click', '.modal .comment_submit', processCommentSend);
+		// Удаление комментария
+		$(document).on('click', '.comment_delete', processAJAXModal);
+		$(document).on('click', '.ajax_comment_delete:visible',
+				processCommentDelete);
 	}
 	// На странице рассказа или главы
 	if (re_story.test(current_path) || re_chapter.test(current_path)) {
@@ -590,23 +644,12 @@ $(function() {
 		var url = '/ajax' + $(this).attr('href');
 		getComments(url);
 	});
-	// AJAX-удаление рассказа
-	$('.story_delete').live('click', processStoryDelete);
-	// Отображение модального окна подтверждения удаления рассказа
-	$('.story_delete_confirm').click(function(self) {
-		self.stopImmediatePropagation();
-		self.preventDefault();
-		var url = '/ajax' + $(this).attr('href') + 'confirm/';
-		if (url.indexOf('#') == 0) {
-			$(url).modal('open');
-		} else {
-			$.get(url, function(data) {
-				$('<div class="modal hide fade">' + data + '</div>').modal();
-			}).success(function() {
-				$('input:text:visible:first').focus();
-			});
-		}
-	});
+
+	// Удаление рассказа
+	$(document).on('click', '.story_delete', processAJAXModal);
+	$(document).on('click', '.ajax_story_delete:visible',
+			processStoryDelete);
+
 	// Одобрение глав по AJAX
 	$('.story_approve').click(function(self) {
 		self.stopImmediatePropagation();
