@@ -7,10 +7,10 @@ from django.views.decorators.csrf import csrf_protect
 from ponyFiction.models import Story, Chapter
 from ponyFiction.utils.misc import unicode_to_int_list
 from ponyFiction.views.chapter import ChapterDelete
-from ponyFiction.ajax.decorators import post_ajax_required
+from ponyFiction.ajax.decorators import ajax_required
 from django.utils.decorators import method_decorator
 
-@post_ajax_required
+@ajax_required
 @login_required
 @csrf_protect
 def chapter_sort(request, story_id):
@@ -33,7 +33,7 @@ class AjaxChapterDelete(ChapterDelete):
     
     template_name = 'includes/ajax/chapter_ajax_confirm_delete.html'
     
-    @method_decorator(post_ajax_required)
+    @method_decorator(ajax_required)
     def dispatch(self, request, *args, **kwargs):
         return ChapterDelete.dispatch(self, request, *args, **kwargs)
     

@@ -7,11 +7,11 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from json import dumps
 from ponyFiction.models import Author, Story, Favorites, Bookmark
-from ponyFiction.ajax.decorators import post_ajax_required
+from ponyFiction.ajax.decorators import ajax_required
 from ponyFiction.views.story import StoryDelete
 from django.utils.decorators import method_decorator
 
-@post_ajax_required
+@ajax_required
 @login_required
 @csrf_protect
 def story_publish_ajax(request, story_id):
@@ -28,7 +28,7 @@ def story_publish_ajax(request, story_id):
         story.save(update_fields=['draft', 'approved'])
         return HttpResponse(story_id)
 
-@post_ajax_required
+@ajax_required
 @login_required
 @csrf_protect
 def story_approve_ajax(request, story_id):
@@ -45,7 +45,7 @@ def story_approve_ajax(request, story_id):
     else:
         raise PermissionDenied
 
-@post_ajax_required
+@ajax_required
 @login_required
 @csrf_protect
 def story_bookmark_ajax(request, story_id):
@@ -58,7 +58,7 @@ def story_bookmark_ajax(request, story_id):
     invalidate_obj(story)
     return HttpResponse(story_id)
 
-@post_ajax_required
+@ajax_required
 @login_required
 @csrf_protect
 def story_favorite_ajax(request, story_id):
@@ -71,7 +71,7 @@ def story_favorite_ajax(request, story_id):
     invalidate_obj(story)
     return HttpResponse(story_id)
 
-@post_ajax_required
+@ajax_required
 @login_required
 @csrf_protect
 def story_vote_ajax(request, story_id, direction):
@@ -91,7 +91,7 @@ def story_vote_ajax(request, story_id, direction):
     story.vote.add(vote)
     return HttpResponse(dumps([story.vote_up_count, story.vote_down_count]))
 
-@post_ajax_required
+@ajax_required
 @login_required
 @csrf_protect
 def author_approve_ajax(request, user_id):
@@ -110,7 +110,7 @@ class AjaxStoryDelete(StoryDelete):
     
     template_name = 'includes/ajax/story_ajax_confirm_delete.html'
     
-    @method_decorator(post_ajax_required)
+    @method_decorator(ajax_required)
     def dispatch(self, request, *args, **kwargs):
         return StoryDelete.dispatch(self, request, *args, **kwargs)
     

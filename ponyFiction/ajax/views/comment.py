@@ -7,7 +7,7 @@ from ponyFiction.ajax.mixins import AJAXHTTPResponseMixin
 from ponyFiction.views.comment import CommentAdd, CommentEdit, CommentDelete
 from ponyFiction.views.object_lists import ObjectList
 from django.utils.decorators import method_decorator
-from ponyFiction.ajax.decorators import post_ajax_required
+from ponyFiction.ajax.decorators import ajax_required
 
 class AjaxCommentAdd(CommentAdd, AJAXHTTPResponseMixin):
     
@@ -17,7 +17,7 @@ class AjaxCommentAdd(CommentAdd, AJAXHTTPResponseMixin):
     def template_name(self):
         return 'includes/ajax/comment_ajax_edit_window.html'
     
-    @method_decorator(post_ajax_required)
+    @method_decorator(ajax_required)
     def dispatch(self, request, *args, **kwargs):
         return CommentAdd.dispatch(self, request, *args, **kwargs)
     
@@ -37,7 +37,7 @@ class AjaxCommentEdit(CommentEdit, AJAXHTTPResponseMixin):
     def template_name(self):
         return 'includes/ajax/comment_ajax_edit_window.html'
     
-    @method_decorator(post_ajax_required)
+    @method_decorator(ajax_required)
     def dispatch(self, request, *args, **kwargs):
         return CommentEdit.dispatch(self, request, *args, **kwargs)
     
@@ -52,7 +52,7 @@ class AjaxCommentDelete(CommentDelete):
     
     template_name = 'includes/ajax/comment_ajax_confirm_delete.html'
     
-    @method_decorator(post_ajax_required)
+    @method_decorator(ajax_required)
     def dispatch(self, request, *args, **kwargs):
         return CommentDelete.dispatch(self, request, *args, **kwargs)
     
@@ -78,7 +78,7 @@ class CommentsStory(ObjectList):
     def page_title(self):
         return None
     
-    @method_decorator(post_ajax_required)
+    @method_decorator(ajax_required)
     def dispatch(self, request, *args, **kwargs):
         return ObjectList.dispatch(self, request, *args, **kwargs)
     
@@ -100,7 +100,7 @@ class CommentsAuthor(ObjectList):
     def page_title(self):
         return None
     
-    @method_decorator(post_ajax_required)
+    @method_decorator(ajax_required)
     def dispatch(self, request, *args, **kwargs):
         return ObjectList.dispatch(self, request, *args, **kwargs)
     
