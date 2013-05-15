@@ -24,12 +24,12 @@ var ajax = {
     /**
      * Отображение модального окна
      * 
-     * @param self
+     * @param event
      *                event Событие
      */
-    modal : function(self) {
-	self.stopImmediatePropagation();
-	self.preventDefault();
+    modal : function(event) {
+	event.stopImmediatePropagation();
+	event.preventDefault();
 	$('.modal:hidden').remove(); // Fix fox clear DOM
 	var url = '/ajax' + $(this).attr('href');
 	var modal = $('<div class="modal hide fade"></div>');
@@ -97,12 +97,12 @@ var ajax = {
 	/**
 	 * Удаление комментария
 	 * 
-	 * @param self
+	 * @param event
 	 *                event Событие
 	 */
-	remove : function(self) {
-	    self.stopImmediatePropagation();
-	    self.preventDefault();
+	remove : function(event) {
+	    event.stopImmediatePropagation();
+	    event.preventDefault();
 	    var url = '/ajax' + $(this).attr('href');
 	    $.post(url, function(data) {
 		$('#comment_' + data).slideUp('slow').remove();
@@ -113,12 +113,12 @@ var ajax = {
 	/**
 	 * Отправка комментария
 	 * 
-	 * @param self
+	 * @param event
 	 *                event Событие
 	 */
-	send : function(self) {
-	    self.stopImmediatePropagation();
-	    self.preventDefault();
+	send : function(event) {
+	    event.stopImmediatePropagation();
+	    event.preventDefault();
 	    form = $('.modal form');
 	    var url = '/ajax' + form.attr('action');
 	    $.ajax({
@@ -271,12 +271,12 @@ var ajax = {
 	/**
 	 * Удаление рассказа
 	 * 
-	 * @param self
+	 * @param event
 	 *                event Событие
 	 */
-	remove : function(self) {
-	    self.stopImmediatePropagation();
-	    self.preventDefault();
+	remove : function(event) {
+	    event.stopImmediatePropagation();
+	    event.preventDefault();
 	    if (!(pages.story_view.regex.test(window.location.pathname))) {
 		var url = '/ajax' + $(this).attr('href');
 		$.post(url, function(data) {
@@ -297,12 +297,12 @@ var ajax = {
 	/**
 	 * Удаление главы по AJAX
 	 * 
-	 * @param self
+	 * @param event
 	 *                event Событие
 	 */
-	remove : function(self) {
-	    self.stopImmediatePropagation();
-	    self.preventDefault();
+	remove : function(event) {
+	    event.stopImmediatePropagation();
+	    event.preventDefault();
 	    var url = '/ajax' + $(this).attr('href');
 	    $('#sortable_chapters').sortable('destroy');
 	    $.post(url, function(data) {
@@ -348,36 +348,36 @@ var listeners = {
 	},
 	// Одобрение
 	approve : function() {
-	    $('.story_approve').click(function(self) {
-		self.stopImmediatePropagation();
-		self.preventDefault();
+	    $('.story_approve').click(function(event) {
+		event.stopImmediatePropagation();
+		event.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
 		$.post(url, ajax.story.approve);
 	    });
 	},
 	// Публикация
 	publish : function() {
-	    $('.story_publish').click(function(self) {
-		self.stopImmediatePropagation();
-		self.preventDefault();
+	    $('.story_publish').click(function(event) {
+		event.stopImmediatePropagation();
+		event.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
 		$.post(url, ajax.story.publish);
 	    });
 	},
 	// Закладки
 	bookmark : function() {
-	    $('.story_bookmark').click(function(self) {
-		self.stopImmediatePropagation();
-		self.preventDefault();
+	    $('.story_bookmark').click(function(event) {
+		event.stopImmediatePropagation();
+		event.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
 		$.post(url, ajax.story.bookmark);
 	    });
 	},
 	// Избранное
 	favorite : function() {
-	    $('.story_favorite').click(function(self) {
-		self.stopImmediatePropagation();
-		self.preventDefault();
+	    $('.story_favorite').click(function(event) {
+		event.stopImmediatePropagation();
+		event.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
 		$.post(url, ajax.story.favorite);
 	    });
@@ -406,15 +406,15 @@ var listeners = {
 	},
 	// Голосование
 	vote : function() {
-	    $('#vote-up').click(function(self) {
-		self.stopImmediatePropagation();
-		self.preventDefault();
+	    $('#vote-up').click(function(event) {
+		event.stopImmediatePropagation();
+		event.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
 		ajax.story.vote(url)
 	    });
-	    $('#vote-down').click(function(self) {
-		self.stopImmediatePropagation();
-		self.preventDefault();
+	    $('#vote-down').click(function(event) {
+		event.stopImmediatePropagation();
+		event.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
 		ajax.story.vote(url)
 	    });
@@ -423,15 +423,15 @@ var listeners = {
     comment : {
 	// Управление AJAX-пагинацией
 	pagination : function() {
-	    $('#ajax_next_comment').click(function(self) {
-		self.stopImmediatePropagation();
-		self.preventDefault();
+	    $('#ajax_next_comment').click(function(event) {
+		event.stopImmediatePropagation();
+		event.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
 		ajax.comment.load(url);
 	    });
-	    $('#ajax_prev_comment').click(function(self) {
-		self.stopImmediatePropagation();
-		self.preventDefault();
+	    $('#ajax_prev_comment').click(function(event) {
+		event.stopImmediatePropagation();
+		event.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
 	    });
 	},
@@ -474,9 +474,9 @@ var listeners = {
     author : {
 	// Одобрение
 	approve : function() {
-	    $('#author_approve').click(function(self) {
-		self.stopImmediatePropagation();
-		self.preventDefault();
+	    $('#author_approve').click(function(event) {
+		event.stopImmediatePropagation();
+		event.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
 		$.post(url, ajax.author.approve);
 	    });
