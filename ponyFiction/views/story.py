@@ -9,7 +9,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from ponyFiction import signals
 from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
@@ -80,15 +80,6 @@ def story_publish(request, pk):
             story.draft = True
         story.save(update_fields=['draft', 'approved'])
         return redirect('author_dashboard')
-    else:
-        raise PermissionDenied
-
-@login_required
-def story_delete(request, pk):
-    story = get_object_or_404(Story, pk=pk)
-    if story.editable_by(request.user):
-        story.delete()
-        return redirect('index')
     else:
         raise PermissionDenied
 
@@ -186,6 +177,37 @@ class StoryEdit(UpdateView):
         context.update(extra_context)
         return context
 
+class StoryDelete(DeleteView):
+    model = Story
+    story = None
+    story_id = None
+    template_name = 'story_confirm_delete.html'
+    
+    @method_decorator(login_required)
+    @method_decorator(csrf_protect)
+    def dispatch(self, request, *args, **kwargs):
+        return DeleteView.dispatch(self, request, *args, **kwargs)
+    
+    def get_object(self, queryset=None):
+        self.story = DeleteView.get_object(self, queryset=queryset)
+        self.story_id = self.story.id
+        if self.story.editable_by(self.request.user):
+            return self.story
+        else:
+            raise PermissionDenied
+        
+    def delete(self, request, *args, **kwargs):
+        self.story = self.get_object()
+        self.story.delete()
+        return redirect('index')
+    
+    def get_context_data(self, **kwargs):
+        context = super(StoryDelete, self).get_context_data(**kwargs)
+        extra_context = {'page_title': u'Подтверждение удаления рассказа', 'story': self.story}
+        context.update(extra_context)
+        return context
+    
+    
 def story_download(request, story_id, filename, extension):
     from django.core.files.storage import default_storage as storage
     from ..downloads import get_format

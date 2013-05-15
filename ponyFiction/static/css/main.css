@@ -52,7 +52,7 @@ body {
 	margin-bottom: 4px;
 }
 
-.slides_control>div {
+.carousel .story-item {
 	width: 500px;
 	background-color: rgba(255, 255, 255, 0.8);
 }
@@ -203,7 +203,7 @@ h4 {
 	color: #999;
 }
 
-.sidelist .story-item p.comment {
+.sidelist .story-item div.comment {
 	color: #333;
 	font-size: 12px;
 	font-style: italic;
@@ -1009,6 +1009,9 @@ h1 img,.userpic {
 #comments-list .authorlink {
 	font-weight: bold;
 }
+.story-control-btn a {
+	margin: 0 3px;
+}
 
 /* Pagination */
 #pagination {
@@ -1105,6 +1108,11 @@ h1 img,.userpic {
 .comment-form {
 	background: transparent url('../i/pageart/comments.png') no-repeat 90%
 		100%;
+}
+
+.modal {
+	left: 45%;
+	width: 730px;
 }
 
 .page-faq h2,.page-terms h2,.page-help h2 {

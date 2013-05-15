@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# TODO: Дописать всем моделям get_absolute_url()
 from django.contrib.syndication.views import Feed
 from ponyFiction.models import Story, Chapter
 from django.conf import settings
@@ -10,8 +9,8 @@ class stories(Feed):
     title = 'Новые рассказы - Библиотека EveryPony.ru'
     link = '/new/stories/'
     subtitle = 'Новые главы фанфиков'
-    title_template = 'feeds/stories_title.html'
-    description_template = 'feeds/stories_description.html'
+    title_template = 'feeds/story_title.html'
+    description_template = 'feeds/story_description.html'
     feed_type = Atom1Feed
 
     def items(self):
@@ -24,8 +23,8 @@ class chapters(Feed):
     title = 'Обновления глав - Библиотека EveryPony.ru'
     link = '/new/chapters/'
     subtitle = 'Новые главы рассказов'
-    title_template = 'feeds/chapters_title.html'
-    description_template = 'feeds/chapters_description.html'
+    title_template = 'feeds/chapter_title.html'
+    description_template = 'feeds/chapter_description.html'
     feed_type = Atom1Feed
 
     def items(self):
@@ -35,8 +34,8 @@ class chapters(Feed):
         return "/story/%i/chapter/%i/" % (item.story_id, item.order)
 
 class story(Feed):    
-    title_template = 'feeds/chapters_title.html'
-    description_template = 'feeds/chapters_description.html'
+    title_template = 'feeds/chapter_title.html'
+    description_template = 'feeds/chapter_description.html'
     feed_type = Atom1Feed
     
     def get_object(self, request, story_id):

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# TODO: переписать код!
-
 def pagination_ranges(
     num_pages,             # sumary page numbers
     page,                  # current page number [1...num_pages] or <=0 if none

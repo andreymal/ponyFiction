@@ -35,11 +35,12 @@ class CommentAdd(CreateView):
         comment.author = self.request.user
         comment.ip = self.request.META['REMOTE_ADDR']
         comment.save()
+        self.comment = comment
         return redirect('story_view', self.kwargs['story_id'])
     
     def get_context_data(self, **kwargs):
         context = super(CommentAdd, self).get_context_data(**kwargs)
-        extra_context = {'page_title': u'Добавить новый комментарий', 'story': self.story}
+        extra_context = {'page_title': u'Добавить новый комментарий', 'story': self.story, 'edit': False}
         context.update(extra_context)
         return context
     
@@ -68,7 +69,7 @@ class CommentEdit(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(CommentEdit, self).get_context_data(**kwargs)
-        extra_context = {'page_title': u'Редактировать комментарий', 'story': self.comment.story}
+        extra_context = {'page_title': u'Редактировать комментарий', 'story': self.comment.story, 'comment': self.comment, 'edit': True}
         context.update(extra_context)
         return context
 
@@ -76,6 +77,7 @@ class CommentDelete(DeleteView):
     model = Comment
     comment = None
     template_name = 'comment_confirm_delete.html'
+    comment_id = None
     
     @method_decorator(login_required)
     @method_decorator(csrf_protect)
@@ -84,6 +86,7 @@ class CommentDelete(DeleteView):
     
     def get_object(self, queryset=None):
         self.comment = DeleteView.get_object(self, queryset=queryset)
+        self.comment_id = self.comment.id
         if self.comment.editable_by(self.request.user):
             return self.comment
         else:

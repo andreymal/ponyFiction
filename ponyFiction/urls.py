@@ -6,14 +6,14 @@ from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 from ponyFiction import feeds
 from ponyFiction.forms.register import AuthorRegistrationForm
-from ponyFiction.views import search, ajax, author, comment
+from ponyFiction.views import search, author
+from ponyFiction.views.chapter import ChapterAdd, ChapterEdit, ChapterDelete
+from ponyFiction.views.comment import CommentEdit, CommentAdd, CommentDelete
 from ponyFiction.views.index import index
 from ponyFiction.views.object_lists import FavoritesList, SubmitsList, BookmarksList
+from ponyFiction.views.story import StoryAdd, StoryEdit, StoryDelete
 from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments
 from registration.views import activate, register
-from ponyFiction.views.stories import StoryAdd, StoryEdit
-from ponyFiction.views.chapters import ChapterAdd, ChapterEdit
-from ponyFiction.views.comment import CommentEdit, CommentAdd, CommentDelete
 
 admin.autodiscover()
 
@@ -50,7 +50,6 @@ urlpatterns += patterns('',
     url(r'^stream/comments/$', StreamComments.as_view(), name='stream_comments'),
     url(r'^stream/comments/page/(?P<page>\d+)/$', StreamComments.as_view(), name='stream_comments_page'),
 )
-    
 
 # Обработка пользовательских адресов
 urlpatterns += patterns('',
@@ -107,8 +106,8 @@ urlpatterns += patterns('',
         {'next_page': '/'},
         name='auth_logout'),
     # Регистрация
-    url(r'^accounts/password/reset/$', 
-        auth_views.password_reset, 
+    url(r'^accounts/password/reset/$',
+        auth_views.password_reset,
         {
          'post_reset_redirect' : '/accounts/password/reset/done/',
          'extra_context': {'page_title': 'Восстановление пароля: введите адрес e-mail'}
@@ -121,13 +120,13 @@ urlpatterns += patterns('',
          },
         ),
     url(r'^accounts/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
-        auth_views.password_reset_confirm, 
+        auth_views.password_reset_confirm,
         {
          'post_reset_redirect' : '/accounts/password/done/',
          'extra_context': {'page_title': 'Восстановление пароля: новый пароль'}
          },
         ),
-    url(r'^accounts/password/done/$', 
+    url(r'^accounts/password/done/$',
         auth_views.password_reset_complete,
         {
          'extra_context': {'page_title': 'Восстановление пароля: пароль восстановлен'}
@@ -135,38 +134,7 @@ urlpatterns += patterns('',
         ),
 )
 # AJAX
-urlpatterns += patterns('',
-    # Подгрузка комментариев для рассказа
-    url(r'^ajax/story/(?P<story_id>\d+)/comments/page/(?P<page>\d+)/$', ajax.CommentsStory.as_view()),
-    # Подгрузка комментариев для профиля
-    url(r'^ajax/accounts/(?P<user_id>\d+)/comments/page/(?P<page>\d+)/$', ajax.CommentsAuthor.as_view()),
-    url(r'^ajax/accounts/profile/comments/page/(?P<page>\d+)/$', ajax.CommentsAuthor.as_view(), {'user_id': None}),
-    # Загрузка модального окна-подтверждения удаления рассказа
-    url(r'^ajax/story/(?P<story_id>\d+)/delete/confirm/$', ajax.ConfirmDeleteStory.as_view()),
-    # Удаление рассказа
-    url(r'^ajax/story/(?P<story_id>\d+)/delete/$', ajax.story_delete_ajax),
-    # Одобрение рассказа
-    url(r'^ajax/story/(?P<story_id>\d+)/approve/$', ajax.story_approve_ajax),
-    # Публикация рассказа
-    url(r'^ajax/story/(?P<story_id>\d+)/publish/$', ajax.story_publish_ajax),
-    # Добавление в закладки рассказа
-    url(r'^ajax/story/(?P<story_id>\d+)/bookmark$', ajax.story_bookmark_ajax),
-    # Добавление в избранное рассказа
-    url(r'^ajax/story/(?P<story_id>\d+)/favorite', ajax.story_favorite_ajax),
-    # Добавление в избранное главы (workaround, пока добавляется весь рассказ)
-    url(r'^ajax/story/(?P<story_id>\d+)/chapter/\d+/favorite', ajax.story_favorite_ajax),
-    # Голосование за рассказ
-    url(r'^ajax/story/(?P<story_id>\d+)/vote/(?P<direction>\w+)/$', ajax.story_vote_ajax),
-    # Одобрение автора
-    url(r'^ajax/accounts/(?P<user_id>\d+)/approve/$', ajax.author_approve_ajax),
-    # Загрузка модального окна-подтверждения удаления главы
-    url(r'^ajax/chapter/(?P<chapter_id>\d+)/delete/confirm/$', ajax.ConfirmDeleteChapter.as_view()),
-    # Удаление главы
-    url(r'^ajax/chapter/(?P<chapter_id>\d+)/delete/$', ajax.chapter_delete_ajax),
-    
-    # AJAX-сортировка глав
-    url(r'^story/(?P<story_id>\d+)/edit/ajax$', ajax.chapter_sort),
-)
+urlpatterns += patterns('', (r'^ajax/', include('ponyFiction.ajax.urls')))
 
 # Работа с комментариями
 urlpatterns += patterns('',
@@ -180,14 +148,14 @@ urlpatterns += patterns('',
 )
 
 # RSS
-urlpatterns += patterns('', 
+urlpatterns += patterns('',
     url(r'^feeds/stories/$', feeds.stories(), name='feeds_stories'),
     url(r'^feeds/chapters/$', feeds.chapters(), name='feeds_chapters'),
     url(r'^feeds/story/(?P<story_id>\d+)/$', feeds.story(), name='feeds_story'),
 )
 
 # Работа с рассказами
-urlpatterns += patterns('ponyFiction.views.stories',
+urlpatterns += patterns('ponyFiction.views.story',
     # Просмотр
     url(r'^story/(?P<pk>\d+)/$', 'story_view', {'comments_page': 1}, name='story_view'),
     # Просмотр с подгрузкой определенной страницы комментариев
@@ -197,7 +165,7 @@ urlpatterns += patterns('ponyFiction.views.stories',
     # Правка
     url(r'^story/(?P<pk>\d+)/edit/$', StoryEdit.as_view(), name='story_edit'),
     # Удаление
-    url(r'^story/(?P<pk>\d+)/delete/$', 'story_delete', name='story_delete'),
+    url(r'^story/(?P<pk>\d+)/delete/$', StoryDelete.as_view(), name='story_delete'),
     # Отправка на публикацию
     url(r'^story/(?P<pk>\d+)/publish/$', 'story_publish', name='story_publish'),
     # Одобрение
@@ -213,9 +181,9 @@ urlpatterns += patterns('ponyFiction.views.stories',
     url(r'^story/(?P<story_id>\d+)/download/(?P<filename>\w+)\.(?P<extension>[\w\.]+)$', 'story_download'),
 )
 # Работа с главами
-urlpatterns += patterns('ponyFiction.views.chapters',
+urlpatterns += patterns('ponyFiction.views.chapter',
     # Просмотр одной
-    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/$','chapter_view', name='chapter_view_single'),
+    url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/$', 'chapter_view', name='chapter_view_single'),
     # Просмотр всех глав
     url(r'^shtory/(?P<story_id>\d+)/chapter/all/$', 'chapter_view', name='chapter_view_all'),
     # Добавление
@@ -223,10 +191,8 @@ urlpatterns += patterns('ponyFiction.views.chapters',
     # Правка
     url(r'^chapter/(?P<pk>\d+)/edit/$', ChapterEdit.as_view(), name='chapter_edit'),
     # Удаление
-    url(r'^chapter/(?P<pk>\d+)/delete/$', 'chapter_delete', name='chapter_delete'),
+    url(r'^chapter/(?P<pk>\d+)/delete/$', ChapterDelete.as_view(), name='chapter_delete'),
 )
-
-
 # Другое
 urlpatterns += patterns('',
     url(r'^not_found/$', TemplateView.as_view(template_name='404.html')),
