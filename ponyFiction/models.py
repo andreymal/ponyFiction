@@ -21,7 +21,7 @@ class Author(AbstractUser):
     approved = models.BooleanField(default=False, verbose_name="Проверенный автор")
     excluded_categories = SeparatedValuesField(max_length=200, null=True, verbose_name="Скрытые категории")
     detail_view = models.BooleanField(default=False, verbose_name="Детальное отображение рассказов")
-    nsfw_allowed = models.BooleanField(default=False, verbose_name="NSFW без предупреждения")
+    nsfw = models.BooleanField(default=False, verbose_name="NSFW без предупреждения")
     
     def __unicode__(self):
         return self.username
@@ -201,8 +201,6 @@ class StoryQuerySet(models.query.QuerySet):
             return qs
         else:
             return qs.exclude(categories__in=user.excluded_categories)
-
-        #return self.filter(Q(date__gte=self.last)|Q(draft=False, approved=True))
     
 class StoryManager(models.Manager):
     def get_query_set(self):

@@ -1,5 +1,5 @@
 {% load stories %}
-<div id="wrapper"{% if story.nsfw and not user.nsfw_allowed %} class="nsfw"{% endif %}>
+<div id="wrapper"{% if story.nsfw and not user.nsfw %} class="nsfw"{% endif %}>
 	<div class="storypanel" id="story_panel">
 	    {% if user.is_authenticated %}
 	    	<a title="В избранное" href="{% url 'story_favorite' story.id %}" class="story_favorite scon favorite{% if story|favorited:user.id %} favorited{% endif %}"></a>

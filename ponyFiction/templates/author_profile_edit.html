@@ -138,17 +138,17 @@
 							<div class="padded bootstrap checkbox">
 								<label>Скрыть жанры:</label>
 								{{ prefs_form.excluded_categories }}
-							</div>
+							</div>			
 							<div class="padded bootstrap radio">
 								<label>Показать рассказ в списках:</label>
 								{{ prefs_form.detail_view }}
 							</div>
 							<div class="padded bootstrap radio">
 								<label>NSFW-предупреждения:</label>
-								{{ prefs_form.nsfw_allowed }}
+								{{ prefs_form.nsfw }}
 							</div>
 							<div class="form-actions">
-								<button class="btn btn-primary" type="submit" name="save_prefs">Сохранить личные настройки</button>
+								<input class="btn btn-primary" type="submit" name="save_prefs" value="Сохранить личные настройки"/>
 							</div>
 						</fieldset>
 					</form>
