@@ -36,6 +36,8 @@ body {
 	float: right;
 	padding: 0 27px;
 	margin: 20px 40px 0 0;
+	max-height: 200px;
+    overflow: hidden;
 }
 
 .carousel .slidesjs-container {
