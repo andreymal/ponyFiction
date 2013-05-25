@@ -175,8 +175,8 @@ class Series(models.Model):
 
     
 class StoryQuerySet(models.query.QuerySet):
-    from datetime import datetime, timedelta
-    last = datetime.now() - timedelta(weeks=1)
+    from datetime import date, timedelta
+    last = date.today() - timedelta(weeks=1)
     
     @property
     def published(self):
