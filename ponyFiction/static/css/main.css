@@ -256,7 +256,9 @@ a.authorlink:hover,a.edit-link:hover {
 .story-control-btn {
 	float: right;
 }
-
+.story-item .story-control-btn a {
+	margin-right: 3px;
+}
 /* Vote-buttons */
 .upvotes {
 	color: #66CC66;
