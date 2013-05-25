@@ -789,7 +789,37 @@ var stuff = {
 	});
     },
     carousel : function() {
-	// TODO: Сделать карусель
+	$("#slides").slidesjs({
+	    width : 524,
+	    height : 200,
+	    navigation : {
+		active : true,
+		effect : "fade",
+	    },
+	    pagination : {
+		active : false,
+	    },
+	    effect : {
+		slide : {
+		    speed : 1500,
+		},
+		fade : {
+		    speed : 300,
+		    crossfade : false,
+		}
+	    },
+	    play : {
+		active : false,
+		effect : "fade",
+		interval : 5000,
+		auto : true,
+		swap : true,
+		pauseOnHover : true,
+		restartDelay : 2500
+	    }
+	});
+	$('.slidesjs-previous').html('<img src="static/i/arrow-left.png" />');
+	$('.slidesjs-next').html('<img src="static/i/arrow-right.png" />');
     }
 }
 // При загрузке страницы

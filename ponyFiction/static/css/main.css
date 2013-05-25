@@ -38,9 +38,8 @@ body {
 	margin: 20px 40px 0 0;
 }
 
-.carousel-inner {
-	padding: 10px 20px 5px;
-	height: 184px;
+.carousel .slidesjs-container {
+	background-color: rgba(255, 255, 255, 0.8);
 }
 
 .carousel h3 {
@@ -50,11 +49,29 @@ body {
 .carousel p {
 	line-height: 20px;
 	margin-bottom: 4px;
+	width: 97%;
 }
 
 .carousel .story-item {
-	width: 500px;
-	background-color: rgba(255, 255, 255, 0.8);
+	margin: 0px!important;
+}
+.carousel p.meta .gen {
+	margin-bottom: 4px;
+}
+
+.carousel p.meta {
+	margin-bottom: 0;
+}
+
+.slidesjs-navigation img {
+	width: 32px;
+	height: 32px;
+}
+a.slidesjs-navigation {
+	position: relative;
+	top: -37px;
+	left: 425px;
+	padding: 2px;
 }
 
 /* Main menu */
@@ -327,18 +344,6 @@ h1 .alert {
 p.meta .gen {
 	padding: 2px 7px;
 	margin: 0 4px 0 0;
-}
-
-.carousel p.meta .gen {
-	margin-bottom: 4px;
-}
-
-.carousel p.meta {
-	margin-bottom: 0;
-}
-
-.carousel .story-item {
-	padding-bottom: 10px;
 }
 
 a.gen:hover {
