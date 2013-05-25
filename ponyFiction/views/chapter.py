@@ -5,8 +5,9 @@ from django.db.models import Max, F
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from ponyFiction import signals
 from ponyFiction.forms.chapter import ChapterForm
-from ponyFiction.models import Story, Chapter, StoryView
+from ponyFiction.models import Story, Chapter, Author
 from django.views.decorators.csrf import csrf_protect
 from cacheops.invalidation import invalidate_obj
 
@@ -17,6 +18,8 @@ def chapter_view(request, story_id=False, chapter_order=False):
         story = get_object_or_404(Story, pk=story_id)
         if not story.editable_by(request.user):
             raise PermissionDenied
+    comments_list = story.comment_set.order_by('-date').all().cache()
+    signals.story_viewed.send(sender=Author, instance=request.user, story=story, comments_count=comments_list.count())
     if chapter_order:
         chapter = get_object_or_404(story.chapter_set, order=chapter_order)
         page_title = chapter.title[0:80]+' : '+chapter.story.title
@@ -30,13 +33,6 @@ def chapter_view(request, story_id=False, chapter_order=False):
            'page_title' : page_title,
            'allchapters': False
         }
-        # TODO: signalz!
-        if request.user.is_authenticated():
-            StoryView.objects.create(
-                author = request.user,
-                story_id = story_id,
-                chapter = chapter,
-            )
     else:
         chapters = story.chapter_set.order_by('order').cache()
         page_title = story.title+u' – все главы'
@@ -46,11 +42,6 @@ def chapter_view(request, story_id=False, chapter_order=False):
             'page_title' : page_title,
             'allchapters': True
         }
-        if request.user.is_authenticated():
-            StoryView.objects.create(
-                author = request.user,
-                story_id = story_id,
-            )
     return render(request, 'chapter_view.html', data) 
 
 class ChapterAdd(CreateView):
