@@ -818,8 +818,8 @@ var stuff = {
 		restartDelay : 2500
 	    }
 	});
-	$('.slidesjs-previous').html('<img src="static/i/arrow-left.png" />');
-	$('.slidesjs-next').html('<img src="static/i/arrow-right.png" />');
+	$('.slidesjs-previous').html('<img src="/static/i/arrow-left.png" />');
+	$('.slidesjs-next').html('<img src="/static/i/arrow-right.png" />');
     }
 }
 // При загрузке страницы
