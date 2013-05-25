@@ -84,7 +84,7 @@ class AuthorEditPrefsForm(Form):
         widget=StoriesRadioButtons(attrs=radio_attrs),
     )
     nsfw = ChoiceField(
-        choices=[(0, 'Скрыть'), (1, 'Показать')],
+        choices=[(0, 'Показать'), (1, 'Скрыть')],
         required=True,
         widget=StoriesRadioButtons(attrs=radio_attrs),
     )

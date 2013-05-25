@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_protect
 from ponyFiction.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm, AuthorEditPrefsForm
 from ponyFiction.models import Author, Comment, Vote, Story, StoryView
 from django.core.exceptions import PermissionDenied
+from cacheops.invalidation import invalidate_obj
 
 @login_required
 @csrf_protect
@@ -52,6 +53,7 @@ def author_edit(request):
     data = {}
     data['page_title'] = 'Настройки профиля'
     if request.POST:
+        invalidate_obj(author)
         if 'save_profile' in request.POST:
             profile_form = AuthorEditProfileForm(request.POST, instance=author, prefix='profile_form')
             if profile_form.is_valid():

@@ -217,7 +217,7 @@ var ajax = {
 	 * @param response
 	 *                int ID рассказа
 	 */
-	fovorite : function(response) {
+	favorite : function(response) {
 	    if (pages.story_view.regex.test(window.location.pathname)) {
 		var btn = $('.story_favorite');
 		var msg_container = $('.story_favorite ~ .story_favorite_msg');
@@ -433,6 +433,7 @@ var listeners = {
 		event.stopImmediatePropagation();
 		event.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
+		ajax.comment.load(url);
 	    });
 	},
 	// Добавление комментария
@@ -593,6 +594,7 @@ var pages = {
 	action : function() {
 	    $('#nav_author_overview').addClass('active');
 	    listeners.author.approve();
+	    listeners.comment.pagination();
 	    for ( var listener in listeners.story) {
 		listeners.story[listener]();
 	    }
@@ -603,6 +605,7 @@ var pages = {
 	action : function() {
 	    $('#nav_author_dashboard').addClass('active');
 	    listeners.author.approve();
+	    listeners.comment.pagination();
 	    for ( var listener in listeners.story) {
 		listeners.story[listener]();
 	    }

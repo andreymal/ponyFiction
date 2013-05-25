@@ -56,7 +56,7 @@ urlpatterns += patterns('',
     url(r'^accounts/(?P<user_id>\d+)/$', author.author_info, {'comments_page': 1}, name='author_overview'),
     url(r'^accounts/(?P<user_id>\d+)/comments/page/(?P<comments_page>\d+)/$', author.author_info, name='author_overview_comments_paged'),
     url(r'^accounts/profile/$', author.author_info, {'user_id': None, 'comments_page': 1}, name='author_dashboard'),
-    url(r'^accounts/profile/comments/page/(?P<comments_page>\d+)/$', author.author_info, name='author_dashboard_comments_paged'),
+    url(r'^accounts/profile/comments/page/(?P<comments_page>\d+)/$', author.author_info, {'user_id': None}, name='author_dashboard_comments_paged'),
     url(r'^accounts/profile/edit/$', author.author_edit, name='author_profile_edit'),
     url(r'^accounts/(?P<user_id>\d+)/approve/$', author.author_approve, name='author_approve'),
 

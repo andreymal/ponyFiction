@@ -106,7 +106,7 @@ class CommentsAuthor(ObjectList):
     
     def get_queryset(self):
         if self.kwargs['user_id'] is None:
-            return Comment.objects.filter(story__authors=self.request.user.id).cache()
+            return Comment.objects.filter(story__authors=self.request.user.id).order_by('-date').cache()
         else:
             author = get_object_or_404(Author, pk=self.kwargs['user_id'])
             return author.comment_set.order_by('-date').cache()
