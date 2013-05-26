@@ -18,13 +18,12 @@ def chapter_view(request, story_id=False, chapter_order=False):
         story = get_object_or_404(Story, pk=story_id)
         if not story.editable_by(request.user):
             raise PermissionDenied
-    comments_list = story.comment_set.order_by('-date').all().cache()
-    signals.story_viewed.send(sender=Author, instance=request.user, story=story, comments_count=comments_list.count())
     if chapter_order:
         chapter = get_object_or_404(story.chapter_set, order=chapter_order)
         page_title = chapter.title[0:80]+' : '+chapter.story.title
         prev_chapter = chapter.get_prev_chapter()
         next_chapter = chapter.get_next_chapter()
+        signals.story_viewed.send(sender=Author, instance=request.user, story=story, chapter=chapter)
         data = {
            'story': story,
            'chapter' : chapter,
@@ -36,6 +35,7 @@ def chapter_view(request, story_id=False, chapter_order=False):
     else:
         chapters = story.chapter_set.order_by('order').cache()
         page_title = story.title+u' – все главы'
+        signals.story_viewed.send(sender=Author, instance=request.user, story=story, chapter=None)
         data = {
             'story': story,
             'chapters' : chapters,

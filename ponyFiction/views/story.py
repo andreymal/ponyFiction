@@ -13,7 +13,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from ponyFiction import signals
 from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
-from ponyFiction.models import Story, CoAuthorsStory, StoryView, Author
+from ponyFiction.models import Story, CoAuthorsStory, Author
 from cacheops.invalidation import invalidate_obj
 
 @csrf_protect
@@ -34,7 +34,9 @@ def story_view(request, pk, comments_page):
     comments = paged.page(page_current)
     page_title = story.title
     comment_form = CommentForm()
-    signals.story_viewed.send(sender=Author, instance=request.user, story=story, comments_count=comments_list.count())
+    signals.story_visited.send(sender=Author, instance=request.user, story=story, comments_count=comments_list.count())
+    if story.chapter_set.count() == 1:
+        signals.story_viewed.send(sender=Author, instance=request.user, story=story, chapter=story.chapter_set.all()[0])
     data = {
        'story' : story,
        'comments' : comments,
@@ -44,13 +46,6 @@ def story_view(request, pk, comments_page):
        'page_title' : page_title,
        'comment_form': comment_form
        }
-    # Если только одна глава
-    if (story.chapter_set.count() == 1 and request.user.is_authenticated()):
-        view = StoryView.objects.create()
-        view.author = request.user
-        view.story_id = pk
-        view.chapter = story.chapter_set.all()[0]
-        view.save()
     return render(request, 'story_view.html', data)
 
 @login_required
