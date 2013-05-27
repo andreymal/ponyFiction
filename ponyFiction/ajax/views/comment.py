@@ -8,7 +8,6 @@ from ponyFiction.views.comment import CommentAdd, CommentEdit, CommentDelete
 from ponyFiction.views.object_lists import ObjectList
 from django.utils.decorators import method_decorator
 from ponyFiction.ajax.decorators import ajax_required
-
 class AjaxCommentAdd(CommentAdd, AJAXHTTPResponseMixin):
     
     response_template_name = 'includes/comments.html'
@@ -24,8 +23,7 @@ class AjaxCommentAdd(CommentAdd, AJAXHTTPResponseMixin):
     def form_valid(self, form):
         parent_response = super(AjaxCommentAdd, self).form_valid(form)
         if parent_response.status_code == 302:
-            # TODO self.context.update?
-            return render(self.request, self.response_template_name, self.context.update({'comments': [self.comment]}))
+            return render(self.request, self.response_template_name, {'comments': [self.comment]})
         else:
             return parent_response
 

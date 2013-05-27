@@ -6,7 +6,7 @@
 			{{ form.text }}
 		</div>
 		<div class="controls">
-			<a href="{% url 'story_view' story.id %}" class="btn">Отменить</a>
+			<a data-dismiss="modal" href="{% url 'story_view' story.id %}" class="btn">Отменить</a>
 			<input class="btn btn-primary comment_submit" type="submit" value="Отправить"/>
 		</div>
 	</div>

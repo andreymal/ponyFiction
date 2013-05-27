@@ -28,18 +28,30 @@ var ajax = {
      *                event Событие
      */
     modal : function(event) {
+	if (requestRunning) {
+	    return;
+	}
 	event.stopImmediatePropagation();
 	event.preventDefault();
 	$('.modal:hidden').remove(); // Fix fox clear DOM
 	var url = '/ajax' + $(this).attr('href');
 	var modal = $('<div class="modal hide fade"></div>');
-	$.get(url, function(data) {
-	    modal.html(data).on('show', function() {
-		var textarea = $('textarea', this);
-		if (textarea.length) {
-		    textarea.markItUp(mySettings);
-		}
-	    }).modal();
+	requestRunning = true;
+	$.ajax({
+	    dataType : 'html',
+	    success : function(data) {
+		modal.html(data).on('show', function() {
+		    var textarea = $('textarea', this);
+		    if (textarea.length) {
+			textarea.markItUp(mySettings);
+		    }
+		}).modal();
+	    },
+	    complete : function() {
+		requestRunning = false;
+	    },
+	    type : 'GET',
+	    url : url
 	});
     },
     /**
