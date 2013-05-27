@@ -197,7 +197,7 @@ var ajax = {
 		var btn = $('#story_' + response + ' .story_approve');
 	    }
 	    if (btn.hasClass('btn-success')) {
-		var text = 'Отменить';
+		var text = 'Отозвать';
 	    } else {
 		var text = 'Одобрить';
 	    }
@@ -561,6 +561,7 @@ var pages = {
 	    $('#nav_story_add').addClass('active');
 	    $('#id_text').markItUp(mySettings);
 	    $('#id_notes').markItUp(mySettings);
+	    listeners.misc.characters();
 	    $('.character-item input[checked="checked"]').prev().addClass('ui-selected');
 	}
     },
@@ -569,6 +570,7 @@ var pages = {
 	action : function() {
 	    $('#id_text').markItUp(mySettings);
 	    $('#id_notes').markItUp(mySettings);
+	    listeners.misc.characters();
 	    $('.character-item input[checked="checked"]').prev().addClass('ui-selected');
 	    for ( var listener in listeners.chapter) {
 		listeners.chapter[listener]();
