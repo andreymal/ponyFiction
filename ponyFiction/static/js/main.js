@@ -129,6 +129,10 @@ var ajax = {
 	 *                event Событие
 	 */
 	send : function(event) {
+	    if (requestRunning) {
+		return;
+	    }
+	    requestRunning = true;
 	    event.stopImmediatePropagation();
 	    event.preventDefault();
 	    form = $('.modal form');
@@ -156,7 +160,10 @@ var ajax = {
 			}
 			$('.modal').modal('hide').remove();
 		    }
-		}
+		},
+		complete : function() {
+		    requestRunning = false;
+		},
 	    });
 	},
 
