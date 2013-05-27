@@ -175,12 +175,12 @@ var ajax = {
 	    } else {
 		var btn = $('#story_' + response + ' .story_approve');
 	    }
-	    if (btn.hasClass('btn-primary')) {
+	    if (btn.hasClass('btn-success')) {
 		var text = 'Отменить';
 	    } else {
 		var text = 'Одобрить';
 	    }
-	    btn.text(text).toggleClass('btn-primary');
+	    btn.text(text).toggleClass('btn-success');
 	},
 
 	/**
