@@ -16,7 +16,7 @@ class StreamStories(ObjectList):
     def page_title(self):
         return u'Лента добавлений'
     
-    @cached_as(Story.objects.all())
+    @cached_as(Story.objects.all()) # workaround for https://github.com/Suor/django-cacheops/issues/29
     def get_queryset(self):
         return Story.objects.accessible(user=self.request.user).order_by('-date')
     
@@ -33,7 +33,6 @@ class StreamChapters(ObjectList):
     def page_title(self):
         return u'Лента обновлений'
     
-    @cached_as(Chapter.objects.all())
     def get_queryset(self):
         return Chapter.objects.filter(story__in=Story.objects.accessible(user=self.request.user)).order_by('-date').cache()
     
@@ -50,6 +49,5 @@ class StreamComments(ObjectList):
     def page_title(self):
         return u'Лента комментариев'
     
-    @cached_as(Comment.objects.all())
     def get_queryset(self):
         return Comment.objects.filter(story__in=Story.objects.accessible(user=self.request.user)).order_by('-date').cache()
