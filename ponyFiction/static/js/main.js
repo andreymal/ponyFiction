@@ -484,7 +484,7 @@ var listeners = {
 	}
     },
     misc : {
-	character : function() {
+	characters : function() {
 	    $(".character-item").click(function() {
 		if (Boolean($(this).children('input:checked').length)) {
 		    $(this).children('img').removeClass('ui-selected');
