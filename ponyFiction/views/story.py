@@ -18,13 +18,10 @@ from cacheops.invalidation import invalidate_obj
 
 @csrf_protect
 def story_view(request, pk, comments_page):
-    
-    try:
-        story = Story.objects.accessible(user=request.user).get(pk=pk)
-    except Story.DoesNotExist:
-        story = get_object_or_404(Story, pk=pk)
-        if not story.editable_by(request.user):
-            raise PermissionDenied
+
+    story = Story.objects.accessible(user=request.user).get(pk=pk)
+    if not story.editable_by(request.user):
+        raise PermissionDenied
     
     chapters = story.chapter_set.order_by('order')
     comments_list = story.comment_set.order_by('-date').all().cache()

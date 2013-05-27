@@ -12,12 +12,9 @@ from django.views.decorators.csrf import csrf_protect
 from cacheops.invalidation import invalidate_obj
 
 def chapter_view(request, story_id=False, chapter_order=False):
-    try:
-        story = Story.objects.accessible(user=request.user).get(pk=story_id)
-    except Story.DoesNotExist:
-        story = get_object_or_404(Story, pk=story_id)
-        if not story.editable_by(request.user):
-            raise PermissionDenied
+    story = Story.objects.accessible(user=request.user).get(pk=story_id)
+    if not story.editable_by(request.user):
+        raise PermissionDenied
     if chapter_order:
         chapter = get_object_or_404(story.chapter_set, order=chapter_order)
         page_title = chapter.title[0:80]+' : '+chapter.story.title

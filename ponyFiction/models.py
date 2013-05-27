@@ -196,11 +196,15 @@ class StoryQuerySet(models.query.QuerySet):
     
     def accessible(self, *args, **kwargs):
         user = kwargs['user']
-        qs = self.filter(Q(date__gte=self.last)|Q(draft=False, approved=True))
-        if user.is_anonymous():
-            return qs
+        # All NOT drafts AND (already approved OR (submitted at last 1 week ago AND NOT approved yet) ) stories
+        default_queryset = self.filter(Q(date__gte=self.last, approved=False)|Q(approved=True), draft=False)
+        if not user.is_authenticated():
+            return default_queryset
         else:
-            return qs.exclude(categories__in=user.excluded_categories)
+            if user.is_staff:
+                return self
+            else:
+                return default_queryset.exclude(categories__in=user.excluded_categories)
     
 class StoryManager(models.Manager):
     def get_query_set(self):

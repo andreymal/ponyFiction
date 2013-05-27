@@ -20,14 +20,10 @@ class CommentAdd(CreateView):
     @method_decorator(login_required)
     @method_decorator(csrf_protect)
     def dispatch(self, request, *args, **kwargs):
-        try:
-            self.story = Story.objects.accessible(user=request.user).get(pk=kwargs['story_id'])
-        except Story.DoesNotExist:
-            self.story = get_object_or_404(Story, pk=kwargs['story_id'])
-            if not self.story.editable_by(self.request.user):
-                raise PermissionDenied
-        else:
-            return CreateView.dispatch(self, request, *args, **kwargs)
+        self.story = Story.objects.accessible(user=request.user).get(pk=kwargs['story_id'])
+        if not self.story.editable_by(self.request.user):
+            raise PermissionDenied
+        return CreateView.dispatch(self, request, *args, **kwargs)
     
     def form_valid(self, form):
         comment = form.save(commit=False)
