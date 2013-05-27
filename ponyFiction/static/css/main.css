@@ -1116,13 +1116,6 @@ h1 img,.userpic {
 		100%;
 }
 
-.modal {
-	left: 45%;
-	width: 730px;
-}
-.modal-body {
-	max-height: 450px!important;
-}
 .page-faq h2,.page-terms h2,.page-help h2 {
 	margin-top: 24px;
 }
@@ -1283,6 +1276,16 @@ h1 img,.userpic {
 	}
 }
 
+@media ( min-width : 768px) {
+	.modal {
+		left: 45%;
+		width: 730px;
+	}
+	.modal-body {
+		max-height: 450px!important;
+	}
+}
+
 /* Tablets portrait */
 @media ( max-width : 767px) {
 	.container {
@@ -1343,6 +1346,12 @@ h1 img,.userpic {
 	.story-chapter-page .story-panel .chapter-controls {
 		float: none;
 	}
+	.markItUpHeader ul li {
+		float: left;
+	}
+	.markItUpHeader ul li:nth-child(20n) {
+		clear: both;
+	}
 }
 
 /* Smartphones */
@@ -1394,6 +1403,12 @@ h1 img,.userpic {
 	}
 	.padded>.bootstrap.radio {
 		display: none;
+	}
+	.markItUpHeader ul li {
+		float: left;
+	}
+	.markItUpHeader ul li:nth-child(15n) {
+		clear: both;
 	}
 }
 
