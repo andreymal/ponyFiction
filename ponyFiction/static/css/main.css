@@ -1279,10 +1279,13 @@ h1 img,.userpic {
 @media ( min-width : 768px) {
 	.modal {
 		left: 45%;
-		width: 730px;
+		width: 640px;
 	}
 	.modal-body {
 		max-height: 450px!important;
+	}
+	.modal textarea.span4 {
+		max-width: 85%;
 	}
 }
 
