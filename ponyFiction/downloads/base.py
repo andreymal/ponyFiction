@@ -13,7 +13,7 @@ class BaseDownloadFormat(object):
     
     def url(self, story):
         return reverse(
-            'ponyFiction.views.stories.story_download',
+            'ponyFiction.views.story.story_download',
             kwargs = dict(
                 story_id = story.id,
                 filename = slugify(story.title),
