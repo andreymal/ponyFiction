@@ -1120,7 +1120,9 @@ h1 img,.userpic {
 	left: 45%;
 	width: 730px;
 }
-
+.modal-body {
+	max-height: 450px!important;
+}
 .page-faq h2,.page-terms h2,.page-help h2 {
 	margin-top: 24px;
 }

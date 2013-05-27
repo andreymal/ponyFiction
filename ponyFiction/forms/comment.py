@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from ponyFiction.models import Comment
-from django.forms import ModelForm, Textarea 
+from django.forms import ModelForm, Textarea, ValidationError
 from django.forms.fields import CharField
+from pydevd import settrace
+from django.template.defaultfilters import striptags
+
+
 
 class CommentForm(ModelForm):
     attrs_dict = {'class': 'span4'}
@@ -11,6 +16,13 @@ class CommentForm(ModelForm):
         label='Добавить комментарий',
         required=False,
     )
+    
+    def clean_text(self):
+        text = self.cleaned_data['text']
+        if (len(striptags(text)) < settings.COMMENT_MIN_LENGTH):
+            raise ValidationError(u'Сообщение слишком короткое!')
+        return text
+    
     class Meta:
         model = Comment
         fields = ('text', )

@@ -8,6 +8,7 @@ from ponyFiction.views.comment import CommentAdd, CommentEdit, CommentDelete
 from ponyFiction.views.object_lists import ObjectList
 from django.utils.decorators import method_decorator
 from ponyFiction.ajax.decorators import ajax_required
+
 class AjaxCommentAdd(CommentAdd, AJAXHTTPResponseMixin):
     
     response_template_name = 'includes/comments.html'

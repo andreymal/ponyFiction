@@ -139,6 +139,7 @@ COMMENTS_COUNT = {
 STORIES_COUNT = {'page' : 10, 'main' : 10, 'stream' : 20}
 CHAPTERS_COUNT = {'page' : 10, 'main' : 10, 'stream' : 20}
 COMMENTS_ORPHANS = 5
+COMMENT_MIN_LENGTH = 140
 RSS = {'stories': 20, 'chapters': 20, 'comments': 100}
 AUTH_USER_MODEL = 'ponyFiction.Author'
 AUTHENTICATION_BACKENDS = ('ponyFiction.auth_backends.AuthorModelBackend',)

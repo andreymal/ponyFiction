@@ -138,15 +138,24 @@ var ajax = {
 		url : url,
 		data : form.serialize(),
 		success : function(data) {
-		    var new_comment = $(data);
-		    var new_text = $('div.comment', new_comment);
-		    var target = $('#' + new_comment.attr('id') + ' div.comment');
-		    if (target.length) {
-			target.replaceWith(new_text);
+		    var is_modal = (data.indexOf('modal') > -1);
+		    if (is_modal) {
+			$('.modal').html(data);
+			var textarea = $('.modal textarea');
+			if (textarea.length) {
+			    textarea.markItUp(mySettings);
+			}
 		    } else {
-			$('#comments-list').prepend(new_comment);
+			var new_comment = $(data);
+			var new_text = $('div.comment', new_comment);
+			var target = $('#' + new_comment.attr('id') + ' div.comment');
+			if (target.length) {
+			    target.replaceWith(new_text);
+			} else {
+			    $('#comments-list').prepend(new_comment);
+			}
+			$('.modal').modal('hide').remove();
 		    }
-		    $('.modal').modal('hide').remove();
 		}
 	    });
 	},
