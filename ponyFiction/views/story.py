@@ -18,11 +18,7 @@ from cacheops.invalidation import invalidate_obj
 
 @csrf_protect
 def story_view(request, pk, comments_page):
-
-    story = Story.objects.accessible(user=request.user).get(pk=pk)
-    if not story.editable_by(request.user):
-        raise PermissionDenied
-    
+    story = get_object_or_404(Story.objects.accessible(user=request.user), pk=pk)
     chapters = story.chapter_set.order_by('order')
     comments_list = story.comment_set.order_by('-date').all().cache()
     paged = Paginator(comments_list, settings.COMMENTS_COUNT['page'], orphans=settings.COMMENTS_ORPHANS)
