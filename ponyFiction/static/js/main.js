@@ -513,18 +513,18 @@ var listeners = {
     },
     misc : {
 	characters : function() {
+	    $('.characters-select [checked="checked"] + img').addClass('ui-selected');
 	    $(".character-item").click(function() {
-		if (Boolean($(this).children('input:checked').length)) {
-		    $(this).children('img').removeClass('ui-selected');
-		    $(this).children('input').removeAttr('checked');
+		var checked = $('input[checked=checked]', this).length | 0;
+		if (checked) {
+		    $('input', this).removeAttr('checked');
 		} else {
-		    $(this).children('img').addClass("ui-selected");
-		    $(this).children('input').attr('checked', 'checked');
+		    $('input', this).attr('checked', 'checked');
 		}
+		$('img', this).toggleClass('ui-selected');
 	    });
 	},
 	search : function() {
-	    $('input[name="characters_select"][checked="checked"]').parent().children('img').addClass('ui-selected');
 	    $("#reset_search").click(function() {
 		$('input:checked').removeAttr('checked');
 		$('button').removeClass('active');
@@ -569,7 +569,6 @@ var pages = {
 	    $('#id_text').markItUp(mySettings);
 	    $('#id_notes').markItUp(mySettings);
 	    listeners.misc.characters();
-	    $('.character-item input[checked="checked"]').prev().addClass('ui-selected');
 	}
     },
     story_edit : {
@@ -578,7 +577,6 @@ var pages = {
 	    $('#id_text').markItUp(mySettings);
 	    $('#id_notes').markItUp(mySettings);
 	    listeners.misc.characters();
-	    $('.character-item input[checked="checked"]').prev().addClass('ui-selected');
 	    for ( var listener in listeners.chapter) {
 		listeners.chapter[listener]();
 	    }
@@ -789,7 +787,7 @@ var stuff = {
 	    value = input.attr('value')
 	    checked = Boolean(input.attr('checked'))
 	    if (checked) {
-		buttons_container.children('button[value=' + value + ']').addClass('active');
+		$('button[value=' + value + ']', buttons_container).addClass('active');
 	    }
 	});
 	// Onclick-обработчик
