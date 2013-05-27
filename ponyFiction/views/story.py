@@ -135,7 +135,10 @@ class StoryAdd(CreateView):
     
     def get_context_data(self, **kwargs):
         context = super(StoryAdd, self).get_context_data(**kwargs)
-        extra_context = {'page_title': u'Новый рассказ'}
+        extra_context = {
+                         'page_title': u'Новый рассказ',
+                         'story_add': True,
+                         }
         context.update(extra_context)
         return context
 

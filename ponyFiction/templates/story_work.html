@@ -12,8 +12,11 @@
 	</div>
 	
 	<div class="span12">
-		<h1>{{ page_title }}</h1>
-		{% if not story_edit %}
+		<h1>
+			{{ page_title }}
+			{% include 'includes/story_control_buttons.html' %}
+		</h1>
+		{% if story_add %}
 		<p>Перед добавлением рассказа рекомендуем прочитать <a href="{% url 'terms' %}">правила</a> и <a href="{% url 'help' %}">справку</a>. Они сделают вашу жизнь и жизни читателей проще.</p>
 			<p>Вкратце:</p>
 			<ul>

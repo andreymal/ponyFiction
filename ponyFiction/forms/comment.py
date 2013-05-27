@@ -3,7 +3,6 @@ from django.conf import settings
 from ponyFiction.models import Comment
 from django.forms import ModelForm, Textarea, ValidationError
 from django.forms.fields import CharField
-from pydevd import settrace
 from django.template.defaultfilters import striptags
 
 
