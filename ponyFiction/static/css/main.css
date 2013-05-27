@@ -1333,7 +1333,8 @@ h1 img,.userpic {
 		width: 100%;
 	}
 	.controls textarea {
-		width: 100%;
+		max-width: 400px;
+		max-height: 200px;
 	}
 	.story-chapter-page .story-panel {
 		height: auto;
