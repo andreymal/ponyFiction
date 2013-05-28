@@ -61,20 +61,36 @@ def story_approve(request, pk):
         return redirect('submitted')
     else:
         raise PermissionDenied
-
+    
+@login_required
+@csrf_protect
+def story_publish_warning(request, pk):
+    story = get_object_or_404(Story, pk=pk)
+    if (story.editable_by(request.user) or request.user.is_staff):
+        data = {
+                'page_title' : u'Неудачная попытка публикации',
+                'story' : story
+                }
+        return render(request, 'story_publish_warning.html', data)
+    else:
+        raise PermissionDenied
+    
 @login_required
 @csrf_protect
 def story_publish(request, pk):
     story = get_object_or_404(Story, pk=pk)
-    if (story.editable_by(request.user) and (story.publishable or request.user.is_staff)):
-        if (request.user.approved and not story.approved):
-            story.approved = True
-        if story.draft:
-            story.draft = False
+    if (story.publishable or (not story.draft and not story.publishable)):
+        if story.publishable:
+            if (request.user.approved and not story.approved):
+                story.approved = True
+            if story.draft:
+                story.draft = False
+            else:
+                story.draft = True
+            story.save(update_fields=['draft', 'approved'])
+            return redirect('author_dashboard')
         else:
-            story.draft = True
-        story.save(update_fields=['draft', 'approved'])
-        return redirect('author_dashboard')
+            return story_publish_warning(request, pk)
     else:
         raise PermissionDenied
 

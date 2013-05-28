@@ -135,7 +135,7 @@ var ajax = {
 	    if (requestRunning) {
 		return;
 	    }
-	    $('.comment_submit').attr("disabled","disabled");
+	    $('.comment_submit').attr("disabled", "disabled");
 	    requestRunning = true;
 	    form = $('.modal form');
 	    var url = '/ajax' + form.attr('action');
@@ -180,18 +180,20 @@ var ajax = {
 	 * @param response
 	 *                int ID рассказа
 	 */
-	publish : function(response) {
-	    if (pages.story_view.regex.test(window.location.pathname)) {
-		var btn = $('.story_publish');
+	publish : function(response, btn) {
+	    var re_story_response = new RegExp('^[0-9]{1,10}$');
+	    if (re_story_response.test(response)) {
+		if (btn.hasClass('btn-primary')) {
+		    var text = 'В черновики';
+		} else {
+		    var text = 'Опубликовать';
+		}
+		btn.text(text).toggleClass('btn-primary');
 	    } else {
-		var btn = $('#story_' + response + ' .story_publish');
+		$('.modal:hidden').remove(); // Fix fox clear DOM
+		var modal = $('<div class="modal hide fade"></div>');
+		modal.html(response).modal();
 	    }
-	    if (btn.hasClass('btn-primary')) {
-		var text = 'В черновики';
-	    } else {
-		var text = 'Опубликовать';
-	    }
-	    btn.text(text).toggleClass('btn-primary');
 	},
 	/**
 	 * Одобрение рассказа
@@ -386,14 +388,19 @@ var listeners = {
 	    });
 	},
 	// Публикация
+
 	publish : function() {
 	    $('.story_publish').click(function(event) {
 		event.stopImmediatePropagation();
 		event.preventDefault();
-		var url = '/ajax' + $(this).attr('href');
-		$.post(url, ajax.story.publish);
+		var btn = $(this);
+		var url = '/ajax' + btn.attr('href');
+		$.post(url, function(response) {
+		    ajax.story.publish(response, btn);
+		});
 	    });
 	},
+
 	// Закладки
 	bookmark : function() {
 	    $('.story_bookmark').click(function(event) {
@@ -795,7 +802,8 @@ var stuff = {
 			var value = button.attr('value');
 			if (type == 'checkbox') {
 			    var input = $('input:checkbox[value=' + value + ']', data_container);
-			    $('input[checked=checked][value=' + value + ']', data_container).length | 0 ? input.removeAttr('checked') : input.attr('checked','checked');
+			    $('input[checked=checked][value=' + value + ']', data_container).length | 0 ? input.removeAttr('checked') : input.attr('checked',
+				    'checked');
 			} else if (type == 'radio') {
 			    if (!(!!($('input:radio[value=' + value + ']', data_container).attr('checked')))) {
 				$('input:radio', data_container).removeAttr('checked');

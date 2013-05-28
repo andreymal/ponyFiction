@@ -3,30 +3,47 @@ from cacheops.invalidation import invalidate_obj
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_protect
 from json import dumps
 from ponyFiction.models import Author, Story, Favorites, Bookmark
 from ponyFiction.ajax.decorators import ajax_required
 from ponyFiction.views.story import StoryDelete
 from django.utils.decorators import method_decorator
+  
+@login_required
+@csrf_protect
+def story_publish_warning_ajax(request, story_id):
+    story = get_object_or_404(Story, pk=story_id)
+    if (story.editable_by(request.user) or request.user.is_staff):
+        data = {
+                'page_title' : u'Неудачная попытка публикации',
+                'story' : story
+                }
+        return render(request, 'includes/ajax/story_ajax_publish_warning.html', data)
+    else:
+        raise PermissionDenied
 
-@ajax_required
+@ajax_required    
 @login_required
 @csrf_protect
 def story_publish_ajax(request, story_id):
     """ Публикация рассказа по AJAX """
-    
     story = get_object_or_404(Story, pk=story_id)
-    if (story.editable_by(request.user) and (story.publishable or request.user.is_staff)):
-        if (request.user.approved and not story.approved):
-            story.approved = True
-        if story.draft:
-            story.draft = False
+    if (story.editable_by(request.user) or request.user.is_staff):
+        if (story.publishable or (not story.draft and not story.publishable)):
+            if (request.user.approved and not story.approved):
+                story.approved = True
+            if story.draft:
+                story.draft = False
+            else:
+                story.draft = True
+            story.save(update_fields=['draft', 'approved'])
+            return HttpResponse(story_id)
         else:
-            story.draft = True
-        story.save(update_fields=['draft', 'approved'])
-        return HttpResponse(story_id)
+            return story_publish_warning_ajax(request, story_id)
+    else:
+        raise PermissionDenied
 
 @ajax_required
 @login_required

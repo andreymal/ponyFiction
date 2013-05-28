@@ -2,12 +2,10 @@
 {% if not story_add %}
 	{% if story|editable_by:user %}
 		<span class="story-control-btn">
-			{% if story.publishable or user.is_staff %}
-				{% if story.draft %}
-					<a class="btn btn-primary btn-mini story_publish" href="{% url 'story_publish' story.id %}">Опубликовать</a>
-				{% else %}
-					<a class="btn btn-mini story_publish" href="{% url 'story_publish' story.id %}">В черновики</a>
-				{% endif %}
+			{% if story.draft %}
+				<a class="btn btn-mini story_publish{% if story.publishable %} btn-primary{% endif %}" href="{% url 'story_publish' story.id %}">Опубликовать</a>
+			{% else %}
+				<a class="btn btn-mini story_publish" href="{% url 'story_publish' story.id %}">В черновики</a>
 			{% endif %}
 			{% if not story_edit %}
 				<a class="btn btn-warning btn-mini" href="{% url 'story_edit' story.id %}">Редактировать</a>
