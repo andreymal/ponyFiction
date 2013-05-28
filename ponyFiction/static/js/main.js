@@ -775,18 +775,13 @@ var stuff = {
 	var group = $(this);
 	var buttons_container = $('.buttons-visible', group)
 	var data_container = $('.buttons-data', group)
+	var type = group.hasClass('checkbox') ? 'checkbox' : 'radio'
 
-	if (group.hasClass('checkbox')) {
-	    var type = 'checkbox'
-	} else if (group.hasClass('radio')) {
-	    var type = 'radio'
-	}
 	// Обработка проставленных заранее чекбоксов и радиоселектов
 	$('input', data_container).each(function() {
 	    var input = $(this);
-	    value = input.attr('value')
-	    checked = Boolean(input.attr('checked'))
-	    if (checked) {
+	    var value = input.attr('value');
+	    if (!!(input.attr('checked'))) {
 		$('button[value=' + value + ']', buttons_container).addClass('active');
 	    }
 	});
@@ -794,16 +789,13 @@ var stuff = {
 	$('button', buttons_container).each(function() {
 	    var button = $(this);
 	    button.on('click', function() {
-		value = button.attr('value');
+		var value = button.attr('value');
 		if (type == 'checkbox') {
-		    input = $('input:checkbox[value=' + value + ']', data_container);
-		    selected = Boolean($('input:checked[value=' + value + ']', data_container).length);
-		    selected ? input.removeAttr('checked') : input.attr('checked', 'checked');
+		    var input = $('input:checkbox[value=' + value + ']', data_container);
+		    $('input[checked=checked][value=' + value + ']', data_container).length | 0 ? input.removeAttr('checked') : input.attr('checked', 'checked');
 		} else if (type == 'radio') {
-		    input = $('input:radio[value=' + value + ']', data_container);
-		    all_inputs = $('input:radio', data_container);
-		    all_inputs.removeAttr('checked');
-		    input.attr('checked', 'checked');
+		    $('input:radio', data_container).removeAttr('checked');
+		    $('input:radio[value=' + value + ']', data_container).attr('checked', 'checked');
 		}
 	    });
 	});
