@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 from django.http import Http404
+from django.shortcuts import redirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
-from ponyFiction.models import Story, Chapter
-from ponyFiction.forms.search import SearchForm
 from ponyFiction import settings as settings
 from ponyFiction.apis.sphinxapi import SphinxClient, SPH_SORT_EXTENDED
+from ponyFiction.forms.search import SearchForm
+from ponyFiction.models import Story, Chapter
 from ponyFiction.utils.misc import pagination_ranges, SetBoolSphinxFilter, SetObjSphinxFilter, SetRangeSphinxFilter
-from django.shortcuts import redirect
 
 sort_types = {1: "id DESC, ", 2: "size DESC, ", 3: "rating DESC, ", 4: "comments DESC, "}
-
 
 def search_main(request):
     if request.method == 'GET':
@@ -80,7 +79,7 @@ def search_action(request, postform):
         # Фильтрация
         initial_data.update(SetObjSphinxFilter(sphinx, 'category_id', 'categories_select', postform))
         initial_data.update(SetObjSphinxFilter(sphinx, 'classifier_id', 'classifications_select', postform))
-        initial_data.update(SetObjSphinxFilter(sphinx, 'character_id', 'characters_select', postform))
+        initial_data.update(SetObjSphinxFilter(sphinx, 'character_id', 'characters_select', postform)) 
         initial_data.update(SetObjSphinxFilter(sphinx, 'rating_id', 'ratings_select', postform))
         initial_data.update(SetRangeSphinxFilter(sphinx, 'size', 'search_min_size', 'search_max_size', postform))
         initial_data.update(SetBoolSphinxFilter(sphinx, 'original', 'originals_select', postform))

@@ -142,7 +142,7 @@ def unicode_to_int_list(lst):
 unicode_to_bool_list = lambda n: map(lambda x: bool(int(x)), n)
 # [u'1', u'0', u'0', u'1'] → [True, False, False, True]
 
-obj_to_int_list = lambda n: map(lambda x: x.id, n)
+obj_to_int_list = lambda n: map(lambda x: int(x.id), n)
 # [<obj_one>, <obj_two>, <obj_three>, <obj_four>] → [1, 2, 3, 4]
 
 
