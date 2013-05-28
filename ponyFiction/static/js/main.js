@@ -1,4 +1,5 @@
 requestRunning = false;
+modalDisplaying = false;
 
 /**
  * ОБРАБОТЧИКИ
@@ -28,7 +29,7 @@ var ajax = {
      *                event Событие
      */
     modal : function(event) {
-	if (requestRunning) {
+	if (modalDisplaying) {
 	    return;
 	}
 	event.stopImmediatePropagation();
@@ -36,7 +37,7 @@ var ajax = {
 	$('.modal:hidden').remove(); // Fix fox clear DOM
 	var url = '/ajax' + $(this).attr('href');
 	var modal = $('<div class="modal hide fade"></div>');
-	requestRunning = true;
+	modalDisplaying = true;
 	$.ajax({
 	    dataType : 'html',
 	    success : function(data) {
@@ -48,7 +49,7 @@ var ajax = {
 		}).modal();
 	    },
 	    complete : function() {
-		requestRunning = false;
+		modalDisplaying = false;
 	    },
 	    type : 'GET',
 	    url : url
@@ -129,12 +130,13 @@ var ajax = {
 	 *                event Событие
 	 */
 	send : function(event) {
+	    event.stopImmediatePropagation();
+	    event.preventDefault();
 	    if (requestRunning) {
 		return;
 	    }
+	    $('.comment_submit').attr("disabled","disabled");
 	    requestRunning = true;
-	    event.stopImmediatePropagation();
-	    event.preventDefault();
 	    form = $('.modal form');
 	    var url = '/ajax' + form.attr('action');
 	    $.ajax({
