@@ -786,19 +786,22 @@ var stuff = {
 	    }
 	});
 	// Onclick-обработчик
-	$('button', buttons_container).each(function() {
-	    var button = $(this);
-	    button.on('click', function() {
-		var value = button.attr('value');
-		if (type == 'checkbox') {
-		    var input = $('input:checkbox[value=' + value + ']', data_container);
-		    $('input[checked=checked][value=' + value + ']', data_container).length | 0 ? input.removeAttr('checked') : input.attr('checked', 'checked');
-		} else if (type == 'radio') {
-		    $('input:radio', data_container).removeAttr('checked');
-		    $('input:radio[value=' + value + ']', data_container).attr('checked', 'checked');
-		}
-	    });
-	});
+	$('button', buttons_container).each(
+		function() {
+		    var button = $(this);
+		    button.on('click', function() {
+			var value = button.attr('value');
+			if (type == 'checkbox') {
+			    var input = $('input:checkbox[value=' + value + ']', data_container);
+			    $('input[checked=checked][value=' + value + ']', data_container).length | 0 ? input.removeAttr('checked') : input.attr('checked','checked');
+			} else if (type == 'radio') {
+			    if (!(!!($('input:radio[value=' + value + ']', data_container).attr('checked')))) {
+				$('input:radio', data_container).removeAttr('checked');
+				$('input:radio[value=' + value + ']', data_container).attr('checked', 'checked');
+			    }
+			}
+		    });
+		});
     },
     // Конфигурация заголовка AJAX-запроса с CSRF Cookie
     ajaxsetup : function() {
