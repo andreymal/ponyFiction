@@ -4,7 +4,8 @@ Unidecode==0.04.12
 argparse==1.2.1
 -e git://github.com/Suor/django-cacheops.git@7d0fc79600ed09d97211f87015846f1afb7146fb#egg=django_cacheops-dev
 django-debug-toolbar==0.9.4
-https://bitbucket.org/eire1130/django-registration/get/c831654ff540.ziphtml5lib==0.95
+https://bitbucket.org/eire1130/django-registration/get/c831654ff540.zip
+html5lib==0.95
 ipython==0.13.2
 lxml==3.1.0
 py-bcrypt==0.2
