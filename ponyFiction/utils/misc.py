@@ -176,6 +176,9 @@ def SetRangeSphinxFilter(sphinx, filter_name, field_name_min, field_name_max, ol
         return {field_name_min: min_selector}
     else:
         max_selector = int(max_value)
+        # Если верхний предел меньше нижнего, то меняем их местами
+        if max_value < min_value:
+            max_value, min_value = min_value, max_value
         sphinx.SetFilterRange(filter_name, min_selector, max_selector)
         return {field_name_min: min_selector, field_name_max: max_selector}
 
