@@ -9,7 +9,7 @@ from ponyFiction.forms.search import SearchForm
 from ponyFiction.models import Story, Chapter
 from ponyFiction.utils.misc import pagination_ranges, SetBoolSphinxFilter, SetObjSphinxFilter, SetRangeSphinxFilter
 
-sort_types = {1: "id DESC, ", 2: "size DESC, ", 3: "rating DESC, ", 4: "comments DESC, "}
+sort_types = {1: "id DESC, ", 2: "size DESC, ", 3: "mark DESC, ", 4: "comments DESC, "}
 
 def search_main(request):
     if request.method == 'GET':
