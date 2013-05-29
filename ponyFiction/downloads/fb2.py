@@ -18,7 +18,7 @@ class FB2Download(ZipFileDownloadFormat):
             title = story.title,
             author_name = story.authors.all()[0].username, # TODO: multiple authors
         )
-        return etree.tostring(doc, encoding = 'utf-8', xml_declaration = True)
+        return etree.tostring(doc, encoding = 'UTF-8', xml_declaration = True)
     
     def render_zip_contents(self, zipfile, filename, **kw):
         data = self.render_fb2(**kw)
