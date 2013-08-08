@@ -22,6 +22,7 @@ class Author(AbstractUser):
     excluded_categories = SeparatedValuesField(max_length=200, null=True, verbose_name="Скрытые категории")
     detail_view = models.BooleanField(default=False, verbose_name="Детальное отображение рассказов")
     nsfw = models.BooleanField(default=False, verbose_name="NSFW без предупреждения")
+    banned = models.BooleanField(default=False, verbose_name="Бан пользователя")
     
     def __unicode__(self):
         return self.username

@@ -97,3 +97,18 @@ def author_approve(request, user_id):
         return redirect('author_overview', user_id)
     else:
         raise PermissionDenied
+
+
+@login_required
+@csrf_protect
+def author_ban(request, user_id):
+    if request.user.is_staff:
+        author = get_object_or_404(Author, pk=user_id)
+        if author.banned:
+            author.banned = False
+        else:
+            author.banned = True
+        author.save(update_fields=['banned'])
+        return redirect('author_overview', user_id)
+    else:
+        raise PermissionDenied
