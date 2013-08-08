@@ -737,48 +737,44 @@ var stuff = {
     },
     // Плавающая панелька
     panel : function() {
-	var storypanel = $('#story_panel');
-	var storypanelHomeY = storypanel.offset().top;
-	var isFixed = false;
-	var $w = $(window);
-	$w.scroll(function() {
-	    var scrollTop = $w.scrollTop();
-	    var shouldBeFixed = scrollTop > storypanelHomeY;
-	    $('#story_panel').css('opacity: 1');
-	    $("#wrapper").hover(function() {
-		if (isFixed) {
-		    $(this).find("#story_panel").stop().animate({
-			opacity : 1
-		    });
-		}
-	    }, function() {
-		if (isFixed) {
-		    $(this).find("#story_panel").stop().animate({
-			opacity : 0
-		    });
-		}
-	    });
-	    // Когда скролл есть
-	    if (shouldBeFixed && !isFixed) {
-		storypanel.css({
-		    position : 'fixed',
-		    top : 0,
-		    left : storypanel.offset().left + 12,
-		    width : storypanel.width(),
-		    opacity : 0
-		});
-		isFixed = true;
-	    }
-	    // Когда скролла нет
-	    else if (!shouldBeFixed && isFixed) {
-		storypanel.css({
-		    position : 'static',
-		    opacity : 1.0
-		});
-		isFixed = false;
-	    }
-	});
+        positionY = $("#story_panel").position().top;
+        panelWidth = $("#story_panel").width();
+        isFixed = false;
+        $(window).bind('scroll', function () {
+            if (this.pageYOffset > (positionY)) {
+                isFixed = true;
+                $("#story_panel").css('position', 'fixed').css('top', 0).css('z-index', 10).css('width', panelWidth).css('border-top-right-radius', 0).css('border-top-left-radius', 0);
+                $("#wrapper").css('height', $("#story_panel").height() + 30);
+            }
+            if (this.pageYOffset <= positionY){
+                isFixed = false;
+                $("#story_panel").css('position', 'static').css('top', 0).css('z-index', 10).css('width', panelWidth).css('border-top-right-radius', 10).css('border-top-left-radius', 10);
+                $("#wrapper").css('height', 0);
+            }
+        });
     },
+
+    // Прокрутка
+    scroll : function(){
+        $.fn.scrollToTop=function(){
+            $(this).hide().removeAttr("href");
+            if ($("#story_panel").css('position') == 'fixed' ){
+                $(this).fadeIn("slow")
+            }
+            var scrollDiv=$(this);
+            $(window).scroll(function(){
+                if($("#story_panel").css('position') == 'static'){
+                    $(scrollDiv).fadeOut("slow")
+                }else{
+                    $(scrollDiv).fadeIn("slow")
+                }
+            });
+            $(this).click(function(){
+                $("html, body").animate({scrollTop:0},"slow")
+            })
+        }
+    },
+
     // Обработка состояний BootStrap Elements
     bootstrap : function() {
 	var group = $(this);
@@ -865,4 +861,27 @@ $(function() {
     stuff.carousel();
     $('.bootstrap').each(stuff.bootstrap);
     stuff.page();
+    stuff.panel();
 });
+
+// Прокрутка
+$(function(){
+    $.fn.scrollToTop=function(){
+        $(this).hide().removeAttr("href");
+        if ($("#story_panel").css('position') == 'fixed' ){
+            $(this).fadeIn("fast")
+        }
+        var scrollDiv=$(this);
+        $(window).scroll(function(){
+            if($("#story_panel").css('position') == 'static'){
+                $(scrollDiv).fadeOut("fast")
+            }else{
+                $(scrollDiv).fadeIn("fast")
+            }
+        });
+        $(this).click(function(){
+            $("html, body").animate({scrollTop:0},"slow")
+        })
+    }
+});
+$(function() {$("#toTop").scrollToTop();});

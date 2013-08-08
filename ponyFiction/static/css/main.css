@@ -535,7 +535,7 @@ label.gen input {
 }
 
 /* Storypanel */
-.storypanel {
+.story-panel {
 	width: 100%;
 	margin-left: -12px;
 	background-color: #fff;
@@ -547,7 +547,7 @@ label.gen input {
 	font-size: 12px;
 }
 
-.storypanel select {
+.story-panel select {
 	height: auto;
 	font-size: 11px;
 	margin-bottom: 0;
@@ -1326,8 +1326,8 @@ h1 img,.userpic {
 	.nav-pills>li>a {
 		padding: 6px 8px;
 	}
-	.story-panel {
-		padding: 10px 0 10px 12px;
+	.story-panel {        
+        padding: 10px 10px 10px 14px;
 	}
 	.chapter-text {
 		width: 100% !important;
