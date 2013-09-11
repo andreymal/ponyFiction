@@ -222,3 +222,4 @@ CACHEOPS = {
     'auth.*': ('all', 60*60),
     '*.*': ('just_enable', 60*60),
 }
+CACHEOPS_DEGRADE_ON_FAILURE = True
