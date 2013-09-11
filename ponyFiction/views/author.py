@@ -104,11 +104,11 @@ def author_approve(request, user_id):
 def author_ban(request, user_id):
     if request.user.is_staff:
         author = get_object_or_404(Author, pk=user_id)
-        if author.banned:
-            author.banned = False
+        if author.is_active:
+            author.is_active = False
         else:
-            author.banned = True
-        author.save(update_fields=['banned'])
+            author.is_active = True
+        author.save(update_fields=['is_active'])
         return redirect('author_overview', user_id)
     else:
         raise PermissionDenied

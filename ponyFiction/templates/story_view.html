@@ -74,7 +74,7 @@
 				{% include 'includes/comments_pagination_story.html' %}
 	      	</div>
       	{% endif %}
-	{% if not user.banned %}
+	{% if not user.is_active %}
 	    	<a href="{% url 'comment_add' story.id %}" class="btn btn-primary comment_add">Добавить комментарий</a>
 	{% else %}
 		<h3 id="banned">К сожалению, Вы не можете добавлять комментарии</h3>
