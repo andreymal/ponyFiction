@@ -16,9 +16,9 @@
 			{{ author.username }}
 			{% if user.is_staff %}
 				<a href="{% url 'author_approve' author.id %}" id="author_approve" class="btn btn-small{% if author.approved %} btn-primary{% endif %}">{% if author.approved %}Проверен{% else %}Не проверен{% endif %}</a>
-				<a href="{% url 'author_ban' author.id %}" id="author_ban" class="btn btn-small{% if author.is_active %} btn-danger {% endif %}">{% if not author.is_active %}Не забанен{% else %}Забанен{% endif %}</a>
+				<a href="{% url 'author_ban' author.id %}" id="author_ban" class="btn btn-small{% if not author.is_active %} btn-danger {% endif %}">{% if author.is_active %}Не забанен{% else %}Забанен{% endif %}</a>
 			{% else %}
-				{% if author.is_active %}
+				{% if not author.is_active %}
 					<sup id="banned">Read-only</sup>
 				{% endif %}
 			{% endif %}
