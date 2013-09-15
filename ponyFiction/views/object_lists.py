@@ -25,7 +25,6 @@ class ObjectList(ListView):
     def get_context_data(self, **kwargs):
         context = super(ObjectList, self).get_context_data(**kwargs)
         context['page_title'] = self.page_title
-	context['author_id'] = self.author.id # workaround для работы пагинатора в избранном.
         return context
 
 class FavoritesList(ObjectList):
@@ -51,7 +50,11 @@ class FavoritesList(ObjectList):
 
     def get_queryset(self):
         return self.author.favorites_story_set.accessible(user=self.request.user).order_by('-favorites_story_related_set__date')
-    
+
+    def get_context_data(self, **kwargs):
+        context = ObjectList.get_context_data(self, **kwargs)
+        context['author_id'] = self.author.id 
+        return context
 
 class SubmitsList(ObjectList):
     

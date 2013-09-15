@@ -18,9 +18,9 @@
 		<img src="{% get_static_prefix %}i/userpic.jpg" width="42" title="{{ author.username }}" alt="{{ author.username }}"/>
 		{{ author.username }}
 		{#{% if author.story_set.count > 0 %}Кабинет автора{% else %}Кабинет потенциального автора{% endif %}#}
-                {% if not author.is_active %}
-                         <sup id="banned">Read-only</sup>
-                {% endif %}
+        {% if not author.is_active %}
+                 <sup id="banned">Read-only</sup>
+        {% endif %}
 		</h1>
 		<p>
 			{% if author.story_set.count > 0 %}Вы уже написали <b>{{ author.story_set.count|rupluralize:'рассказ,рассказа,рассказов' }}</b>{% else %}Вы пока ничего не написали{% endif %}.
@@ -55,11 +55,6 @@
 			Мои рассказы 
 		</h2>
 		{% include "includes/stories.html" %}
- 		{% if user.is_active %}
-			<p><a class="btn btn-success btn-small" href="{% url 'story_add' %}">Добавить рассказ</a></p>
-		{% else %}
-			<h4 class="banned">Извините, Вы не можете добавлять рассказы</h4>
-		{% endif %}
 	</div>
 	
 	<div class="span4 top-list sidelist">
