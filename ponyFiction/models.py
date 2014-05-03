@@ -188,7 +188,7 @@ class StoryQuerySet(models.query.QuerySet):
     
     @property
     def good(self):
-        return self.annotate(votes_up=Count('vote__plus'), votes_down=Count('vote__minus'), votes_all=Count('vote')).exclude(votes_all__gte=20, votes_down__gt=F('votes_all') * 0.5)
+        return self.annotate(votes_up=Count('vote__plus'), votes_down=Count('vote__minus'), votes_all=Count('vote'))
     
     @property
     def last_week(self):
@@ -459,3 +459,4 @@ class Activity(models.Model):
     
     def __unicode__(self):
         return "%s: %s [v:%s c:%s (+):%s (-):%s]" % (self.author.username, self.story.title, self.last_views, self.last_comments, self.last_vote_up, self.last_vote_down)
+import signals
