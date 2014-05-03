@@ -18,7 +18,7 @@
 			<li><a href="http://forum.everypony.ru">Форум</a></li>
 			<li><a href="http://wiki.everypony.ru">Вики</a></li>
 			<li><a href="http://tabun.everypony.ru">Табун</a></li>
-			<li><a href="http://stories.everypony.ru">Рассказы</a></li>
+			<li><a href="http://minecraft.everypony.ru">Майнкрафт</a></li>
 		</ul>
 	</div>
 	<!-- Header end -->
@@ -45,7 +45,7 @@
     		<li id="nav_story_add" class="right"><a href="{% url 'story_add' %}">Добавить рассказ</a></li>
     		<li id="nav_submitted" class="right"><a href="{% url 'submitted' %}">Новые ({% submitted_stories_count %})</a></li>
   		{% else %}
-    		<li id="nav_registration" ><a href="{% url 'registration_register' %}">Регистрация</a></li>
+		<li id="nav_registration" ><a href="{% url 'registration_register' %}">Регистрация</a></li>
         	<li class="right">
 	    		<form class="login-form form-inline" action="{% url 'auth_login' %}" method="POST" enctype="multipart/form-data">
 	    			{% csrf_token %}
