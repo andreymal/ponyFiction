@@ -96,11 +96,15 @@ LOGGING = {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console': {
+            'level': 'ERROR',
+            'class': 'logging.StreamHandler',
         }
     },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['mail_admins', 'console'],
             'level': 'ERROR',
             'propagate': True,
         },
@@ -139,13 +143,13 @@ COMMENTS_COUNT = {
 STORIES_COUNT = {'page' : 10, 'main' : 10, 'stream' : 20}
 CHAPTERS_COUNT = {'page' : 10, 'main' : 10, 'stream' : 20}
 COMMENTS_ORPHANS = 5
-COMMENT_MIN_LENGTH = 140
+COMMENT_MIN_LENGTH = 70
 RSS = {'stories': 20, 'chapters': 20, 'comments': 100}
 AUTH_USER_MODEL = 'ponyFiction.Author'
 AUTHENTICATION_BACKENDS = ('ponyFiction.auth_backends.AuthorModelBackend',)
 ACCOUNT_ACTIVATION_DAYS = 5
 EMAIL_HOST = 'localhost'
-EMAIL_PORT = 1025
+EMAIL_PORT = 25
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
