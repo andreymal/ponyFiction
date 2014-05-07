@@ -3,17 +3,16 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
 from ponyFiction.models import Author, Character, CharacterGroup, Category, Classifier, Rating, Series, Story, Chapter, Comment, BetaReading
 
-"""
-class StoryAdmin(admin.ModelAdmin):
-    date_hierarchy = 'date'
-    fields = ('title','summary','notes',('rating'),('finished','freezed','original'),'authors')  
-    search_fields = ['title', 'summary', 'totes']
-    filter_horizontal = ('authors',)
-    radio_fields = {'size': admin.HORIZONTAL, 'rating' : admin.HORIZONTAL} 
-admin.site.register(Story, StoryAdmin)
-"""
 
-models = [Character, CharacterGroup, Category, Classifier, Rating, Series, Story, Chapter, Comment, BetaReading]
+class StoryAdmin(admin.ModelAdmin):
+    exclude = ('vote',)
+
+class ChapterAdmin(admin.ModelAdmin):
+    raw_id_fields = ('story',)
+    
+admin.site.register(Story, StoryAdmin)
+admin.site.register(Chapter, ChapterAdmin)
+admin.site.register([Character, CharacterGroup, Category, Classifier, Rating, Series, Comment, BetaReading])
 
 
 
@@ -36,5 +35,4 @@ class AuthorAdmin(UserAdmin):
         (('Groups'), {'fields': ('groups',)}),
     )
 
-admin.site.register(models)
 admin.site.register(Author, AuthorAdmin)
