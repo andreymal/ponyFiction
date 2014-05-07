@@ -50,7 +50,11 @@ class FavoritesList(ObjectList):
 
     def get_queryset(self):
         return self.author.favorites_story_set.accessible(user=self.request.user).order_by('-favorites_story_related_set__date')
-    
+
+    def get_context_data(self, **kwargs):
+        context = ObjectList.get_context_data(self, **kwargs)
+        context['author_id'] = self.author.id 
+        return context
 
 class SubmitsList(ObjectList):
     
