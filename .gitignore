@@ -4,3 +4,6 @@
 /sphinx
 /.settings
 /media
+env
+*.sqlite
+local_settings.py
