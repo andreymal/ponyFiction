@@ -118,19 +118,19 @@ def story_bookmark(request, pk):
 
 @login_required
 @csrf_protect
-def story_vote(request, pk, direction):
+def _story_vote(request, pk, direction):
     story = get_object_or_404(Story.objects.accessible(user=request.user), pk=pk)
-    if story.editable_by(request.user):
-        redirect('story_view', pk)
+    if story.is_author(request.user):
+        return story
     vote = story.vote.get_or_create(author=request.user)[0]
-    if direction:
-        vote.plus = True
-        vote.minus = None
-    else:
-        vote.plus = None
-        vote.minus = True
-    vote.save(update_fields=['plus', 'minus'])
-    story.vote.add(vote)
+    vote.plus = direction
+    vote.minus = not direction
+    vote.ip = request.META['REMOTE_ADDR']
+    vote.save()
+    return story
+    
+def story_vote(request, pk, direction):
+    _story_vote(request, pk, direction)
     return redirect('story_view', pk)
 
 class StoryAdd(CreateView):

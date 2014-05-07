@@ -275,7 +275,10 @@ class Story (models.Model):
     
     # Проверка авторства
     def editable_by(self, author):
-        return author.is_staff or self.authors.filter(id=author.id).exists()
+        return author.is_staff or self.is_author(author)
+    
+    def is_author(self, author):
+        return self.authors.filter(id=author.id).exists()
     
     # Проверка возможности публикации
     @property

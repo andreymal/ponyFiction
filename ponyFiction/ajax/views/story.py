@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_protect
 from json import dumps
 from ponyFiction.models import Author, Story, Favorites, Bookmark
 from ponyFiction.ajax.decorators import ajax_required
-from ponyFiction.views.story import StoryDelete
+from ponyFiction.views.story import StoryDelete, _story_vote
 from django.utils.decorators import method_decorator
   
 @login_required
@@ -92,20 +92,8 @@ def story_favorite_ajax(request, story_id):
 @login_required
 @csrf_protect
 def story_vote_ajax(request, story_id, direction):
-
-    story = get_object_or_404(Story.objects.accessible(user=request.user), pk=story_id)
     direction = True if (direction == 'plus') else False
-    if story.editable_by(request.user):
-        return HttpResponse(dumps([story.vote_up_count, story.vote_down_count]))
-    vote = story.vote.get_or_create(author=request.user)[0]
-    if direction:
-        vote.plus = True
-        vote.minus = None
-    else:
-        vote.plus = None
-        vote.minus = True
-    vote.save(update_fields=['plus', 'minus'])
-    story.vote.add(vote)
+    story = _story_vote(request, story_id, direction)
     return HttpResponse(dumps([story.vote_up_count, story.vote_down_count]))
 
 @ajax_required
