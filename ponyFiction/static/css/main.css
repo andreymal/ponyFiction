@@ -563,13 +563,12 @@ select.select-size {
 	width: 90px;
 }
 
-.chapter-controls {
+.story-item .chapter-controls {
 	float: right;
 	margin-left: 12px;
 }
 
 .chapter-controls .get,.chapter-controls .scon {
-	float: right;
 	margin-left: 4px;
 	margin-right: 0;
 }

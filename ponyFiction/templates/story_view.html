@@ -17,6 +17,9 @@
         	<span id="vote-msg"></span>
       	</h1>
 		{% spaceless %}
+            <p>
+                {% include 'includes/story_reader_buttons.html' %}
+            </p>
 			<p class="story-genres">
 				{% for category in story.categories.all %}
         			<a class="gen gen-{{ category.id }}" href="{% url 'search_simple' 'category' category.id %}">{{ category.name }}</a>
