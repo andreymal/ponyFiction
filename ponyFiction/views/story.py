@@ -249,6 +249,8 @@ def story_download(request, story_id, filename, extension):
             debug=debug,
         )
         if not debug:
+            if storage.exists(filepath):
+                storage.delete(filepath)
             storage.save(filepath, ContentFile(data))
         
     if not debug:

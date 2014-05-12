@@ -28,8 +28,8 @@ SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
 USE_TZ = False
-MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'downloads')
-MEDIA_URL = '/downloads/'
+MEDIA_ROOT = os.path.join(os.path.dirname(__file__), os.pardir, 'media')
+MEDIA_URL = '/media/'
 
 STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static')
 STATIC_URL = '/static/'
