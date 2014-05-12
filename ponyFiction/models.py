@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Count, Sum, F, Q
 from django.utils.safestring import mark_safe
+from django.core.urlresolvers import reverse
 from ponyFiction.fields import SeparatedValuesField
 from ponyFiction.filters import filter_html, filtered_html_property
 from ponyFiction.filters.base import html_doc_to_string
@@ -300,6 +301,10 @@ class Story (models.Model):
                 'url': f.url(self),
             })
         return downloads
+        
+    def get_absolute_url(self):
+        return reverse('story_view', kwargs = dict(pk = self.pk))
+    
 
 class Chapter (models.Model):
     """ Модель главы """
@@ -378,6 +383,13 @@ class Comment(models.Model):
         return author.is_staff
     
     text_as_html = filtered_html_property('text', filter_html)
+    
+    def get_absolute_url(self):
+        return '%s#%s' % (self.story.get_absolute_url(), self.get_html_id())
+        
+    def get_html_id(self):
+        return 'comment_%s' % self.id
+        
 
 class Vote(models.Model):
     """ Модель голосований """
