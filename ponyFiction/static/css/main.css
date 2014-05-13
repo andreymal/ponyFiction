@@ -428,6 +428,10 @@ label.gen input {
 	color: red;
 }
 
+.translation {
+    color: lightgray;
+}
+
 .story-chapters {
 	margin-top: 12px;
 }

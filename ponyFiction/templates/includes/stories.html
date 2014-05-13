@@ -8,6 +8,7 @@
 		<h3>
 			<a href="{% url 'story_view' story.id %}">{{ story.title }}</a> 
 			<sup><span class="upvotes">{{ story.vote_up_count }}</span> / <span class="downvotes">{{ story.vote_down_count }}</span></sup>
+            {% if not story.original %} <sup class="translation">Перевод</sup>{% endif %}
 			{%if not story.finished %}
 				<sup class="incomplete">Не закончен</sup>
 			{% else %}
