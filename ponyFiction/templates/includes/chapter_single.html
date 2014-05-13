@@ -4,4 +4,9 @@
 		<blockquote>{{ chapter.notes_as_html }}</blockquote>
 	{% endif %}
 	{{ chapter.text_as_html }}
+    {% if next_chapter %}
+        <p><a href="{% url 'chapter_view_single' story.id next_chapter.order %}">Читать дальше</a></p>
+    {% elif not story.finished and not story.freezed %}
+        <p><strong>Продолжение следует...</strong></p>
+    {% endif %}
 </div>
