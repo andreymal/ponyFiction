@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
@@ -60,6 +61,8 @@ class SubmitsList(ObjectList):
     
     @method_decorator(login_required())
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            raise PermissionDenied
         return super(SubmitsList, self).dispatch(request, *args, **kwargs)
     
     @property
@@ -71,10 +74,7 @@ class SubmitsList(ObjectList):
         return u'Новые поступления'
     
     def get_queryset(self):
-        if self.request.user.is_staff:
-            return Story.objects.submitted
-        else:
-            return Story.objects.submitted.last_week
+        return Story.objects.submitted
 
 class BookmarksList(ObjectList):
     
