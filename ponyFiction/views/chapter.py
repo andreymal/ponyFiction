@@ -10,9 +10,11 @@ from ponyFiction.forms.chapter import ChapterForm
 from ponyFiction.models import Story, Chapter, Author
 from django.views.decorators.csrf import csrf_protect
 from cacheops.invalidation import invalidate_obj
+from .story import get_story
+
 
 def chapter_view(request, story_id=False, chapter_order=False):
-    story = get_object_or_404(Story.objects.accessible(user=request.user), pk=story_id)
+    story = get_story(request, pk=story_id)
     if chapter_order:
         chapter = get_object_or_404(story.chapter_set, order=chapter_order)
         page_title = chapter.title[0:80]+' : '+chapter.story.title
