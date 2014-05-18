@@ -38,10 +38,8 @@ class FavoritesList(ObjectList):
     def author(self):
         return get_object_or_404(Author, pk=self.kwargs['user_id'])
     
-    @property
-    def template_name(self):
-        return 'favorites.html'
-    
+    template_name = 'favorites.html'
+
     @property
     def page_title(self):
         if self.author.id == self.request.user.id:
@@ -65,13 +63,8 @@ class SubmitsList(ObjectList):
             raise PermissionDenied
         return super(SubmitsList, self).dispatch(request, *args, **kwargs)
     
-    @property
-    def template_name(self):
-        return 'submitted.html'
-
-    @property
-    def page_title(self):
-        return u'Новые поступления'
+    template_name = 'submitted.html'
+    page_title = u'Новые поступления'
     
     def get_queryset(self):
         return Story.objects.submitted
@@ -82,13 +75,8 @@ class BookmarksList(ObjectList):
     def dispatch(self, request, *args, **kwargs):
         return super(BookmarksList, self).dispatch(request, *args, **kwargs)
     
-    @property
-    def template_name(self):
-        return 'bookmarks.html'
-
-    @property
-    def page_title(self):
-        return u'Закладки'
+    template_name = 'bookmarks.html'
+    page_title = u'Закладки'
     
     def get_queryset(self):
         return self.request.user.bookmarked_story_set.all().cache()
