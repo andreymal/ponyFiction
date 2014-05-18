@@ -15,8 +15,7 @@ class StreamStories(ObjectList):
     @property
     def page_title(self):
         return u'Лента добавлений'
-    
-    @cached_as(Story.objects.all()) # workaround for https://github.com/Suor/django-cacheops/issues/29
+
     def get_queryset(self):
         return Story.objects.published.order_by('-date')
     
