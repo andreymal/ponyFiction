@@ -343,9 +343,12 @@ class Chapter (models.Model):
     
     @property
     def text_as_html(self):
-        doc = self.get_filtered_chapter_text()
-        doc = footnotes_to_html(doc)  
-        return mark_safe(html_doc_to_string(doc)) 
+        try:
+            doc = self.get_filtered_chapter_text()
+            doc = footnotes_to_html(doc)  
+            return mark_safe(html_doc_to_string(doc)) 
+        except Exception:
+            return "#ERROR#"
     
     def get_filtered_chapter_text(self):
         return filter_html(
