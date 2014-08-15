@@ -1,0 +1,21 @@
+{% extends "common.html" %}
+{% block title %}{{ flatpage.title }}{% endblock %}
+{% block content %}
+<div class="row page-terms">
+	<div class="span12">
+      <ul class="breadcrumb">
+    		<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li class="active">{{ flatpage.title }}</li>
+		</ul>
+	</div>
+
+    {{ flatpage.content }}
+
+	<div class="span12">
+      <ul class="breadcrumb">
+    		<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li class="active">{{ flatpage.title }}</li>
+		</ul>
+	</div>
+</div>
+{% endblock %}

@@ -35,7 +35,7 @@
 	<ul class="nav nav-pills nav-main">
 		<li id="nav_index"><a href="{% url 'index' %}">Главная</a></li>
 		<li id="nav_search"><a href="{% url 'search' %}">Поиск</a></li>
-  		<li id="nav_help"><a href="{% url 'help' %}">Справка</a></li>
+  		<li id="nav_help"><a href="/help/">Справка</a></li>
   		{% if user.is_authenticated %}
     		<li id="nav_favorites"><a href="{% url 'favorites' user.id %}">Избранное</a></li>
     		<li id="nav_bookmarks"><a href="{% url 'bookmarks' %}">Закладки</a></li>
@@ -60,3 +60,6 @@
   		{% endif %}
 	</ul>
 	<!-- Menu end -->
+    {% load flatpages %}
+    {% get_flatpages '/header/' as header_pages %}
+    {% for page in header_pages %}{{ page.content|safe }}{% endfor %}

@@ -1,13 +1,8 @@
 		<!-- Footer start -->
 		<div class="footer">
-			<ul class="nav nav-pills nav-main">
-				<li>
-					<p>Все права принадлежат пони.</p>
-				</li>
-				<li id="nav_terms" class="right">
-					<a href="{% url 'terms' %}">Правила</a>
-				</li>
-			</ul>
+            {% load flatpages %}
+            {% get_flatpages '/footer/' as footer_pages %}
+            {% for page in footer_pages %}{{ page.content|safe }}{% endfor %}
 		</div>
 		<!-- Footer end -->
 	</div>
