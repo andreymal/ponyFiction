@@ -33,6 +33,9 @@ class Author(AbstractUser):
         
     bio_as_html = filtered_html_property('bio', filter_html)
 
+    def is_authenticated(self):
+        return self.is_active
+
 class CharacterGroup(models.Model):
     """ Модель группы персонажа """
 
