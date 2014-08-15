@@ -1,6 +1,7 @@
 *.pyc
 .project
 .pydevproject
+.idea
 /sphinx
 /.settings
 /media
