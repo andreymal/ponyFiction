@@ -207,4 +207,6 @@ if settings.DEBUG:
     )
 urlpatterns += patterns('django.contrib.flatpages.views',
     (r'^(?P<url>.*/)$', 'flatpage'),
+    url(r'^/terms/', 'flatpage', name='terms'),
+    url(r'^/help', 'flatpage', name='help'),
 )
