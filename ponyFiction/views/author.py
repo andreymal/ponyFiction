@@ -9,7 +9,6 @@ from ponyFiction.models import Author, Comment, Vote, Story, StoryView
 from django.core.exceptions import PermissionDenied
 from cacheops.invalidation import invalidate_obj
 
-@login_required
 @csrf_protect
 def author_info(request, user_id, comments_page):
     data = {}

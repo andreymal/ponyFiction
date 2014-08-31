@@ -29,11 +29,7 @@ class ObjectList(ListView):
         return context
 
 class FavoritesList(ObjectList):
-    
-    @method_decorator(login_required())
-    def dispatch(self, request, *args, **kwargs):
-        return super(FavoritesList, self).dispatch(request, *args, **kwargs)
-    
+        
     @property
     def author(self):
         return get_object_or_404(Author, pk=self.kwargs['user_id'])
@@ -70,11 +66,6 @@ class SubmitsList(ObjectList):
         return Story.objects.submitted
 
 class BookmarksList(ObjectList):
-    
-    @method_decorator(login_required())
-    def dispatch(self, request, *args, **kwargs):
-        return super(BookmarksList, self).dispatch(request, *args, **kwargs)
-    
     template_name = 'bookmarks.html'
     page_title = u'Закладки'
     
