@@ -157,7 +157,7 @@ urlpatterns += patterns('',
 # Работа с рассказами
 urlpatterns += patterns('ponyFiction.views.story',
     # Просмотр
-    url(r'^story/(?P<pk>\d+)/$', 'story_view', {'comments_page': 1}, name='story_view'),
+    url(r'^story/(?P<pk>\d+)/$', 'story_view', {'comments_page': -1}, name='story_view'),
     # Просмотр с подгрузкой определенной страницы комментариев
     url(r'^story/(?P<pk>\d+)/comments/page/(?P<comments_page>\d+)/$', 'story_view', name='story_view_comments_paged'),
     # Добавление

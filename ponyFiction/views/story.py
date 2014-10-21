@@ -32,7 +32,7 @@ def story_view(request, pk, comments_page):
     comments_list = story.comment_set.order_by('date').all().cache()
     paged = Paginator(comments_list, settings.COMMENTS_COUNT['page'], orphans=settings.COMMENTS_ORPHANS)
     num_pages = paged.num_pages
-    page_current = int(comments_page) if (0 < int(comments_page) <= num_pages) else 1
+    page_current = int(comments_page) if (0 < int(comments_page) <= num_pages) else num_pages
     comments = paged.page(page_current)
     page_title = story.title
     comment_form = CommentForm()
