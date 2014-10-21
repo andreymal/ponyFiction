@@ -379,9 +379,17 @@ class Comment(models.Model):
     
     def editable_by(self, author):
         return author.is_staff
+
+    @property
+    def brief_text(self):
+        text = self.text
+        if len(text) > settings.BRIEF_COMMENT_LENGTH:
+            text = text[:settings.BRIEF_COMMENT_LENGTH] + '...'
+        return text
     
     text_as_html = filtered_html_property('text', filter_html)
-    
+    brief_text_as_html = filtered_html_property('brief_text', filter_html)
+
     def get_absolute_url(self):
         return '%s#%s' % (self.story.get_absolute_url(), self.get_html_id())
         

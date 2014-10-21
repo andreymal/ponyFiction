@@ -26,7 +26,7 @@ def filter_html(text,
 def filtered_html_property(name, filter_):
     def fn(self):
         try:
-	    return mark_safe(html_doc_to_string(filter_(getattr(self, name))))
+            return mark_safe(html_doc_to_string(filter_(getattr(self, name))))
         except Exception:
             import traceback, sys
             print >> sys.stderr, "filter_html", type(self), self.pk, name, filter_

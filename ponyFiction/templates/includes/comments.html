@@ -1,11 +1,11 @@
 {% spaceless %}
 {% for comment in comments %}
 	<div id="comment_{{ comment.id}}" class="story-item">
-		{% if story %}
+		{% block comment_control_buttons %}
 			{% include 'includes/comment_control_buttons.html' %}
-		{% endif %}
+		{% endblock %}
 		<div class="comment">
-			{{ comment.text_as_html|safe }}
+			{% block comment_text %}{{ comment.text_as_html|safe }}{% endblock %}
 		</div>
 		<p class="meta">
 			<a class="authorlink" href="{% url 'author_overview' comment.author_id %}">{{ comment.author.username }}</a> 
