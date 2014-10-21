@@ -83,7 +83,11 @@ class CommentsStory(ObjectList):
     
     def get_queryset(self):
         story = get_object_or_404(Story, pk=self.kwargs['story_id'])
-        return story.comment_set.order_by('-date').cache()
+        return story.comment_set.order_by('date').cache()
+
+    def get_paginator(self, *a, **kw):
+        kw.update(orphans = settings.COMMENTS_ORPHANS)
+        return super(CommentsStory, self).get_paginator(*a, **kw)
     
 class CommentsAuthor(ObjectList):
     """ Подгрузка комментариев для профиля """
