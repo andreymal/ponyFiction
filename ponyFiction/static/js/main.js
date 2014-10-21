@@ -94,7 +94,7 @@ var ajax = {
 	    var new_href_next_link = next_link.attr('href').match(re_link)[1] + 'comments/page/' + (page_current + 1) + '/';
 	    prev_link.attr('href', new_href_prev_link);
 	    next_link.attr('href', new_href_next_link);
-	    $('#comments-list').fadeOut('slow').empty().append(comments).fadeIn();
+	    $('#comments-list').fadeOut('slow', function(){ $(this).empty().append(comments).fadeIn() });
 	    $('#ajax_pages_comment').text(page_current + '/' + num_pages);
 	    if (page_current == 1) {
 		prev_link.addClass('hidden');
