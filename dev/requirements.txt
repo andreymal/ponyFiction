@@ -1,0 +1,5 @@
+Django>=1.5,<1.6
+Unidecode
+django-debug-toolbar
+https://bitbucket.org/eire1130/django-registration/get/c831654ff540.zip
+lxml

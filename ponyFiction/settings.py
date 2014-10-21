@@ -77,7 +77,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.flatpages',
     # 'django.contrib.messages',
-    # 'django.contrib.staticfiles',
+    'django.contrib.staticfiles',
     'ponyFiction',
     'django.contrib.admin',
     'debug_toolbar',
