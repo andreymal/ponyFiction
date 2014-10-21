@@ -522,20 +522,17 @@ var listeners = {
     },
     misc : {
 	characters : function() {
-	    $('.characters-select [checked="checked"] + img').addClass('ui-selected');
+	    $('.characters-select:checked + img').addClass('ui-selected');
 	    $(".character-item").click(function() {
-		var checked = $('input[checked=checked]', this).length | 0;
-		if (checked) {
-		    $('input', this).removeAttr('checked');
-		} else {
-		    $('input', this).attr('checked', 'checked');
-		}
-		$('img', this).toggleClass('ui-selected');
+        var input = $('input', this);
+		var checked = input.prop('checked');
+		input.prop('checked', !checked);
+		$('img', this).toggleClass('ui-selected', !checked);
 	    });
 	},
 	search : function() {
 	    $("#reset_search").click(function() {
-		$('input:checked').removeAttr('checked');
+		$('input:checked').prop('checked', false);
 		$('button').removeClass('active');
 		$('img').removeClass('ui-selected');
 		document.getElementById('appendedInputButtons').setAttribute('value', '');
@@ -790,7 +787,7 @@ var stuff = {
 	$('input', data_container).each(function() {
 	    var input = $(this);
 	    var value = input.attr('value');
-	    if (!!(input.attr('checked'))) {
+	    if (!!(input.prop('checked'))) {
 		$('button[value=' + value + ']', buttons_container).addClass('active');
 	    }
 	});
@@ -802,12 +799,11 @@ var stuff = {
 			var value = button.attr('value');
 			if (type == 'checkbox') {
 			    var input = $('input:checkbox[value=' + value + ']', data_container);
-			    $('input[checked=checked][value=' + value + ']', data_container).length | 0 ? input.removeAttr('checked') : input.attr('checked',
-				    'checked');
+			    nput.prop('checked', $('input:checked[value=' + value + ']', data_container).length | 0);
 			} else if (type == 'radio') {
-			    if (!(!!($('input:radio[value=' + value + ']', data_container).attr('checked')))) {
-				$('input:radio', data_container).removeAttr('checked');
-				$('input:radio[value=' + value + ']', data_container).attr('checked', 'checked');
+			    if (!(!!($('input:radio[value=' + value + ']', data_container).prop('checked')))) {
+				$('input:radio', data_container).prop('checked', false);
+				$('input:radio[value=' + value + ']', data_container).prop('checked', true);
 			    }
 			}
 		    });
