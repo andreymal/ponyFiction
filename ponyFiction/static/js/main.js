@@ -158,7 +158,7 @@ var ajax = {
 			if (target.length) {
 			    target.replaceWith(new_text);
 			} else {
-			    $('#comments-list').prepend(new_comment);
+			    $('#comments-list').append(new_comment);
 			}
 			$('.modal').modal('hide').remove();
 		    }
