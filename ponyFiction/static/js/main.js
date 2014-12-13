@@ -799,7 +799,7 @@ var stuff = {
 			var value = button.attr('value');
 			if (type == 'checkbox') {
 			    var input = $('input:checkbox[value=' + value + ']', data_container);
-			    nput.prop('checked', $('input:checked[value=' + value + ']', data_container).length | 0);
+			    input.prop('checked', !($('input:checked[value=' + value + ']', data_container).length | 0));
 			} else if (type == 'radio') {
 			    if (!(!!($('input:radio[value=' + value + ']', data_container).prop('checked')))) {
 				$('input:radio', data_container).prop('checked', false);

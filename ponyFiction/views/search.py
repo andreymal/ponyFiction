@@ -116,7 +116,7 @@ def search_action(request, postform):
     # Пагинация
     pagination = pagination_ranges(num_pages=int(ceil(raw_result['total']/10.0)), page=page_current)
     # Создаем форму для рендера с данными поиска
-    data['form'] = SearchForm(initial=initial_data)
+    data['form'] = postform
     # Добавляем данные
     data['pagination'] = pagination
     data['total'] = raw_result['total']

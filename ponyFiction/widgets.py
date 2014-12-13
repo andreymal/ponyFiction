@@ -99,7 +99,7 @@ class StoriesButtons(CheckboxSelectMultiple):
             btn = ButtonWidget(attrs=dict(btn_attrs, text=option_label, value=option_value))
             rendered_btn = btn.render(attrs=btn_attrs)
             btn_container.append(rendered_btn)
-            cb = CheckboxInput(data_attrs, check_test=lambda x: x in value)
+            cb = CheckboxInput(data_attrs, check_test=lambda x: str(x) in value)
             rendered_cb = cb.render(name, option_value)
             data_container.append(rendered_cb)
         btn = '<div%s>%s</div>' % (flatatt(btn_container_attrs), join(btn_container))
