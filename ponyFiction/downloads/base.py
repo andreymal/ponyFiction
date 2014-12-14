@@ -23,7 +23,7 @@ class BaseDownloadFormat(object):
         
     @property
     def slug(self):
-        return slugify(self.name.lower())
+        return slugify(unicode(self.name.lower()))
         
         
 class ZipFileDownloadFormat(BaseDownloadFormat):
