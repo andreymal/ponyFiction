@@ -1,8 +1,7 @@
 import re
-import functools
 from django.utils.safestring import mark_safe
 from django.conf import settings
-from ..utils.typographus import typo
+from .typographus import typo
 from .base import html_doc_to_string
 from .html import normalize_html, footnotes_to_html
 from ponyFiction.filters.base import html_doc_transform, transform_xslt_params
@@ -16,7 +15,7 @@ def filter_html(text,
                 attributes = settings.ALLOWED_ATTRIBUTES):
     
     doc = normalize_html(text, convert_linebreaks = True)
-    doc = typo(html_doc_to_string(doc))
+    doc = typo(doc)
     doc = _filter_html(doc,
         tags = tags,
         attributes = attributes
