@@ -94,7 +94,7 @@ def story_favorite_ajax(request, story_id):
 def story_vote_ajax(request, story_id, direction):
     direction = True if (direction == 'plus') else False
     story = _story_vote(request, story_id, direction)
-    return HttpResponse(dumps([story.vote_up_count, story.vote_down_count]))
+    return HttpResponse(dumps([0, 0]))
 
 @ajax_required
 @login_required

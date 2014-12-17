@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ObjectDoesNotExist
+
 
 def pagination_ranges(
     num_pages,             # sumary page numbers
@@ -192,3 +194,10 @@ def SetObjSphinxFilter(sphinx, filter_name, field_name, oldform):
             return {field_name: selector}
         else:
             return {}
+
+
+def get_object_or_none(queryset, **kw):
+    try:
+        return queryset.get(**kw)
+    except ObjectDoesNotExist:
+        return None

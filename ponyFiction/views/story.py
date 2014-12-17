@@ -15,6 +15,7 @@ from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
 from ponyFiction.models import Story, CoAuthorsStory, Author
 from cacheops.invalidation import invalidate_obj
+from ponyFiction.utils.misc import get_object_or_none
 
 
 def get_story(request, pk):
@@ -42,6 +43,7 @@ def story_view(request, pk, comments_page):
             signals.story_viewed.send(sender=Author, instance=request.user, story=story, chapter=story.chapter_set.all()[0])
     data = {
        'story' : story,
+       'vote' : get_object_or_none(story.vote, author=request.user),
        'comments' : comments,
        'chapters' : chapters,
        'num_pages' : num_pages,

@@ -284,8 +284,8 @@ var ajax = {
 	    $.ajax({
 		dataType : 'json',
 		success : function(response) {
-		    $('#vote-up').text(response[0]);
-		    $('#vote-down').text(response[1]);
+		    //$('#vote-up').text(response[0]);
+		    //$('#vote-down').text(response[1]);
 		    $('#vote-msg').html('<span class="alert alert-success">Ваш голос учтен!</span>');
 		    $('#vote-msg span').animate({
 			opacity : 0.1
@@ -443,17 +443,13 @@ var listeners = {
 	},
 	// Голосование
 	vote : function() {
-	    $('#vote-up').click(function(event) {
+	    var buttons = $('#vote-up, #vote-down').click(function(event) {
 		event.stopImmediatePropagation();
 		event.preventDefault();
 		var url = '/ajax' + $(this).attr('href');
-		ajax.story.vote(url)
-	    });
-	    $('#vote-down').click(function(event) {
-		event.stopImmediatePropagation();
-		event.preventDefault();
-		var url = '/ajax' + $(this).attr('href');
-		ajax.story.vote(url)
+		ajax.story.vote(url);
+		buttons.addClass('unvoted');
+		$(this).removeClass('unvoted');
 	    });
 	},
     },
