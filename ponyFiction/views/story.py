@@ -41,9 +41,13 @@ def story_view(request, pk, comments_page):
         signals.story_visited.send(sender=Author, instance=request.user, story=story, comments_count=comments_list.count())
         if story.chapter_set.count() == 1:
             signals.story_viewed.send(sender=Author, instance=request.user, story=story, chapter=story.chapter_set.all()[0])
+        vote = get_object_or_none(story.vote, author=request.user)
+    else:
+        vote = None
+
     data = {
        'story' : story,
-       'vote' : get_object_or_none(story.vote, author=request.user),
+       'vote' : vote,
        'comments' : comments,
        'chapters' : chapters,
        'num_pages' : num_pages,
