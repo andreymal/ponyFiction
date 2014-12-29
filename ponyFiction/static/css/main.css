@@ -291,10 +291,18 @@ a.authorlink:hover,a.edit-link:hover {
 	background: transparent url('../i/upvote-24.png') no-repeat 0 0;
 }
 
+.vote .upvote.unvoted {
+    background: transparent url('../i/upvote-gray-24.png') no-repeat 0 0;
+}
+
 .vote .downvote {
 	color: red;
 	padding: 4px 30px 5px 0;
 	background: transparent url('../i/downvote-24.png') no-repeat 100% 0;
+}
+
+.vote .downvote.unvoted {
+    background: transparent url('../i/downvote-gray-24.png') no-repeat 100% 0;
 }
 
 h1 .alert {
@@ -306,16 +314,6 @@ h1 .alert {
 	position: relative;
 	top: 4px;
 	vertical-align: top;
-}
-
-.vote .unvoted {
-	opacity: 0.6;
-	-webkit-filter: grayscale(100%);
-	-moz-filter: grayscale(100%);
-	-ms-filter: grayscale(100%);
-	-o-filter: grayscale(100%);
-	filter: grayscale(100%);
-	filter: gray; /* IE 6-9 */
 }
 
 /* Thumbnails */
