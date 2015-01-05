@@ -13,9 +13,8 @@ empty_lines_re = re.compile(r'\n[\s\n]*\n')
 def filter_html(text,
                 tags = settings.ALLOWED_TAGS,
                 attributes = settings.ALLOWED_ATTRIBUTES):
-    
-    doc = normalize_html(text, convert_linebreaks = True)
-    doc = typo(doc)
+    doc = typo(text)
+    doc = normalize_html(doc, convert_linebreaks = True)
     doc = _filter_html(doc,
         tags = tags,
         attributes = attributes
