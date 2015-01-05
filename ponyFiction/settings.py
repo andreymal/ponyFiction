@@ -177,7 +177,7 @@ CHAPTER_ALLOWED_TAGS = [
     'p', 'span', 'br', 'hr', 'footnote',
     'img', 'a',
     'ul', 'ol', 'li',
-    'blockquote', 'sup', 'sub', 'pre', 'small', 'tt'
+    'blockquote', 'sup', 'sub', 'pre', 'small', 'tt', 'font',
 ]
 
 CHAPTER_ALLOWED_ATTRIBUTES = {
@@ -186,6 +186,7 @@ CHAPTER_ALLOWED_ATTRIBUTES = {
     'span': ['align'],
     'p': ['align'],
 	'footnote': ['id'],
+    'font': ['size', 'color'],
 }
 
 CACHES = {
