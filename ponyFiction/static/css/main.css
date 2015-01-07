@@ -242,10 +242,9 @@ a.authorlink:hover,a.edit-link:hover {
 }
 
 .story-item p.meta img {
-	width: 18px;
-	height: 18px;
+	width: 20px;
+	height: 20px;
 	margin-right: 4px;
-	border-radius: 4px;
 }
 
 .more {

@@ -44,6 +44,13 @@ class Author(AbstractUser):
 
         return staticfiles_storage.url('i/userpic.jpg')
 
+    def get_small_avatar_url(self):
+        url = self.get_tabun_avatar_url()
+        if url:
+            return url.replace('avatar_100x100', 'avatar_24x24')
+
+        return staticfiles_storage.url('i/userpic.jpg')
+
     def get_tabun_avatar_url(self):
         if not self.tabun:
             return
@@ -55,11 +62,12 @@ class Author(AbstractUser):
             if not url:
                 import urllib2
                 import re
+                import random
                 data = urllib2.urlopen('http://tabun.everypony.ru/profile/' + self.tabun).read()
                 m = re.search(r'src="(.*avatar.*)"', data)
                 if m:
                     url = m.group(1)
-                cache.set(key, url, 600)
+                cache.set(key, url, 300 * (1 + random.random()))
         except Exception:
             import traceback
             traceback.print_exc()
