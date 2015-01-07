@@ -5,6 +5,8 @@ from django.db import models
 from django.db.models import Count, Sum, F, Q
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
+from django.contrib.staticfiles.storage import staticfiles_storage
+from django.core.cache import cache
 from ponyFiction.fields import SeparatedValuesField
 from ponyFiction.filters import filter_html, filtered_html_property
 from ponyFiction.filters.base import html_doc_to_string
@@ -35,6 +37,35 @@ class Author(AbstractUser):
 
     def is_authenticated(self):
         return self.is_active
+
+    def get_avatar_url(self):
+        url = self.get_tabun_avatar_url()
+        if url: return url
+
+        return staticfiles_storage.url('i/userpic.jpg')
+
+    def get_tabun_avatar_url(self):
+        if not self.tabun:
+            return
+
+        url = None
+        try:
+            key = 'tabun_avatar:' + self.tabun
+            url = cache.get(key, None)
+            if not url:
+                import urllib2
+                import re
+                data = urllib2.urlopen('http://tabun.everypony.ru/profile/' + self.tabun).read()
+                m = re.search(r'src="(.*avatar.*)"', data)
+                if m:
+                    url = m.group(1)
+                cache.set(key, url, 600)
+        except Exception:
+            import traceback
+            traceback.print_exc()
+
+        return url
+
 
 class CharacterGroup(models.Model):
     """ Модель группы персонажа """

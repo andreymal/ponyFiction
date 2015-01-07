@@ -1,7 +1,6 @@
 {% extends "common.html" %}
 {% load url from future %}
 {% block content %}
-{% load static %}
 {% load pluralize %}
 <div class="row">
 	<div class="span12">
@@ -12,7 +11,7 @@
 	</div>
 	<div class="span8">
 		<h1 id="author-name">
-			<img src="{% get_static_prefix %}i/userpic.jpg" width="42" title="{{ author.username }}" alt="{{ author.username }}"/>
+			<img src="{{ author.get_avatar_url }}" width="42" title="{{ author.username }}" alt="{{ author.username }}"/>
 			{{ author.username }}
 			{% if user.is_staff %}
 				<a href="{% url 'author_approve' author.id %}" id="author_approve" class="btn btn-small{% if author.approved %} btn-primary{% endif %}">{% if author.approved %}Проверен{% else %}Не проверен{% endif %}</a>
