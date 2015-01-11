@@ -287,21 +287,21 @@ a.authorlink:hover,a.edit-link:hover {
 .vote .upvote {
 	color: green;
 	padding: 4px 0 5px 30px;
-	background: transparent url('../i/upvote-24.png') no-repeat 0 0;
+	background: transparent url('../i/upvote-24.png?1') no-repeat 0 0;
 }
 
 .vote .upvote.unvoted:not(:hover) {
-    background: transparent url('../i/upvote-gray-24.png') no-repeat 0 0;
+    background: transparent url('../i/upvote-gray-24.png?1') no-repeat 0 0;
 }
 
 .vote .downvote {
 	color: red;
 	padding: 4px 30px 5px 0;
-	background: transparent url('../i/downvote-24.png') no-repeat 100% 0;
+	background: transparent url('../i/downvote-24.png?1') no-repeat 100% 0;
 }
 
 .vote .downvote.unvoted:not(:hover) {
-    background: transparent url('../i/downvote-gray-24.png') no-repeat 100% 0;
+    background: transparent url('../i/downvote-gray-24.png?1') no-repeat 100% 0;
 }
 
 h1 .alert {
