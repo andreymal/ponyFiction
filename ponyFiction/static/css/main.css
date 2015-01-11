@@ -290,7 +290,7 @@ a.authorlink:hover,a.edit-link:hover {
 	background: transparent url('../i/upvote-24.png') no-repeat 0 0;
 }
 
-.vote .upvote.unvoted {
+.vote .upvote.unvoted:not(:hover) {
     background: transparent url('../i/upvote-gray-24.png') no-repeat 0 0;
 }
 
@@ -300,7 +300,7 @@ a.authorlink:hover,a.edit-link:hover {
 	background: transparent url('../i/downvote-24.png') no-repeat 100% 0;
 }
 
-.vote .downvote.unvoted {
+.vote .downvote.unvoted:not(:hover) {
     background: transparent url('../i/downvote-gray-24.png') no-repeat 100% 0;
 }
 
