@@ -22,8 +22,7 @@
 		<ul>
 			{% for story in sr.story_set.all %}
 				<li>
-					<a href="{% url 'story_view' story.id %}">{{ story.title }}</a> 
-					<sup><span class="upvotes">{{ story.vote_up_count }}</span> / <span class="downvotes">{{ story.vote_down_count }}</span></sup>
+					<a href="{% url 'story_view' story.id %}">{{ story.title }}</a>
 					{% if story.freezed %}<sup class="suspended">Заморожен</sup>{% endif %}<br/>
 					{% if story.chapter_set.count > 1 %}
 						{{ story.chapter_set.count|rupluralize:'глава,главы,глав' }},
