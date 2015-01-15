@@ -271,7 +271,6 @@ class Story (models.Model):
     favorites = models.ManyToManyField(Author, through='Favorites', blank=True, null=True, related_name="favorites_story_set", verbose_name="Избранность")
     bookmarks = models.ManyToManyField(Author, through='Bookmark', blank=True, null=True, related_name="bookmarked_story_set", verbose_name="Отложённость")
     in_series = models.ManyToManyField(Series, through='InSeriesPermissions', blank=True, null=True, verbose_name="Принадлежность к серии")
-    mark = models.PositiveSmallIntegerField(default=0, verbose_name="Оценка")
     notes = models.TextField(max_length=4096, blank=True, verbose_name="Заметки к рассказу")
     original = models.BooleanField(default=True, verbose_name="Статус оригинала")
     rating = models.ForeignKey(Rating, null=True, verbose_name="Рейтинг")
@@ -279,6 +278,9 @@ class Story (models.Model):
     title = models.CharField(max_length=512, verbose_name="Название")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     vote = models.ManyToManyField('Vote', null=True, verbose_name="Голоса за рассказ")
+    vote_up_count = models.PositiveIntegerField(default = 0)
+    vote_down_count = models.PositiveIntegerField(default = 0)
+    vote_rating = models.FloatField(default = 0, db_index = True)
 
     objects = StoryManager()
     
@@ -289,13 +291,14 @@ class Story (models.Model):
     def __unicode__(self):
         return u"[+%s/-%s] %s" % (self.vote_up_count, self.vote_down_count, self.title)
     
-    @property
-    def vote_up_count(self):
+    def get_vote_up_count(self):
         return self.vote.filter(plus=True).count()
     
-    @property
-    def vote_down_count(self):
+    def get_vote_down_count(self):
         return self.vote.filter(minus=True).count()
+
+    def get_vote_rating(self):
+        return self.vote_up_count - self.vote_down_count
 
     # Количество просмотров
     @property
@@ -522,4 +525,6 @@ class Activity(models.Model):
     
     def __unicode__(self):
         return "%s: %s [v:%s c:%s (+):%s (-):%s]" % (self.author.username, self.story.title, self.last_views, self.last_comments, self.last_vote_up, self.last_vote_down)
+
+
 import signals

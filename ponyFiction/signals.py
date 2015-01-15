@@ -1,5 +1,5 @@
-from django.db.models.signals import pre_save
-from ponyFiction.models import Chapter, Story, Author, Activity, StoryView
+from django.db.models.signals import pre_save, post_save
+from ponyFiction.models import Chapter, Story, Author, Activity, StoryView, Vote
 from django.dispatch import Signal, receiver
 
 story_visited = Signal(providing_args=['story'])
@@ -39,3 +39,11 @@ def story_views_save(sender, instance, **kwargs):
     view.story_id = story.id
     view.chapter = chapter
     view.save()
+
+@receiver(post_save, sender=Vote)
+def votes_update(sender, instance, **kw):
+    for story in instance.story_set.all():
+        story.vote_up_count = story.get_vote_up_count()
+        story.vote_down_count = story.get_vote_down_count()
+        story.vote_rating = story.get_vote_rating()
+        story.save(update_fields = ['vote_up_count', 'vote_down_count', 'vote_rating'])
