@@ -300,6 +300,13 @@ class Story (models.Model):
     def get_vote_rating(self):
         return self.vote_up_count - self.vote_down_count
 
+    def update_rating(self, rating_only = False):
+        if not rating_only:
+            self.vote_up_count = self.get_vote_up_count()
+            self.vote_down_count = self.get_vote_down_count()
+        self.vote_rating = self.get_vote_rating()
+        self.save(update_fields = ['vote_up_count', 'vote_down_count', 'vote_rating'])
+
     # Количество просмотров
     @property
     def views(self):

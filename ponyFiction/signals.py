@@ -41,9 +41,6 @@ def story_views_save(sender, instance, **kwargs):
     view.save()
 
 @receiver(post_save, sender=Vote)
-def votes_update(sender, instance, **kw):
+def votes_update(sender, instance, rating_only = False, **kw):
     for story in instance.story_set.all():
-        story.vote_up_count = story.get_vote_up_count()
-        story.vote_down_count = story.get_vote_down_count()
-        story.vote_rating = story.get_vote_rating()
-        story.save(update_fields = ['vote_up_count', 'vote_down_count', 'vote_rating'])
+        story.update_rating(rating_only = rating_only)
