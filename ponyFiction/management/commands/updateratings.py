@@ -16,10 +16,18 @@ class Command(BaseCommand):
     @transaction.commit_manually
     def handle(self, *args, **options):
         try:
+            stories_count = Story.objects.count()
+            print_progress = lambda: self.stderr.write('\r{}/{}'.format(i+1, stories_count), ending = '')
+            self.stderr.write('\n')
+
             for i, story in enumerate(Story.objects.all()):
                 story.update_rating(rating_only = options['rating_only'])
-                if i%100 == 0: transaction.commit()
+                if i%100 == 0:
+                    transaction.commit()
+                    print_progress()
             transaction.commit()
+            print_progress()
+            self.stderr.write('\n')
         except:
             transaction.rollback()
             raise
