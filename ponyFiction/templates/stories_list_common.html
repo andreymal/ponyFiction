@@ -7,9 +7,9 @@
       <li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
       <li class="active">{{ page_title }}</li>
     </ul>   
-		<h1>{{ page_title }}</h1>
+		<h2>{{ page_title }}</h2>
 		{% block before_list %}{% endblock %}
-		<div id="comments-list">
+		<div id="stories-list">
 			{% include "includes/stories.html" %}
 		</div>
 		{% block after_list %}{% endblock %}
