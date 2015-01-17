@@ -280,13 +280,17 @@ class Story (models.Model):
     vote = models.ManyToManyField('Vote', null=True, verbose_name="Голоса за рассказ")
     vote_up_count = models.PositiveIntegerField(default = 0)
     vote_down_count = models.PositiveIntegerField(default = 0)
-    vote_rating = models.FloatField(default = 0, db_index = True)
+    vote_rating = models.FloatField(default = 0)
 
     objects = StoryManager()
     
     class Meta:
         verbose_name = "рассказ"
         verbose_name_plural = "рассказы"
+        index_together = [
+            ['approved', 'draft', 'date'],
+            ['approved', 'draft', 'vote_rating'],
+        ]
 
     def __unicode__(self):
         return u"[+%s/-%s] %s" % (self.vote_up_count, self.vote_down_count, self.title)
