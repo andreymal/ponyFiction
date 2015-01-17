@@ -18,7 +18,10 @@
 	<div class="span8 top-list">
 		<h2>Новые добавления</h2>
 		{% include "includes/stories.html" %}
-		<p class="more"><a href="{% url 'stream_stories' %}">Лента добавлений</a> | <a href="{% url 'feeds_stories' %}">RSS</a></p>
+		<p class="more">
+            <a href="{% url 'stream_stories' %}">Лента добавлений</a>
+            | <a href="{% url 'top_stories' %}">Топ</a>
+            | <a href="{% url 'feeds_stories' %}">RSS</a></p>
 	</div>
 	<div class="span4 sidelist top-list">	
 		<h2>Обновившиеся рассказы</h2>

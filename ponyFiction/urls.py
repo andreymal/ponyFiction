@@ -12,7 +12,7 @@ from ponyFiction.views.comment import CommentEdit, CommentAdd, CommentDelete
 from ponyFiction.views.index import index
 from ponyFiction.views.object_lists import FavoritesList, SubmitsList, BookmarksList
 from ponyFiction.views.story import StoryAdd, StoryEdit, StoryDelete
-from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments
+from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments, TopStories
 from registration.views import activate, register
 
 admin.autodiscover()
@@ -49,6 +49,8 @@ urlpatterns += patterns('',
     url(r'^stream/chapters/page/(?P<page>\d+)/$', StreamChapters.as_view(), name='stream_chapters_page'),
     url(r'^stream/comments/$', StreamComments.as_view(), name='stream_comments'),
     url(r'^stream/comments/page/(?P<page>\d+)/$', StreamComments.as_view(), name='stream_comments_page'),
+
+    url(r'^story/top/(?:page/(?P<page>\d+)/)?$', TopStories.as_view(), name='top_stories'),
 )
 
 # Обработка пользовательских адресов

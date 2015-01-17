@@ -9,9 +9,25 @@ class StreamStories(ObjectList):
     paginate_by = settings.STORIES_COUNT['stream']
     template_name = 'stream/stories.html'
     page_title = u'Лента добавлений'
+    pagination_view_name = 'stream_stories_page'
 
     def get_queryset(self):
         return Story.objects.published.order_by('-date')
+
+    def get_context_data(self, **kwargs):
+        return super(StreamStories, self).get_context_data(
+            pagination_view_name = self.pagination_view_name,
+            **kwargs
+        )
+
+
+class TopStories(StreamStories):
+    page_title = u'Топ рассказов'
+    pagination_view_name = 'top_stories'
+
+    def get_queryset(self):
+        return Story.objects.published.order_by('-vote_rating')
+
 
 class StreamChapters(ObjectList):
 
