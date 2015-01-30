@@ -10,7 +10,6 @@
 			{% if not story_edit %}
 				<a class="btn btn-warning btn-mini" href="{% url 'story_edit' story.id %}">Редактировать</a>
 			{% endif %}
-			<a class="btn btn-danger btn-mini story_delete" href="{% url 'story_delete' story.id %}">Удалить</a>
 			{% if user.is_staff %}
 				{% if not story.approved %}
 					<a class="btn btn-success btn-mini story_approve" href="{% url 'story_approve' story.id %}">Одобрить</a>
