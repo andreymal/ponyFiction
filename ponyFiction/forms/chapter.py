@@ -20,6 +20,7 @@ class ChapterForm(ModelForm):
         widget=Textarea(attrs=dict(textarea_dict, placeholder='Текст новой главы')),
         label='Текст главы',
         required=False,
+        max_length=300000,
     )
     # Заметки к главе
     notes = CharField(
