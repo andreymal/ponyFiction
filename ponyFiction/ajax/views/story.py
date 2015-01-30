@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.utils.datetime_safe import datetime
 from django.views.decorators.csrf import csrf_protect
 from json import dumps
 from ponyFiction.models import Author, Story, Favorites, Bookmark
@@ -56,8 +57,9 @@ def story_approve_ajax(request, story_id):
         if story.approved:
             story.approved = False
         else:
+            story.date = datetime.now()
             story.approved = True
-        story.save(update_fields=['approved'])
+        story.save(update_fields=['approved', 'date'])
         return HttpResponse(story_id)
     else:
         raise PermissionDenied
