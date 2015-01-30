@@ -252,31 +252,31 @@ class StoryManager(models.Manager):
     
 class Story (models.Model):
     """ Модель рассказа """
-    
+
+    title = models.CharField(max_length=512, verbose_name="Название")
     authors = models.ManyToManyField(Author, null=True, through='CoAuthorsStory', verbose_name=u"Авторы")
     betas = models.ManyToManyField(Author, through='BetaReading', related_name="beta_set", verbose_name=u"Бета-читатели")
     characters = models.ManyToManyField(Character, blank=True, null=True, verbose_name='Персонажи')
     categories = models.ManyToManyField(Category, verbose_name='Жанры')
     classifications = models.ManyToManyField(Classifier, blank=True, null=True, verbose_name='События')
-    cover = models.BooleanField(default=False, verbose_name="Наличие обложки")
+    cover = models.BooleanField(default=False, verbose_name="Наличие обложки", editable = False)
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
     draft = models.BooleanField(default=True, verbose_name="Черновик")
-    approved = models.BooleanField(default=False, verbose_name="Статус одобрения")
-    finished = models.BooleanField(default=False, verbose_name="Оконченность рассказа")
-    freezed = models.BooleanField(default=False, verbose_name='Статус "заморозки"')
+    approved = models.BooleanField(default=False, verbose_name="Одобрен")
+    finished = models.BooleanField(default=False, verbose_name="Закончен")
+    freezed = models.BooleanField(default=False, verbose_name='Заморожен')
     favorites = models.ManyToManyField(Author, through='Favorites', blank=True, null=True, related_name="favorites_story_set", verbose_name="Избранность")
     bookmarks = models.ManyToManyField(Author, through='Bookmark', blank=True, null=True, related_name="bookmarked_story_set", verbose_name="Отложённость")
     in_series = models.ManyToManyField(Series, through='InSeriesPermissions', blank=True, null=True, verbose_name="Принадлежность к серии")
     notes = models.TextField(max_length=4096, blank=True, verbose_name="Заметки к рассказу")
-    original = models.BooleanField(default=True, verbose_name="Статус оригинала")
+    original = models.BooleanField(default=True, verbose_name="Оригинальный (не перевод)")
     rating = models.ForeignKey(Rating, null=True, verbose_name="Рейтинг")
     summary = models.TextField(max_length=4096, verbose_name="Общее описание")
-    title = models.CharField(max_length=512, verbose_name="Название")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     vote = models.ManyToManyField('Vote', null=True, verbose_name="Голоса за рассказ")
-    vote_up_count = models.PositiveIntegerField(default = 0)
-    vote_down_count = models.PositiveIntegerField(default = 0)
-    vote_rating = models.FloatField(default = 0)
+    vote_up_count = models.PositiveIntegerField(default = 0, editable = False)
+    vote_down_count = models.PositiveIntegerField(default = 0, editable = False)
+    vote_rating = models.FloatField(default = 0, editable = False)
 
     objects = StoryManager()
     
