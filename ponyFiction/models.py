@@ -235,14 +235,10 @@ class StoryQuerySet(models.query.QuerySet):
         return self
     
     def accessible(self, user):
-        default_queryset = self.filter(draft=False)
-        if not user.is_authenticated():
-            return default_queryset
+        if user.is_staff:
+            return self
         else:
-            if user.is_staff:
-                return self
-            else:
-                return default_queryset.exclude(categories__in=user.excluded_categories)
+            return self.filter(draft=False, approved=True)
     
 class StoryManager(models.Manager):
     def get_query_set(self):
