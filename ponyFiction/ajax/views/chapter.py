@@ -4,6 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_POST
 from ponyFiction.models import Story, Chapter
 from ponyFiction.utils.misc import unicode_to_int_list
 from ponyFiction.views.chapter import ChapterDelete
@@ -13,6 +14,7 @@ from django.utils.decorators import method_decorator
 @ajax_required
 @login_required
 @csrf_protect
+@require_POST
 def chapter_sort(request, story_id):
     """ Сортировка глав """
     story = get_object_or_404(Story.objects.accessible(user=request.user), pk=story_id)

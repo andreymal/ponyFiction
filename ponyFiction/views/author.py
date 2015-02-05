@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_POST
 from ponyFiction.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm, AuthorEditPrefsForm
 from ponyFiction.models import Author, Comment, Vote, Story, StoryView
 from django.core.exceptions import PermissionDenied
@@ -85,6 +86,7 @@ def author_edit(request):
 
 @login_required
 @csrf_protect
+@require_POST
 def author_approve(request, user_id):
     if request.user.is_staff:
         author = get_object_or_404(Author, pk=user_id)
