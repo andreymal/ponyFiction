@@ -9,6 +9,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_POST
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from ponyFiction import signals
 from ponyFiction.forms.comment import CommentForm
@@ -59,6 +60,7 @@ def story_view(request, pk, comments_page):
 
 @login_required
 @csrf_protect
+@require_POST
 def story_approve(request, pk):
     story = get_object_or_404(Story, pk=pk)
     if request.user.is_staff:
@@ -86,6 +88,7 @@ def story_publish_warning(request, pk):
     
 @login_required
 @csrf_protect
+@require_POST
 def story_publish(request, pk):
     story = get_object_or_404(Story, pk=pk)
     if (story.publishable or (not story.draft and not story.publishable)):
@@ -105,6 +108,7 @@ def story_publish(request, pk):
 
 @login_required
 @csrf_protect
+@require_POST
 def story_favorite(request, pk):
     from ponyFiction.models import Favorites
     story = get_object_or_404(Story.objects.accessible(user=request.user), pk=pk)
@@ -116,6 +120,7 @@ def story_favorite(request, pk):
 
 @login_required
 @csrf_protect
+@require_POST
 def story_bookmark(request, pk):
     from ponyFiction.models import Bookmark
     story = get_object_or_404(Story.objects.accessible(user=request.user), pk=pk)
@@ -127,6 +132,7 @@ def story_bookmark(request, pk):
 
 @login_required
 @csrf_protect
+@require_POST
 def _story_vote(request, pk, direction):
     story = get_object_or_404(Story.objects.accessible(user=request.user), pk=pk)
     if story.is_author(request.user):

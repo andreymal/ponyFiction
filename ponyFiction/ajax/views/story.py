@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render
 from django.utils.datetime_safe import datetime
 from django.views.decorators.csrf import csrf_protect
 from json import dumps
+from django.views.decorators.http import require_POST
 from ponyFiction.models import Author, Story, Favorites, Bookmark
 from ponyFiction.ajax.decorators import ajax_required
 from ponyFiction.views.story import StoryDelete, _story_vote
@@ -28,6 +29,7 @@ def story_publish_warning_ajax(request, story_id):
 @ajax_required    
 @login_required
 @csrf_protect
+@require_POST
 def story_publish_ajax(request, story_id):
     """ Публикация рассказа по AJAX """
     story = get_object_or_404(Story, pk=story_id)
@@ -49,6 +51,7 @@ def story_publish_ajax(request, story_id):
 @ajax_required
 @login_required
 @csrf_protect
+@require_POST
 def story_approve_ajax(request, story_id):
     """ Одобрение рассказа по AJAX """
 
@@ -67,6 +70,7 @@ def story_approve_ajax(request, story_id):
 @ajax_required
 @login_required
 @csrf_protect
+@require_POST
 def story_bookmark_ajax(request, story_id):
     """ Добавление рассказа в закладки """
     
@@ -80,6 +84,7 @@ def story_bookmark_ajax(request, story_id):
 @ajax_required
 @login_required
 @csrf_protect
+@require_POST
 def story_favorite_ajax(request, story_id):
     """ Добавление рассказа в избранное """
 
@@ -93,6 +98,7 @@ def story_favorite_ajax(request, story_id):
 @ajax_required
 @login_required
 @csrf_protect
+@require_POST
 def story_vote_ajax(request, story_id, direction):
     direction = True if (direction == 'plus') else False
     story = _story_vote(request, story_id, direction)
@@ -101,6 +107,7 @@ def story_vote_ajax(request, story_id, direction):
 @ajax_required
 @login_required
 @csrf_protect
+@require_POST
 def author_approve_ajax(request, user_id):
     if request.user.is_staff:
         author = get_object_or_404(Author, pk=user_id)
