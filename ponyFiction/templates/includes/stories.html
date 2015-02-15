@@ -35,6 +35,7 @@
 					{% endif %}
 				{% endif %}
 			{% endspaceless %}
+            {% if user.is_staff %}<!-- vote_rank: {{ story.get_vote_rank|floatformat }} -->{% endif %}
 		</p>
 		<p>{{ story.summary_as_html|striptags }}</p>
 		{% if user.detail_view and story.chapter_set.count > 1 %}

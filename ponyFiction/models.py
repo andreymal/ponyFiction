@@ -298,14 +298,30 @@ class Story (models.Model):
     def get_vote_down_count(self):
         return self.vote.filter(minus=True).count()
 
+    @property
+    def vote_count(self):
+        return self.vote_up_count + self.vote_down_count
+
     def get_vote_rating(self):
         return self.vote_up_count - self.vote_down_count
+
+    def get_vote_rank(self, invalidate = False):
+        key = 'vote_rank_{}'.format(self.pk)
+        value = cache.get(key)
+        if value is None or invalidate:
+            stories = Story.objects.published
+            total_count = stories.count()
+            rank = stories.filter(vote_up_count__lte = self.vote_count - F('vote_down_count')).count()
+            value = float(rank)/max(total_count, 1)
+            cache.set(key, value, 24*3600)
+        return value
 
     def update_rating(self, rating_only = False):
         if not rating_only:
             self.vote_up_count = self.get_vote_up_count()
             self.vote_down_count = self.get_vote_down_count()
         self.vote_rating = self.get_vote_rating()
+        self.get_vote_rank(invalidate = True)
         self.save(update_fields = ['vote_up_count', 'vote_down_count', 'vote_rating'])
 
     # Количество просмотров
