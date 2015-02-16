@@ -324,6 +324,15 @@ class Story (models.Model):
         self.get_vote_rank(invalidate = True)
         self.save(update_fields = ['vote_up_count', 'vote_down_count', 'vote_rating'])
 
+    def iter_horseshoe_images(self):
+        n = int(round(self.get_vote_rank() * 10))
+        k = int(round(float((n-1)*self.vote_up_count)/max(self.vote_count, 1)))
+        for i in range(n):
+            img = 'i/horseshoe-' + 'lr'[i%2]
+            if i > k: img += 'g'
+            img += '.png'
+            yield img
+
     # Количество просмотров
     @property
     def views(self):

@@ -6,7 +6,10 @@
 	<!-- Вывод рассказа: начало -->
 	<div class="story-item" id="story_{{ story.id }}">
 		<h3>
-			<a href="{% url 'story_view' story.id %}">{{ story.title }}</a> 
+			<a href="{% url 'story_view' story.id %}">{{ story.title }}</a>
+            <span style="display: inline-block;">
+                {% for img in story.iter_horseshoe_images %}<img src="{% static img %}">{% if '-r' in img %} {% endif %}{% endfor %}
+            </span>
 			{% if not story.original %} <sup class="translation">Перевод</sup>{% endif %}
 			{%if not story.finished %}
 				<sup class="incomplete">Не закончен</sup>
@@ -35,7 +38,6 @@
 					{% endif %}
 				{% endif %}
 			{% endspaceless %}
-            {% if user.is_staff %}<!-- vote_rank: {{ story.get_vote_rank|floatformat }} -->{% endif %}
 		</p>
 		<p>{{ story.summary_as_html|striptags }}</p>
 		{% if user.detail_view and story.chapter_set.count > 1 %}
