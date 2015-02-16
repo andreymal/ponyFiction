@@ -3,7 +3,7 @@ import json
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models import Count, Sum, F, Q
+from django.db.models import Count, Sum, F
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
 from django.contrib.staticfiles.storage import staticfiles_storage
@@ -275,9 +275,9 @@ class Story (models.Model):
     summary = models.TextField(max_length=4096, verbose_name="Общее описание")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     vote = models.ManyToManyField('Vote', null=True, verbose_name="Голоса за рассказ")
-    vote_up_count = models.PositiveIntegerField(default = 0, editable = False)
-    vote_down_count = models.PositiveIntegerField(default = 0, editable = False)
-    vote_rating = models.FloatField(default = 0, editable = False)
+    vote_up_count = models.PositiveIntegerField(default = 0, editable = settings.DEBUG)
+    vote_down_count = models.PositiveIntegerField(default = 0, editable = settings.DEBUG)
+    vote_rating = models.FloatField(default = 0, editable = settings.DEBUG)
 
     objects = StoryManager()
     
