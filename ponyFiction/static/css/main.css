@@ -241,7 +241,7 @@ a.authorlink:hover,a.edit-link:hover {
 	color: #999;
 }
 
-.story-item p.meta img {
+img.avatar-small {
 	width: 20px;
 	height: 20px;
 	margin-right: 4px;

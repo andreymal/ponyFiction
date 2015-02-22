@@ -14,7 +14,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from ponyFiction import signals
 from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
-from ponyFiction.models import Story, CoAuthorsStory, Author
+from ponyFiction.models import Story, CoAuthorsStory, Author, StoryEditLogItem
 from cacheops.invalidation import invalidate_obj
 from ponyFiction.utils.misc import get_object_or_none
 
@@ -148,6 +148,16 @@ def story_vote(request, pk, direction):
     _story_vote(request, pk, direction)
     return redirect('story_view', pk)
 
+def story_edit_log(request, pk):
+    if not request.user.is_staff:
+        raise PermissionDenied
+    story = get_object_or_404(Story, pk = pk)
+    data = dict(
+        edit_log = story.edit_log.order_by('date').select_related('user'),
+        page_title = u"История редактирования рассказа \"{}\"".format(story.title),
+    )
+    return render(request, 'story_edit_log.html', data)
+
 class StoryAdd(CreateView):
     model = Story
     form_class = StoryForm
@@ -187,6 +197,12 @@ class StoryEdit(UpdateView):
     
     def form_valid(self, form):
         story = form.save()
+        StoryEditLogItem.create(
+            action = StoryEditLogItem.Actions.Edit,
+            user = self.request.user,
+            story = story,
+            data = form.cleaned_data,
+        )
         return redirect('story_edit', story.id)
     
     def get_object(self, queryset=None):

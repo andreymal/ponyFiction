@@ -12,7 +12,7 @@ from ponyFiction.views.comment import CommentEdit, CommentAdd, CommentDelete
 from ponyFiction.views.index import index
 from ponyFiction.views.object_lists import FavoritesList, SubmitsList, BookmarksList
 from ponyFiction.views.story import StoryAdd, StoryEdit, StoryDelete
-from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments, TopStories
+from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments, TopStories, StreamStoryEditLog
 from registration.views import activate, register
 
 admin.autodiscover()
@@ -49,8 +49,8 @@ urlpatterns += patterns('',
     url(r'^stream/chapters/page/(?P<page>\d+)/$', StreamChapters.as_view(), name='stream_chapters_page'),
     url(r'^stream/comments/$', StreamComments.as_view(), name='stream_comments'),
     url(r'^stream/comments/page/(?P<page>\d+)/$', StreamComments.as_view(), name='stream_comments_page'),
-
     url(r'^story/top/(?:page/(?P<page>\d+)/)?$', TopStories.as_view(), name='top_stories'),
+    url(r'^stream/editlog/(?:page/(?P<page>\d+|last)/)?$', StreamStoryEditLog.as_view(), name='stream_edit_log'),
 )
 
 # Обработка пользовательских адресов
@@ -177,6 +177,8 @@ urlpatterns += patterns('ponyFiction.views.story',
     # Голосование за рассказ
     url(r'^story/(?P<pk>\d+)/vote/plus/$', 'story_vote', {'direction': True}, name='story_vote_plus'),
     url(r'^story/(?P<pk>\d+)/vote/minus/$', 'story_vote', {'direction': False}, name='story_vote_minus'),
+
+    url(r'^story/(?P<pk>\d+)/editlog/$', 'story_edit_log', name='story_edit_log'),
     # Загрузка рассказа
     url(r'^story/(?P<story_id>\d+)/download/(?P<filename>\w+)\.(?P<extension>[\w\.]+)$', 'story_download'),
 )

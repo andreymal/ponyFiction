@@ -11,6 +11,7 @@ class ObjectList(ListView):
     
     context_object_name = 'stories'
     paginate_by = settings.STORIES_COUNT['page']
+    view_name = None
 
     @property
     def page_title(self):
@@ -25,7 +26,10 @@ class ObjectList(ListView):
         
     def get_context_data(self, **kwargs):
         context = super(ObjectList, self).get_context_data(**kwargs)
-        context['page_title'] = self.page_title
+        context.update(
+            page_title = self.page_title,
+            pagination_view_name = self.view_name,
+        )
         return context
 
 class FavoritesList(ObjectList):

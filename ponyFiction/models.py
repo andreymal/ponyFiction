@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -532,6 +533,64 @@ class Activity(models.Model):
     
     def __unicode__(self):
         return "%s: %s [v:%s c:%s (+):%s (-):%s]" % (self.author.username, self.story.title, self.last_views, self.last_comments, self.last_vote_up, self.last_vote_down)
+
+
+class StoryEditLogItem(models.Model):
+    class Actions:
+        Publish = 1
+        Unpublish = 2
+        Approve = 3
+        Unapprove = 4
+        Edit = 5
+
+        action_verbs = {
+            Publish: u'опубликовал',
+            Unpublish: u'отправил в черновики',
+            Approve: u'одобрил',
+            Unapprove: u'отозвал',
+            Edit: u'отредактировал',
+        }
+
+    user = models.ForeignKey(Author)
+    story = models.ForeignKey(Story, related_name='edit_log')
+    action = models.SmallIntegerField(choices=Actions.action_verbs.items())
+    json_data = models.TextField(null=True)
+    date = models.DateTimeField(auto_now_add=True, db_index = True)
+    is_staff = models.BooleanField()
+
+    def action_verb(self):
+        return self.Actions.action_verbs[self.action]
+
+    @property
+    def data(self):
+        return json.loads(self.json_data)
+
+    @data.setter
+    def data(self, value):
+        def default(o):
+            if isinstance(o, models.Model):
+                return o.id
+            elif isinstance(o, models.query.QuerySet):
+                return list(o)
+        self.json_data = json.dumps(value,
+            ensure_ascii = False,
+            default = default,
+        )
+
+    @classmethod
+    def create(cls, data = None, **kw):
+        obj = cls(**kw)
+        obj.is_staff = kw['user'].is_staff
+        if data is not None:
+            obj.data = data
+        obj.save()
+        return obj
+
+    class Meta:
+        index_together = [
+            ['story', 'date'],
+            ['is_staff', 'date'],
+        ]
 
 
 import signals

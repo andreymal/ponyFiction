@@ -8,7 +8,7 @@ from django.utils.datetime_safe import datetime
 from django.views.decorators.csrf import csrf_protect
 from json import dumps
 from django.views.decorators.http import require_POST
-from ponyFiction.models import Author, Story, Favorites, Bookmark
+from ponyFiction.models import Author, Story, Favorites, Bookmark, StoryEditLogItem
 from ponyFiction.ajax.decorators import ajax_required
 from ponyFiction.views.story import StoryDelete, _story_vote
 from django.utils.decorators import method_decorator
@@ -41,6 +41,11 @@ def story_publish_ajax(request, story_id):
                 story.draft = False
             else:
                 story.draft = True
+            StoryEditLogItem.create(
+                action = StoryEditLogItem.Actions.Unpublish if story.draft else StoryEditLogItem.Actions.Publish,
+                user = request.user,
+                story = story,
+            )
             story.save(update_fields=['draft', 'approved'])
             return HttpResponse(story_id)
         else:
@@ -62,6 +67,11 @@ def story_approve_ajax(request, story_id):
         else:
             story.date = datetime.now()
             story.approved = True
+        StoryEditLogItem.create(
+            action = StoryEditLogItem.Actions.Approve if story.approved else StoryEditLogItem.Actions.Unapprove,
+            user = request.user,
+            story = story,
+        )
         story.save(update_fields=['approved', 'date'])
         return HttpResponse(story_id)
     else:

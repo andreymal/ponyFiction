@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
 from ponyFiction.views.object_lists import ObjectList
-from ponyFiction.models import Story, Chapter, Comment
+from ponyFiction.models import Story, Chapter, Comment, StoryEditLogItem
 from cacheops.query import cached_as
 
 class StreamStories(ObjectList):
@@ -9,21 +10,15 @@ class StreamStories(ObjectList):
     paginate_by = settings.STORIES_COUNT['stream']
     template_name = 'stream/stories.html'
     page_title = u'Лента добавлений'
-    pagination_view_name = 'stream_stories_page'
+    view_name = 'stream_stories_page'
 
     def get_queryset(self):
         return Story.objects.published.order_by('-date')
 
-    def get_context_data(self, **kwargs):
-        return super(StreamStories, self).get_context_data(
-            pagination_view_name = self.pagination_view_name,
-            **kwargs
-        )
-
 
 class TopStories(StreamStories):
     page_title = u'Топ рассказов'
-    pagination_view_name = 'top_stories'
+    view_name = 'top_stories'
 
     def get_queryset(self):
         return Story.objects.published.order_by('-vote_rating')
@@ -48,3 +43,18 @@ class StreamComments(ObjectList):
     
     def get_queryset(self):
         return Comment.objects.filter(story__in=Story.objects.published).order_by('-date').cache()
+
+
+class StreamStoryEditLog(ObjectList):
+
+    context_object_name = 'edit_log'
+    paginate_by = getattr(settings, 'EDIT_LOGS_PER_PAGE', 100)
+    template_name = 'story_edit_log.html'
+    page_title = u'Лог модерации'
+    view_name = 'stream_edit_log'
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return StoryEditLogItem.objects.filter(is_staff = True).order_by('date').select_related()
+        else:
+            raise PermissionDenied

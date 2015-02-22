@@ -21,7 +21,9 @@
 		<p class="more">
             <a href="{% url 'stream_stories' %}">Лента добавлений</a>
             | <a href="{% url 'top_stories' %}">Топ</a>
-            | <a href="{% url 'feeds_stories' %}">RSS</a></p>
+            | <a href="{% url 'feeds_stories' %}">RSS</a>
+            {% if user.is_staff %}| <a href="{% url 'stream_edit_log' 'last' %}">Лог модерации</a>{% endif %}
+        </p>
 	</div>
 	<div class="span4 sidelist top-list">	
 		<h2>Обновившиеся рассказы</h2>
