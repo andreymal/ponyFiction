@@ -166,6 +166,7 @@ urlpatterns += patterns('ponyFiction.views.story',
     url(r'^story/add/$', StoryAdd.as_view(), name='story_add'),
     # Правка
     url(r'^story/(?P<pk>\d+)/edit/$', StoryEdit.as_view(), name='story_edit'),
+    url(r'^story/(?P<pk>\d+)/delete/$', StoryDelete.as_view(), name='story_delete'),
     # Отправка на публикацию
     url(r'^story/(?P<pk>\d+)/publish/$', 'story_publish', name='story_publish'),
     # Одобрение

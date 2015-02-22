@@ -19,5 +19,9 @@ def editable_by(story, author):
     return story.editable_by(author)
 
 @register.filter
+def deletable_by(story, user):
+    return story.deletable_by(user)
+
+@register.filter
 def order_by(queryset, order):
     return queryset.order_by(order)

@@ -236,7 +236,7 @@ class StoryDelete(DeleteView):
     def get_object(self, queryset=None):
         self.story = DeleteView.get_object(self, queryset=queryset)
         self.story_id = self.story.id
-        if self.story.editable_by(self.request.user):
+        if self.story.deletable_by(self.request.user):
             return self.story
         else:
             raise PermissionDenied
