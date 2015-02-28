@@ -297,6 +297,7 @@ img.avatar-small, .character-list img {
 .vote .downvote {
 	color: red;
 	padding: 4px 30px 5px 0;
+	margin-right: 0.5em;
 	background: transparent url('../i/downvote-24.png?1') no-repeat 100% 0;
 }
 
@@ -939,7 +940,7 @@ a.btn {
 }
 
 /* Author page */
-h1 img,.userpic {
+.userpic {
 	vertical-align: top;
 	margin-right: 2px;
 	border-radius: 5px;

@@ -1,0 +1,4 @@
+{% load static %}
+<span style="display: inline-block;">
+    {% for img in story.iter_horseshoe_images %}<img src="{% static img %}">{% if '-r' in img %} {% endif %}{% endfor %}
+</span>

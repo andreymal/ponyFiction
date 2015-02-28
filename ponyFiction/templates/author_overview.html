@@ -11,7 +11,7 @@
 	</div>
 	<div class="span8">
 		<h1 id="author-name">
-			<img src="{{ author.get_avatar_url }}" width="42" title="{{ author.username }}" alt="{{ author.username }}"/>
+			<img src="{{ author.get_avatar_url }}" width="42" title="{{ author.username }}" alt="{{ author.username }}" class="userpic"/>
 			{{ author.username }}
 			{% if user.is_staff %}
 				<a href="{% url 'author_approve' author.id %}" id="author_approve" class="btn btn-small{% if author.approved %} btn-primary{% endif %}">{% if author.approved %}Проверен{% else %}Не проверен{% endif %}</a>
