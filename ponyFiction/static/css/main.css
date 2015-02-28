@@ -241,7 +241,7 @@ a.authorlink:hover,a.edit-link:hover {
 	color: #999;
 }
 
-img.avatar-small {
+img.avatar-small, .character-list img {
 	width: 20px;
 	height: 20px;
 	margin-right: 4px;
