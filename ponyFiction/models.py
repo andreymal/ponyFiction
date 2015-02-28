@@ -311,7 +311,7 @@ class Story (models.Model):
         if value is None or invalidate:
             stories = Story.objects.published
             total_count = stories.count()
-            rank = stories.filter(vote_up_count__lte = self.vote_count - F('vote_down_count')).count()
+            rank = stories.extra(where = ['vote_up_count+vote_down_count <= %s'], params = [self.vote_count]).count()
             value = float(rank)/max(total_count, 1)
             cache.set(key, value, 24*3600)
         return value
