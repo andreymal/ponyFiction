@@ -74,8 +74,9 @@ class Author(AbstractUser):
                     url = urljoin(profile_url, links[0])
                 cache.set(key, url, 300 * (1 + random.random()))
         except Exception:
-            import traceback
-            traceback.print_exc()
+            if settings.DEBUG:
+                import traceback
+                traceback.print_exc()
 
         return url
 
