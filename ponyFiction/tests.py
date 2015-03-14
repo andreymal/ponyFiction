@@ -2,11 +2,12 @@
 import unittest
 from ponyFiction.filters import filter_html, _filter_html, typo
 from ponyFiction.filters.base import html_doc_to_string
+from ponyFiction.models import Story
 
 
 class HtmlFiltersTests(unittest.TestCase):
     def test_filter_html_function(self):
-        text = '<p>Дружба - это магия!</p>'
+        text = u'<p>Дружба - это магия!</p>'
         html_doc_to_string(filter_html(text))
 
     def test_href_validation(self):
@@ -56,3 +57,31 @@ class HtmlFiltersTests(unittest.TestCase):
                 u'\u2014 Louder!\n'
                 u'\u2014 Yay!\n'
         )
+
+
+class VoteIndicatorTests(unittest.TestCase):
+    def get_indicator(self, o):
+        return [
+            s.replace('i/horseshoe-', '').replace('.png', '')
+            for s in o.iter_horseshoe_images()
+        ]
+
+    def test_vote_ratio_indicator(self):
+        o = Story()
+        o.get_vote_rank = lambda: 1.0
+
+        data = [
+            (100, 0, ['l', 'r'] * 5),
+            (100, 1, ['l', 'r'] * 5),
+            (100, 100, ['l', 'r', 'l', 'r', 'l', 'rg', 'lg', 'rg', 'lg', 'rg']),
+            (0, 100, ['lg', 'rg'] * 5),
+            (80, 20, ['l', 'r'] * 4 + ['lg', 'rg']),
+        ]
+
+        for u, d, x in data:
+            o.vote_up_count = u
+            o.vote_down_count = d
+            y = self.get_indicator(o)
+            self.assertEquals(x, y, "up={} down={} r={}".format(u, d, y))
+
+
