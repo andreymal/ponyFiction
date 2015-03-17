@@ -1,8 +1,10 @@
 # encoding: utf8
 import unittest
+from django.test import TestCase as DjangoTestCase
 from ponyFiction.filters import filter_html, _filter_html, typo
 from ponyFiction.filters.base import html_doc_to_string
-from ponyFiction.models import Story
+from ponyFiction.models import Story, Author, Chapter
+from ponyFiction.signals import story_viewed
 
 
 class HtmlFiltersTests(unittest.TestCase):
@@ -85,3 +87,22 @@ class VoteIndicatorTests(unittest.TestCase):
             self.assertEquals(x, y, "up={} down={} r={}".format(u, d, y))
 
 
+class ViewCounterTests(DjangoTestCase):
+    def test_view_count(self):
+        s = Story.objects.create()
+        c = Chapter.objects.create(story = s)
+
+        users = [
+            Author.objects.create(username = 'user%s' % i)
+            for i in range(3)
+        ]
+        for i in range(7):
+            story_viewed.send(
+                Author,
+                instance = users[i%len(users)],
+                story = s,
+                chapter = c,
+            )
+
+        self.assertEqual(s.views, 3)
+        self.assertEqual(s.story_views_set.count(), 7)

@@ -17,7 +17,7 @@ def update_story_update_time(sender, instance, **kw):
     
 @receiver(story_visited, sender=Author)
 def story_activity_save(sender, instance, **kwargs):
-    if instance.is_authenticated():
+    if not instance.is_authenticated():
         return
     story = kwargs['story']
     comments_count = kwargs['comments_count']
@@ -30,7 +30,7 @@ def story_activity_save(sender, instance, **kwargs):
 
 @receiver(story_viewed, sender=Author)
 def story_views_save(sender, instance, **kwargs):
-    if instance.is_authenticated():
+    if not instance.is_authenticated():
         return
     story = kwargs['story']
     chapter = kwargs['chapter']

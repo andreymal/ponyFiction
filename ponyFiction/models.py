@@ -337,7 +337,7 @@ class Story (models.Model):
     # Количество просмотров
     @property
     def views(self):
-        return self.story_views_set.values('author').annotate(Count('author')).count()
+        return self.story_views_set.aggregate(x=Count('author', distinct=True))['x']
     
     # Количество слов
     @property
@@ -622,4 +622,4 @@ class StoryEditLogItem(models.Model):
         ]
 
 
-import signals
+from . import signals
