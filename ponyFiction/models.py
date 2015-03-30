@@ -16,10 +16,7 @@ from ponyFiction.filters.html import footnotes_to_html
 
 # disable username validation to allow editing of users with russian symbols in names
 username_field = {f.name:f for f in AbstractUser._meta.fields}['username']
-username_field.validators = [
-    v for v in username_field.validators
-    if not isinstance(v, models.validators.RegexValidator)
-]
+username_field.validators = []
 
 
 class Author(AbstractUser):
