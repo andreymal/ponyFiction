@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
@@ -17,6 +19,14 @@ admin.site.register([Character, CharacterGroup, Category, Classifier, Rating, Se
 
 
 class AuthorChangeForm(UserChangeForm):
+    username =forms.RegexField(
+        regex=ur'^[0-9a-zA-Z\u0430-\u044f\u0410-\u042f\u0451\u0401_@+-.. ]+$',
+        widget=forms.TextInput(attrs=dict(maxlength=32)),
+        max_length=32,
+        label='Логин',
+        help_text='Только русские/латинские буквы, цифры, пробел, точка и символы _ @ + -',
+        error_messages={'invalid': 'Пожалуйста, исправьте ошибку в логине - он может содержать только русские/латинские буквы, цифры, пробел, точку и символы _ @ + -'}
+    )
 
     class Meta:
         model = Author
