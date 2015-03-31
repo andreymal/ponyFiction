@@ -62,16 +62,7 @@ def story_view(request, pk, comments_page):
 @csrf_protect
 @require_POST
 def story_approve(request, pk):
-    story = get_object_or_404(Story, pk=pk)
-    if request.user.is_staff:
-        if story.approved:
-            story.approved = False
-        else:
-            story.approved = True
-        story.save(update_fields=['approved'])
-        return redirect('submitted')
-    else:
-        raise PermissionDenied
+    raise PermissionDenied
     
 @login_required
 @csrf_protect
@@ -90,21 +81,7 @@ def story_publish_warning(request, pk):
 @csrf_protect
 @require_POST
 def story_publish(request, pk):
-    story = get_object_or_404(Story, pk=pk)
-    if (story.publishable or (not story.draft and not story.publishable)):
-        if story.publishable:
-            if (request.user.approved and not story.approved):
-                story.approved = True
-            if story.draft:
-                story.draft = False
-            else:
-                story.draft = True
-            story.save(update_fields=['draft', 'approved'])
-            return redirect('author_dashboard')
-        else:
-            return story_publish_warning(request, pk)
-    else:
-        raise PermissionDenied
+    raise PermissionDenied
 
 @login_required
 @csrf_protect

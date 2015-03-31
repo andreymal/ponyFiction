@@ -499,12 +499,6 @@ class Vote(models.Model):
         verbose_name = "голос"
         verbose_name_plural = "голоса"
     
-    def __unicode__(self):
-        if self.plus is not None:
-            return "%s [+] story '%s'" % (self.author.username, self.story_set.all()[0].title)
-        if self.minus is not None:
-            return "%s [-] story '%s'" % (self.author.username, self.story_set.all()[0].title)
-    
 class Favorites(models.Model):
     """ Модель избранного """
     
