@@ -25,8 +25,6 @@ urlpatterns = patterns('',
     url(r'story/(?P<story_id>\d+)/chapter/\d+/favorite', story.story_favorite_ajax),
     # Голосование за рассказ
     url(r'story/(?P<story_id>\d+)/vote/(?P<direction>\w+)/$', story.story_vote_ajax),
-    # Одобрение автора
-    url(r'accounts/(?P<user_id>\d+)/approve/$', story.author_approve_ajax),
     
     # Добавление комментария
     url(r'story/(?P<story_id>\d+)/comment/add/$', comment.AjaxCommentAdd.as_view()),

@@ -35,8 +35,6 @@ def story_publish_ajax(request, story_id):
     story = get_object_or_404(Story, pk=story_id)
     if (story.editable_by(request.user) or request.user.is_staff):
         if (story.publishable or (not story.draft and not story.publishable)):
-            if (request.user.approved and not story.approved):
-                story.approved = True
             if story.draft:
                 story.draft = False
             else:
@@ -114,21 +112,6 @@ def story_vote_ajax(request, story_id, direction):
     story = _story_vote(request, story_id, direction)
     return HttpResponse(dumps([0, 0]))
 
-@ajax_required
-@login_required
-@csrf_protect
-@require_POST
-def author_approve_ajax(request, user_id):
-    if request.user.is_staff:
-        author = get_object_or_404(Author, pk=user_id)
-        if author.approved:
-            author.approved = False
-        else:
-            author.approved = True
-        author.save(update_fields=['approved'])
-        return HttpResponse('Done')
-    else:
-        raise PermissionDenied
 
 class AjaxStoryDelete(StoryDelete):
     

@@ -28,7 +28,6 @@ class Author(AbstractUser):
     tabun = models.CharField(max_length=256, blank=True, verbose_name="Табун")
     forum = models.URLField(max_length=200, blank=True, verbose_name="Форум")
     vk = models.URLField(max_length=200, blank=True, verbose_name="VK")
-    approved = models.BooleanField(default=False, verbose_name="Проверенный автор")
     excluded_categories = SeparatedValuesField(max_length=200, null=True, verbose_name="Скрытые категории")
     detail_view = models.BooleanField(default=False, verbose_name="Детальное отображение рассказов")
     nsfw = models.BooleanField(default=False, verbose_name="NSFW без предупреждения")
