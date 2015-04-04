@@ -1,6 +1,6 @@
 <div class="chapter-text">
     {% if allchapters %}
-        <a href="#chapter{{ chapter.id }}"><h1 id="chaptertitle">{{ chapter.title }}</h1></a>
+        <h1 id="chaptertitle"><a id="chapter{{ chapter.id }}">{{ chapter.title }}</a></h1>
     {% else %}
         <h1 id="chaptertitle">{{ chapter.title }}</h1>
     {% endif %}
