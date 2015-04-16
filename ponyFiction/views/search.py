@@ -56,7 +56,7 @@ def search_action(request, postform):
     offset = (page_current - 1) * settings.SPHINX_CONFIG['number']
     # Настройка параметров сервера
     sphinx = SphinxClient()
-    sphinx.SetServer(settings.SPHINX_CONFIG['server'])
+    sphinx.SetServer(*settings.SPHINX_CONFIG['server'])
     sphinx.SetRetries(settings.SPHINX_CONFIG['retries_count'], settings.SPHINX_CONFIG['retries_delay'])
     sphinx.SetConnectTimeout(float(settings.SPHINX_CONFIG['timeout']))
     sphinx.SetMatchMode(settings.SPHINX_CONFIG['match_mode'])
@@ -86,7 +86,7 @@ def search_action(request, postform):
         initial_data.update(SetBoolSphinxFilter(sphinx, 'finished', 'finished_select', postform))
         initial_data.update(SetBoolSphinxFilter(sphinx, 'freezed', 'freezed_select', postform))
         # Запрос поиска зассказов
-        raw_result = sphinx.Query(postform.cleaned_data['search_query'], 'stories')
+        raw_result = sphinx.Query(postform.cleaned_data['search_query'], 'stories_main')
         # Обработка результатов поиска рассказов
         for res in raw_result['matches']:
             try:
@@ -99,7 +99,7 @@ def search_action(request, postform):
         # Установка весов для полей глав
         sphinx.SetFieldWeights(settings.SPHINX_CONFIG['weights_chapters'])
         # Запрос поиска глав
-        raw_result = sphinx.Query(postform.cleaned_data['search_query'], 'chapters')
+        raw_result = sphinx.Query(postform.cleaned_data['search_query'], 'chapters_main')
         # Обработка результатов поиска глав и постройка сниппетов текста
         for res in raw_result['matches']:
             try:
