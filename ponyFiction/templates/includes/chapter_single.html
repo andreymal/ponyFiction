@@ -1,10 +1,6 @@
 <div class="chapter-text">
-    {% if allchapters %}
-        <h1 id="chaptertitle"><a id="chapter{{ chapter.id }}">{{ chapter.title }}</a></h1>
-    {% else %}
-        <h1 id="chaptertitle">{{ chapter.title }}</h1>
-    {% endif %}
-	{% if chapter.notes %}
+    <h1 id="chapter{{ chapter.id }}">{{ chapter.title }}</h1>
+    {% if chapter.notes %}
 		<blockquote>{{ chapter.notes_as_html }}</blockquote>
 	{% endif %}
 	{{ chapter.text_as_html }}

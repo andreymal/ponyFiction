@@ -48,7 +48,7 @@
             {% if allchapters %}
             <select class="select-chapter" onchange="location = this.options[this.selectedIndex].value;">
                 {% for chapter in chapters %}
-                <option value="#chapter{{ chapter.id }}">Глава {{ chapter.id }}</option>
+                <option value="#chapter{{ chapter.id }}">{{ chapter.title }}</option>
                 {% endfor %}
             </select>
             {% endif %}
