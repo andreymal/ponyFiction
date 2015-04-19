@@ -410,6 +410,9 @@ class Chapter (models.Model):
     def __unicode__(self):
         return '[%s / %s] %s' % (self.id, self.order, self.title)
 
+    def get_absolute_url(self):
+        return reverse('chapter_view_single', kwargs = dict(story_id = self.story_id, chapter_order = self.order))
+
     def get_prev_chapter(self):
         try:
             return self.story.chapter_set.filter(order__lt=self.order).latest('order')
