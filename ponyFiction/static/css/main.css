@@ -255,9 +255,11 @@ img.avatar-small, .character-list img {
 .story-control-btn {
 	float: right;
 }
-.story-item .story-control-btn a {
-	margin-right: 3px;
+
+.story-control-btn a {
+    text-decoration: none;
 }
+
 /* Vote-buttons */
 .upvotes {
 	color: #66CC66;
@@ -878,16 +880,16 @@ a.btn {
 	background-color: #F1F1F1;
 }
 
-.chapters-control li a {
+.chapters-control li .btn-group {
 	float: right;
-	display: block;
-	font-size: 12px;
-	vertical-align: middle;
-	margin-left: 4px;
 }
 
 .chapters-control li .btn-success {
 	margin-top: 8px;
+}
+
+.btn-mini .caret {
+    margin-top: 8px;
 }
 
 .chapter-textarea {
