@@ -45,6 +45,13 @@
 	            <option value="2">Маленький</option>
 	            <option value="3">Большой</option>
 	        </select>
+            {% if allchapters %}
+            <select class="select-chapter" onchange="location = this.options[this.selectedIndex].value;">
+                {% for chapter in chapters %}
+                <option value="#chapter{{ chapter.id }}">Глава {{ chapter.id }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
 	    </span>
 	    {% endif %}
 	</div>
