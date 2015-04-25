@@ -1,5 +1,5 @@
 Django==1.5
-MySQL-python==1.2.4
+MySQL-python==1.2.5
 Unidecode==0.04.12
 argparse==1.2.1
 -e git://github.com/Suor/django-cacheops.git@7d0fc79600ed09d97211f87015846f1afb7146fb#egg=django_cacheops-dev

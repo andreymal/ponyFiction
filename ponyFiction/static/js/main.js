@@ -202,7 +202,7 @@ var ajax = {
          *                int ID рассказа
          */
         approve : function(response) {
-            if (pages.story_view.regex.test(window.location.pathname)) {
+            if (pages.story_view.regex.test(window.location.pathname) || pages.story_edit.regex.test(window.location.pathname)) {
                 var btn = $('.story_approve');
             } else {
                 var btn = $('#story_' + response + ' .story_approve');
@@ -309,7 +309,7 @@ var ajax = {
         remove : function(event) {
             event.stopImmediatePropagation();
             event.preventDefault();
-            if (!(pages.story_view.regex.test(window.location.pathname))) {
+            if (!(pages.story_view.regex.test(window.location.pathname) || pages.story_edit.regex.test(window.location.pathname))) {
                 var url = '/ajax' + $(this).attr('href');
                 $.post(url, function(data) {
                     $('#story_' + data).slideUp('slow').remove();
@@ -579,6 +579,9 @@ var pages = {
             $('#id_text').markItUp(mySettings);
             $('#id_notes').markItUp(mySettings);
             listeners.misc.characters();
+            for ( var listener in listeners.story) {
+                listeners.story[listener]();
+            }
             for ( var listener in listeners.chapter) {
                 listeners.chapter[listener]();
             }

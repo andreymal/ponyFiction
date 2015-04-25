@@ -76,7 +76,8 @@ class StoriesImgSelect(SelectMultiple):
         container_attrs = attrs['container_attrs']
         data_attrs = attrs['data_attrs']
         img_url = settings.STATIC_URL+'i/characters/%s.png' % option_value
-        item_image = '<img src="%s" alt="%s" title="%s" />' % (img_url, option_label, option_label)
+        img_class = 'ui-selected' if option_value in selected_choices else ''
+        item_image = '<img class="%s" src="%s" alt="%s" title="%s" />' % (img_class, img_url, option_label, option_label)
         cb = CheckboxInput(data_attrs, check_test=lambda x: x in selected_choices)
         rendered_cb = cb.render(name, option_value)
         return mark_safe(u'<span%s>%s%s</span>' % (flatatt(container_attrs), rendered_cb, item_image))
