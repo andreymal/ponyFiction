@@ -8,7 +8,7 @@ https://bitbucket.org/eire1130/django-registration/get/c831654ff540.zip
 html5lib==0.95
 ipython==0.13.2
 lxml==3.1.0
-py-bcrypt==0.2
+py-bcrypt==0.4
 python-memcached==1.48
 readline==6.2.4.1
 redis==2.7.3
