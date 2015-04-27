@@ -87,43 +87,42 @@ def search_action(request, postform):
         initial_data.update(SetBoolSphinxFilter(sphinx, 'freezed', 'freezed_select', postform))
         # Запрос поиска зассказов
         raw_result = sphinx.Query(postform.cleaned_data['search_query'], 'stories_main')
+        if raw_result is None:
+            raise Exception("Sphinx error: %s" % sphinx.GetLastError())
         # Обработка результатов поиска рассказов
-        if raw_result is not None:
-            for res in raw_result['matches']:
-                try:
-                    story = Story.objects.get(pk=res['id'])
-                except Story.DoesNotExist:
-                    pass
-                else:
-                    result.append(story)
+    for res in raw_result['matches']:
+        try:
+            story = Story.objects.get(pk=res['id'])
+        except Story.DoesNotExist:
+            pass
+        else:
+            result.append(story)
     else:
         # Установка весов для полей глав
         sphinx.SetFieldWeights(settings.SPHINX_CONFIG['weights_chapters'])
         # Запрос поиска глав
         raw_result = sphinx.Query(postform.cleaned_data['search_query'], 'chapters_main')
         # Обработка результатов поиска глав и постройка сниппетов текста
-        if raw_result is not None:
-            for res in raw_result['matches']:
-                try:
-                    chapter = Chapter.objects.get(pk=res['id'])
-                except Chapter.DoesNotExist:
-                    pass
-                else:
-                    text = []
-                    text.append(chapter.text)
-                    excerpt = sphinx.BuildExcerpts(text, 'chapters', postform.cleaned_data['search_query'], settings.SPHINX_CONFIG['excerpts_opts'])
-                    excerpts.append(excerpt[0])
-                    chapters.append(chapter)
+        for res in raw_result['matches']:
+            try:
+                chapter = Chapter.objects.get(pk=res['id'])
+            except Chapter.DoesNotExist:
+                pass
+            else:
+                text = []
+                text.append(chapter.text)
+                excerpt = sphinx.BuildExcerpts(text, 'chapters', postform.cleaned_data['search_query'], settings.SPHINX_CONFIG['excerpts_opts'])
+                excerpts.append(excerpt[0])
+                chapters.append(chapter)
         result = zip(chapters, excerpts)
     # Пагинация
-    pagination = pagination_ranges(num_pages=int(ceil(raw_result['total']/10.0)) if raw_result is not None else 0, page=page_current)
+    pagination = pagination_ranges(num_pages=int(ceil(raw_result['total']/10.0)), page=page_current)
     # Создаем форму для рендера с данными поиска
     data['form'] = postform
     # Добавляем данные
     data['pagination'] = pagination
-    data['total'] = raw_result['total'] if raw_result is not None else 0
+    data['total'] = raw_result['total']
     data['result'] = result
-    data['broken'] = raw_result is None
     # Закрываем за собой сокет
     sphinx.Close()
     return render(request, 'search.html', data)
