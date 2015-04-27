@@ -90,13 +90,13 @@ def search_action(request, postform):
         if raw_result is None:
             raise Exception("Sphinx error: %s" % sphinx.GetLastError())
         # Обработка результатов поиска рассказов
-    for res in raw_result['matches']:
-        try:
-            story = Story.objects.get(pk=res['id'])
-        except Story.DoesNotExist:
-            pass
-        else:
-            result.append(story)
+        for res in raw_result['matches']:
+            try:
+                story = Story.objects.get(pk=res['id'])
+            except Story.DoesNotExist:
+                pass
+            else:
+                result.append(story)
     else:
         # Установка весов для полей глав
         sphinx.SetFieldWeights(settings.SPHINX_CONFIG['weights_chapters'])
