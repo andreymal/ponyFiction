@@ -122,7 +122,7 @@ PASSWORD_HASHERS = (
 )
 COMPRESS_HTML = True
 SPHINX_CONFIG = {
-    'server' : '/tmp/sphinx.socket',
+    'server' : ('/tmp/sphinx.socket',),
     'retries_count' : 5,
     'retries_delay' : 1,
     'timeout' : 10,

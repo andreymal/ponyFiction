@@ -87,6 +87,8 @@ def search_action(request, postform):
         initial_data.update(SetBoolSphinxFilter(sphinx, 'freezed', 'freezed_select', postform))
         # Запрос поиска зассказов
         raw_result = sphinx.Query(postform.cleaned_data['search_query'], 'stories_main')
+        if raw_result is None:
+            raise Exception("Sphinx error: %s" % sphinx.GetLastError())
         # Обработка результатов поиска рассказов
         for res in raw_result['matches']:
             try:

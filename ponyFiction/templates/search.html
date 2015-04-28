@@ -91,9 +91,9 @@
 		{% if search_type == '0' %}
 			<!-- Рассказы: начало вывода -->
 			{% if result %}<div class="story-item"><h3>Всего нашли {{ total|rupluralize:'рассказ,рассказа,рассказов' }}</h3></div>{% endif %}
-			{% with stories=result %}			
-					{% include "includes/stories.html" %}
-            {% endwith %}
+			{% with stories=result %}
+				{% include "includes/stories.html" %}
+			{% endwith %}
 			<!-- Рассказы: конец вывода -->
 		{% else %}
 			<!-- Главы: начало вывода -->
