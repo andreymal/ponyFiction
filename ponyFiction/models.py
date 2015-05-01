@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Count, Sum, F
 from django.utils.safestring import mark_safe
+from django.utils.datetime_safe import datetime
 from django.core.urlresolvers import reverse
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.cache import cache
@@ -387,7 +388,25 @@ class Story (models.Model):
         
     def get_absolute_url(self):
         return reverse('story_view', kwargs = dict(pk = self.pk))
-    
+
+    def set_draft(self, draft):
+        if self.draft != draft:
+            self.draft = draft
+            self.update_chapters_publication()
+            self.save(update_fields=['draft', 'approved'])
+
+    def set_approved(self, approved):
+        if self.approved != approved:
+            self.approved = approved
+            if approved:
+                self.date = datetime.now()
+            self.update_chapters_publication()
+            self.save(update_fields=['approved', 'date'])
+
+    def update_chapters_publication(self):
+        print 'update!', self.draft, self.approved
+        self.chapter_set.update(draft=self.draft or not self.approved)
+
 
 class Chapter (models.Model):
     """ Модель главы """

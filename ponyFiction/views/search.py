@@ -103,6 +103,8 @@ def search_action(request, postform):
         # Запрос поиска глав
         raw_result = sphinx.Query(postform.cleaned_data['search_query'], 'chapters_main')
         # Обработка результатов поиска глав и постройка сниппетов текста
+        if raw_result is None:
+            raise Exception("Sphinx error: %s" % sphinx.GetLastError())
         for res in raw_result['matches']:
             try:
                 chapter = Chapter.objects.get(pk=res['id'])
@@ -111,8 +113,8 @@ def search_action(request, postform):
             else:
                 text = []
                 text.append(chapter.text)
-                excerpt = sphinx.BuildExcerpts(text, 'chapters', postform.cleaned_data['search_query'], settings.SPHINX_CONFIG['excerpts_opts'])
-                excerpts.append(excerpt[0])
+                excerpt = sphinx.BuildExcerpts(text, 'chapters_main', postform.cleaned_data['search_query'], settings.SPHINX_CONFIG['excerpts_opts'])
+                excerpts.append(excerpt[0] if excerpt else '')
                 chapters.append(chapter)
         result = zip(chapters, excerpts)
     # Пагинация

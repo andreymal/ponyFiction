@@ -35,16 +35,12 @@ def story_publish_ajax(request, story_id):
     story = get_object_or_404(Story, pk=story_id)
     if (story.editable_by(request.user) or request.user.is_staff):
         if (story.publishable or (not story.draft and not story.publishable)):
-            if story.draft:
-                story.draft = False
-            else:
-                story.draft = True
+            story.set_draft(not story.draft)
             StoryEditLogItem.create(
                 action = StoryEditLogItem.Actions.Unpublish if story.draft else StoryEditLogItem.Actions.Publish,
                 user = request.user,
                 story = story,
             )
-            story.save(update_fields=['draft', 'approved'])
             return HttpResponse(story_id)
         else:
             return story_publish_warning_ajax(request, story_id)
@@ -60,17 +56,12 @@ def story_approve_ajax(request, story_id):
 
     if request.user.is_staff:
         story = get_object_or_404(Story, pk=story_id)
-        if story.approved:
-            story.approved = False
-        else:
-            story.date = datetime.now()
-            story.approved = True
+        story.set_approved(not story.approved)
         StoryEditLogItem.create(
             action = StoryEditLogItem.Actions.Approve if story.approved else StoryEditLogItem.Actions.Unapprove,
             user = request.user,
             story = story,
         )
-        story.save(update_fields=['approved', 'date'])
         return HttpResponse(story_id)
     else:
         raise PermissionDenied

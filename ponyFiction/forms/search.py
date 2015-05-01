@@ -178,7 +178,7 @@ class SearchForm(Form):
     )
     # Тип поиска
     search_type = ChoiceField(
-        choices=[(0, 'Быстрый'), (1, 'Полный')],
+        choices=[(0, 'По описанию'), (1, 'По главам')],
         required=True,
         widget=StoriesRadioButtons(attrs=radio_attrs),
     )

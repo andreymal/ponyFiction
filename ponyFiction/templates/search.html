@@ -97,7 +97,7 @@
 			<!-- Рассказы: конец вывода -->
 		{% else %}
 			<!-- Главы: начало вывода -->
-			{% if result %}<div class="story-item"><h3>Всего нашли {{ total|rupluralize:'главу,главы,глав' }}</h3></div>{% endif %}
+			{% if result %}<div class="story-item"><h3>Всего нашли {{ total|rupluralize:'главу,главы,глав' }}</h3></div>{% else %}<h3>Здесь пока ничего нет</h3>{% endif %}
 			{% for chapter, excerpt in result %}
 				<div class="story-item">
 					<h3><a href="{% url 'chapter_view_single' chapter.story_id chapter.order %}">{{ chapter.title }}</a></h3>
