@@ -404,7 +404,6 @@ class Story (models.Model):
             self.save(update_fields=['approved', 'date'])
 
     def update_chapters_publication(self):
-        print 'update!', self.draft, self.approved
         self.chapter_set.update(draft=self.draft or not self.approved)
 
 
