@@ -309,6 +309,10 @@ class Story (models.Model):
     def vote_count(self):
         return self.vote_up_count + self.vote_down_count
 
+    @property
+    def is_published(self):
+        return self.approved and not self.draft
+
     def get_vote_rating(self):
         return self.vote_up_count - self.vote_down_count
 
@@ -404,7 +408,7 @@ class Story (models.Model):
             self.save(update_fields=['approved', 'date'])
 
     def update_chapters_publication(self):
-        self.chapter_set.update(draft=self.draft or not self.approved)
+        self.chapter_set.update(draft=not self.is_published)
 
 
 class Chapter (models.Model):

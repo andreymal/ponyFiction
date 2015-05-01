@@ -63,6 +63,7 @@ class ChapterAdd(CreateView):
         chapter = form.save(commit=False)
         chapter.story = self.story
         chapter.order = (self.story.chapter_set.aggregate(o=Max('order'))['o'] or 0) + 1
+        chapter.draft = not self.story.is_published
         chapter.save()
         return redirect('chapter_edit', chapter.id)
     
