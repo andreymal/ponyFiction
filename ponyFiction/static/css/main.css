@@ -293,7 +293,7 @@ img.avatar-small, .character-list img {
 }
 
 .vote .upvote.unvoted:not(:hover) {
-    background: transparent url('../i/upvote-gray-24.png?1') no-repeat 0 0;
+    opacity: 0.3;
 }
 
 .vote .downvote {
@@ -304,7 +304,7 @@ img.avatar-small, .character-list img {
 }
 
 .vote .downvote.unvoted:not(:hover) {
-    background: transparent url('../i/downvote-gray-24.png?1') no-repeat 100% 0;
+    opacity: 0.3;
 }
 
 h1 .alert {
