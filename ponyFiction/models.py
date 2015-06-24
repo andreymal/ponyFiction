@@ -415,7 +415,6 @@ class Chapter (models.Model):
     """ Модель главы """
     
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
-    draft = models.BooleanField(default=True, verbose_name="Черновик")
     story = models.ForeignKey(Story, null=True, on_delete=models.CASCADE, verbose_name="Отношение к рассказу")
     mark = models.PositiveSmallIntegerField(default=0, verbose_name="Оценка")
     notes = models.TextField(blank=True, verbose_name="Заметки к главе")
