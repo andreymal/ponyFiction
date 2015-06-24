@@ -5,7 +5,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Count, Sum, F
 from django.utils.safestring import mark_safe
-from django.utils.datetime_safe import datetime
 from django.core.urlresolvers import reverse
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.cache import cache
@@ -22,7 +21,7 @@ username_field.validators = []
 
 class Author(AbstractUser):
     """ Модель автора """
-    
+
     bio = models.TextField(max_length=2048, blank=True, verbose_name="О себе")
     jabber = models.EmailField(max_length=75, blank=True, verbose_name="Jabber")
     skype = models.CharField(max_length=256, blank=True, verbose_name="Skype ID")
@@ -32,14 +31,14 @@ class Author(AbstractUser):
     excluded_categories = SeparatedValuesField(max_length=200, null=True, verbose_name="Скрытые категории")
     detail_view = models.BooleanField(default=False, verbose_name="Детальное отображение рассказов")
     nsfw = models.BooleanField(default=False, verbose_name="NSFW без предупреждения")
-    
+
     def __unicode__(self):
         return self.username
-    
+
     class Meta:
         verbose_name = "автор"
         verbose_name_plural = "авторы"
-        
+
     bio_as_html = filtered_html_property('bio', filter_html)
 
     def is_authenticated(self):
@@ -95,64 +94,64 @@ class CharacterGroup(models.Model):
 
     def __unicode__(self):
         return self.name
-    
+
     class Meta:
         verbose_name = "Группа персонажей"
         verbose_name_plural = "Группы персонажей"
-        
+
 class Character(models.Model):
     """ Модель персонажа """
-    
+
     description = models.TextField(max_length=4096, blank=True, verbose_name="Биография")
     name = models.CharField(max_length=256, verbose_name="Имя")
     group = models.ForeignKey(CharacterGroup, null=True, verbose_name="Группа персонажа")
-    
+
     def __unicode__(self):
         return self.name
-    
+
     class Meta:
         verbose_name = "персонаж"
         verbose_name_plural = "персонажи"
 
 class Category(models.Model):
     """ Модель категории """
-    
+
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
-    
+
     def __unicode__(self):
         return self.name
-    
+
     class Meta:
         verbose_name = "категория"
         verbose_name_plural = "категории"
 
 class Classifier(models.Model):
     """ Модель классификатора """
-   
+
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
-    
+
     def __unicode__(self):
         return self.name
-    
+
     class Meta:
         verbose_name = "классификатор"
         verbose_name_plural = "классификаторы"
 
 class Rating(models.Model):
     """ Модель рейтинга """
-    
+
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
-        
+
     def __unicode__(self):
         return self.name
-    
+
     class Meta:
         verbose_name = "рейтинг"
         verbose_name_plural = "рейтинги"
-    
+
 class BetaReading(models.Model):
     """ Промежуточная модель хранения взаимосвязей рассказов, бета-читателей и результатов вычитки """
 
@@ -173,7 +172,7 @@ class BetaReading(models.Model):
 
 class InSeriesPermissions(models.Model):
     """ Промежуточная модель хранения взаимосвязей рассказов, серий и разрешений на добавления рассказов в серии """
-    
+
     story = models.ForeignKey('Story', null=True, verbose_name="Рассказ")
     series = models.ForeignKey('Series', null=True, verbose_name="Серия")
     order = models.PositiveSmallIntegerField(default=1, verbose_name="Порядок рассказов в серии")
@@ -190,23 +189,23 @@ class CoAuthorsStory(models.Model):
     author = models.ForeignKey(Author, verbose_name="Автор")
     story = models.ForeignKey('Story', verbose_name="Рассказ")
     approved = models.BooleanField(default=False, verbose_name="Подтверждение")
-    
+
     def __unicode__(self):
         return '%s %s' % (self.author.username, self.story.title)
-    
+
 class CoAuthorsSeries(models.Model):
     """ Промежуточная модель хранения взаимосвязей авторства серий (включая соавторов) """
-    
+
     author = models.ForeignKey(Author, null=True, verbose_name="Автор")
     series = models.ForeignKey('Series', null=True, verbose_name="Серия")
     approved = models.BooleanField(default=False, verbose_name="Подтверждение")
-    
+
     def __unicode__(self):
         return '%s %s' % (self.author.username, self.series.title)
 
 class Series(models.Model):
     """ Модель серии """
-   
+
     authors = models.ManyToManyField(Author, through='CoAuthorsSeries', verbose_name=u"Авторы")
     cover = models.BooleanField(default=False, verbose_name="Наличие обложки")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
@@ -220,7 +219,7 @@ class Series(models.Model):
     title = models.CharField(max_length=512, verbose_name="Название")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     views = models.IntegerField(default=0, verbose_name="Количество просмотров")
-    
+
     class Meta:
         verbose_name = "серия"
         verbose_name_plural = "серии"
@@ -228,26 +227,26 @@ class Series(models.Model):
     def __unicode__(self):
         return self.title
 
-    
+
 class StoryQuerySet(models.query.QuerySet):
     @property
     def published(self):
         return self.filter(draft=False, approved=True)
-    
+
     @property
     def submitted(self):
         return self.filter(draft=False, approved=False)
-    
+
     @property
     def good(self):
         return self
-    
+
     def accessible(self, user):
         if user.is_staff:
             return self
         else:
             return self.filter(draft=False, approved=True)
-    
+
 class StoryManager(models.Manager):
     def get_query_set(self):
         return StoryQuerySet(self.model, using=self._db)
@@ -257,7 +256,7 @@ class StoryManager(models.Manager):
             return getattr(self.__class__, attr, *args, **kwargs)
         except AttributeError:
             return getattr(self.get_query_set(), attr, *args, **kwargs)
-    
+
 class Story (models.Model):
     """ Модель рассказа """
 
@@ -287,7 +286,7 @@ class Story (models.Model):
     vote_rating = models.FloatField(default = 0, editable = settings.DEBUG)
 
     objects = StoryManager()
-    
+
     class Meta:
         verbose_name = "рассказ"
         verbose_name_plural = "рассказы"
@@ -298,20 +297,16 @@ class Story (models.Model):
 
     def __unicode__(self):
         return u"[+%s/-%s] %s" % (self.vote_up_count, self.vote_down_count, self.title)
-    
+
     def get_vote_up_count(self):
         return self.vote.filter(plus=True).count()
-    
+
     def get_vote_down_count(self):
         return self.vote.filter(minus=True).count()
 
     @property
     def vote_count(self):
         return self.vote_up_count + self.vote_down_count
-
-    @property
-    def is_published(self):
-        return self.approved and not self.draft
 
     def get_vote_rating(self):
         return self.vote_up_count - self.vote_down_count
@@ -348,38 +343,38 @@ class Story (models.Model):
     @property
     def views(self):
         return self.story_views_set.aggregate(x=Count('author', distinct=True))['x']
-    
+
     # Количество слов
     @property
     def words(self):
         return self.chapter_set.aggregate(Sum('words'))['words__sum']
-    
+
     # Дельта количества последних добавленных комментариев с момента посещения юзером рассказа
     def last_comments_by_author(self, author):
         return self.story_activity_set.get(author_id=author).last_comments
-    
+
     # Проверка авторства
     def editable_by(self, author):
         return author.is_staff or self.is_author(author)
 
     def deletable_by(self, user):
         return self.is_author(user)
-    
+
     def is_author(self, author):
         return self.authors.filter(id=author.id).exists()
-    
+
     # Проверка возможности публикации
     @property
     def publishable(self):
         return True if self.words > settings.PUBLISH_SIZE_LIMIT else False
-    
+
     @property
     def nsfw(self):
         return True if self.rating.id == 1 else False
-    
+
     summary_as_html = filtered_html_property('summary', filter_html)
     notes_as_html = filtered_html_property('notes', filter_html)
-    
+
     def list_downloads(self):
         from .downloads import list_formats
         downloads = []
@@ -389,31 +384,14 @@ class Story (models.Model):
                 'url': f.url(self),
             })
         return downloads
-        
+
     def get_absolute_url(self):
         return reverse('story_view', kwargs = dict(pk = self.pk))
-
-    def set_draft(self, draft):
-        if self.draft != draft:
-            self.draft = draft
-            self.update_chapters_publication()
-            self.save(update_fields=['draft', 'approved'])
-
-    def set_approved(self, approved):
-        if self.approved != approved:
-            self.approved = approved
-            if approved:
-                self.date = datetime.now()
-            self.update_chapters_publication()
-            self.save(update_fields=['approved', 'date'])
-
-    def update_chapters_publication(self):
-        self.chapter_set.update(draft=not self.is_published)
 
 
 class Chapter (models.Model):
     """ Модель главы """
-    
+
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
     story = models.ForeignKey(Story, null=True, on_delete=models.CASCADE, verbose_name="Отношение к рассказу")
     mark = models.PositiveSmallIntegerField(default=0, verbose_name="Оценка")
@@ -423,11 +401,11 @@ class Chapter (models.Model):
     text = models.TextField(blank=True, verbose_name="Текст главы")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     words = models.IntegerField(default=0, verbose_name="Количество слов в главе")
-    
+
     class Meta:
         verbose_name = "глава"
         verbose_name_plural = "главы"
-    
+
     def __unicode__(self):
         return '[%s / %s] %s' % (self.id, self.order, self.title)
 
@@ -445,7 +423,7 @@ class Chapter (models.Model):
             return self.story.chapter_set.filter(order__gt=self.order)[0:1].get()
         except Chapter.DoesNotExist:
             return None
-        
+
     # Количество просмотров
     @property
     def views(self):
@@ -453,9 +431,9 @@ class Chapter (models.Model):
 
     def editable_by(self, author):
         return self.story.editable_by(author)
-    
+
     notes_as_html = filtered_html_property('notes', filter_html)
-    
+
     @property
     def text_as_html(self):
         try:
@@ -464,31 +442,31 @@ class Chapter (models.Model):
             return mark_safe(html_doc_to_string(doc)) 
         except Exception:
             return "#ERROR#"
-    
+
     def get_filtered_chapter_text(self):
         return filter_html(
             self.text,
             tags = settings.CHAPTER_ALLOWED_TAGS,
             attributes = settings.CHAPTER_ALLOWED_ATTRIBUTES,
         )
-    
+
 class Comment(models.Model):
     """ Модель комментария """
-    
+
     author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE, verbose_name="Автор комментария")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
     story = models.ForeignKey(Story, null=True, on_delete=models.CASCADE, verbose_name="Отношение к рассказу")
     text = models.TextField(verbose_name="Текст комментария")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     ip = models.GenericIPAddressField(default='0.0.0.0', verbose_name="IP комментатора")
-    
+
     class Meta:
         verbose_name = "комментарий"
         verbose_name_plural = "комментарии"
-    
+
     def __unicode__(self):
         return self.text
-    
+
     def editable_by(self, author):
         return author.is_staff
 
@@ -498,34 +476,34 @@ class Comment(models.Model):
         if len(text) > settings.BRIEF_COMMENT_LENGTH:
             text = text[:settings.BRIEF_COMMENT_LENGTH] + '...'
         return text
-    
+
     text_as_html = filtered_html_property('text', filter_html)
     brief_text_as_html = filtered_html_property('brief_text', filter_html)
 
     def get_absolute_url(self):
         return '%s#%s' % (self.story.get_absolute_url(), self.get_html_id())
-        
+
     def get_html_id(self):
         return 'comment_%s' % self.id
-        
+
 
 class Vote(models.Model):
     """ Модель голосований """
-    
+
     author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE, verbose_name="Автор голоса")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата голосования")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     ip = models.GenericIPAddressField(default='0.0.0.0', verbose_name="IP автора")
     plus = models.NullBooleanField(null=True, verbose_name="Плюс")
     minus = models.NullBooleanField(null=True, verbose_name="Минус")
-    
+
     class Meta:
         verbose_name = "голос"
         verbose_name_plural = "голоса"
-    
+
 class Favorites(models.Model):
     """ Модель избранного """
-    
+
     author = models.ForeignKey(Author, null=True, verbose_name="Автор")
     story = models.ForeignKey('Story', related_name="favorites_story_related_set", null=True, verbose_name="Рассказ")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления в избранное")
@@ -533,21 +511,21 @@ class Favorites(models.Model):
     class Meta:
         verbose_name = "избранное"
         verbose_name_plural = "избранное"
-    
+
     def __unicode__(self):
         return "%s: %s [%s]" % (self.author.username, self.story.title, self.date)    
 
 class Bookmark(models.Model):
     """ Модель закладок """
-    
+
     author = models.ForeignKey(Author, null=True, verbose_name="Автор")
     story = models.ForeignKey(Story, related_name="bookmarks_related_set", null=True, verbose_name="Рассказ")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления в список для прочтения")
-    
+
     class Meta:
         verbose_name = "закладка рассказа"
         verbose_name_plural = "закладки рассказов"
-    
+
     def __unicode__(self):
             return u"%s | %s" % (self.author.username, self.story.title)
 
@@ -559,18 +537,18 @@ class StoryView(models.Model):
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата просмотра")
     story = models.ForeignKey(Story, related_name="story_views_set", null=True, verbose_name="Рассказ")
     chapter = models.ForeignKey(Chapter, related_name="chapter_views_set", null=True, verbose_name="Глава рассказа")
-    
+
     class Meta:
         verbose_name = "просмотр"
         verbose_name_plural = "просмотры"
-    
+
     def __unicode__(self):
         return "%s: %s" % (self.author.username, self.story.title)
 
 
 class Activity(models.Model):
     """ Модель отслеживания активности """
-    
+
     author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE, verbose_name="Автор просмотра")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата последнего просмотра автором")
     story = models.ForeignKey(Story, related_name="story_activity_set", null=True, verbose_name="Рассказ")
@@ -578,11 +556,11 @@ class Activity(models.Model):
     last_comments = models.IntegerField(default=0, verbose_name="Последнее количество комментариев")
     last_vote_up = models.IntegerField(default=0, verbose_name="Последнее количество голосов 'За'")
     last_vote_down = models.IntegerField(default=0, verbose_name="Последнее количество голосов 'Против'")
-    
+
     class Meta:
         verbose_name = "активность"
         verbose_name_plural = "активность"
-    
+
     def __unicode__(self):
         return "%s: %s [v:%s c:%s (+):%s (-):%s]" % (self.author.username, self.story.title, self.last_views, self.last_comments, self.last_vote_up, self.last_vote_down)
 

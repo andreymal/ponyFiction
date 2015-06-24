@@ -49,7 +49,7 @@ class ChapterAdd(CreateView):
     template_name = 'chapter_work.html'
     initial={'button_submit': u'Добавить'}
     story = None
-    
+
     @method_decorator(login_required)
     @method_decorator(csrf_protect)
     def dispatch(self, request, *args, **kwargs):
@@ -58,15 +58,14 @@ class ChapterAdd(CreateView):
             return CreateView.dispatch(self, request, *args, **kwargs)
         else:
             raise PermissionDenied
-    
+
     def form_valid(self, form):
         chapter = form.save(commit=False)
         chapter.story = self.story
         chapter.order = (self.story.chapter_set.aggregate(o=Max('order'))['o'] or 0) + 1
-        chapter.draft = not self.story.is_published
         chapter.save()
         return redirect('chapter_edit', chapter.id)
-    
+
     def get_context_data(self, **kwargs):
         context = super(ChapterAdd, self).get_context_data(**kwargs)
         extra_context = {'page_title': u'Добавить новую главу', 'story': self.story}
@@ -79,19 +78,19 @@ class ChapterEdit(UpdateView):
     template_name = 'chapter_work.html'
     initial={'button_submit': u'Сохранить изменения'}
     chapter = None
-    
+
     @method_decorator(login_required)
     @method_decorator(csrf_protect)
     def dispatch(self, request, *args, **kwargs):
         return UpdateView.dispatch(self, request, *args, **kwargs)
-    
+
     def get_object(self, queryset=None):
         self.chapter = UpdateView.get_object(self, queryset=queryset)
         if self.chapter.story.editable_by(self.request.user):
             return self.chapter
         else:
             raise PermissionDenied
-    
+
     def form_valid(self, form):
         self.chapter = form.save()
         return redirect('chapter_edit', self.chapter.id)
@@ -109,12 +108,12 @@ class ChapterDelete(DeleteView):
     story = None
     chapter_id = None
     template_name = 'chapter_confirm_delete.html'
-    
+
     @method_decorator(login_required)
     @method_decorator(csrf_protect)
     def dispatch(self, request, *args, **kwargs):
         return DeleteView.dispatch(self, request, *args, **kwargs)
-    
+
     def get_object(self, queryset=None):
         self.chapter = DeleteView.get_object(self, queryset=queryset)
         self.story = self.chapter.story
@@ -123,7 +122,7 @@ class ChapterDelete(DeleteView):
             return self.chapter
         else:
             raise PermissionDenied
-    
+
     def delete(self, request, *args, **kwargs):
         self.chapter = self.get_object()
         self.story.chapter_set.filter(order__gt=self.chapter.order).update(order=F('order')-1)
@@ -131,7 +130,7 @@ class ChapterDelete(DeleteView):
             invalidate_obj(chapter)
         self.chapter.delete()
         return redirect('story_edit', self.story.id)
-    
+
     def get_context_data(self, **kwargs):
         context = super(ChapterDelete, self).get_context_data(**kwargs)
         extra_context = {'page_title': u'Подтверждение удаления главы', 'story': self.story, 'chapter': self.chapter}
