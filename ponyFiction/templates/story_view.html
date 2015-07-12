@@ -79,7 +79,11 @@
 				{% include 'includes/comments_pagination_story.html' %}
 	      	</div>
       	{% endif %}
-      	<a href="{% url 'comment_add' story.id %}" class="btn btn-primary comment_add">Добавить комментарий</a>
+	{% if user.is_active %}
+	    	<a href="{% url 'comment_add' story.id %}" class="btn btn-primary comment_add">Добавить комментарий</a>
+	{% elif user.is_authenticated %}
+		<h3 id="banned">К сожалению, Вы не можете добавлять комментарии</h3>
+	{% endif %}
       	<!-- Вывод комментариев: конец -->
     </div>
 </div>

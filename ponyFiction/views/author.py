@@ -88,6 +88,7 @@ def author_edit(request):
 @csrf_protect
 @require_POST
 def author_approve(request, user_id):
+    raise PermissionDenied  # TODO: wtf is that?
     if request.user.is_staff:
         author = get_object_or_404(Author, pk=user_id)
         if author.approved:
@@ -98,3 +99,19 @@ def author_approve(request, user_id):
         return redirect('author_overview', user_id)
     else:
         raise PermissionDenied
+
+
+@login_required
+@csrf_protect
+def author_ban(request, user_id):
+    if request.user.is_staff:
+        author = get_object_or_404(Author, pk=user_id)
+        if author.is_active:
+            author.is_active = False
+        else:
+            author.is_active = True
+        author.save(update_fields=['is_active'])
+        return redirect('author_overview', user_id)
+    else:
+        raise PermissionDenied
+

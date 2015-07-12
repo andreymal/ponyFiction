@@ -775,6 +775,7 @@ var stuff = {
             }
         });
     },
+
     // Обработка состояний BootStrap Elements
     bootstrap : function() {
         var group = $(this);

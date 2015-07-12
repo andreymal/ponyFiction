@@ -1341,7 +1341,7 @@ a.btn {
 		padding: 6px 8px;
 	}
 	.story-panel {
-		padding: 10px 0 10px 12px;
+        padding: 10px 10px 10px 12px;
 	}
 	.chapter-text {
 		width: 100% !important;

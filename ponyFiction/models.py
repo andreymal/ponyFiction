@@ -239,13 +239,26 @@ class StoryQuerySet(models.query.QuerySet):
 
     @property
     def good(self):
+        # self.annotate(votes_up=Count('vote__plus'), votes_down=Count('vote__minus'), votes_all=Count('vote')).exclude(votes_all__gte=20, votes_down__gt=F('votes_all') * 0.5)
         return self
+
+    @property
+    def last_week(self):
+        return self.filter(date__gte=self.last)
 
     def accessible(self, user):
         if user.is_staff:
             return self
         else:
             return self.filter(draft=False, approved=True)
+
+        # from datetime import date, timedelta
+        # last = date.today() - timedelta(weeks=1)
+        # All NOT drafts AND (already approved OR (submitted at last 1 week ago AND NOT approved yet) ) stories
+        # default_queryset = self.filter(Q(date__lte=last, approved=False)|Q(approved=True), draft=False)
+        # if not user.is_authenticated():
+        #     return default_queryset
+
 
 class StoryManager(models.Manager):
     def get_query_set(self):

@@ -61,6 +61,7 @@ urlpatterns += patterns('',
     url(r'^accounts/profile/comments/page/(?P<comments_page>\d+)/$', author.author_info, {'user_id': None}, name='author_dashboard_comments_paged'),
     url(r'^accounts/profile/edit/$', author.author_edit, name='author_profile_edit'),
     url(r'^accounts/(?P<user_id>\d+)/approve/$', author.author_approve, name='author_approve'),
+    url(r'^accounts/(?P<user_id>\d+)/ban/$', author.author_ban, name='author_ban'),
 
     url(r'^accounts/registration/$',
         register,

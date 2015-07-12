@@ -15,7 +15,11 @@
 	<div class="span8">
 		<h1 id="author-name">
 			<img src="{{ author.get_avatar_url }}" width="42" title="{{ author.username }}" alt="{{ author.username }}"/>
-			{% if author.story_set.count > 0 %}Кабинет автора{% else %}Кабинет потенциального автора{% endif %}
+			{{ author.username }}
+			{#{% if author.story_set.count > 0 %}Кабинет автора{% else %}Кабинет потенциального автора{% endif %}#}
+			{% if not author.is_active %}
+				<sup id="banned">Read-only</sup>
+			{% endif %}
 		</h1>
 		<p>
 			{% if author.story_set.count > 0 %}Вы уже написали <b>{{ author.story_set.count|rupluralize:'рассказ,рассказа,рассказов' }}</b>{% else %}Вы пока ничего не написали{% endif %}.
