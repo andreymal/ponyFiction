@@ -109,6 +109,7 @@ urlpatterns += patterns('',
          },
         ),
     url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^stories_auth/', include('stories_migration.urls')),
 )
 # AJAX
 urlpatterns += patterns('', (r'^ajax/', include('ponyFiction.ajax.urls')))

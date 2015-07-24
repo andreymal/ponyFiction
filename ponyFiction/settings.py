@@ -69,6 +69,7 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     # 'django.contrib.messages',
     'django.contrib.staticfiles',
+    'stories_migration',
     'ponyFiction',
     'django.contrib.admin',
     'ponyFiction.apis.captcha',
