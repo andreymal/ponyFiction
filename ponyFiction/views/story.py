@@ -17,6 +17,7 @@ from ponyFiction.forms.story import StoryForm
 from ponyFiction.models import Story, Vote, CoAuthorsStory, Author, StoryEditLogItem
 from cacheops import invalidate_obj
 from ponyFiction.utils.misc import get_object_or_none
+from ponyFiction import tasks
 
 
 def get_story(request, pk):
@@ -168,6 +169,7 @@ class StoryAdd(CreateView):
     def form_valid(self, form):
         story = form.save()
         CoAuthorsStory.objects.create(story=story, author=self.request.user, approved=True)
+        tasks.sphinx_update_story.delay(story.id, ())
         return redirect('story_edit', story.id)
     
     def get_context_data(self, **kwargs):
@@ -200,6 +202,7 @@ class StoryEdit(UpdateView):
             story = story,
             data = form.cleaned_data,
         )
+        tasks.sphinx_update_story.delay(story.id, ())
         return redirect('story_edit', story.id)
     
     def get_object(self, queryset=None):

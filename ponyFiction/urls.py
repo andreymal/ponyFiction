@@ -8,7 +8,7 @@ from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 from ponyFiction import feeds
 from ponyFiction.forms.register import AuthorRegistrationForm
-from ponyFiction.views import author
+from ponyFiction.views import search, author
 from ponyFiction.views.chapter import ChapterAdd, ChapterEdit, ChapterDelete
 from ponyFiction.views.comment import CommentEdit, CommentAdd, CommentDelete
 from ponyFiction.views.index import index
@@ -24,8 +24,8 @@ urlpatterns = patterns('', url(r'^$', index, name='index'))
 urlpatterns += patterns('', url(r'^admin/', include(admin.site.urls)))
 # Поиск
 urlpatterns += patterns('',
-    url(r'^search/$', index, name='search'),
-    url(r'^search/(?P<search_type>\w+)/(?P<search_id>\d+)/$', index, name='search_simple')
+    url(r'^search/$', search.search_main, name='search'),
+    url(r'^search/(?P<search_type>\w+)/(?P<search_id>\d+)/$', search.search_simple, name='search_simple')
 )
 # Избранное
 urlpatterns += patterns('',

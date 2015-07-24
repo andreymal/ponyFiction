@@ -21,3 +21,6 @@ SECRET_KEY = '6^j694%m%^etq6@$_d&amp;1h$fv4z4-u!#@+*m233sc-39xdac3du'
 #     'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
 #     'LOCATION': '127.0.0.1:11211',
 # }
+
+# CELERY_ALWAYS_EAGER = False
+# SPHINX_DISABLED = False

@@ -132,20 +132,24 @@ PASSWORD_HASHERS = (
 
 COMPRESS_HTML = True
 
+SPHINX_DISABLED = False
 SPHINX_CONFIG = {
-    'server' : ('/tmp/sphinx.socket',),
-    'retries_count' : 5,
-    'retries_delay' : 1,
-    'timeout' : 10,
-    'match_mode' : 0,  # SPH_MATCH_ALL,
-    'rank_mode' : 0,  # SPH_RANK_SPH04,
-    'number' : 10,
-    'max' : 1000,
-    'cutoff' : 1000,
+    'connection_params' : {'unix_socket': '/tmp/sphinx_fanfics.socket', 'charset': 'utf8'},
     'excerpts_opts' : {'chunk_separator' : '…', 'limit' : 2048, 'around' : 10, 'html_strip_mode' : 'strip'},
+
     'weights_stories' : {'title' : 100, 'summary' : 50, 'notes' : 25, 'username': 150},
-    'weights_chapters' : {'text' : 100, 'title' : 50, 'notes' : 25}
-    }
+    'weights_chapters' : {'text' : 100, 'title' : 50, 'notes' : 25},
+
+    'limit': 10,
+    'select_options': {
+        'ranker': 'sph04',
+        'cutoff': 50000,
+        'max_matches': 1000,
+        'retry_count': 5,
+        'retry_delay': 1,
+        'max_query_time': 10
+    },
+}
 
 COMMENTS_COUNT = {
     'page' : 50,
@@ -226,6 +230,11 @@ STORY_DOWNLOAD_FORMATS = reversed((
     # 'ponyFiction.downloads.txt.TXTDownload',
     # 'ponyFiction.downloads.txt.TXT_CP1251Download',
 ))
+
+CELERY_ALWAYS_EAGER = False
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json', 'msgpack', 'yaml']
+BROKER_URL = 'redis://localhost:6379/0'
 
 
 CACHEOPS_REDIS = {

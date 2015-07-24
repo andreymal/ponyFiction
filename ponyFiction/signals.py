@@ -6,6 +6,7 @@ from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import Signal, receiver
 
 from ponyFiction.models import Chapter, Story, Author, Activity, StoryView, Vote, Comment
+from ponyFiction import tasks
 
 
 story_visited = Signal(providing_args=['story'])
@@ -66,3 +67,35 @@ def story_views_save(sender, instance, **kwargs):
 @receiver(post_save, sender=Vote)
 def votes_update(sender, instance, rating_only=False, **kwargs):
     instance.story.update_rating(rating_only=rating_only)
+
+
+@receiver(post_save, sender=Story)
+def sphinx_update_story(sender, instance, **kw):
+    if not kw.get('update_fields'):
+        return  # см. views/story.py
+    tasks.sphinx_update_story.delay(instance.id, list(kw.get('update_fields')))
+
+
+@receiver(post_save, sender=Chapter)
+def sphinx_update_chapter(sender, instance, **kw):
+    tasks.sphinx_update_chapter.delay(instance.id)
+
+
+@receiver(post_save, sender=Comment)
+def sphinx_update_comments_count(sender, instance, **kw):
+    tasks.sphinx_update_comments_count.delay(instance.story_id)
+
+
+@receiver(post_delete, sender=Comment)
+def sphinx_delete_comments_count(sender, instance, **kw):
+    tasks.sphinx_update_comments_count.delay(instance.story_id)
+
+
+@receiver(post_delete, sender=Story)
+def sphinx_delete_story(sender, instance, **kw):
+    tasks.sphinx_delete_story.delay(instance.id)
+
+
+@receiver(post_delete, sender=Chapter)
+def sphinx_delete_chapter(sender, instance, **kw):
+    tasks.sphinx_delete_chapter.delay(instance.story_id, instance.id)

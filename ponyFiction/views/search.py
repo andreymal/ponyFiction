@@ -1,146 +1,119 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+from math import ceil
+
 from django.http import Http404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
-from ponyFiction import settings as settings
-from ponyFiction.apis.sphinxapi import SphinxClient, SPH_SORT_EXTENDED
-from ponyFiction.forms.search import SearchForm
-from ponyFiction.models import Story, Chapter
-from ponyFiction.utils.misc import pagination_ranges, SetBoolSphinxFilter, SetObjSphinxFilter, SetRangeSphinxFilter
 
-sort_types = {1: "id DESC, ", 2: "size DESC, ", 3: "mark DESC, ", 4: "comments DESC, "}
+from ponyFiction import settings as settings
+from ponyFiction.forms.search import SearchForm
+from ponyFiction.models import Story, Chapter, Author
+from ponyFiction.utils.misc import pagination_ranges
+from ponyFiction.sphinx import search_stories, search_chapters, SphinxError
 
 def search_main(request):
-    if request.method == 'GET':
+    if request.method not in ('HEAD', 'OPTIONS', 'GET'):
+        return redirect('search')
+
+    if settings.SPHINX_DISABLED:
+        return render(request, 'search_disabled.html')
+
+    if False and not request.GET:
         return search_form(request)
-    elif request.method == 'POST':
-        # Создаваем форму с данных POST
-        postform = SearchForm(request.POST)
-        return search_action(request, postform)
-    else:
-        raise Http404
+
+    postform = SearchForm(request.GET)
+    return search_action(request, postform)
 
 
-@csrf_protect
 def search_form(request):
     form = SearchForm()
     data = {'form': form, 'page_title': 'Поиск рассказов'}
     return render(request, 'search.html', data)
 
 
-@csrf_protect
 def search_action(request, postform):
-    from math import ceil
-    data = {'page_title': 'Результаты поиска'}
-    # Новый словарь данных для иницаализации формы
-    initial_data = {}
-    # Список текстовых сниппетов
-    excerpts = []
-    # Список результата поиска глав
-    chapters = []
-    # Если форма правильная, работаем дальше, если нет, отображаем снова.
-    if postform.is_valid():
-        search_type = postform.cleaned_data['search_type']
-        sort_type = postform.cleaned_data['sort_type']
-        data['search_type'] = search_type
-        initial_data['search_type'] = int(search_type)
-    else:
-        return redirect('search')
-    # Текущая страница поиска
+    if not postform.is_valid():
+        data = {'form': postform, 'page_title': 'Поиск рассказов'}
+        return render(request, 'search.html', data)
+
     try:
-        page_current = int(request.POST['page_current']) if request.POST['page_current'] else 1
+        page_current = int(request.GET['page']) if request.GET['page'] else 1
     except:
         page_current = 1
-    # Смещение поиска
-    offset = (page_current - 1) * settings.SPHINX_CONFIG['number']
-    # Настройка параметров сервера
-    sphinx = SphinxClient()
-    sphinx.SetServer(*settings.SPHINX_CONFIG['server'])
-    sphinx.SetRetries(settings.SPHINX_CONFIG['retries_count'], settings.SPHINX_CONFIG['retries_delay'])
-    sphinx.SetConnectTimeout(float(settings.SPHINX_CONFIG['timeout']))
-    sphinx.SetMatchMode(settings.SPHINX_CONFIG['match_mode'])
-    sphinx.SetRankingMode(settings.SPHINX_CONFIG['rank_mode'])
-    # Лимиты поиска
-    sphinx.SetLimits(offset, settings.SPHINX_CONFIG['number'], settings.SPHINX_CONFIG['max'], settings.SPHINX_CONFIG['cutoff'])
-    sphinx.SetSelect('id')
-    # Сортировка
-    sort_type_string = ""
-    for sort_id in sort_type:
-        sort_type_string = sort_type_string + sort_types[int(sort_id)]
-    sort_type_string = sort_type_string + "@weight DESC, @id DESC"
-    sphinx.SetSortMode(SPH_SORT_EXTENDED, sort_type_string)
-    # Словарь результатов
-    result = []
-    initial_data['search_query'] = postform.cleaned_data['search_query']
+
+    query = postform.cleaned_data['q']
+    limit = ((page_current - 1) * settings.SPHINX_CONFIG['limit'], settings.SPHINX_CONFIG['limit'])
+    search_type = postform.cleaned_data['type']
+    sort_type = postform.cleaned_data['sort']
+
+    data = {'page_title': query.strip() or 'Результаты поиска', 'search_type': search_type}
+
     if search_type == '0':
-        # Установка весов для полей рассказов
-        sphinx.SetFieldWeights(settings.SPHINX_CONFIG['weights_stories'])
-        # Фильтрация
-        initial_data.update(SetObjSphinxFilter(sphinx, 'category_id', 'categories_select', postform))
-        initial_data.update(SetObjSphinxFilter(sphinx, 'classifier_id', 'classifications_select', postform))
-        initial_data.update(SetObjSphinxFilter(sphinx, 'character_id', 'characters_select', postform)) 
-        initial_data.update(SetObjSphinxFilter(sphinx, 'rating_id', 'ratings_select', postform))
-        initial_data.update(SetRangeSphinxFilter(sphinx, 'size', 'search_min_size', 'search_max_size', postform))
-        initial_data.update(SetBoolSphinxFilter(sphinx, 'original', 'originals_select', postform))
-        initial_data.update(SetBoolSphinxFilter(sphinx, 'finished', 'finished_select', postform))
-        initial_data.update(SetBoolSphinxFilter(sphinx, 'freezed', 'freezed_select', postform))
-        # Запрос поиска зассказов
-        raw_result = sphinx.Query(postform.cleaned_data['search_query'], 'stories_main')
-        if raw_result is None:
-            raise Exception("Sphinx error: %s" % sphinx.GetLastError())
-        # Обработка результатов поиска рассказов
-        for res in raw_result['matches']:
-            try:
-                story = Story.objects.get(pk=res['id'])
-            except Story.DoesNotExist:
-                pass
-            else:
-                result.append(story)
+        try:
+            raw_result, result = search_stories(
+                query,
+                limit,
+                int(sort_type),
+                only_published=not request.user.is_authenticated() or not request.user.is_staff,
+                character=postform.cleaned_data['char'],
+                classifier=postform.cleaned_data['cls'],
+                category=postform.cleaned_data['genre'],
+                rating_id=postform.cleaned_data['rating'],
+                original=postform.cleaned_data['original'],
+                finished=postform.cleaned_data['finished'],
+                freezed=postform.cleaned_data['freezed'],
+                min_words=postform.cleaned_data['min_words'],
+                max_words=postform.cleaned_data['max_words']
+            )
+        except SphinxError as exc:
+            data = {'form': postform, 'page_title': 'Поиск рассказов', 'error': 'Кажется, есть синтаксическая ошибка в запросе'}
+            if settings.DEBUG or request.user.is_superuser:
+                data['error'] += ': ' + str(exc)
+            return render(request, 'search.html', data)
+        
     else:
-        # Установка весов для полей глав
-        sphinx.SetFieldWeights(settings.SPHINX_CONFIG['weights_chapters'])
-        # Запрос поиска глав
-        raw_result = sphinx.Query(postform.cleaned_data['search_query'], 'chapters_main')
-        # Обработка результатов поиска глав и постройка сниппетов текста
-        if raw_result is None:
-            raise Exception("Sphinx error: %s" % sphinx.GetLastError())
-        for res in raw_result['matches']:
-            try:
-                chapter = Chapter.objects.get(pk=res['id'])
-            except Chapter.DoesNotExist:
-                pass
-            else:
-                text = []
-                text.append(chapter.text)
-                excerpt = sphinx.BuildExcerpts(text, 'chapters_main', postform.cleaned_data['search_query'], settings.SPHINX_CONFIG['excerpts_opts'])
-                excerpts.append(excerpt[0] if excerpt else '')
-                chapters.append(chapter)
-        result = zip(chapters, excerpts)
-    # Пагинация
-    pagination = pagination_ranges(num_pages=int(ceil(raw_result['total']/10.0)), page=page_current)
-    # Создаем форму для рендера с данными поиска
+        try:
+            raw_result, result = search_chapters(
+                query,
+                limit,
+                int(sort_type),
+                only_published=not request.user.is_authenticated() or not request.user.is_staff,
+            )
+        except SphinxError as exc:
+            data = {'form': postform, 'page_title': 'Поиск рассказов', 'error': 'Кажется, есть синтаксическая ошибка в запросе'}
+            if settings.DEBUG or request.user.is_superuser:
+                data['error'] += ': ' + str(exc)
+            return render(request, 'search.html', data)
+
+    num_pages = int(ceil(int(raw_result['total'] or 0) / float(settings.SPHINX_CONFIG['limit'])))
+    pagination = pagination_ranges(num_pages=num_pages, page=page_current)
+
     data['form'] = postform
-    # Добавляем данные
     data['pagination'] = pagination
-    data['total'] = raw_result['total']
+    data['total'] = int(raw_result['total_found'])
     data['result'] = result
-    # Закрываем за собой сокет
-    sphinx.Close()
     return render(request, 'search.html', data)
 
 
 def search_simple(request, search_type, search_id):
+    if settings.SPHINX_DISABLED:
+        return render(request, 'search_disabled.html')
+
+    bound_data = {'type': 0, 'sort': 1}
     if search_type == 'character':
-        bound_data = {'characters_select': [search_id], 'search_type': 0}
+        bound_data['char'] = [search_id]
     elif search_type == 'category':
-        bound_data = {'categories_select': [search_id], 'search_type': 0}
+        bound_data['genre'] = [search_id]
     elif search_type == 'classifier':
-        bound_data = {'classifications_select': [search_id], 'search_type': 0}
+        bound_data['cls'] = [search_id]
     elif search_type == 'rating':
-        bound_data = {'ratings_select': [search_id], 'search_type': 0}
+        bound_data['rating'] = [search_id]
     else:
         return search_form(request)
+
     postform = SearchForm(bound_data)
     if postform.is_valid():
         return search_action(request, postform)

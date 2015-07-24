@@ -23,7 +23,7 @@ class SearchForm(Form):
         'container_attrs': {'class': 'character-item'}
     }
     # Строка поиска
-    search_query = CharField(
+    q = CharField(
         required=False,
         widget=TextInput(
             attrs={
@@ -37,7 +37,7 @@ class SearchForm(Form):
         max_length=128,
     )
     # Минимальный размер
-    search_min_size = IntegerField(
+    min_words = IntegerField(
         required=False,
         widget=NumberInput(
             attrs={
@@ -47,12 +47,11 @@ class SearchForm(Form):
                 'maxlength': 8,
                 'min': 0,
                 'max': 99999000,
-                'step': 1000,
             }
         ),
     )
     # Максимальный размер
-    search_max_size = IntegerField(
+    max_words = IntegerField(
         required=False,
         widget=NumberInput(
             attrs={
@@ -62,12 +61,11 @@ class SearchForm(Form):
                 'maxlength': 8,
                 'min': 0,
                 'max': 99999000,
-                'step': 1000,
             }
         ),
     )
     # Жанры
-    categories_select = ModelMultipleChoiceField(
+    genre = ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         required=False,
         widget=StoriesCheckboxSelectMultiple(
@@ -78,38 +76,38 @@ class SearchForm(Form):
         ),
     )
     # Персонажи
-    characters_select = GroupedModelChoiceField(
+    char = GroupedModelChoiceField(
         required=False,
-        queryset=Character.objects.all(),
+        queryset=Character.objects.all().prefetch_related('group'),
         group_by_field='group',
         widget=StoriesImgSelect(attrs=img_attrs),
     )
     # Оригинал/перевод
-    originals_select = MultipleChoiceField(
+    original = MultipleChoiceField(
         choices=[(0, 'Перевод'), (1, 'Оригинал')],
         required=False,
         widget=StoriesButtons(attrs=checkbox_attrs),
     )
     # Статус рассказа
-    finished_select = MultipleChoiceField(
+    finished = MultipleChoiceField(
         choices=[(0, 'Не завершен'), (1, 'Завершен')],
         required=False,
         widget=StoriesButtons(attrs=checkbox_attrs),
     )
     # Активность рассказа
-    freezed_select = MultipleChoiceField(
+    freezed = MultipleChoiceField(
         choices=[(0, 'Активен'), (1, 'Заморожен')],
         required=False,
         widget=StoriesButtons(attrs=checkbox_attrs),
     )
     # Рейтинги
-    ratings_select = ModelMultipleChoiceField(
+    rating = ModelMultipleChoiceField(
         queryset=Rating.objects.all(),
         required=False,
         widget=StoriesButtons(attrs=checkbox_attrs),
     )
     # События
-    classifications_select = ModelMultipleChoiceField(
+    cls = ModelMultipleChoiceField(
         queryset=Classifier.objects.all(),
         required=False,
         widget=StoriesCheckboxSelectMultiple(attrs={'label_attrs': ['checkbox', 'inline']}),
@@ -154,17 +152,12 @@ class SearchForm(Form):
         ),
     )
     # Сортировка
-    sort_type = MultipleChoiceField(
-        choices=[(1, 'По дате'), (2, 'По размеру'), (3, 'По рейтингу'), (4, 'По комментам')],
-        required=False,
-        widget=StoriesButtons(attrs=checkbox_attrs),
+    sort = ChoiceField(
+        choices=[(0, 'По релевантности'), (1, 'По дате'), (2, 'По размеру'), (4, 'По комментам')],
+        required=True,
+        widget=StoriesRadioButtons(attrs=radio_attrs),
     )
-    # bla
-    button_submit = Field(
-        required=False,
-        widget=ServiceButtonWidget(attrs={'class': 'btn btn-primary'}),
-        initial='Искать!',
-    )
+
     button_reset = Field(
         required=False,
         widget=StoriesServiceInput(
@@ -177,7 +170,7 @@ class SearchForm(Form):
         ),
     )
     # Тип поиска
-    search_type = ChoiceField(
+    type = ChoiceField(
         choices=[(0, 'По описанию'), (1, 'По главам')],
         required=True,
         widget=StoriesRadioButtons(attrs=radio_attrs),
