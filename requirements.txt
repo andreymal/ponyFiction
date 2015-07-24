@@ -12,3 +12,5 @@ redis==2.10.3
 simplejson==3.7.3
 pylint-django>=0.6.1
 pyinotify
+# TODO: использовать, когда починят https://github.com/praekelt/django-recaptcha/issues/78
+# django-recaptcha>=1.0.4

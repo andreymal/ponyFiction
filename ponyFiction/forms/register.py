@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# from ponyFiction.apis.recaptcha.fields import ReCaptchaField
+# from captcha.fields import ReCaptchaField
+from ponyFiction.apis.captcha.fields import ReCaptchaField
 from registration.forms import RegistrationFormUniqueEmail
 from django.forms import CharField, EmailField, PasswordInput, RegexField, TextInput
 
@@ -36,9 +37,8 @@ class AuthorRegistrationForm(RegistrationFormUniqueEmail):
         label="Пароль (опять)",
         help_text='Повторите пароль, чтобы не забыть',
         )
-    # recaptcha = ReCaptchaField(
-    #     label="Капча",
-    #     help_text='Введите два слова выше. Если трудно разобрать, обновите.',
-    #     error_messages={'captcha_invalid': 'Это какая-то неправильная капча. Пожалуйста, введите снова.'}
-    #     )
+    recaptcha = ReCaptchaField(
+        label="Капча",
+        error_messages={'captcha_invalid': 'Это какая-то неправильная капча. Пожалуйста, введите снова.'}
+        )
 

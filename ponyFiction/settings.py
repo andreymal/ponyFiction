@@ -71,6 +71,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'ponyFiction',
     'django.contrib.admin',
+    'ponyFiction.apis.captcha',
     'registration',
 )
 
@@ -172,6 +173,10 @@ DEFAULT_FROM_EMAIL = 'noreply@stories.everypony.ru'
 
 RECAPTCHA_PUBLIC_KEY = '6LfbstoSAAAAAAcFIteoZTld24mt3s6_sODZnc8J'
 RECAPTCHA_PRIVATE_KEY = '6LfbstoSAAAAAHHN9jYw9Lp9lsunQCILAyAYgoxz'
+RECAPTCHA_USE_SSL = True
+NOCAPTCHA = True
+
+
 ALLOWED_TAGS = [
     'b', 'i', 'strong', 'em', 's', 'u',
     'p', 'br', 'hr',
