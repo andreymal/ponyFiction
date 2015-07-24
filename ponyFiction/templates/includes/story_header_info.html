@@ -1,4 +1,6 @@
 {% load static %}
-<span style="display: inline-block;">
-    {% for img in story.iter_horseshoe_images %}<img src="{% static img %}">{% if '-r' in img %} {% endif %}{% endfor %}
+{% load humanize %}
+<span class="starblock" title="{% if story.can_show_stars %}Средняя оценка: {{ story.vote_average|floatformat:1 }}{% else %}Голосов ещё мало{% endif %}">
+    {# % for img in story.iter_horseshoe_images %}<img src="{% static img %}">{% if '-r' in img %} {% endif %}{% endfor % #}
+    {% for star in story.stars %}<span class="starvote star-{{ star }}"></span>{% endfor %}
 </span>

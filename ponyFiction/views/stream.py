@@ -22,7 +22,7 @@ class TopStories(StreamStories):
     view_name = 'top_stories'
 
     def get_queryset(self):
-        return Story.objects.published.order_by('-vote_rating')
+        return Story.objects.published.filter(vote_total__gt=settings.STARS_MINIMUM_VOTES).order_by('-vote_average')
 
 
 class StreamChapters(ObjectList):

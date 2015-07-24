@@ -67,6 +67,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.flatpages',
+    'django.contrib.humanize',
     # 'django.contrib.messages',
     'django.contrib.staticfiles',
     'stories_migration',
@@ -217,6 +218,7 @@ CACHES = {
 }
 
 PUBLISH_SIZE_LIMIT = 1000
+STARS_MINIMUM_VOTES = 2
 
 STORY_DOWNLOAD_FORMATS = reversed((
     'ponyFiction.downloads.fb2.FB2Download',

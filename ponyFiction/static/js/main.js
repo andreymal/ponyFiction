@@ -250,7 +250,7 @@ var ajax = {
          *                int ID рассказа
          */
         favorite : function(response) {
-            if (pages.story_view.regex.test(window.location.pathname)) {
+            if (pages.story_view.regex.test(window.location.pathname) || pages.chapter_view.regex.test(window.location.pathname)) {
                 var btn = $('.story_favorite');
                 var msg_container = $('.story_favorite ~ .story_favorite_msg');
             } else {
@@ -284,9 +284,30 @@ var ajax = {
             $.ajax({
                 dataType : 'json',
                 success : function(response) {
-                    //$('#vote-up').text(response[0]);
-                    //$('#vote-down').text(response[1]);
                     $('#vote-msg').html('<span class="alert alert-success">Ваш голос учтен!</span>');
+                    $('#vote-msg span').animate({
+                        opacity : 0.1
+                    }, 3500, function() {
+                        $('#vote-msg span').remove();
+                    });
+
+                    $('#stars').html(response['html']);
+                    var value = parseInt(response['value']);
+                    $('.vote-area .star-button').each(function(i){
+                        if(i + 1 <= value){
+                            $(this).removeClass('star-0').addClass('star-5');
+                        }else{
+                            $(this).removeClass('star-5').addClass('star-0');
+                        }
+                    })
+                },
+                error : function(response) {
+                    try {
+                        var data = JSON.parse(response.responseText);
+                    }catch(e){
+                        var data = {};
+                    }
+                    $('#vote-msg').html('<span class="alert alert-warning">' + (data.error || 'Ошибка') + '</span>');
                     $('#vote-msg span').animate({
                         opacity : 0.1
                     }, 3500, function() {
@@ -443,7 +464,7 @@ var listeners = {
         },
         // Голосование
         vote : function() {
-            var buttons = $('#vote-up, #vote-down').click(function(event) {
+            var buttons = $('.vote-area .star-button').click(function(event) {
                 event.stopImmediatePropagation();
                 event.preventDefault();
                 var url = '/ajax' + $(this).attr('href');
@@ -593,6 +614,9 @@ var pages = {
             stuff.panel();
             if ($('#wrapper').hasClass('nsfw')) {
                 $('#nsfwModal').modal();
+            }
+            for ( var listener in listeners.story) {
+                listeners.story[listener]();
             }
         }
     },
