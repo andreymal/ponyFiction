@@ -32,6 +32,7 @@ def story_view(request, pk, comments_page):
     story = get_story(request, pk)
     chapters = story.chapter_set.order_by('order')
     comments_list = story.comment_set.order_by('date').all().cache()
+    comments_count = comments_list.count()
     paged = Paginator(comments_list, settings.COMMENTS_COUNT['page'], orphans=settings.COMMENTS_ORPHANS)
     num_pages = paged.num_pages
     page_current = int(comments_page) if (0 < int(comments_page) <= num_pages) else num_pages
@@ -50,6 +51,7 @@ def story_view(request, pk, comments_page):
        'story' : story,
        'vote' : vote,
        'comments' : comments,
+       'comments_count': comments_count,
        'chapters' : chapters,
        'num_pages' : num_pages,
        'page_current' : page_current,
@@ -63,7 +65,8 @@ def story_view(request, pk, comments_page):
 @require_POST
 def story_approve(request, pk):
     raise PermissionDenied
-    
+
+
 @login_required
 @csrf_protect
 def story_publish_warning(request, pk):
@@ -76,12 +79,14 @@ def story_publish_warning(request, pk):
         return render(request, 'story_publish_warning.html', data)
     else:
         raise PermissionDenied
-    
+
+
 @login_required
 @csrf_protect
 @require_POST
 def story_publish(request, pk):
     raise PermissionDenied
+
 
 @login_required
 @csrf_protect
@@ -95,6 +100,7 @@ def story_favorite(request, pk):
     invalidate_obj(story)
     return redirect('favorites', request.user.id)
 
+
 @login_required
 @csrf_protect
 @require_POST
@@ -106,6 +112,7 @@ def story_bookmark(request, pk):
         bookmark.delete()
     invalidate_obj(story)
     return redirect('bookmarks')
+
 
 @login_required
 @csrf_protect
@@ -125,6 +132,7 @@ def story_vote(request, pk, direction):
     _story_vote(request, pk, direction)
     return redirect('story_view', pk)
 
+
 def story_edit_log(request, pk):
     if not request.user.is_staff:
         raise PermissionDenied
@@ -134,6 +142,7 @@ def story_edit_log(request, pk):
         page_title = u"История редактирования рассказа \"{}\"".format(story.title),
     )
     return render(request, 'story_edit_log.html', data)
+
 
 class StoryAdd(CreateView):
     model = Story
@@ -159,6 +168,7 @@ class StoryAdd(CreateView):
                          }
         context.update(extra_context)
         return context
+
 
 class StoryEdit(UpdateView):
     model = Story
@@ -198,6 +208,7 @@ class StoryEdit(UpdateView):
                          }
         context.update(extra_context)
         return context
+
 
 class StoryDelete(DeleteView):
     model = Story

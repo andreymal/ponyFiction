@@ -549,7 +549,7 @@ label.gen input {
 }
 
 /* Storypanel */
-.storypanel {
+.story-panel {
 	width: 100%;
 	margin-left: -12px;
 	background-color: #fff;
@@ -557,11 +557,10 @@ label.gen input {
 	border-radius: 10px;
 	margin-bottom: 10px;
 	line-height: 16px;
-	height: 16px;
 	font-size: 12px;
 }
 
-.storypanel select {
+.story-panel select {
 	height: auto;
 	font-size: 11px;
 	margin-bottom: 0;
@@ -588,7 +587,7 @@ select.select-size {
 	margin-right: 0;
 }
 
-.chapter-switch,.chapter-switch .left {
+.chapter-switch, .chapter-switch .left {
 	margin-right: 20px;
 }
 
@@ -1341,7 +1340,7 @@ a.btn {
 		padding: 6px 8px;
 	}
 	.story-panel {
-        padding: 10px 10px 10px 12px;
+		padding: 10px 0 10px 14px;
 	}
 	.chapter-text {
 		width: 100% !important;
@@ -1381,7 +1380,7 @@ a.btn {
 		padding: 0 0 0 12px;
 	}
 	.page-header {
-		height: 36px;
+		height: 68px;
 		padding-top: 12px;
 	}
 	.controls textarea {

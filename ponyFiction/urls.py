@@ -189,7 +189,7 @@ urlpatterns += patterns('ponyFiction.views.chapter',
     # Просмотр одной
     url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/$', 'chapter_view', name='chapter_view_single'),
     # Просмотр всех глав
-    url(r'^shtory/(?P<story_id>\d+)/chapter/all/$', 'chapter_view', name='chapter_view_all'),
+    url(r'^story/(?P<story_id>\d+)/chapter/all/$', 'chapter_view', name='chapter_view_all'),
     # Добавление
     url(r'^story/(?P<story_id>\d+)/chapter/add/$', ChapterAdd.as_view(), name='chapter_add'),
     # Правка
