@@ -15,7 +15,7 @@ block_elements = (lxml.html.defs.block_tags | frozenset(['footnote', 'body'])) -
 def normalize_html(doc, block_elements = block_elements, **kw):
     for e in doc.xpath('//' + '|//'.join(block_elements)):
         e.attrib['block-element'] = 'true'
-    
+
     doc = pre_normalize_html(doc, **kw)
     doc = split_elements(
         doc,
@@ -32,25 +32,25 @@ def split_elements(doc, separators = [], block_elements = lxml.html.defs.block_t
     for body in doc.xpath('//body'):
         list(iter_splitted_elements(body, separators, block_elements))
     return doc
-    
-    
+
+
 def iter_splitted_elements(element, separators, block_elements):
     children = element.getchildren()
     if len(children) == 0:
         yield element
         return
-    
+
     tag = element.tag
     if tag in block_elements:
         children = element[:]
         element[:] = []
-        element.extend(f 
+        element.extend(f
             for e in children
             for f in iter_splitted_elements(e, separators, block_elements)
         )
         yield element
         return
-    
+
     attrib = dict(element.attrib)
     accum = []
     for d in children:
@@ -67,7 +67,7 @@ def iter_splitted_elements(element, separators, block_elements):
     x = etree.Element(tag, attrib)
     x.extend(accum)
     yield x
-    
+
 def squash_paragraph_attributes(doc):
     for p in doc.xpath('//p'):
         for np in p.xpath('.//p'):

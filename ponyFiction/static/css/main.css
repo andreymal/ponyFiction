@@ -237,15 +237,14 @@ a.authorlink:hover,a.edit-link:hover {
 }
 
 .story-item p.meta {
-	font-size: 11px;
+	font-size: 12px;
 	color: #999;
 }
 
-.story-item p.meta img {
-	width: 18px;
-	height: 18px;
+img.avatar-small, .character-list img {
+	width: 20px;
+	height: 20px;
 	margin-right: 4px;
-	border-radius: 4px;
 }
 
 .more {
@@ -256,10 +255,71 @@ a.authorlink:hover,a.edit-link:hover {
 .story-control-btn {
 	float: right;
 }
-.story-item .story-control-btn a {
-	margin-right: 3px;
+
+.story-control-btn a {
+    text-decoration: none;
 }
+
 /* Vote-buttons */
+.vote-area {
+	display: block;
+	margin: 10px 0px;
+}
+
+.starblock {
+	display: inline-block;
+	width: 120px;
+	height: 24px;
+	vertical-align: middle;
+	line-height: 24px;
+	overflow: hidden;
+}
+
+.vote-area .starblock {
+	vertical-align: baseline;
+}
+
+.starvote {
+	background: transparent url('../i/votes.png') no-repeat;
+	width: 24px;
+	height: 24px;
+	display: inline-block;
+	background-position: 0px 0px;
+	background-size: 100%;
+}
+
+.starvote.star-button:hover {
+	background-position: 0px -48px;
+}
+
+.starvote.star-0 {
+	background-position: 0px 0px;
+}
+
+.starvote.star-1 {
+	background-position: 0px -24px;
+}
+
+.starvote.star-2 {
+	background-position: 0px -48px;
+}
+
+.starvote.star-3 {
+	background-position: 0px -72px;
+}
+
+.starvote.star-4 {
+	background-position: 0px -96px;
+}
+
+.starvote.star-5 {
+	background-position: 0px -120px;
+}
+
+.starvote.star-6 {
+	background-position: 0px -144px;
+}
+
 .upvotes {
 	color: #66CC66;
 }
@@ -288,13 +348,22 @@ a.authorlink:hover,a.edit-link:hover {
 .vote .upvote {
 	color: green;
 	padding: 4px 0 5px 30px;
-	background: transparent url('../i/upvote-24.png') no-repeat 0 0;
+	background: transparent url('../i/upvote-24.png?1') no-repeat 0 0;
+}
+
+.vote .upvote.unvoted:not(:hover) {
+    opacity: 0.3;
 }
 
 .vote .downvote {
 	color: red;
 	padding: 4px 30px 5px 0;
-	background: transparent url('../i/downvote-24.png') no-repeat 100% 0;
+	margin-right: 0.5em;
+	background: transparent url('../i/downvote-24.png?1') no-repeat 100% 0;
+}
+
+.vote .downvote.unvoted:not(:hover) {
+    opacity: 0.3;
 }
 
 h1 .alert {
@@ -428,6 +497,10 @@ label.gen input {
 	color: red;
 }
 
+.translation {
+    color: lightgray;
+}
+
 .story-chapters {
 	margin-top: 12px;
 }
@@ -543,7 +616,6 @@ label.gen input {
 	border-radius: 10px;
 	margin-bottom: 10px;
 	line-height: 16px;
-	height: 16px;
 	font-size: 12px;
 }
 
@@ -563,18 +635,18 @@ select.select-size {
 	width: 90px;
 }
 
-.chapter-controls {
+
+.story-item .chapter-controls {
 	float: right;
 	margin-left: 12px;
 }
 
 .chapter-controls .get,.chapter-controls .scon {
-	float: right;
 	margin-left: 4px;
 	margin-right: 0;
 }
 
-.chapter-switch,.chapter-switch .left {
+.chapter-switch, .chapter-switch .left {
 	margin-right: 20px;
 }
 
@@ -863,16 +935,16 @@ a.btn {
 	background-color: #F1F1F1;
 }
 
-.chapters-control li a {
+.chapters-control li .btn-group {
 	float: right;
-	display: block;
-	font-size: 12px;
-	vertical-align: middle;
-	margin-left: 4px;
 }
 
 .chapters-control li .btn-success {
 	margin-top: 8px;
+}
+
+.btn-mini .caret {
+    margin-top: 8px;
 }
 
 .chapter-textarea {
@@ -929,7 +1001,7 @@ a.btn {
 }
 
 /* Author page */
-h1 img,.userpic {
+.userpic {
 	vertical-align: top;
 	margin-right: 2px;
 	border-radius: 5px;
@@ -1015,7 +1087,7 @@ h1 img,.userpic {
 	color: #999;
 }
 
-#comments-list .authorlink {
+.authorlink {
 	font-weight: bold;
 }
 
@@ -1326,8 +1398,8 @@ h1 img,.userpic {
 	.nav-pills>li>a {
 		padding: 6px 8px;
 	}
-	.story-panel {        
-        padding: 10px 10px 10px 14px;
+	.story-panel {
+		padding: 10px 0 10px 14px;
 	}
 	.chapter-text {
 		width: 100% !important;
@@ -1367,7 +1439,7 @@ h1 img,.userpic {
 		padding: 0 0 0 12px;
 	}
 	.page-header {
-		height: 36px;
+		height: 68px;
 		padding-top: 12px;
 	}
 	.controls textarea {

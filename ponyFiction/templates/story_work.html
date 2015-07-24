@@ -1,5 +1,4 @@
 {% extends "common.html" %}
-{% load url from future %}
 
 {% block content %}
 <div class="row">
@@ -17,7 +16,7 @@
 			{% include 'includes/story_control_buttons.html' %}
 		</h1>
 		{% if story_add %}
-		<p>Перед добавлением рассказа рекомендуем прочитать <a href="{% url 'terms' %}">правила</a> и <a href="{% url 'help' %}">справку</a>. Они сделают вашу жизнь и жизни читателей проще.</p>
+		<p>Перед добавлением рассказа рекомендуем прочитать <a href="/terms/">правила</a> и <a href="/help/">справку</a>. Они сделают вашу жизнь и жизни читателей проще.</p>
 			<p>Вкратце:</p>
 			<ul>
 				<li>Сейчас вы задаете основные параметры рассказа. Следующим шагом будет добавление глав.</li>
@@ -174,7 +173,13 @@
         				<div class="controls events">   
 							<ul id="sortable_chapters" class="chapters-control">
 								{% for chapter in chapters %}
-          							<li id="chapter_{{ chapter.id }}" class="btn btn-large">{{ chapter.title }}<a class="btn btn-warning btn-mini" href="{% url 'chapter_edit' chapter.id %}">править</a> <a class="btn btn-danger btn-mini chapter_delete" href="{% url 'chapter_delete' chapter.id %}">удалить</a></li>
+          							<li id="chapter_{{ chapter.id }}" class="btn btn-large">
+                                        {{ chapter.title }}
+                                        <div class="btn-group">
+                                            <a class="btn btn-warning btn-mini" href="{% url 'chapter_edit' chapter.id %}">править</a>
+                                            <a class="btn btn-danger btn-mini chapter_delete" href="{% url 'chapter_delete' chapter.id %}">удалить</a>
+                                        </div>
+                                    </li>
 								{% endfor %}
 							</ul>
 							<a href="{% url 'chapter_add' story.id %}" class="btn btn-success">Добавить главу</a>

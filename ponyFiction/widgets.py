@@ -1,11 +1,15 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from django.forms import SelectMultiple, CheckboxSelectMultiple, Widget
 from itertools import chain
-from string import join
 from django.forms.widgets import CheckboxInput, Input, RadioFieldRenderer, RadioSelect, TextInput
-from django.utils.encoding import force_unicode
+try:
+    from django.utils.encoding import force_unicode
+except ImportError:
+    from django.utils.encoding import force_text as force_unicode
 from django.utils.safestring import mark_safe
-from django.forms.util import flatatt
+from django.forms.utils import flatatt
 from ponyFiction import settings as settings
 
 
@@ -18,7 +22,7 @@ class ButtonWidget(Widget):
     def render(self, name=None, value=None, attrs=None):
         attrs = self.attrs
         text = attrs.pop('text', '')
-        return mark_safe(u'<button%s>%s</button>' % (flatatt(attrs), force_unicode(text)))
+        return mark_safe('<button%s>%s</button>' % (flatatt(attrs), force_unicode(text)))
 
 
 class ServiceButtonWidget(Input):
@@ -27,20 +31,20 @@ class ServiceButtonWidget(Input):
 
 class StoriesServiceInput(Widget):
     def render(self, name=None, value=None, attrs=None):
-        return mark_safe(u'<input%s />' % flatatt(self.attrs))
+        return mark_safe('<input%s />' % flatatt(self.attrs))
 
 
 class StoriesCheckboxSelectMultiple(CheckboxSelectMultiple):
     def render(self, name, value, attrs=None):
         if value is None:
             value = []
-        value = map(int, value)
+        value = [int(x) for x in value]
         attrs = self.attrs
         label_attrs = attrs.pop('label_attrs', None)
         label_id_related_attr = attrs.pop('label_id_related_attr', False)
         output = []
         if label_attrs is not None:
-            label_class = '%s' % join(label_attrs, ' ')
+            label_class = '%s' % ' '.join(label_attrs)
         else:
             label_class = ''
         for (option_value, option_label) in self.choices:
@@ -52,15 +56,15 @@ class StoriesCheckboxSelectMultiple(CheckboxSelectMultiple):
             else:
                 label_id_related_class = ''
             label_class_final = ' class="%s%s"' % (label_class, label_id_related_class)
-            output.append(u'<label%s>%s %s</label>' % (label_class_final, rendered_cb, option_label))
-        return mark_safe(u'\n'.join(output))
+            output.append('<label%s>%s %s</label>' % (label_class_final, rendered_cb, option_label))
+        return mark_safe('\n'.join(output))
 
 
 class StoriesImgSelect(SelectMultiple):
     def render(self, name, value, attrs=None, choices=()):
         if value is None:
             value = []
-        value = map(int, value)
+        value = [int(x) for x in value]
         output = []
         attrs = self.attrs
         group_container_class = attrs['group_container_class']
@@ -76,10 +80,11 @@ class StoriesImgSelect(SelectMultiple):
         container_attrs = attrs['container_attrs']
         data_attrs = attrs['data_attrs']
         img_url = settings.STATIC_URL+'i/characters/%s.png' % option_value
-        item_image = '<img src="%s" alt="%s" title="%s" />' % (img_url, option_label, option_label)
+        img_class = 'ui-selected' if option_value in selected_choices else ''
+        item_image = '<img class="%s" src="%s" alt="%s" title="%s" />' % (img_class, img_url, option_label, option_label)
         cb = CheckboxInput(data_attrs, check_test=lambda x: x in selected_choices)
         rendered_cb = cb.render(name, option_value)
-        return mark_safe(u'<span%s>%s%s</span>' % (flatatt(container_attrs), rendered_cb, item_image))
+        return mark_safe('<span%s>%s%s</span>' % (flatatt(container_attrs), rendered_cb, item_image))
 
 
 class StoriesButtons(CheckboxSelectMultiple):
@@ -99,14 +104,14 @@ class StoriesButtons(CheckboxSelectMultiple):
             btn = ButtonWidget(attrs=dict(btn_attrs, text=option_label, value=option_value))
             rendered_btn = btn.render(attrs=btn_attrs)
             btn_container.append(rendered_btn)
-            cb = CheckboxInput(data_attrs, check_test=lambda x: x in value)
+            cb = CheckboxInput(data_attrs, check_test=lambda x: str(x) in value)
             rendered_cb = cb.render(name, option_value)
             data_container.append(rendered_cb)
-        btn = '<div%s>%s</div>' % (flatatt(btn_container_attrs), join(btn_container))
-        data = '<div%s>%s</div>' % (flatatt(data_container_attrs), join(data_container))
+        btn = '<div%s>%s</div>' % (flatatt(btn_container_attrs), ' '.join(btn_container))
+        data = '<div%s>%s</div>' % (flatatt(data_container_attrs), ' '.join(data_container))
         output.append(btn)
         output.append(data)
-        return mark_safe(u'\n'.join(output))
+        return mark_safe('\n'.join(output))
 
 
 class StoriesRadioFieldRenderer(RadioFieldRenderer):
@@ -138,11 +143,11 @@ class StoriesRadioFieldRenderer(RadioFieldRenderer):
                     rb = StoriesServiceInput(attrs=dict(data_attrs, type='radio', name=name, value=option_value))
             rendered_rb = rb.render(name, value)
             data_container.append(rendered_rb)
-        btn = '<div%s>%s</div>' % (flatatt(btn_container_attrs), join(btn_container))
-        data = '<div%s>%s</div>' % (flatatt(data_container_attrs), join(data_container))
+        btn = '<div%s>%s</div>' % (flatatt(btn_container_attrs), ' '.join(btn_container))
+        data = '<div%s>%s</div>' % (flatatt(data_container_attrs), ' '.join(data_container))
         output.append(btn)
         output.append(data)
-        return mark_safe(u'\n'.join(output))
+        return mark_safe('\n'.join(output))
 
 
 class StoriesRadioButtons(RadioSelect):

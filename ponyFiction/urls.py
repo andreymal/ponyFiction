@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
@@ -12,8 +14,7 @@ from ponyFiction.views.comment import CommentEdit, CommentAdd, CommentDelete
 from ponyFiction.views.index import index
 from ponyFiction.views.object_lists import FavoritesList, SubmitsList, BookmarksList
 from ponyFiction.views.story import StoryAdd, StoryEdit, StoryDelete
-from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments
-from registration.views import activate, register
+from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments, TopStories, StreamStoryEditLog
 
 admin.autodiscover()
 
@@ -49,6 +50,8 @@ urlpatterns += patterns('',
     url(r'^stream/chapters/page/(?P<page>\d+)/$', StreamChapters.as_view(), name='stream_chapters_page'),
     url(r'^stream/comments/$', StreamComments.as_view(), name='stream_comments'),
     url(r'^stream/comments/page/(?P<page>\d+)/$', StreamComments.as_view(), name='stream_comments_page'),
+    url(r'^story/top/(?:page/(?P<page>\d+)/)?$', TopStories.as_view(), name='top_stories'),
+    url(r'^stream/editlog/(?:page/(?P<page>\d+|last)/)?$', StreamStoryEditLog.as_view(), name='stream_edit_log'),
 )
 
 # Обработка пользовательских адресов
@@ -61,34 +64,6 @@ urlpatterns += patterns('',
     url(r'^accounts/(?P<user_id>\d+)/approve/$', author.author_approve, name='author_approve'),
     url(r'^accounts/(?P<user_id>\d+)/ban/$', author.author_ban, name='author_ban'),
 
-    url(r'^accounts/registration/$',
-        register,
-        {
-            'backend': 'registration.backends.default.DefaultBackend',
-            'form_class': AuthorRegistrationForm,
-            'extra_context': {'page_title': 'Регистрация'}
-        },
-        name='registration_register'),
-    url(r'^accounts/registration/complete/$',
-        TemplateView.as_view(
-            template_name='registration/registration_complete.html',
-            get_context_data=lambda: {'page_title': 'Завершение регистрации'},
-        ),
-        name='registration_complete'),
-    url(r'^accounts/activate/complete/$',
-        TemplateView.as_view(
-            template_name='registration/activation_complete.html',
-            get_context_data=lambda: {'page_title': 'Активация'},
-        ),
-        name='registration_activation_complete'),
-    url(r'^accounts/activate/(?P<activation_key>\w+)/$',
-        activate,
-        {
-            'backend': 'registration.backends.default.DefaultBackend',
-            'template_name': 'registration/activate.html',
-            'success_url' : '/accounts/activate/complete/'
-        },
-        name='registration_activate'),
     url(r'^accounts/registration/closed/$',
         TemplateView.as_view(
             template_name='registration/registration_closed.html',
@@ -133,6 +108,8 @@ urlpatterns += patterns('',
          'extra_context': {'page_title': 'Восстановление пароля: пароль восстановлен'}
          },
         ),
+    url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^stories_auth/', include('stories_migration.urls')),
 )
 # AJAX
 urlpatterns += patterns('', (r'^ajax/', include('ponyFiction.ajax.urls')))
@@ -158,14 +135,13 @@ urlpatterns += patterns('',
 # Работа с рассказами
 urlpatterns += patterns('ponyFiction.views.story',
     # Просмотр
-    url(r'^story/(?P<pk>\d+)/$', 'story_view', {'comments_page': 1}, name='story_view'),
+    url(r'^story/(?P<pk>\d+)/$', 'story_view', {'comments_page': -1}, name='story_view'),
     # Просмотр с подгрузкой определенной страницы комментариев
     url(r'^story/(?P<pk>\d+)/comments/page/(?P<comments_page>\d+)/$', 'story_view', name='story_view_comments_paged'),
     # Добавление
     url(r'^story/add/$', StoryAdd.as_view(), name='story_add'),
     # Правка
     url(r'^story/(?P<pk>\d+)/edit/$', StoryEdit.as_view(), name='story_edit'),
-    # Удаление
     url(r'^story/(?P<pk>\d+)/delete/$', StoryDelete.as_view(), name='story_delete'),
     # Отправка на публикацию
     url(r'^story/(?P<pk>\d+)/publish/$', 'story_publish', name='story_publish'),
@@ -176,8 +152,9 @@ urlpatterns += patterns('ponyFiction.views.story',
     # Добавление в закладки
     url(r'^story/(?P<pk>\d+)/bookmark$', 'story_bookmark', name='story_bookmark'),
     # Голосование за рассказ
-    url(r'^story/(?P<pk>\d+)/vote/plus/$', 'story_vote', {'direction': True}, name='story_vote_plus'),
-    url(r'^story/(?P<pk>\d+)/vote/minus/$', 'story_vote', {'direction': False}, name='story_vote_minus'),
+    url(r'^story/(?P<pk>\d+)/vote/(?P<value>\d+)/$', 'story_vote', name='story_vote'),
+
+    url(r'^story/(?P<pk>\d+)/editlog/$', 'story_edit_log', name='story_edit_log'),
     # Загрузка рассказа
     url(r'^story/(?P<story_id>\d+)/download/(?P<filename>\w+)\.(?P<extension>[\w\.]+)$', 'story_download'),
 )
@@ -186,7 +163,7 @@ urlpatterns += patterns('ponyFiction.views.chapter',
     # Просмотр одной
     url(r'^story/(?P<story_id>\d+)/chapter/(?P<chapter_order>\d+)/$', 'chapter_view', name='chapter_view_single'),
     # Просмотр всех глав
-    url(r'^shtory/(?P<story_id>\d+)/chapter/all/$', 'chapter_view', name='chapter_view_all'),
+    url(r'^story/(?P<story_id>\d+)/chapter/all/$', 'chapter_view', name='chapter_view_all'),
     # Добавление
     url(r'^story/(?P<story_id>\d+)/chapter/add/$', ChapterAdd.as_view(), name='chapter_add'),
     # Правка
@@ -200,11 +177,14 @@ urlpatterns += patterns('',
     url(r'^bad_gateway/$', TemplateView.as_view(template_name='502.html')),
     url(r'^forbidden/$', TemplateView.as_view(template_name='403.html')),
     url(r'^internal_server_error/$', TemplateView.as_view(template_name='500.html')),
-    url(r'^terms/$', TemplateView.as_view(template_name='terms.html', get_context_data=lambda: {'page_title': 'Правила'}), name='terms'),
-    url(r'^help/$', TemplateView.as_view(template_name='help.html', get_context_data=lambda: {'page_title': 'Справка'}), name='help'),
 )
 if settings.DEBUG:
     urlpatterns += patterns('',
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
         (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     )
+urlpatterns += patterns('django.contrib.flatpages.views',
+    (r'^(?P<url>.*/)$', 'flatpage'),
+    url(r'^/terms/', 'flatpage', name='terms'),
+    url(r'^/help', 'flatpage', name='help'),
+)

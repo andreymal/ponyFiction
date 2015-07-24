@@ -6,8 +6,9 @@
 	<!-- Вывод рассказа: начало -->
 	<div class="story-item" id="story_{{ story.id }}">
 		<h3>
-			<a href="{% url 'story_view' story.id %}">{{ story.title }}</a> 
-			<sup><span class="upvotes">{{ story.vote_up_count }}</span> / <span class="downvotes">{{ story.vote_down_count }}</span></sup>
+			<a href="{% url 'story_view' story.id %}">{{ story.title }}</a>
+            {% include 'includes/story_header_info.html' %}
+			{% if not story.original %} <sup class="translation">Перевод</sup>{% endif %}
 			{%if not story.finished %}
 				<sup class="incomplete">Не закончен</sup>
 			{% else %}
@@ -17,18 +18,7 @@
 			{% include 'includes/story_control_buttons.html' %}
 		</h3>
 		<p class="meta">
-			<span class="chapter-controls">
-    			{% if user.is_authenticated %}
-    				<a title="В избранное" href="{% url 'story_favorite' story.id %}" class="story_favorite scon favorite{% if story|favorited:user.id %} favorited{% endif %}"></a>
-        			<a title="Отложить на потом" href="{% url 'story_bookmark' story.id %}" class="story_bookmark scon bookmark{% if story|bookmarked:user.id %} bookmarked{% endif %}"></a>
-    			{% endif %} 
-        		<a title="Подписаться на новые главы по RSS" href="{% url 'feeds_story' story.id %}" class="scon feed"></a>
-        			{% for d in story.list_downloads %}
-        				<a title="Скачать в {{ d.format.name }}" href="{{ d.url }}" class="get {{ d.format.name|lower|slugify }}"></a>
-        			{% endfor %}
-        		<span class="story_bookmark_msg"></span>
-        		<span class="story_favorite_msg"></span>
-    		</span>
+            {% include 'includes/story_reader_buttons.html' %}
 			{% spaceless %}
 				<span class="category-list">
 					{% for category in story.categories.all %}

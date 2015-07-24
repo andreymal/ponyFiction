@@ -1,5 +1,4 @@
 {% extends "common.html" %}
-{% load url from future %}
 {% block content %}
 {% load static %}
 <div class="row">
@@ -9,7 +8,7 @@
 	      <li class="active">{{ page_title }}</li>
 	    </ul>
 		<h1>{{ page_title }}</h1>
-		<div id="comments-list">
+		<div id="chapters-list">
 			{% include "includes/chapters_excerpts.html" %}
 		</div>
 		{% if chapters %}

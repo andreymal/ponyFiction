@@ -1,5 +1,4 @@
 {% extends "common.html" %}
-{% load url from future %}
 {% block content %}
 {% load static %}
 <div class="row">
@@ -12,35 +11,12 @@
 	</div>
 	
 	<div class="span12">
-		<h1>{{ page_title }}</h1>
-		<div class="alert-mini green">
-			{% if profile_ok %}Профиль успешно обновлен{% endif %}
-			{% if email_ok %}Адрес электронной почты успешно обновлен{% endif %}
-			{% if password_ok %}Новый пароль установлен{% endif %}
-			{% if prefs_ok %}Личные настройки сохранены{% endif %}				
-		</div>
-		<div class="tabbable">
-			<ul class="nav nav-pills nav-simple">
-				<li class="active">
-					<a href="#main" data-toggle="tab">Основное</a>
-				</li>
-				<li>
-					<a href="#mail" data-toggle="tab">Почта</a>
-				</li>
-				<li>
-					<a href="#security" data-toggle="tab">Безопасность</a>
-				</li>
-				<li>
-					<a href="#personal" data-toggle="tab">Личные настройки</a>
-				</li>
-			</ul>
-			<div class="tab-content">
-			
-				<div class="tab-pane active" id="main">
-					<form action="" method="POST" enctype="multipart/form-data" class="form-horizontal">
+					<h1>{{ page_title }}</h1>
+					<form id="main" action="#main" method="POST" enctype="multipart/form-data" class="form-horizontal">
 						{% csrf_token %}
 						<fieldset>
 							<legend>Основное</legend>
+							{% if profile_ok %}<div class="alert-mini green">Профиль успешно обновлен</div>{% endif %}
 							{% for field in profile_form %}
 								<div class="control-group{% if field.errors %} error{% endif %}">
 									<label class="control-label">{{ field.label }}</label>
@@ -64,13 +40,12 @@
 							</div>
 						</fieldset>
 					</form>
-				</div>
-						
-				<div class="tab-pane" id="mail">
-					<form action="" method="POST" enctype="multipart/form-data" class="form-horizontal">
+
+					<form id="mail" action="#mail" method="POST" enctype="multipart/form-data" class="form-horizontal">
 						{% csrf_token %}
 						<fieldset>
 						<legend>Почта</legend>
+					  	{% if email_ok %}<div class="alert-mini green">Адрес электронной почты успешно обновлен</div>{% endif %}
 							{% for field in email_form %}
 								<div class="control-group{% if field.errors %} error{% endif %}">
 									<label class="control-label">{{ field.label }}</label>
@@ -94,13 +69,12 @@
 							</div>
 						</fieldset>
 					</form>
-				</div>
-						
-				<div class="tab-pane" id="security">
-					<form action="" method="POST" enctype="multipart/form-data" class="form-horizontal">
+
+					<form id="security" action="#security" method="POST" enctype="multipart/form-data" class="form-horizontal">
 						{% csrf_token %}
 						<fieldset>
 							<legend>Безопасность</legend>
+					  	{% if password_ok %}<div class="alert-mini green">Новый пароль установлен</div>{% endif %}
 							{% for field in password_form %}
 								<div class="control-group{% if field.errors %} error{% endif %}">
 									<label class="control-label">{{ field.label }}</label>
@@ -128,13 +102,12 @@
 							</div>
 						</fieldset>
 					</form>
-				</div>
-						
-				<div class="tab-pane" id="personal">
-					<form action="" method="POST" enctype="multipart/form-data" class="form-horizontal">
+
+					<form id="personal" action="#personal" method="POST" enctype="multipart/form-data" class="form-horizontal">
 						{% csrf_token %}
 						<fieldset>
 							<legend>Настройки отображения</legend>
+					  	{% if prefs_ok %}<div class="alert-mini green">Личные настройки сохранены</div>{% endif %}
 							<div class="padded bootstrap checkbox">
 								<label>Скрыть жанры:</label>
 								{{ prefs_form.excluded_categories }}
@@ -152,9 +125,6 @@
 							</div>
 						</fieldset>
 					</form>
-				</div>
-			</div>
-		</div>
 	</div>		
 
 	<div class="span12">

@@ -1,7 +1,5 @@
 {% extends "common.html" %}
-{% load url from future %}
 {% block content %}
-{% load static %}
 {% load pluralize %}
 <div class="row">
 	<div class="span12">
@@ -12,11 +10,14 @@
 	</div>
 	<div class="span8">
 		<h1 id="author-name">
-			<img src="{% get_static_prefix %}i/userpic.jpg" width="42" title="{{ author.username }}" alt="{{ author.username }}"/>
+			<img src="{{ author.get_avatar_url }}" width="42" title="{{ author.username }}" alt="{{ author.username }}" class="userpic"/>
 			{{ author.username }}
 			{% if user.is_staff %}
-				<a href="{% url 'author_approve' author.id %}" id="author_approve" class="btn btn-small{% if author.approved %} btn-primary{% endif %}">{% if author.approved %}Проверен{% else %}Не проверен{% endif %}</a>
-				<a href="{% url 'author_ban' author.id %}" id="author_ban" class="btn btn-small{% if not author.is_active %} btn-danger {% endif %}">{% if author.is_active %}Не забанен{% else %}Забанен{% endif %}</a>
+				{# <a href="{% url 'author_approve' author.id %}" id="author_approve" class="btn btn-small{% if author.approved %} btn-primary{% endif %}">{% if author.approved %}Проверен{% else %}Не проверен{% endif %}</a> #}
+				<form style="margin: 0; display: inline-block;" method="POST" action="{% url 'author_ban' author.id %}" id="author_ban">
+					{% csrf_token %}
+					<input type="submit" class="btn btn-small{% if not author.is_active %} btn-danger {% endif %}" value="{% if author.is_active %}Не забанен{% else %}Забанен{% endif %}" />
+				</form>
 			{% else %}
 				{% if not author.is_active %}
 					<sup id="banned">Read-only</sup>
@@ -46,9 +47,9 @@
 		<p class="contact-links">
 			{% if author.jabber %}<a href="xmpp:{{ author.jabber }}" class="jabberlink">{{ author.jabber }}</a><br/>{% endif %}
 			{% if author.skype %}<a href="skype:{{ author.skype }}" class="skypelink">{{ author.skype }}</a><br/>{% endif %}
-			{% if author.tabun %}<a href="http://tabun.everypony.ru/profile/{{ author.tabun }}/" class="tabunlink">{{ author.tabun }}</a><br/>{% endif %}
+			{% if author.tabun %}<a href="https://tabun.everypony.ru/profile/{{ author.tabun }}/" class="tabunlink">{{ author.tabun }}</a><br/>{% endif %}
 			{% if author.forum %}<a href="{{ author.forum }}" class="forumlink">{{ author.username }}</a><br/>{% endif %}
-			{% if author.vk %}<a href="http://vk.com/{{ author.vk }}" class="vkontaktlink">{{ author.username }}</a><br/>{% endif %}
+			{% if author.vk %}<a href="https://vk.com/{{ author.vk }}" class="vkontaktlink">{{ author.vk }}</a><br/>{% endif %}
 		</p>
 	</div>
 	<div class="span8">
@@ -65,7 +66,7 @@
     	{% if comments_count > 0 %}
     		<h2>Комментарии автора ({{ comments_count }})</h2>
 	    	<div id="comments-list">
-			{% include "includes/comments.html" %}
+			{% include "includes/brief_comments.html" %}
     		</div>
 			{% include "includes/comments_pagination_author_overview.html" %}
 		{% endif %}

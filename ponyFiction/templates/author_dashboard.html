@@ -1,7 +1,5 @@
 {% extends "common.html" %}
-{% load url from future %}
 {% block content %}
-{% load static %}
 {% load pluralize %}
 
 
@@ -15,12 +13,12 @@
 	<!-- Вывод шапки -->
 	<div class="span8">
 		<h1 id="author-name">
-		<img src="{% get_static_prefix %}i/userpic.jpg" width="42" title="{{ author.username }}" alt="{{ author.username }}"/>
-		{{ author.username }}
-		{#{% if author.story_set.count > 0 %}Кабинет автора{% else %}Кабинет потенциального автора{% endif %}#}
-        {% if not author.is_active %}
-                 <sup id="banned">Read-only</sup>
-        {% endif %}
+			<img src="{{ author.get_avatar_url }}" width="42" title="{{ author.username }}" alt="{{ author.username }}"/>
+			{{ author.username }}
+			{#{% if author.story_set.count > 0 %}Кабинет автора{% else %}Кабинет потенциального автора{% endif %}#}
+			{% if not author.is_active %}
+				<sup id="banned">Read-only</sup>
+			{% endif %}
 		</h1>
 		<p>
 			{% if author.story_set.count > 0 %}Вы уже написали <b>{{ author.story_set.count|rupluralize:'рассказ,рассказа,рассказов' }}</b>{% else %}Вы пока ничего не написали{% endif %}.
@@ -36,8 +34,6 @@
 			{% else %}
 				 не откомментировав их.
 			{% endif%}
-			<br/>
-			Ваш общий рейтинг составляет: <span class="upvotes">{{ votes.0 }}</span> / <span class="downvotes">{{ votes.1 }}</span>.
 		</p>
 	</div>
 	<div class="span8 top-list">
@@ -52,7 +48,7 @@
 		</div>
 		
 		<h2>
-			Мои рассказы 
+			Мои рассказы <a class="btn btn-success btn-small" href="{% url 'story_add' %}">Добавить рассказ</a>
 		</h2>
 		{% include "includes/stories.html" %}
 	</div>
@@ -61,7 +57,7 @@
 		{% if comments_count > 0 %}
     		<h2>Комментарии читателей ({{ comments_count }})</h2>
 	    	<div id="comments-list">
-			{% include "includes/comments.html" %}
+			{% include "includes/brief_comments.html" %}
     		</div>
 			{% include "includes/comments_pagination_author_dashboard.html" %}
 		{% endif %}

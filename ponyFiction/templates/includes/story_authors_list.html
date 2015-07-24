@@ -4,7 +4,6 @@
    		{% if story.authors.all.count > 1 %}(в соавторстве с{% endif %}
    	{% endif %}
     {% if forloop.counter > 1 %}           	        	
-		<a class="authorlink" href="{% url 'author_overview' author.id %}">{{author.username}}</a>{% if forloop.revcounter0 == 1 %} и {% endif %}{% if forloop.revcounter0 > 1 %}, {% endif %}
+		<a class="authorlink" href="{% url 'author_overview' author.id %}">{{author.username}}</a>{% if forloop.revcounter0 == 1 %} и {% endif %}{% if forloop.revcounter0 > 1 %}, {% endif %}{% if forloop.revcounter0 == 0 and story.authors.all.count > 1 %}){% endif %}
 	{% endif %}
-   	{% if forloop.revcounter0 == 0 and story.authors.all.count > 1 %}){% endif %}
 {% endfor %}

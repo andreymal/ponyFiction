@@ -1,0 +1,35 @@
+{% extends "common.html" %}
+{% block content %}
+{% load static %}
+<div class="row">
+  <div class="span12">
+    <h1>Авторизация через stories.everypony.ru</h1>
+      <form action="" method="POST" enctype="multipart/form-data" class="form-horizontal migration-form">
+      {% csrf_token %}
+        <fieldset>
+        {% for field in form %}
+          <div class="control-group{% if field.errors %} error{% endif %}">
+            <label class="control-label">{{ field.label }}</label>
+            <div class="controls">
+              {{ field }}
+              {% if field.errors %}
+                {% for error in field.errors %}
+                  <span class="help-inline">{{ error }}</span>
+                {% endfor %}
+              {% else %}
+                <span class="help-inline small">{{ field.help_text }}</span>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+        {% if form.non_field_errors %}
+          <div class="control-group error"><span class="help-inline">{{ form.non_field_errors.0 }}</span></div>
+        {% endif %}
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">Продолжить</button>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>
+{% endblock %}

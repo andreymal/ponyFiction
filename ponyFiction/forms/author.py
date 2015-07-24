@@ -6,6 +6,7 @@ from ponyFiction.widgets import StoriesButtons, StoriesRadioButtons
 from django.forms.models import ModelMultipleChoiceField
 from django.forms.fields import ChoiceField
 
+
 class AuthorEditProfileForm(ModelForm):
     attrs_dict = {'class': 'input-xlarge'}
     bio = CharField(
@@ -23,7 +24,7 @@ class AuthorEditProfileForm(ModelForm):
         help_text='Пример: user@server.com',
     )
     skype = RegexField(
-        regex=ur'^[a-zA-Z0-9\._-]+$',
+        regex=r'^[a-zA-Z0-9\._-]+$',
         widget=TextInput(attrs=dict(attrs_dict, maxlength=32, placeholder='Логин skype')),
         max_length=32,
         label='Skype ID',
@@ -31,7 +32,7 @@ class AuthorEditProfileForm(ModelForm):
         required=False
     )
     tabun = RegexField(
-        regex=ur'^[a-zA-Z0-9-_]+$',
+        regex=r'^[a-zA-Z0-9-_]+$',
         widget=TextInput(attrs=dict(attrs_dict, maxlength=32)),
         max_length=32,
         label='Логин на Табуне',
@@ -47,11 +48,11 @@ class AuthorEditProfileForm(ModelForm):
         required=False
     )
     vk = RegexField(
-        regex=ur'^[a-zA-Z0-9-_]+$',
+        regex=r'^[a-zA-Z0-9\._-]+$',
         widget=TextInput(attrs=dict(attrs_dict, maxlength=32)),
         max_length=32,
         label='Логин ВКонтакте',
-        error_messages={'invalid': 'Пожалуйста, исправьте ошибку в логине VK: похоже, он неправильный'},
+        error_messages={'invalid': 'Пожалуйста, исправьте ошибку в логине ВК: похоже, он неправильный'},
         required=False
     )
             
@@ -92,7 +93,7 @@ class AuthorEditPrefsForm(Form):
         self.author = kwargs.pop('author', None)
         super(AuthorEditPrefsForm, self).__init__(*args, **kwargs)
         if self.author:
-            self.fields['excluded_categories'].initial = self.author.excluded_categories
+            self.fields['excluded_categories'].initial = ','.join(str(x) for x in self.author.excluded_categories)
             self.fields['detail_view'].initial = self.author.detail_view
             self.fields['nsfw'].initial = self.author.nsfw
 
@@ -103,7 +104,8 @@ class AuthorEditPrefsForm(Form):
         author.detail_view = bool(int(self.cleaned_data['detail_view']))
         author.nsfw = bool(int(self.cleaned_data['nsfw']))
         author.save(update_fields=['excluded_categories', 'detail_view', 'nsfw'])
-    
+
+
 class AuthorEditEmailForm(Form):
     attrs_dict = {'class': 'input-xlarge'}
     
@@ -139,7 +141,8 @@ class AuthorEditEmailForm(Form):
         email = self.cleaned_data['email']
         author.email = email
         author.save(update_fields=['email'])
-        
+
+
 class AuthorEditPasswordForm(Form):
     attrs_dict = {'class': 'input-xlarge'}
     

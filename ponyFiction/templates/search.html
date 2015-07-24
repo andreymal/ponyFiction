@@ -1,5 +1,4 @@
 {% extends "common.html" %}
-{% load url from future %}
 {% load pluralize %}
 {% block content %}
 {% load static %}
@@ -13,14 +12,13 @@
 	<!-- Поиск -->
 		<h1>Поиск рассказов</h1>
 		<div>
-		<form action="/search/" method="POST" enctype="multipart/form-data" name="search" id="searchform" class="form-horizontal">
-		{% csrf_token %}
+		<form action="/search/" method="GET" enctype="multipart/form-data" name="search" id="searchform" class="form-horizontal">
 			<fieldset>
 				<div class="padded">
 					<!-- Поле поиска -->
-					{{ form.search_query }}
+					{{ form.q }}
 					<!-- Тип поиска -->
-					<span class="bootstrap radio">{{ form.search_type }}</span>
+					<span class="bootstrap radio">{{ form.type }}</span>
 				</div>
 				<!-- Сортировка результатов поиска -->
 				{{ form.button_sort }}
@@ -32,7 +30,7 @@
 				<div id="more-sort" class="collapse">
 					<h4>Сортировать</h4>
 					<!-- Тип сортировки -->
-					<span class="padded bootstrap checkbox">{{ form.sort_type }}</span>
+					<span class="padded bootstrap radio">{{ form.sort }}</span>
 				</div>
 				<!-- Конец спойлера -->
 				
@@ -40,9 +38,9 @@
 				<div id="more-filters" class="collapse">
 					<h3>Фильтры поиска</h3>
 					<h4>Жанры</h4>
-					<p class="genres-select">{{ form.categories_select }}</p>
+					<p class="genres-select">{{ form.genre }}</p>
 					<h4>Персонажи</h4>
-					<div class="characters-select" >{{ form.characters_select }}</div>
+					<div class="characters-select" >{{ form.char }}</div>
 				</div>
 				<!-- Конец спойлера -->
 				
@@ -51,37 +49,40 @@
 					<h3>Дополнительные настройки поиска:</h3>
 					<div class="padded bootstrap checkbox">
 						<h4>Происхождение</h4>
-						{{ form.originals_select }}
+						{{ form.original }}
 					</div>
 					<div class="padded bootstrap checkbox">
 						<h4>Статус рассказа</h4>
-						{{ form.finished_select }}
+						{{ form.finished }}
 					</div>
 					<div class="padded bootstrap checkbox">
 						<h4>Активность</h4>
-						{{ form.freezed_select }}
+						{{ form.freezed }}
 					</div>
 					<div class="padded bootstrap checkbox">
 						<h4>Рейтинг</h4>
-						{{ form.ratings_select }}
+						{{ form.rating }}
 					</div>
 					<div class="padded medium-input">
 						<h4>Размер рассказа</h4>
-						{{ form.search_min_size }}—{{ form.search_max_size }}
+						{{ form.min_words }}—{{ form.max_words }}
 					</div>
 					<div class="control-group">
 						<div class="padded medium-input">
 							<h4>События</h4>
 						</div>
 						<div class="controls events">
-							{{ form.classifications_select }}
+							{{ form.cls }}
 						</div>
 					</div>	
 				</div>
 				<!-- Конец спойлера -->
 				
 				<!-- Отправка формы -->
-				<p class="form-sumbit">{{ form.button_submit }} {{ form.button_reset }}</p>
+				<p class="form-sumbit">
+					<input type="submit" class="btn btn-primary" value="Искать!" />
+					{{ form.button_reset }}
+				</p>
 			</fieldset>
 		</form>
 		</div>
@@ -91,13 +92,13 @@
 		{% if search_type == '0' %}
 			<!-- Рассказы: начало вывода -->
 			{% if result %}<div class="story-item"><h3>Всего нашли {{ total|rupluralize:'рассказ,рассказа,рассказов' }}</h3></div>{% endif %}
-			{% with stories=result %}			
-					{% include "includes/stories.html" %}
-            {% endwith %}
+			{% with stories=result %}
+				{% include "includes/stories.html" %}
+			{% endwith %}
 			<!-- Рассказы: конец вывода -->
 		{% else %}
 			<!-- Главы: начало вывода -->
-			{% if result %}<div class="story-item"><h3>Всего нашли {{ total|rupluralize:'главу,главы,глав' }}</h3></div>{% endif %}
+			{% if result %}<div class="story-item"><h3>Всего нашли {{ total|rupluralize:'главу,главы,глав' }}</h3></div>{%elif error %}<h3>{{ error }}</h3>{% else %}<h3>Здесь пока ничего нет</h3>{% endif %}
 			{% for chapter, excerpt in result %}
 				<div class="story-item">
 					<h3><a href="{% url 'chapter_view_single' chapter.story_id chapter.order %}">{{ chapter.title }}</a></h3>
@@ -111,19 +112,19 @@
 				<!-- Пагинация: начало вывода -->
 					<div id="pagination" class="center">
 						{% for page_head_id in pagination.head_range %}
-			        		<input form="searchform" type="submit" class="btn{% if page_head_id = pagination.current %} btn-primary{% endif %}" name="page_current" value="{{ page_head_id }}" >
+			        		<input form="searchform" type="submit" class="btn{% if page_head_id = pagination.current %} btn-primary{% endif %}" name="page" value="{{ page_head_id }}" >
 			        	{% endfor %}
 			        	{% if pagination.head_dots %}
 			        		<span class="pagination-dots">…</span>
 			        	{% endif %}
 			        	{% for page_local_id in pagination.locality_range %}
-			        		<input form="searchform" type="submit" class="btn{% if page_local_id = pagination.current %} btn-primary{% endif %}" name="page_current" value="{{ page_local_id }}" >
+			        		<input form="searchform" type="submit" class="btn{% if page_local_id = pagination.current %} btn-primary{% endif %}" name="page" value="{{ page_local_id }}" >
 			        	{% endfor %}
 			        	{% if pagination.tail_dots %}
 			        		<span class="pagination-dots">…</span>
 			        	{% endif %}
 			        	{% for page_tail_id in pagination.tail_range %}
-			        		<input form="searchform" type="submit" class="btn{% if page_tail_id = pagination.current %} btn-primary{% endif %}" name="page_current" value="{{ page_tail_id }}" >
+			        		<input form="searchform" type="submit" class="btn{% if page_tail_id = pagination.current %} btn-primary{% endif %}" name="page" value="{{ page_tail_id }}" >
 			        	{% endfor %}
 			      	</div>
 		      	<!-- Пагинация: конец вывода -->

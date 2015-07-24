@@ -26,7 +26,7 @@ class StoryForm(ModelForm):
     # Персонажи
     characters = GroupedModelChoiceField(
         required=False,
-        queryset=Character.objects.all(),
+        queryset=Character.objects.all().prefetch_related('group'),
         group_by_field='group',
         widget=StoriesImgSelect(attrs=img_attrs),
         label='Персонажи',

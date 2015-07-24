@@ -1,4 +1,28 @@
-{% include "includes/header.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<title>{% block title %}{{ page_title }}{% endblock %} &mdash; Библиотека stories.andreymal.org</title>
+ 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 		<link rel="shortcut icon" type="image/x-icon" href="{% get_static_prefix %}i/favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/main.css?1" />
+		<link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/markitup.main.css" />
+		<link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/markitup.set.css" />
+		<script type="text/javascript" src="{% get_static_prefix %}js/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="{% get_static_prefix %}js/jquery-ui-1.9.2.custom.min.js"></script>
+		<script type="text/javascript" src="{% get_static_prefix %}js/jquery.cookie.js"></script>
+		<script type="text/javascript" src="{% get_static_prefix %}js/jquery.markitup.js"></script>
+		<script type="text/javascript" src="{% get_static_prefix %}js/jquery.form.js"></script>
+		<script type="text/javascript" src="{% get_static_prefix %}js/jquery.slides.min.js"></script>
+		<script type="text/javascript" src="{% get_static_prefix %}js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="{% get_static_prefix %}js/markitup.set.js"></script>
+		<script type="text/javascript" src="{% get_static_prefix %}js/main.js?1"></script>
+
+ 		<!--[if lt IE 9]> <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script> <![endif]-->
+	</head>
+<body>
 {% include "includes/header_top.html" %}
 <!-- Content start -->
 <div id="content">

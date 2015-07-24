@@ -1,7 +1,5 @@
 {% extends "common.html" %}
 
-{% load url from future %}
-
 {% block content %}
 <div class="row">
 	<div class="span12">
@@ -14,7 +12,7 @@
 	<div class="span12 reg-complete">
     <h1>Учетная запись активирована</h1>
     <p>Приветствуем!</p>
-    <p>Ваша учетная запись активирована. <a href="{% url 'auth_login' %}">Заходите</a> на сайт.</p>
+    <p>Ваша учетная запись активирована.{# <a href="{% url 'auth_login' %}">Заходите</a> на сайт.</p>#}
   </div>
   
 	<div class="span12">

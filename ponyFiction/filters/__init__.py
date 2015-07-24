@@ -1,34 +1,42 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import re
-import functools
+
 from django.utils.safestring import mark_safe
 from django.conf import settings
-from ..utils.typographus import typo
-from .base import html_doc_to_string
-from .html import normalize_html, footnotes_to_html
-from ponyFiction.filters.base import html_doc_transform, transform_xslt_params
 
+from .typographus import typo
+from .base import html_doc_to_string, html_doc_transform, transform_xslt_params
+from .html import normalize_html, footnotes_to_html
 
 
 empty_lines_re = re.compile(r'\n[\s\n]*\n')
 
+
 def filter_html(text,
                 tags = settings.ALLOWED_TAGS,
                 attributes = settings.ALLOWED_ATTRIBUTES):
-    
-    doc = normalize_html(text, convert_linebreaks = True)
-    doc = typo(html_doc_to_string(doc))
+    doc = typo(text)
+    doc = normalize_html(doc, convert_linebreaks = True)
     doc = _filter_html(doc,
         tags = tags,
         attributes = attributes
     )
     return doc
-    
+
 def filtered_html_property(name, filter_):
     def fn(self):
-        return mark_safe(html_doc_to_string(filter_(getattr(self, name))))
+        try:
+            return mark_safe(html_doc_to_string(filter_(getattr(self, name))))
+        except Exception:
+            import traceback, sys
+            print >> sys.stderr, "filter_html", type(self), self.pk, name, filter_
+            traceback.print_exc()
+            return "#ERROR#"
     return property(fn)
-    
-    
+
+
 _filter_transforms = {}   
 @html_doc_transform
 def _filter_html(doc, tags, attributes, **kw):
@@ -49,7 +57,8 @@ def _filter_html(doc, tags, attributes, **kw):
         
     kw = transform_xslt_params(kw)
     return filter_transform(doc, **kw).getroot()
-    
+
+
 HTML_FILTER_TEMPLATE = """<?xml version="1.0"?>
 <xsl:stylesheet version="1.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -61,7 +70,7 @@ HTML_FILTER_TEMPLATE = """<?xml version="1.0"?>
 
 <xsl:template match="@*"/>
 
-<xsl:template match="a/@href[not(re:match(.,'^(https?://|#)'))]" mode="default-filters"/>
+<xsl:template match="a/@href[not(re:match(.,'^((https?:)?/|#)'))]" mode="default-filters"/>
 
 <xsl:template match="@*|node()" mode="default-filters">
     <xsl:copy>

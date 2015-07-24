@@ -1,0 +1,86 @@
+[
+  {
+    "model": "ponyFiction.category",
+    "pk": 1,
+    "fields": {
+      "name": "Приключения"
+    }
+  },
+  {
+    "model": "ponyFiction.category",
+    "pk": 2,
+    "fields": {
+      "name": "Кроссовер"
+    }
+  },
+  {
+    "model": "ponyFiction.category",
+    "pk": 3,
+    "fields": {
+      "name": "Романтика"
+    }
+  },
+  {
+    "model": "ponyFiction.category",
+    "pk": 4,
+    "fields": {
+      "name": "Драма"
+    }
+  },
+  {
+    "model": "ponyFiction.category",
+    "pk": 5,
+    "fields": {
+      "name": "Ангст"
+    }
+  },
+  {
+    "model": "ponyFiction.category",
+    "pk": 6,
+    "fields": {
+      "name": "Флафф"
+    }
+  },
+  {
+    "model": "ponyFiction.category",
+    "pk": 7,
+    "fields": {
+      "name": "Юмор"
+    }
+  },
+  {
+    "model": "ponyFiction.category",
+    "pk": 8,
+    "fields": {
+      "name": "Зарисовка"
+    }
+  },
+  {
+    "model": "ponyFiction.category",
+    "pk": 9,
+    "fields": {
+      "name": "Экшн"
+    }
+  },
+  {
+    "model": "ponyFiction.category",
+    "pk": 10,
+    "fields": {
+      "name": "Ужасы"
+    }
+  },
+  {
+    "model": "ponyFiction.category",
+    "pk": 11,
+    "fields": {
+      "name": "Эротика"
+    }
+  },
+  {
+    "model": "ponyFiction.category",
+    "pk": 12,
+    "fields": {
+      "name": "Повседневность"
+    }
+  }
+]

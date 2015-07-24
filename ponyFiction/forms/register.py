@@ -1,17 +1,25 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from ponyFiction.apis.recaptcha.fields import ReCaptchaField
+
+# from captcha.fields import ReCaptchaField
+from ponyFiction.apis.captcha.fields import ReCaptchaField
 from registration.forms import RegistrationFormUniqueEmail
 from django.forms import CharField, EmailField, PasswordInput, RegexField, TextInput
+
+
+attrs_dict = {'class': 'required input-xlarge'}
+username_field = RegexField(
+    regex=r'^[0-9a-zA-Z\u0430-\u044f\u0410-\u042f\u0451\u0401_@+-.. ]+$',
+    widget=TextInput(attrs=dict(attrs_dict, maxlength=32)),
+    max_length=32,
+    label='Логин',
+    help_text='Только русские/латинские буквы, цифры, пробел, точка и символы _ @ + -',
+    error_messages={'invalid': 'Пожалуйста, исправьте ошибку в логине - он может содержать только русские/латинские буквы, цифры, пробел, точку и символы _ @ + -'}
+)
+
+
 class AuthorRegistrationForm(RegistrationFormUniqueEmail):
-    attrs_dict = {'class': 'required input-xlarge'}
-    username = RegexField(
-        regex=ur'^[0-9a-zA-Z\u0430-\u044f\u0410-\u042f\u0451\u0401_@+-.. ]+$',
-        widget=TextInput(attrs=dict(attrs_dict, maxlength=32)),
-        max_length=32,
-        label='Логин',
-        help_text='Только русские/латинские буквы, цифры, пробел, точка и символы _ @ + -',
-        error_messages={'invalid': 'Пожалуйста, исправьте ошибку в логине - он может содержать только русские/латинские буквы, цифры, пробел, точку и символы _ @ + -'}
-    )
+    username = username_field
     email = EmailField(
         widget=TextInput(attrs=dict(attrs_dict, maxlength=75)),
         max_length=75,
@@ -31,6 +39,5 @@ class AuthorRegistrationForm(RegistrationFormUniqueEmail):
         )
     recaptcha = ReCaptchaField(
         label="Капча",
-        help_text='Введите два слова выше. Если трудно разобрать, обновите.',
         error_messages={'captcha_invalid': 'Это какая-то неправильная капча. Пожалуйста, введите снова.'}
         )

@@ -1,0 +1,3 @@
+{% extends "includes/comments.html" %}
+{% block comment_control_buttons %}{% endblock %}
+{% block comment_text %}{{ comment.brief_text_as_html|safe }}{% endblock %}

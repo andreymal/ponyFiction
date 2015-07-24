@@ -1,23 +1,34 @@
 {% load stories %}
 {% if not story_add %}
 	{% if story|editable_by:user %}
-		<span class="story-control-btn">
-			{% if story.draft %}
-				<a class="btn btn-mini story_publish{% if story.publishable %} btn-primary{% endif %}" href="{% url 'story_publish' story.id %}">Опубликовать</a>
-			{% else %}
-				<a class="btn btn-mini story_publish" href="{% url 'story_publish' story.id %}">В черновики</a>
+		<div class="story-control-btn btn-group">
+            {% if user.is_staff %}
+                <a class="btn {{ story.approved|yesno:',btn-success' }} btn-mini story_approve" href="{% url 'story_approve' story.id %}">
+                    {{ story.approved|yesno:"Отозвать,Одобрить" }}
+                </a>
+            {% endif %}
+            <a class="btn btn-mini story_publish{% if story.publishable and story.draft %} btn-primary{% endif %}" href="{% url 'story_publish' story.id %}">
+                {{ story.draft|yesno:"Опубликовать,В черновики" }}
+            </a>
+            {% if not user.is_staff and not story_edit %}
+                <a class="btn btn-warning btn-mini" href="{% url 'story_edit' story.id %}">Редактировать</a>
+            {% endif %}
+
+            <button class="btn btn-mini dropdown-toggle" type="button" id="storyDropdownMenu{{ story.id }}" data-toggle="dropdown" aria-expanded="true">
+                <span class="caret"></span>
+            </button>
+
+            <ul class="dropdown-menu btn-mini" role="menu">
+			{% if not story_edit and user.is_staff %}
+				<li><a href="{% url 'story_edit' story.id %}">Редактировать</a></li>
 			{% endif %}
-			{% if not story_edit %}
-				<a class="btn btn-warning btn-mini" href="{% url 'story_edit' story.id %}">Редактировать</a>
-			{% endif %}
-			<a class="btn btn-danger btn-mini story_delete" href="{% url 'story_delete' story.id %}">Удалить</a>
+            {% if story|deletable_by:user %}
+                <li><a class="story_delete" href="{% url 'story_delete' story.id %}">Удалить</a></li>
+            {% endif %}
 			{% if user.is_staff %}
-				{% if not story.approved %}
-					<a class="btn btn-success btn-mini story_approve" href="{% url 'story_approve' story.id %}">Одобрить</a>
-				{% else %}
-					<a class="btn btn-mini story_approve"" href="{% url 'story_approve' story.id %}">Отозвать</a>
-				{% endif %}
-			{% endif %}
-		</span>
+                <li><a href="{% url 'story_edit_log' story.id %}">Лог модерации</a></li>
+            {% endif %}
+            </ul>
+		</div>
 	{% endif %}
 {% endif %}

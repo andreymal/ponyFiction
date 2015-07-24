@@ -1,53 +1,59 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from ponyFiction.views.object_lists import ObjectList
-from ponyFiction.models import Story, Chapter, Comment
+from django.core.exceptions import PermissionDenied
 from cacheops.query import cached_as
 
+from ponyFiction.views.object_lists import ObjectList
+from ponyFiction.models import Story, Chapter, Comment, StoryEditLogItem
+
+
 class StreamStories(ObjectList):
-    
     paginate_by = settings.STORIES_COUNT['stream']
-    
-    @property
-    def template_name(self):
-        return 'stream/stories.html'
-    
-    @property
-    def page_title(self):
-        return u'Лента добавлений'
-    
-    @cached_as(Story.objects.all()) # workaround for https://github.com/Suor/django-cacheops/issues/29
+    template_name = 'stream/stories.html'
+    page_title = 'Лента добавлений'
+    view_name = 'stream_stories_page'
+
     def get_queryset(self):
-        return Story.objects.accessible(user=self.request.user).order_by('-date')
-    
+        return Story.objects.published.order_by('-date').prefetch_for_list
+
+
+class TopStories(StreamStories):
+    page_title = 'Топ рассказов'
+    view_name = 'top_stories'
+
+    def get_queryset(self):
+        return Story.objects.published.filter(vote_total__gt=settings.STARS_MINIMUM_VOTES).order_by('-vote_average')
+
+
 class StreamChapters(ObjectList):
-    
     context_object_name = 'chapters'
     paginate_by = settings.CHAPTERS_COUNT['stream']
-    
-    @property
-    def template_name(self):
-        return 'stream/chapters.html'
-    
-    @property
-    def page_title(self):
-        return u'Лента обновлений'
-    
+    template_name = 'stream/chapters.html'
+    page_title = 'Лента обновлений'
+
     def get_queryset(self):
-        return Chapter.objects.filter(story__in=Story.objects.accessible(user=self.request.user)).order_by('-date').cache()
-    
+        return Chapter.objects.filter(story__in=Story.objects.published).order_by('-date').cache()
+
+
 class StreamComments(ObjectList):
-    
     context_object_name = 'comments'
     paginate_by = settings.COMMENTS_COUNT['stream']
-    
-    @property
-    def template_name(self):
-        return 'stream/comments.html'
-    
-    @property
-    def page_title(self):
-        return u'Лента комментариев'
+    template_name = 'stream/comments.html'
+    page_title = 'Лента комментариев'
     
     def get_queryset(self):
-        return Comment.objects.filter(story__in=Story.objects.accessible(user=self.request.user)).order_by('-date').cache()
+        return Comment.objects.filter(story__in=Story.objects.published).order_by('-date').cache()
+
+
+class StreamStoryEditLog(ObjectList):
+    context_object_name = 'edit_log'
+    paginate_by = getattr(settings, 'EDIT_LOGS_PER_PAGE', 100)
+    template_name = 'story_edit_log.html'
+    page_title = 'Лог модерации'
+    view_name = 'stream_edit_log'
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return StoryEditLogItem.objects.filter(is_staff = True).order_by('date').select_related()
+        else:
+            raise PermissionDenied
