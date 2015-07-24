@@ -4,6 +4,7 @@
 .idea
 /sphinx
 /.settings
+/static
 /media
 /env
 *.sqlite
