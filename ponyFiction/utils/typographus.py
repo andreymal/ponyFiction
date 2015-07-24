@@ -96,7 +96,7 @@ known_single_quotes = ( 'apostrophe',
 any_single_quote = '(?:%s)' % ('|'.join(map(unicodedata.lookup, known_single_quotes)))
 
 
-known_quotes = ( 'quotation mark', 
+known_quotes = ( 'quotation mark',
                  'left double quotation mark',
                  'right double quotation mark',
                  'modifier letter double prime',
@@ -156,24 +156,24 @@ def compile_ruleset(*ruleset):
 
 
 rules_symbols = compile_ruleset(
-    
+
     # пробелы между знаками препинания - нафик не нужны
     (r'(?<=%s)%s+(?=%s)' % (all_punctuation, space, all_punctuation), ''),
-    
+
     (r'!{3,}', '!!!'), # больше 3 заменяем на 3
     (r'(?<!!)!!(?!!)', '!'), # 2 меняем на 1
-    
+
     (r'\?{3,}', '???'), # аналогично
     (r'(?<!\?)\?\?(?!\?)', '?'),
-    
+
     (r';+', r';'), # эти знаки строго по одному
     (r':+', r':'),
     (r',+', r','),
-    
+
     (r'\+\++', '++'),
     (r'--+', '--'),
     (r'===+', '==='),
-    
+
     # убиваем эмобредни
     (r'!+\?+[!|\?]*', '?!'),
     (r'\?+!+[!|\?]*', '?!'),
@@ -182,231 +182,231 @@ rules_symbols = compile_ruleset(
     (r'\([cс]\)', sym['copy'], re.I), # русский и латинский варианты
     (r'\(r\)', sym['reg'], re.I),
     (r'\(tm\)', sym['trade'], re.I),
-    
+
     (r'\s+(?=[%s|%s|%s])' % (sym['trade'], sym['copy'], sym['reg']), ''),
-    
+
     # автор неправ. скорее всего малолетки балуются
     (r'\.{2,}', sym['hellip']),
-    
+
     # спецсимволы для 1/2 1/4 3/4
     (r'\b1/2\b', sym['1/2']),
     (r'\b1/4\b', sym['1/4']),
     (r'\b3/4\b', sym['3/4']),
-    
+
     # какая-то муть с апострофами
     # (r"(?<=%s)'(?=%s)" % (word, word), sym['rsquo']),
     # (r"'", sym['apos']),
     (any_single_quote, sym['rsquo']),
-    
-    
+
+
     # размеры 10x10, правильный знак + убираем лишние пробелы
     (r'(?<=\d)\s*[x|X|х|Х]\s*(?=\d)', sym['multiply']),
-    
+
     # +-
     (r'\+-', sym['plusmn']),
-    
+
     (r'(?<=\S)\s+(?=-+%s+|%s+-+)' % (arrow_right, arrow_left), sym['nbsp']), # неразрывные пробелы перед стрелками
     (r'(-+%s+|%s+-+)\s+(?=\S)' % (arrow_right, arrow_left), r'\1' + sym['nbsp']), # неразрывные пробелы после стрелок
-    
+
     # стрелки
     (r'<+-+', sym['larr']),
     (r'-+>+', sym['rarr']),
-    
+
     )
 
 rules_quotes = compile_ruleset(
-    
+
     # разносим неправильные кавычки
     #(r'([^"]\w+)"(\w+)"', '\g<1> "\g<2>"'),
     (r'([^"]\S+)"(\S+)"', r'\1 "\2"'),
     (r'"(\S+)"(\S+)', r'"\1" \2'),
-    
+
     # превращаем кавычки в ёлочки. Двойные кавычки склеиваем.
     # ((?:«|»|„|“|&quot;|"))((?:\.{3,5}|[a-zA-Zа-яА-Я_]|\n))
     ("(%s)(%s)" % (any_quote, phrase_begin), '%s\g<2>' % sym['lquote']),
-    
+
     # ((?:(?:\.{3,5}|[a-zA-Zа-яА-Я_])|[0-9]+))((?:«|»|„|“|&quot;|"))
     (r"((?:%s|%s|(?:[0-9]+)))(%s)" % (phrase_end, all_punctuation, any_quote), '\g<1>%s' % sym['rquote']),
-    
+
     (sym['rquote'] + any_quote, sym['rquote']+sym['rquote']),
     (any_quote + sym['lquote'], sym['lquote']+sym['lquote']),
-    
+
     )
 
 rules_braces = compile_ruleset(
-    
+
     # оторвать скобку от слова
     (r'(?<=\S)(?=%s)' % brace_open, ' '),
     (r'(?<=%s)(?=\S)' % brace_close, ' '),
-    
+
     # слепляем скобки со словами
     (r'(?<=%s)\s' % brace_open, ''),
     (r'\s(?=%s)' % brace_close, ''),
-    
+
     # между закрывающей скобкой и знаком препинания не нужен пробел
     (r'(?<=%s)%s(?=%s)' % (brace_close, space, all_punctuation), ''),
-    
+
     )
 
 rules_main = compile_ruleset(
-    
+
     # нахер пробелы перед знаками препинания
     (r'\s+(?=[\.,:;!\?])', ''),
-    
+
     # а вот после - очень даже кстати
     (r'(?<=[\.,:;!\?])(?![\.,:;!\?\s]|%s)' % (any_quote), ' '),
-    
+
     # знак дефиса, ограниченный с обоих сторон цифрами — на минус.
     (r'(?<=\d)-(?=\d)', sym['minus']),
-    
+
     # оторвать тире от слова
     (r'(?<=\w)-\s+', ' - '),
-    
+
     # неразрывные названия организаций и абревиатуры форм собственности
     (r'(%s)\s+"([^"]+)"' % abbr, nowrap(r'\1 "\2"')),
-    
+
     # нельзя отрывать сокращение от относящегося к нему слова.
     # например: тов. Сталин, г. Воронеж
-    # ставит пробел, если его нет. и точку тоже ставит на всякий случай ??????. :)  
+    # ставит пробел, если его нет. и точку тоже ставит на всякий случай ??????. :)
     (r'([^\w][%s])(\.?)\s*(?=[А-Я\d])' % shortages, r'\1\2%s' % sym['nbsp']),
-    
+
     # не отделять стр., с. и т.д. от номера.
     (r'([^\w][стр|табл|рис|илл])\.?\s*(?=\d+)', r'\1.%s' % sym['nbsp'], re.S | re.I),
-    
+
     # не разделять 2007 г., ставить пробел, если его нет. Ставит точку, если её нет. <- это бред
     # {"pat": '([0-9]+)\s*([гГ])\.\s', "rep": '\g<1>%s\g<2>. ' % sym['nbsp'], "mod": re.S},
     (r'(?<=\d{4,4})\.?\s?(гг?)\.?([^\w]?)', r'%s\1.\2' % sym['nbsp']),
-    
+
     # неразрывный пробел между цифрой и единицей измерения <- и это бред тоже
     # {"pat": '([0-9]+)\s*(%s)' % metrics, "rep": '\g<1>%s\g<2>' % sym['nbsp'], "mod": re.S},
     (r'(\d+)\s*(%s)\.?' % metrics, r'\1%s\2' % sym['nbsp'], re.S),
-    
+
     # Сантиметр в квадрате
     # ('(\s%s)(\d+)' % metr=ics, '\g<1><sup>\g<2></sup>'),
-    
-    # Знак дефиса или два знака дефиса подряд — на знак длинного тире. 
+
+    # Знак дефиса или два знака дефиса подряд — на знак длинного тире.
     # + Нельзя разрывать строку перед тире, например: Знание — сила, Курить — здоровью вредить.
     ('(\s+)(--?|—|%s)(?=\s)' % sym['mdash'], sym['nbsp'] + sym['mdash']),
     ('(^)(--?|—|%s)(?=\s)' % sym['mdash'], sym['mdash']),
-    
+
     # Нельзя оставлять в конце строки предлоги и союзы - убира слеш с i @todo переработать регулярку
     #{"pat": '(?<=\s|^|\W)(%s)(\s+)' % prepos, "rep": '\g<1>'+sym['nbsp'], "mod": re.I},
-    
+
     # Нельзя отрывать частицы бы, ли, же от предшествующего слова, например: как бы, вряд ли, так же.
     # {"pat": "(?<=\S)(\s+)(ж|бы|б|же|ли|ль|либо|или)(?=[\s)!?.])", "rep": sym['nbsp'] + '\g<2>'},
     (r'(?<=\S)\s+(ж|бы|б|же|ли|ль|либо|или)(?!\w)', sym['nbsp'] + r'\1'),
-    
+
     # # Неразрывный пробел после инициалов.
     ('([А-ЯA-Z]\.)\s?([А-ЯA-Z]\.)\s?([А-Яа-яA-Za-z]+)', '\g<1>\g<2>%s\g<3>' % sym['nbsp'], re.S),
-    
-    # Сокращения сумм не отделяются от чисел.         
+
+    # Сокращения сумм не отделяются от чисел.
     ('(\d+)\s?(%s)' % counts, '\g<1>%s\g<2>' % sym['nbsp'], re.S),
-    
+
     #«уе» в денежных суммах
     ('(\d+|%s)\s?уеs' % counts, '\g<1>%sу.е.' % sym['nbsp']),
-    
+
     # Денежные суммы, расставляя пробелы в нужных местах.
     ('(\d+|%s)\s?(%s)' %(counts, money), '\g<1>%s\g<2>' % sym['nbsp'], re.S),
-    
+
     # Номер версии программы пишем неразрывно с буковкой v.
     ('([vв]\.) ?([0-9])', '\g<1>%s\g<2>' % sym['nbsp'], re.I),
     ('(\w) ([vв]\.)', '\g<1>%s\g<2>' % sym['nbsp'], re.I),
-    
-    
+
+
     # % не отделяется от числа
     # {"pat": '([0-9]+)\s+%', "rep": '\g<1>%'}
     (r'(?<=\d)\s+(?=%)', ''),
-    
+
     )
 
 
 rules_smiles = compile_ruleset(
-    
+
     (r'[:|;|-]*?\){3,}', sym[':)']),
-    
+
 )
 
 
 final_cleanup = compile_ruleset(
-    
+
     (r'\s(?=%s)' % all_punctuation, ''),
-    
+
 )
 
 class Typographus:
-    
+
     encoding = None
-    
+
     def __init__(self, encoding = None):
         self.encoding = encoding
-        
+
     def addSafeBlock(self, openTag, closeTag):
         safeBlocks[openTag] = closeTag
-        
+
     def getSafeBlockPattern(self):
         pattern = '(';
         for key, value in safeBlocks.items():
             pattern += "%s.*%s|" % (key, value)
-            
+
         pattern+= '<[^>]*[\s][^>]*>)';
         return pattern
-    
-    
+
+
     def removeRedundantBlocks(self, string):
         blocks = {}
         def replace(m):
             value = m.group()
             if(len(value)==3):
                 return value
-            
+
             key = '<%s>' % (len(blocks))
             blocks[key] = value
             return key
-        
-        pattern = self.getSafeBlockPattern() 
-        
+
+        pattern = self.getSafeBlockPattern()
+
         string = re.compile(pattern, re.U|re.S|re.I).sub(replace, string)
-        
+
         string = re.compile(r"</?.*?/?>", re.U|re.S|re.I).sub(replace, string)
-        
+
         return {"replaced": string, "blocks": blocks}
-    
+
     def return_blocks_to_string(self, string, blocks):
         for key, value in blocks.items():
             string = string.replace(key, value)
         return string
-    
+
     def process(self, string):
-        
+
         if not isinstance(string, unicode):
-            string = unicode(string)        
-        
+            string = unicode(string)
+
         value = self.removeRedundantBlocks(string)
-        
+
         string = value["replaced"]
         blocks = value["blocks"]
-        
+
         string = self.typo_text(string)
-        
+
         string = self.return_blocks_to_string(string, blocks)
         return string
-    
+
     def typo_text(self, string):
-        
+
         if (string.strip() == ''):
             return ''
-        
+
         for rule_set in (rules_main, rules_symbols, rules_braces,
                          rules_quotes, rules_smiles, final_cleanup):
             string = reduce(lambda string, rule: rule(string), rule_set, string)
-        
+
         # вложенные кавычки
         #         i = 0
         #         lev = 5
-        
+
 #         matchLeftQuotes = re.compile('«(?:[^»]*?)«')#мачит две соседние левые елочки
 #         matchRightQuotes = re.compile('»(?:[^«]*?)»')
-        
+
 #         replaceOuterQuotes = re.compile('«([^»]*?)«(.*?)»')
 #         replaceRightQuotes = re.compile('»([^«]*?)»')
 #         while  i<5 and matchLeftQuotes.match(string):
@@ -417,9 +417,9 @@ class Typographus:
 #             while i<lev and matchRightQuotes.match(string):
 #                 i+=1
 #                 string = replaceRightQuotes.sub(sym['rquote2'] + '\g<1>%s' % q['rq'], string);
-        
+
 #         string = string.replace('<nowrap>', sym['lnowrap']).replace('</nowrap>', sym['rnowrap'])
-        
+
         return string.strip()
 
 def typo(string):

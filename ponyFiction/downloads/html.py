@@ -8,4 +8,3 @@ class HTMLDownload(ZipFileDownloadFormat):
     name = 'HTML'
     chapter_template = 'chapter_pure_html.html'
     chapter_extension = 'html'
-

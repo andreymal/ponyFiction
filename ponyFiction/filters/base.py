@@ -52,7 +52,7 @@ def xslt_transform_loader(file_path):
     dir_path = os.path.dirname(file_path)
     def factory(xslt_name):
         xslt_path = os.path.join(dir_path, xslt_name)
-        
+
         if not django_settings.DEBUG:
             transform_ = load_xslt_transform(xslt_path)
             def transform(doc, **kw):
@@ -63,17 +63,17 @@ def xslt_transform_loader(file_path):
                 kw = transform_xslt_params(kw)
                 transform = load_xslt_transform(xslt_path)
                 return transform(doc, **kw).getroot()
-        
+
         return html_doc_transform(transform)
-    return factory    
+    return factory
 
 
 def html_doc_to_string(doc):
     if isinstance(doc, str):
         return doc
-    
+
     body = doc.xpath('//body')
     if len(body) < 1: return ''
     body = body[0]
     doc = ''.join([(body.text or '')] + [etree.tounicode(elem, method='html') for elem in body.getchildren()])
-    return doc 
+    return doc

@@ -41,4 +41,3 @@ class AuthorRegistrationForm(RegistrationFormUniqueEmail):
         label="Капча",
         error_messages={'captcha_invalid': 'Это какая-то неправильная капча. Пожалуйста, введите снова.'}
         )
-
