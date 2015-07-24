@@ -5,6 +5,7 @@
 /sphinx
 /.settings
 /media
-env
-*.sqlite
-local_settings.py
+/env
+*.sqlite3
+/ponyFiction/environments/local.py
+/environment.txt

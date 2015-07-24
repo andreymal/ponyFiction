@@ -1,9 +1,13 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Django settings for ponyFiction project.
+
 import os
 from ponyFiction.apis.sphinxapi import SPH_MATCH_ALL, SPH_RANK_SPH04
 
-DEBUG = True
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(PROJECT_DIR)
+
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -11,14 +15,13 @@ ADMINS = (
 )
 DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS' : False}
 MANAGERS = ADMINS
+
+DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS' : False}
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'fanfics',
-        'USER': 'fanfics',
-        'PASSWORD': 'twilightsparkle',
-        'HOST': '',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -28,6 +31,7 @@ SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
 USE_TZ = False
+
 MEDIA_ROOT = os.path.join(os.path.dirname(__file__), os.pardir, 'media')
 MEDIA_URL = '/media/'
 
@@ -80,7 +84,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'ponyFiction',
     'django.contrib.admin',
-    'debug_toolbar',
     'registration',
 )
 
@@ -144,18 +147,22 @@ COMMENTS_COUNT = {
 STORIES_COUNT = {'page' : 10, 'main' : 10, 'stream' : 20}
 CHAPTERS_COUNT = {'page' : 10, 'main' : 10, 'stream' : 20}
 COMMENTS_ORPHANS = 5
-COMMENT_MIN_LENGTH = 0
+COMMENT_MIN_LENGTH = 1
 BRIEF_COMMENT_LENGTH = 100
+
 RSS = {'stories': 20, 'chapters': 20, 'comments': 100}
+
 AUTH_USER_MODEL = 'ponyFiction.Author'
 AUTHENTICATION_BACKENDS = ('ponyFiction.auth_backends.AuthorModelBackend',)
 ACCOUNT_ACTIVATION_DAYS = 5
+
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'noreply@stories.everypony.ru'
+
 RECAPTCHA_PUBLIC_KEY = '6LfbstoSAAAAAAcFIteoZTld24mt3s6_sODZnc8J'
 RECAPTCHA_PRIVATE_KEY = '6LfbstoSAAAAAHHN9jYw9Lp9lsunQCILAyAYgoxz'
 ALLOWED_TAGS = [
@@ -185,14 +192,13 @@ CHAPTER_ALLOWED_ATTRIBUTES = {
     'a': ['href', 'rel', 'title'],
     'span': ['align'],
     'p': ['align'],
-	'footnote': ['id'],
+    'footnote': ['id'],
     'font': ['size', 'color'],
 }
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
 
@@ -205,27 +211,47 @@ STORY_DOWNLOAD_FORMATS = reversed((
     # 'ponyFiction.downloads.txt.TXT_CP1251Download',
 ))
 
-try:
-    from local_settings import *
-except ImportError:
-    pass
 
 CACHEOPS_REDIS = {
     'host': 'localhost',
     'port': 6379,
     'socket_timeout': 3,
 }
-CACHEOPS = {
-    'auth.user': ('get', 60*15),
-    'ponyFiction.Story': ('get', 60*60*3),
-    'ponyFiction.Chapter': ('get', 60*60*3),
-    'ponyFiction.Comment': ('get', 60*60*3),
-    
-    'ponyFiction.Character': ('all', 60*60*24*30),
-    'ponyFiction.Category': ('all', 60*60*24*30),
-    'ponyFiction.Classifier': ('all', 60*60*24*30),
-    'ponyFiction.Rating': ('all', 60*60*24*30),
-    
-    'auth.*': ('all', 60*60),
-    '*.*': ('just_enable', 60*60),
+
+CACHEOPS_DEFAULTS = {
+    'timeout': 3600
 }
+
+CACHEOPS = {
+    'auth.user': {'ops': 'get', 'timeout': 60 * 15},
+    'ponyFiction.Story': {'ops': 'get', 'timeout': 3600 * 3},
+    'ponyFiction.Chapter': {'ops': 'get', 'timeout': 3600 * 3},
+    'ponyFiction.Comment': {'ops': 'get', 'timeout': 3600 * 3},
+    
+    'ponyFiction.Character': {'ops': 'all', 'timeout': 3600 * 24 *30},
+    'ponyFiction.Category': {'ops': 'all', 'timeout': 3600 * 24 *30},
+    'ponyFiction.Classifier': {'ops': 'all', 'timeout': 3600 * 24 * 30},
+    'ponyFiction.Rating': {'ops': 'all', 'timeout': 3600 * 24 * 30},
+    
+    'auth.*': {'ops': 'all', 'timeout': 3600},
+    '*.*': {'ops': 'just_enable', 'timeout': 3600},
+}
+
+
+REGISTRATION_OPEN = True
+
+
+# specify current environment
+
+ENV = os.getenv('DJANGO_ENV')
+if not ENV:
+    ENV = open(os.path.join(BASE_DIR, 'environment.txt'), 'rb').read().strip().decode('utf-8', 'replace')
+
+if ENV in ('test', 'development', 'staging', 'production'):
+    env_path = os.path.join(PROJECT_DIR, 'environments', ENV + '.py')
+    if os.path.isfile(env_path):
+        exec(open(env_path, 'rb').read())
+
+local_path = os.path.join(PROJECT_DIR, 'environments', 'local.py')
+if os.path.isfile(local_path):
+    exec(open(local_path, 'rb').read())
