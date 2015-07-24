@@ -1,14 +1,17 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 import json
-from django.conf import settings
-from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models import Count, Sum, F
-from django.utils.safestring import mark_safe
-from django.core.urlresolvers import reverse
-from django.contrib.staticfiles.storage import staticfiles_storage
+from django.conf import settings
 from django.core.cache import cache
+from django.db.models import Count, Sum, F, Prefetch
+from django.core.urlresolvers import reverse
+from django.utils.safestring import mark_safe
 from ponyFiction.fields import SeparatedValuesField
+from django.contrib.auth.models import AbstractUser
+from django.contrib.staticfiles.storage import staticfiles_storage
+
 from ponyFiction.filters import filter_html, filtered_html_property
 from ponyFiction.filters.base import html_doc_to_string
 from ponyFiction.filters.html import footnotes_to_html
@@ -27,12 +30,12 @@ class Author(AbstractUser):
     skype = models.CharField(max_length=256, blank=True, verbose_name="Skype ID")
     tabun = models.CharField(max_length=256, blank=True, verbose_name="Табун")
     forum = models.URLField(max_length=200, blank=True, verbose_name="Форум")
-    vk = models.URLField(max_length=200, blank=True, verbose_name="VK")
+    vk = models.CharField(max_length=200, blank=True, verbose_name="VK")
     excluded_categories = SeparatedValuesField(max_length=200, null=True, verbose_name="Скрытые категории")
     detail_view = models.BooleanField(default=False, verbose_name="Детальное отображение рассказов")
     nsfw = models.BooleanField(default=False, verbose_name="NSFW без предупреждения")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.username
 
     class Meta:
@@ -65,15 +68,17 @@ class Author(AbstractUser):
         try:
             key = 'tabun_avatar:' + self.tabun
             url = cache.get(key, None)
-            if not url:
-                import urllib2
-                from urlparse import urljoin
+            if settings.LOAD_TABUN_AVATARS and not url:
+                import urllib.request
+                from urllib.parse import urljoin
                 import random
                 import lxml.etree as etree
 
-                profile_url = 'http://tabun.everypony.ru/profile/' + self.tabun
-                data = urllib2.urlopen(profile_url).read()
-                doc = etree.HTML(data)
+                profile_url = 'https://tabun.everypony.ru/profile/' + self.tabun  # TODO: url injection?
+                req = urllib.request.Request(profile_url)
+                req.add_header('User-Agent', 'Mozilla/5.0; ponyFiction')  # for CloudFlare
+                data = urllib.request.urlopen(req).read()
+                doc = etree.HTML(data.decode('utf-8'))  # pylint: disable=no-member
                 links = doc.xpath('//*[contains(@class, "profile-info-about")]//a[contains(@class, "avatar")]/img/@src')
                 if links:
                     url = urljoin(profile_url, links[0])
@@ -92,12 +97,13 @@ class CharacterGroup(models.Model):
     name = models.CharField(max_length=256, verbose_name="Название группы")
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание группы")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
         verbose_name = "Группа персонажей"
         verbose_name_plural = "Группы персонажей"
+
 
 class Character(models.Model):
     """ Модель персонажа """
@@ -106,38 +112,41 @@ class Character(models.Model):
     name = models.CharField(max_length=256, verbose_name="Имя")
     group = models.ForeignKey(CharacterGroup, null=True, verbose_name="Группа персонажа")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
         verbose_name = "персонаж"
         verbose_name_plural = "персонажи"
 
+
 class Category(models.Model):
-    """ Модель категории """
+    """ Модель жанра """
 
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = "категория"
-        verbose_name_plural = "категории"
+        verbose_name = "жанр"
+        verbose_name_plural = "жанры"
+
 
 class Classifier(models.Model):
-    """ Модель классификатора """
+    """ Модель события """
 
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = "классификатор"
-        verbose_name_plural = "классификаторы"
+        verbose_name = "событие"
+        verbose_name_plural = "события"
+
 
 class Rating(models.Model):
     """ Модель рейтинга """
@@ -145,21 +154,23 @@ class Rating(models.Model):
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
         verbose_name = "рейтинг"
         verbose_name_plural = "рейтинги"
 
+
 class BetaReading(models.Model):
     """ Промежуточная модель хранения взаимосвязей рассказов, бета-читателей и результатов вычитки """
 
     beta = models.ForeignKey(Author, null=True, verbose_name="Бета")
-    story = models.ForeignKey('Story', null=True, verbose_name="История вичитки")
+    story = models.ForeignKey('Story', null=True, verbose_name="История вычитки")
     checked = models.BooleanField(default=False, verbose_name="Вычитано бетой")
 
-    def __unicode__(self):
+    def __str__(self):
+        # TODO: self.name is not defined?
         if self.checked:
             return "%s -> %s [OK]" % self.name
         else:
@@ -183,6 +194,7 @@ class InSeriesPermissions(models.Model):
         verbose_name = "добавление в серию"
         verbose_name_plural = "добавления в серию"
 
+
 class CoAuthorsStory(models.Model):
     """ Промежуточная модель хранения взаимосвязей авторства рассказов (включая соавторов) """
 
@@ -190,8 +202,9 @@ class CoAuthorsStory(models.Model):
     story = models.ForeignKey('Story', verbose_name="Рассказ")
     approved = models.BooleanField(default=False, verbose_name="Подтверждение")
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s %s' % (self.author.username, self.story.title)
+
 
 class CoAuthorsSeries(models.Model):
     """ Промежуточная модель хранения взаимосвязей авторства серий (включая соавторов) """
@@ -200,13 +213,14 @@ class CoAuthorsSeries(models.Model):
     series = models.ForeignKey('Series', null=True, verbose_name="Серия")
     approved = models.BooleanField(default=False, verbose_name="Подтверждение")
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s %s' % (self.author.username, self.series.title)
+
 
 class Series(models.Model):
     """ Модель серии """
 
-    authors = models.ManyToManyField(Author, through='CoAuthorsSeries', verbose_name=u"Авторы")
+    authors = models.ManyToManyField(Author, through='CoAuthorsSeries', verbose_name="Авторы")
     cover = models.BooleanField(default=False, verbose_name="Наличие обложки")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
     draft = models.BooleanField(default=True, verbose_name="Черновик")
@@ -224,7 +238,7 @@ class Series(models.Model):
         verbose_name = "серия"
         verbose_name_plural = "серии"
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
 
@@ -261,39 +275,40 @@ class StoryQuerySet(models.query.QuerySet):
 
 
 class StoryManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         return StoryQuerySet(self.model, using=self._db)
 
     def __getattr__(self, attr, *args, **kwargs):
         try:
             return getattr(self.__class__, attr, *args, **kwargs)
         except AttributeError:
-            return getattr(self.get_query_set(), attr, *args, **kwargs)
+            return getattr(self.get_queryset(), attr, *args, **kwargs)
 
-class Story (models.Model):
+
+class Story(models.Model):
     """ Модель рассказа """
 
     title = models.CharField(max_length=512, verbose_name="Название")
-    authors = models.ManyToManyField(Author, null=True, through='CoAuthorsStory', verbose_name=u"Авторы")
-    betas = models.ManyToManyField(Author, through='BetaReading', related_name="beta_set", verbose_name=u"Бета-читатели")
-    characters = models.ManyToManyField(Character, blank=True, null=True, verbose_name='Персонажи')
+    authors = models.ManyToManyField(Author, blank=True, through='CoAuthorsStory', verbose_name="Авторы")
+    betas = models.ManyToManyField(Author, through='BetaReading', related_name="beta_set", verbose_name="Бета-читатели")
+    characters = models.ManyToManyField(Character, blank=True, verbose_name='Персонажи')
     categories = models.ManyToManyField(Category, verbose_name='Жанры')
-    classifications = models.ManyToManyField(Classifier, blank=True, null=True, verbose_name='События')
-    cover = models.BooleanField(default=False, verbose_name="Наличие обложки", editable = False)
+    classifications = models.ManyToManyField(Classifier, blank=True, verbose_name='События')
+    cover = models.BooleanField(default=False, verbose_name="Наличие обложки", editable=False)
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
     draft = models.BooleanField(default=True, verbose_name="Черновик")
     approved = models.BooleanField(default=False, verbose_name="Одобрен")
     finished = models.BooleanField(default=False, verbose_name="Закончен")
     freezed = models.BooleanField(default=False, verbose_name='Заморожен')
-    favorites = models.ManyToManyField(Author, through='Favorites', blank=True, null=True, related_name="favorites_story_set", verbose_name="Избранность")
-    bookmarks = models.ManyToManyField(Author, through='Bookmark', blank=True, null=True, related_name="bookmarked_story_set", verbose_name="Отложённость")
-    in_series = models.ManyToManyField(Series, through='InSeriesPermissions', blank=True, null=True, verbose_name="Принадлежность к серии")
+    favorites = models.ManyToManyField(Author, through='Favorites', blank=True, related_name="favorites_story_set", verbose_name="Избранность")
+    bookmarks = models.ManyToManyField(Author, through='Bookmark', blank=True, related_name="bookmarked_story_set", verbose_name="Отложённость")
+    in_series = models.ManyToManyField(Series, through='InSeriesPermissions', blank=True, verbose_name="Принадлежность к серии")
     notes = models.TextField(max_length=4096, blank=True, verbose_name="Заметки к рассказу")
     original = models.BooleanField(default=True, verbose_name="Оригинальный (не перевод)")
     rating = models.ForeignKey(Rating, null=True, verbose_name="Рейтинг")
     summary = models.TextField(max_length=4096, verbose_name="Общее описание")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
-    vote = models.ManyToManyField('Vote', null=True, verbose_name="Голоса за рассказ")
+    vote = models.ManyToManyField('Vote', verbose_name="Голоса за рассказ")
     vote_up_count = models.PositiveIntegerField(default = 0, editable = settings.DEBUG)
     vote_down_count = models.PositiveIntegerField(default = 0, editable = settings.DEBUG)
     vote_rating = models.FloatField(default = 0, editable = settings.DEBUG)
@@ -308,7 +323,7 @@ class Story (models.Model):
             ['approved', 'draft', 'vote_rating'],
         ]
 
-    def __unicode__(self):
+    def __str__(self):
         return u"[+%s/-%s] %s" % (self.vote_up_count, self.vote_down_count, self.title)
 
     def get_vote_up_count(self):
@@ -352,6 +367,10 @@ class Story (models.Model):
             img += '.png'
             yield img
 
+    @property
+    def published(self):
+        return bool(self.approved and not self.draft)
+
     # Количество просмотров
     @property
     def views(self):
@@ -383,7 +402,7 @@ class Story (models.Model):
 
     @property
     def nsfw(self):
-        return True if self.rating.id == 1 else False
+        return True if self.rating_id in settings.NSFW_RATING_IDS else False
 
     summary_as_html = filtered_html_property('summary', filter_html)
     notes_as_html = filtered_html_property('notes', filter_html)
@@ -399,10 +418,10 @@ class Story (models.Model):
         return downloads
 
     def get_absolute_url(self):
-        return reverse('story_view', kwargs = dict(pk = self.pk))
+        return reverse('story_view', kwargs=dict(pk=self.pk))
 
 
-class Chapter (models.Model):
+class Chapter(models.Model):
     """ Модель главы """
 
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
@@ -419,7 +438,7 @@ class Chapter (models.Model):
         verbose_name = "глава"
         verbose_name_plural = "главы"
 
-    def __unicode__(self):
+    def __str__(self):
         return '[%s / %s] %s' % (self.id, self.order, self.title)
 
     def get_absolute_url(self):
@@ -437,6 +456,10 @@ class Chapter (models.Model):
         except Chapter.DoesNotExist:
             return None
 
+    @property
+    def published(self):
+        return self.story.published
+
     # Количество просмотров
     @property
     def views(self):
@@ -451,9 +474,12 @@ class Chapter (models.Model):
     def text_as_html(self):
         try:
             doc = self.get_filtered_chapter_text()
-            doc = footnotes_to_html(doc)  
-            return mark_safe(html_doc_to_string(doc)) 
-        except Exception:
+            doc = footnotes_to_html(doc)
+            return mark_safe(html_doc_to_string(doc))
+        except:
+            if settings.DEBUG:
+                import traceback
+                return traceback.format_exc()
             return "#ERROR#"
 
     def get_filtered_chapter_text(self):
@@ -462,6 +488,7 @@ class Chapter (models.Model):
             tags = settings.CHAPTER_ALLOWED_TAGS,
             attributes = settings.CHAPTER_ALLOWED_ATTRIBUTES,
         )
+
 
 class Comment(models.Model):
     """ Модель комментария """
@@ -477,7 +504,7 @@ class Comment(models.Model):
         verbose_name = "комментарий"
         verbose_name_plural = "комментарии"
 
-    def __unicode__(self):
+    def __str__(self):
         return self.text
 
     def editable_by(self, author):
@@ -514,6 +541,7 @@ class Vote(models.Model):
         verbose_name = "голос"
         verbose_name_plural = "голоса"
 
+
 class Favorites(models.Model):
     """ Модель избранного """
 
@@ -525,8 +553,9 @@ class Favorites(models.Model):
         verbose_name = "избранное"
         verbose_name_plural = "избранное"
 
-    def __unicode__(self):
-        return "%s: %s [%s]" % (self.author.username, self.story.title, self.date)    
+    def __str__(self):
+        return "%s: %s [%s]" % (self.author.username, self.story.title, self.date)
+
 
 class Bookmark(models.Model):
     """ Модель закладок """
@@ -539,8 +568,8 @@ class Bookmark(models.Model):
         verbose_name = "закладка рассказа"
         verbose_name_plural = "закладки рассказов"
 
-    def __unicode__(self):
-            return u"%s | %s" % (self.author.username, self.story.title)
+    def __str__(self):
+            return "%s | %s" % (self.author.username, self.story.title)
 
 
 class StoryView(models.Model):
@@ -555,7 +584,7 @@ class StoryView(models.Model):
         verbose_name = "просмотр"
         verbose_name_plural = "просмотры"
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s: %s" % (self.author.username, self.story.title)
 
 
@@ -574,7 +603,7 @@ class Activity(models.Model):
         verbose_name = "активность"
         verbose_name_plural = "активность"
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s: %s [v:%s c:%s (+):%s (-):%s]" % (self.author.username, self.story.title, self.last_views, self.last_comments, self.last_vote_up, self.last_vote_down)
 
 
@@ -587,18 +616,18 @@ class StoryEditLogItem(models.Model):
         Edit = 5
 
         action_verbs = {
-            Publish: u'опубликовал',
-            Unpublish: u'отправил в черновики',
-            Approve: u'одобрил',
-            Unapprove: u'отозвал',
-            Edit: u'отредактировал',
+            Publish: 'опубликовал',
+            Unpublish: 'отправил в черновики',
+            Approve: 'одобрил',
+            Unapprove: 'отозвал',
+            Edit: 'отредактировал',
         }
 
     user = models.ForeignKey(Author)
     story = models.ForeignKey(Story, related_name='edit_log')
     action = models.SmallIntegerField(choices=Actions.action_verbs.items())
     json_data = models.TextField(null=True)
-    date = models.DateTimeField(auto_now_add=True, db_index = True)
+    date = models.DateTimeField(auto_now_add=True, db_index=True)
     is_staff = models.BooleanField()
 
     def action_verb(self):

@@ -1,12 +1,14 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from ponyFiction.apis.recaptcha.fields import ReCaptchaField
+
+# from ponyFiction.apis.recaptcha.fields import ReCaptchaField
 from registration.forms import RegistrationFormUniqueEmail
 from django.forms import CharField, EmailField, PasswordInput, RegexField, TextInput
 
 
 attrs_dict = {'class': 'required input-xlarge'}
 username_field = RegexField(
-    regex=ur'^[0-9a-zA-Z\u0430-\u044f\u0410-\u042f\u0451\u0401_@+-.. ]+$',
+    regex=r'^[0-9a-zA-Z\u0430-\u044f\u0410-\u042f\u0451\u0401_@+-.. ]+$',
     widget=TextInput(attrs=dict(attrs_dict, maxlength=32)),
     max_length=32,
     label='Логин',
@@ -34,8 +36,9 @@ class AuthorRegistrationForm(RegistrationFormUniqueEmail):
         label="Пароль (опять)",
         help_text='Повторите пароль, чтобы не забыть',
         )
-    recaptcha = ReCaptchaField(
-        label="Капча",
-        help_text='Введите два слова выше. Если трудно разобрать, обновите.',
-        error_messages={'captcha_invalid': 'Это какая-то неправильная капча. Пожалуйста, введите снова.'}
-        )
+    # recaptcha = ReCaptchaField(
+    #     label="Капча",
+    #     help_text='Введите два слова выше. Если трудно разобрать, обновите.',
+    #     error_messages={'captcha_invalid': 'Это какая-то неправильная капча. Пожалуйста, введите снова.'}
+    #     )
+

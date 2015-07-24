@@ -1,7 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from django.conf import settings
 from django.contrib.auth.backends import ModelBackend
 from django.core.exceptions import ImproperlyConfigured
-from django.db.models import get_model
+from django.apps import apps
+
 
 class AuthorModelBackend(ModelBackend):
     def authenticate(self, username=None, password=None):
@@ -21,7 +25,7 @@ class AuthorModelBackend(ModelBackend):
     @property
     def user_class(self):
         if not hasattr(self, '_user_class'):
-            self._user_class = get_model(*settings.AUTH_USER_MODEL.split('.', 2))
+            self._user_class = apps.get_model(settings.AUTH_USER_MODEL)
             if not self._user_class:
                 raise ImproperlyConfigured('Could not get custom user model')
         return self._user_class

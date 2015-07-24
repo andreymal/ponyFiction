@@ -5,14 +5,17 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
-from ponyFiction.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm, AuthorEditPrefsForm
-from ponyFiction.models import Author, Comment, Vote, Story, StoryView
 from django.core.exceptions import PermissionDenied
 from cacheops.invalidation import invalidate_obj
+
+from ponyFiction.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm, AuthorEditPrefsForm
+from ponyFiction.models import Author, Comment, Vote, Story, StoryView
+
 
 @csrf_protect
 def author_info(request, user_id, comments_page):
     data = {}
+
     if user_id is None:
         author = request.user
         comments_list = Comment.objects.filter(story__authors=request.user.id).order_by('-date').cache()
@@ -26,6 +29,7 @@ def author_info(request, user_id, comments_page):
         data['page_title'] = u'Автор: %s' % author.username
         stories = author.story_set.accessible(user=request.user)
         template = 'author_overview.html'
+
     comments_count = comments_list.count()
     series = author.series_set.all().cache()
     votes = [Vote.objects.filter(plus=True).filter(story__authors__id=author.id).cache().count(),
@@ -34,6 +38,7 @@ def author_info(request, user_id, comments_page):
     num_pages = comments_paged.num_pages
     page_current = int(comments_page) if (0 < int(comments_page) <= num_pages) else 1
     comments = comments_paged.page(page_current)
+
     data.update({
             'author' : author,
             'stories': stories,

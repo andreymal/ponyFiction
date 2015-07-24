@@ -12,10 +12,10 @@ def index(request):
     chapters = Chapter.objects.filter(story__in=Story.objects.published).exclude(order=1).order_by('-date').cache()[0:settings.CHAPTERS_COUNT['main']]
     comments = Comment.objects.filter(story__in=Story.objects.published).order_by('-date').cache()[0:settings.COMMENTS_COUNT['main']]
     data = {
-            'categories' : categories,
-            'stories' : stories,
-            'chapters' : chapters,
-            'comments' : comments,
-            'page_title' : page_title,
-            }
+        'categories' : categories,
+        'stories' : stories,
+        'chapters' : chapters,
+        'comments' : comments,
+        'page_title' : page_title,
+    }
     return render(request, 'index.html', data)

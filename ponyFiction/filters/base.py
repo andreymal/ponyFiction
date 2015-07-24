@@ -1,40 +1,44 @@
+#!/ust/bin/env python
+# -*- coding: utf-8 -*-
+
+# pylint: disable=no-member
+
 import os
 import re
-from lxml import etree
 from functools import wraps
-try:
-    from django.conf import settings as django_settings
-    django_settings.DEBUG
-except ImportError:
-    class django_settings:
-        DEBUG = False
+
+from lxml import etree
+from django.conf import settings as django_settings
 
 
 def load_xslt_transform(file_path):
-    with file(file_path, 'rb') as f:
+    with open(file_path, 'rb') as f:
         return etree.XSLT(etree.XML(f.read(), base_url = file_path))
-    
+
+
 def html_doc_transform(fn):
     @wraps(fn)
     def wrapper(doc, **kw):
-        if isinstance(doc, basestring):
+        if isinstance(doc, str):
             doc = etree.HTML(doc or '<body></body>')
         return fn(doc, **kw)
     return wrapper
 
+
 def html_text_transform(fn):
     @wraps(fn)
     def wrapper(doc):
-        if not isinstance(doc, basestring):
+        if not isinstance(doc, str):
             doc = html_doc_to_string(doc)
         return fn(doc)
     return wrapper
-    
+
+
 def transform_xslt_params(kw):
     for key, value in kw.items():
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             value = etree.XSLT.strparam(value)
-        elif type(value) in (int, long, float):
+        elif type(value) in (int, float):
             value = str(value)
         elif type(value) is bool:
             value = 'true()' if value else 'false()'
@@ -42,7 +46,8 @@ def transform_xslt_params(kw):
             raise TypeError(key)
         kw[key] = value
     return kw
-    
+
+
 def xslt_transform_loader(file_path):
     dir_path = os.path.dirname(file_path)
     def factory(xslt_name):
@@ -61,9 +66,10 @@ def xslt_transform_loader(file_path):
         
         return html_doc_transform(transform)
     return factory    
-    
+
+
 def html_doc_to_string(doc):
-    if isinstance(doc, basestring):
+    if isinstance(doc, str):
         return doc
     
     body = doc.xpath('//body')

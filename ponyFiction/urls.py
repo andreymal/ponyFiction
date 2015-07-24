@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
@@ -6,14 +8,13 @@ from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 from ponyFiction import feeds
 from ponyFiction.forms.register import AuthorRegistrationForm
-from ponyFiction.views import search, author
+from ponyFiction.views import author
 from ponyFiction.views.chapter import ChapterAdd, ChapterEdit, ChapterDelete
 from ponyFiction.views.comment import CommentEdit, CommentAdd, CommentDelete
 from ponyFiction.views.index import index
 from ponyFiction.views.object_lists import FavoritesList, SubmitsList, BookmarksList
 from ponyFiction.views.story import StoryAdd, StoryEdit, StoryDelete
 from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments, TopStories, StreamStoryEditLog
-from registration.views import activate, register
 
 admin.autodiscover()
 
@@ -23,8 +24,8 @@ urlpatterns = patterns('', url(r'^$', index, name='index'))
 urlpatterns += patterns('', url(r'^admin/', include(admin.site.urls)))
 # Поиск
 urlpatterns += patterns('',
-    url(r'^search/$', search.search_main, name='search'),
-    url(r'^search/(?P<search_type>\w+)/(?P<search_id>\d+)/$', search.search_simple, name='search_simple')
+    url(r'^search/$', index, name='search'),
+    url(r'^search/(?P<search_type>\w+)/(?P<search_id>\d+)/$', index, name='search_simple')
 )
 # Избранное
 urlpatterns += patterns('',
@@ -63,34 +64,6 @@ urlpatterns += patterns('',
     url(r'^accounts/(?P<user_id>\d+)/approve/$', author.author_approve, name='author_approve'),
     url(r'^accounts/(?P<user_id>\d+)/ban/$', author.author_ban, name='author_ban'),
 
-    url(r'^accounts/registration/$',
-        register,
-        {
-            'backend': 'registration.backends.default.DefaultBackend',
-            'form_class': AuthorRegistrationForm,
-            'extra_context': {'page_title': 'Регистрация'}
-        },
-        name='registration_register'),
-    url(r'^accounts/registration/complete/$',
-        TemplateView.as_view(
-            template_name='registration/registration_complete.html',
-            get_context_data=lambda: {'page_title': 'Завершение регистрации'},
-        ),
-        name='registration_complete'),
-    url(r'^accounts/activate/complete/$',
-        TemplateView.as_view(
-            template_name='registration/activation_complete.html',
-            get_context_data=lambda: {'page_title': 'Активация'},
-        ),
-        name='registration_activation_complete'),
-    url(r'^accounts/activate/(?P<activation_key>\w+)/$',
-        activate,
-        {
-            'backend': 'registration.backends.default.DefaultBackend',
-            'template_name': 'registration/activate.html',
-            'success_url' : '/accounts/activate/complete/'
-        },
-        name='registration_activate'),
     url(r'^accounts/registration/closed/$',
         TemplateView.as_view(
             template_name='registration/registration_closed.html',
@@ -135,6 +108,7 @@ urlpatterns += patterns('',
          'extra_context': {'page_title': 'Восстановление пароля: пароль восстановлен'}
          },
         ),
+    url(r'^accounts/', include('registration.backends.default.urls')),
 )
 # AJAX
 urlpatterns += patterns('', (r'^ajax/', include('ponyFiction.ajax.urls')))

@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
@@ -17,12 +19,13 @@ admin.site.register(Chapter, ChapterAdmin)
 admin.site.register([Character, CharacterGroup, Category, Classifier, Rating, Series, Comment, BetaReading])
 
 
-
 class AuthorChangeForm(UserChangeForm):
     username = username_field
 
     class Meta:
         model = Author
+        fields = '__all__'
+
 
 class AuthorAdmin(UserAdmin):
     form = AuthorChangeForm

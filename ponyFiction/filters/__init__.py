@@ -1,14 +1,18 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import re
+
 from django.utils.safestring import mark_safe
 from django.conf import settings
-from .typographus import typo
-from .base import html_doc_to_string
-from .html import normalize_html, footnotes_to_html
-from ponyFiction.filters.base import html_doc_transform, transform_xslt_params
 
+from .typographus import typo
+from .base import html_doc_to_string, html_doc_transform, transform_xslt_params
+from .html import normalize_html, footnotes_to_html
 
 
 empty_lines_re = re.compile(r'\n[\s\n]*\n')
+
 
 def filter_html(text,
                 tags = settings.ALLOWED_TAGS,
@@ -20,7 +24,7 @@ def filter_html(text,
         attributes = attributes
     )
     return doc
-    
+
 def filtered_html_property(name, filter_):
     def fn(self):
         try:
@@ -31,8 +35,8 @@ def filtered_html_property(name, filter_):
             traceback.print_exc()
             return "#ERROR#"
     return property(fn)
-    
-    
+
+
 _filter_transforms = {}   
 @html_doc_transform
 def _filter_html(doc, tags, attributes, **kw):
@@ -53,7 +57,8 @@ def _filter_html(doc, tags, attributes, **kw):
         
     kw = transform_xslt_params(kw)
     return filter_transform(doc, **kw).getroot()
-    
+
+
 HTML_FILTER_TEMPLATE = """<?xml version="1.0"?>
 <xsl:stylesheet version="1.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"

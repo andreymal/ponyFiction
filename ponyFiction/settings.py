@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-from ponyFiction.apis.sphinxapi import SPH_MATCH_ALL, SPH_RANK_SPH04
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -13,7 +12,6 @@ TEMPLATE_DEBUG = DEBUG
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
-DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS' : False}
 MANAGERS = ADMINS
 
 DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS' : False}
@@ -39,28 +37,18 @@ STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = ()
 
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-)
-
 SECRET_KEY = '6^j694%m%^etq6@$_d&amp;1h$fv4z4-u!#@+*m233sc-39xdac3du'
 
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#    'django.template.loaders.eggs.Loader',
-)
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'django.middleware.security.SecurityMiddleware',
 )
 
 INTERNAL_IPS = ('127.0.0.1',)
@@ -68,10 +56,9 @@ ROOT_URLCONF = 'ponyFiction.urls'
 ALLOWED_HOSTS = ['*']
 WSGI_APPLICATION = 'ponyFiction.wsgi.application'
 
-import os.path
-TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(__file__), 'templates').replace('\\', '/'),
-)
+NSFW_RATING_IDS = (1,)
+
+# Application definition
 
 INSTALLED_APPS = (
     'cacheops',
@@ -115,6 +102,22 @@ LOGGING = {
     }
 }
 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
 PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.BCryptPasswordHasher',
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
@@ -123,14 +126,16 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.MD5PasswordHasher',
     'django.contrib.auth.hashers.CryptPasswordHasher',
 )
+
 COMPRESS_HTML = True
+
 SPHINX_CONFIG = {
     'server' : ('/tmp/sphinx.socket',),
     'retries_count' : 5,
     'retries_delay' : 1,
     'timeout' : 10,
-    'match_mode' : SPH_MATCH_ALL,
-    'rank_mode' : SPH_RANK_SPH04,
+    'match_mode' : 0,  # SPH_MATCH_ALL,
+    'rank_mode' : 0,  # SPH_RANK_SPH04,
     'number' : 10,
     'max' : 1000,
     'cutoff' : 1000,
@@ -155,6 +160,8 @@ RSS = {'stories': 20, 'chapters': 20, 'comments': 100}
 AUTH_USER_MODEL = 'ponyFiction.Author'
 AUTHENTICATION_BACKENDS = ('ponyFiction.auth_backends.AuthorModelBackend',)
 ACCOUNT_ACTIVATION_DAYS = 5
+REGISTRATION_AUTO_LOGIN = True
+REGISTRATION_FORM = 'ponyFiction.forms.register.AuthorRegistrationForm'
 
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
@@ -239,6 +246,7 @@ CACHEOPS = {
 
 
 REGISTRATION_OPEN = True
+LOAD_TABUN_AVATARS = True
 
 
 # specify current environment

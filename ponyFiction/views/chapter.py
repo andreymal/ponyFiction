@@ -41,7 +41,7 @@ def chapter_view(request, story_id=False, chapter_order=False):
             'page_title' : page_title,
             'allchapters': True
         }
-    return render(request, 'chapter_view.html', data) 
+    return render(request, 'chapter_view.html', data)
 
 class ChapterAdd(CreateView):
     model = Chapter

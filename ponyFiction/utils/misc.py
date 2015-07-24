@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -55,9 +57,9 @@ def pagination_ranges(
         if fixed_locality:
             # locality always has fixed length
             if not reverse:
-                start = page - (locality - 1) / 2
+                start = page - (locality - 1) // 2
             else:
-                start = page - locality / 2
+                start = page - locality // 2
             if start < 1:
                 start = 1
             finish = start + locality - 1
@@ -70,11 +72,11 @@ def pagination_ranges(
         else:
             # locality may shortly near first or last page
             if not reverse:
-                start = page - (locality - 1) / 2
-                finish = page + locality / 2
+                start = page - (locality - 1) // 2
+                finish = page + locality // 2
             else:
-                start = page - locality / 2
-                finish = page + (locality - 1) / 2
+                start = page - locality // 2
+                finish = page + (locality - 1) // 2
             if start < 1:
                 start = 1
             if finish > num_pages:
@@ -111,13 +113,13 @@ def pagination_ranges(
         locality = start = finish = tail = 0
 
     if not reverse:
-        head_range = xrange(1, head + 1)
-        locality_range = xrange(start, start + locality)
-        tail_range = xrange(num_pages + 1 - tail, num_pages + 1)
+        head_range = range(1, head + 1)
+        locality_range = range(start, start + locality)
+        tail_range = range(num_pages + 1 - tail, num_pages + 1)
     else:
-        head_range = xrange(num_pages, num_pages - tail, -1)
-        locality_range = xrange(finish, finish - locality, -1)
-        tail_range = xrange(head, 0, -1)
+        head_range = range(num_pages, num_pages - tail, -1)
+        locality_range = range(finish, finish - locality, -1)
+        tail_range = range(head, 0, -1)
 
     head_dots = bool(head_range and (locality_range or tail_range))
     tail_dots = bool(locality_range and tail_range)
@@ -134,69 +136,18 @@ def pagination_ranges(
 
 def unicode_to_int_list(lst):
     '''
-    [u'1', u'2', u'3', u'4'] → [1, 2, 3, 4]
+    ['1', '2', '3', '4'] → [1, 2, 3, 4]
     '''
     try:
-        return map(lambda x: int(x), lst)
+        return [int(x) for x in lst]
     except:
         return False
 
-unicode_to_bool_list = lambda n: map(lambda x: bool(int(x)), n)
-# [u'1', u'0', u'0', u'1'] → [True, False, False, True]
+unicode_to_bool_list = lambda n: [bool(int(x)) for x in n]
+# ['1', '0', '0', '1'] → [True, False, False, True]
 
-obj_to_int_list = lambda n: map(lambda x: int(x.id), n)
+obj_to_int_list = lambda n: [int(x.id) for x in n]
 # [<obj_one>, <obj_two>, <obj_three>, <obj_four>] → [1, 2, 3, 4]
-
-
-# Функции берут данные с POST-формы, и проставляют фильтры Sphinx, возвращая словарь новых начальных данные
-
-def SetBoolSphinxFilter(sphinx, filter_name, field_name, oldform):
-    filters = oldform.cleaned_data[field_name]
-    try:
-        selector = unicode_to_bool_list(filters) if filters else False
-    except:
-        selector = False
-    else:
-        if selector:
-            sphinx.SetFilter(filter_name, selector)
-            return {field_name: unicode_to_int_list(filters)}
-        else:
-            return {}
-
-
-def SetRangeSphinxFilter(sphinx, filter_name, field_name_min, field_name_max, oldform):
-    min_value = oldform.cleaned_data[field_name_min]
-    max_value = oldform.cleaned_data[field_name_max]
-    # Если пустое начальное значение, то выставляем его в 0
-    if min_value is None or min_value < 0:
-        min_selector = 0
-    else:
-        min_selector = int(min_value)
-    # Если пустое конечное значение, то исключаем все значения меньше начального
-    if max_value is None or max_value < 0:
-        sphinx.SetFilterRange(filter_name, 0, min_selector, True)
-        return {field_name_min: min_selector}
-    else:
-        max_selector = int(max_value)
-        # Если верхний предел меньше нижнего, то меняем их местами
-        if max_value < min_value:
-            max_value, min_value = min_value, max_value
-        sphinx.SetFilterRange(filter_name, min_selector, max_selector)
-        return {field_name_min: min_selector, field_name_max: max_selector}
-
-
-def SetObjSphinxFilter(sphinx, filter_name, field_name, oldform):
-    filters = oldform.cleaned_data[field_name]
-    try:
-        selector = obj_to_int_list(filters) if filters else False
-    except:
-        selector = False
-    else:
-        if selector:
-            sphinx.SetFilter(filter_name, selector)
-            return {field_name: selector}
-        else:
-            return {}
 
 
 def get_object_or_none(queryset, **kw):

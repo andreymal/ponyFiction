@@ -58,7 +58,9 @@ def story_view(request, pk, comments_page):
        'page_title' : page_title,
        'comment_form': comment_form
        }
+  
     return render(request, 'story_view.html', data)
+
 
 @login_required
 @csrf_protect
@@ -73,7 +75,7 @@ def story_publish_warning(request, pk):
     story = get_object_or_404(Story, pk=pk)
     if (story.editable_by(request.user) or request.user.is_staff):
         data = {
-                'page_title' : u'Неудачная попытка публикации',
+                'page_title' : 'Неудачная попытка публикации',
                 'story' : story
                 }
         return render(request, 'story_publish_warning.html', data)
@@ -139,7 +141,7 @@ def story_edit_log(request, pk):
     story = get_object_or_404(Story, pk = pk)
     data = dict(
         edit_log = story.edit_log.order_by('date').select_related('user'),
-        page_title = u"История редактирования рассказа \"{}\"".format(story.title),
+        page_title = "История редактирования рассказа \"{}\"".format(story.title),
     )
     return render(request, 'story_edit_log.html', data)
 
@@ -163,7 +165,7 @@ class StoryAdd(CreateView):
     def get_context_data(self, **kwargs):
         context = super(StoryAdd, self).get_context_data(**kwargs)
         extra_context = {
-                         'page_title': u'Новый рассказ',
+                         'page_title': 'Новый рассказ',
                          'story_add': True,
                          }
         context.update(extra_context)
@@ -174,7 +176,7 @@ class StoryEdit(UpdateView):
     model = Story
     form_class = StoryForm
     template_name = 'story_work.html'
-    initial = {'button_submit': u'Сохранить изменения'}
+    initial = {'button_submit': 'Сохранить изменения'}
     story = None
     
     @method_decorator(login_required)
@@ -202,7 +204,7 @@ class StoryEdit(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(StoryEdit, self).get_context_data(**kwargs)
         extra_context = {
-                         'page_title': u'Редактирование «%s»' % self.story.title,
+                         'page_title': 'Редактирование «%s»' % self.story.title,
                          'story_edit': True,
                          'chapters': self.story.chapter_set.order_by('order')
                          }
@@ -236,7 +238,7 @@ class StoryDelete(DeleteView):
     
     def get_context_data(self, **kwargs):
         context = super(StoryDelete, self).get_context_data(**kwargs)
-        extra_context = {'page_title': u'Подтверждение удаления рассказа', 'story': self.story}
+        extra_context = {'page_title': 'Подтверждение удаления рассказа', 'story': self.story}
         context.update(extra_context)
         return context
     

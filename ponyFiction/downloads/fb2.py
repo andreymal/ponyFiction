@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from .base import ZipFileDownloadFormat
 
 class FB2Download(ZipFileDownloadFormat):
@@ -38,4 +41,4 @@ class FB2Download(ZipFileDownloadFormat):
             return self.render_fb2(**kw)
         else:
             return super(FB2Download, self).render(**kw)
-    
+

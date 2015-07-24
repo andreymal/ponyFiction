@@ -1,4 +1,6 @@
-# encoding: utf8
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from .base import ZipFileDownloadFormat
 
 class TXTDownload(ZipFileDownloadFormat):
@@ -12,4 +14,4 @@ class TXTDownload(ZipFileDownloadFormat):
 class TXT_CP1251Download(TXTDownload):
     extension = 'txt.win.zip'
     name = 'TXT (кодировка Windows)'
-    chapter_encoding = 'cp1251'    
+    chapter_encoding = 'cp1251'

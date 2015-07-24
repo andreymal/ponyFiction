@@ -19,7 +19,7 @@ class CommentForm(ModelForm):
     def clean_text(self):
         text = self.cleaned_data['text']
         if (len(striptags(text)) < settings.COMMENT_MIN_LENGTH):
-            raise ValidationError(u'Сообщение слишком короткое!')
+            raise ValidationError('Сообщение слишком короткое!')
         return text
     
     class Meta:

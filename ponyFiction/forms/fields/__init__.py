@@ -1,7 +1,10 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from django.forms.models import ModelChoiceIterator
 from django.forms import ModelChoiceField, ModelMultipleChoiceField
 from itertools import groupby
+
 
 class GroupedModelChoiceIterator(ModelChoiceIterator):
     def __iter__(self):
@@ -19,6 +22,7 @@ class GroupedModelChoiceIterator(ModelChoiceIterator):
         else:
             for group, choices in groupby(self.queryset.order_by('group'), lambda row: getattr(row, self.field.group_by_field)):
                 yield (group, [self.choice(ch) for ch in choices])
+
 
 class GroupedModelChoiceField(ModelMultipleChoiceField):
     def __init__(self, queryset, group_by_field, group_label=None, *args, **kwargs):

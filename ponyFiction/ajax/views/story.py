@@ -19,12 +19,14 @@ def story_publish_warning_ajax(request, story_id):
     story = get_object_or_404(Story, pk=story_id)
     if (story.editable_by(request.user) or request.user.is_staff):
         data = {
-                'page_title' : u'Неудачная попытка публикации',
-                'story' : story
-                }
+            'page_title' : 'Неудачная попытка публикации',
+            'story' : story,
+            'need_words': settings.PUBLISH_SIZE_LIMIT
+        }
         return render(request, 'includes/ajax/story_ajax_publish_warning.html', data)
     else:
         raise PermissionDenied
+
 
 @ajax_required    
 @login_required
@@ -51,6 +53,7 @@ def story_publish_ajax(request, story_id):
     else:
         raise PermissionDenied
 
+
 @ajax_required
 @login_required
 @csrf_protect
@@ -75,6 +78,7 @@ def story_approve_ajax(request, story_id):
     else:
         raise PermissionDenied
 
+
 @ajax_required
 @login_required
 @csrf_protect
@@ -88,6 +92,7 @@ def story_bookmark_ajax(request, story_id):
         bookmark.delete()
     invalidate_obj(story)
     return HttpResponse(story_id)
+
 
 @ajax_required
 @login_required
