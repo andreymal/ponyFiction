@@ -9,7 +9,7 @@ from ponyFiction import signals
 from ponyFiction.forms.chapter import ChapterForm
 from ponyFiction.models import Story, Chapter, Author
 from django.views.decorators.csrf import csrf_protect
-from cacheops.invalidation import invalidate_obj
+from cacheops import invalidate_obj
 from .story import get_story
 
 

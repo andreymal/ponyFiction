@@ -15,23 +15,24 @@ from ponyFiction import signals
 from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
 from ponyFiction.models import Story, CoAuthorsStory, Author, StoryEditLogItem
-from cacheops.invalidation import invalidate_obj
+from cacheops import invalidate_obj
 from ponyFiction.utils.misc import get_object_or_none
 
 
 def get_story(request, pk):
     try:
-        story = Story.objects.accessible(user=request.user).get(pk=pk)
+        story = Story.objects.prefetch_related('authors', 'characters', 'categories', 'classifications').accessible(user=request.user).get(pk=pk)
     except Story.DoesNotExist:
         story = get_object_or_404(Story, pk=pk)
         if not story.editable_by(request.user):
             raise PermissionDenied
     return story
 
+
 def story_view(request, pk, comments_page):
     story = get_story(request, pk)
-    chapters = story.chapter_set.order_by('order')
-    comments_list = story.comment_set.order_by('date').all().cache()
+    chapters = story.chapter_set.only('title', 'words', 'order').order_by('order')
+    comments_list = story.comment_set.order_by('date', 'id').all().prefetch_related('author')
     comments_count = comments_list.count()
     paged = Paginator(comments_list, settings.COMMENTS_COUNT['page'], orphans=settings.COMMENTS_ORPHANS)
     num_pages = paged.num_pages

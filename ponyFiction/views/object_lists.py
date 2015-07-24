@@ -66,7 +66,8 @@ class SubmitsList(ObjectList):
     page_title = 'Новые поступления'
     
     def get_queryset(self):
-        return Story.objects.submitted
+        return Story.objects.submitted.prefetch_for_list
+
 
 
 class BookmarksList(ObjectList):

@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied
-from cacheops.invalidation import invalidate_obj
+from cacheops import invalidate_obj
 
 from ponyFiction.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm, AuthorEditPrefsForm
 from ponyFiction.models import Author, Comment, Vote, Story, StoryView
@@ -18,10 +18,10 @@ def author_info(request, user_id, comments_page):
 
     if user_id is None:
         author = request.user
-        comments_list = Comment.objects.filter(story__authors=request.user.id).order_by('-date').cache()
+        comments_list = Comment.objects.prefetch_related('story', 'author').filter(story__authors=request.user.id).order_by('-date').cache()
         data['all_views'] = StoryView.objects.filter(story__authors=author).cache().count()
         data['page_title'] = 'Мой кабинет'
-        stories = author.story_set.all().cache()
+        stories = author.story_set.prefetch_for_list.all().cache()
         template = 'author_dashboard.html'
     else:
         author = get_object_or_404(Author, pk=user_id)
@@ -49,7 +49,9 @@ def author_info(request, user_id, comments_page):
             'comments_count': comments_count,
             'votes': votes
             })
+
     return render(request, template, data)
+
 
 @login_required
 @csrf_protect
@@ -57,8 +59,22 @@ def author_edit(request):
     author = request.user
     data = {}
     data['page_title'] = 'Настройки профиля'
+
+    profile_form = None
+    email_form = None
+    password_form = None
+    prefs_form = None
+
     if request.POST:
         invalidate_obj(author)
+        if 'save_password' in request.POST:
+            password_form = AuthorEditPasswordForm(request.POST, author=author, prefix='password_form')
+            if password_form.is_valid():
+                password_form.save()
+                data['password_ok'] = True
+                return redirect('auth_login')
+            else:
+                data['password_form_nfe'] = password_form.non_field_errors()
         if 'save_profile' in request.POST:
             profile_form = AuthorEditProfileForm(request.POST, instance=author, prefix='profile_form')
             if profile_form.is_valid():
@@ -69,23 +85,20 @@ def author_edit(request):
             if email_form.is_valid():
                 email_form.save()
                 data['email_ok'] = True
-        if 'save_password' in request.POST:
-            password_form = AuthorEditPasswordForm(request.POST, author=author, prefix='password_form')
-            if password_form.is_valid():
-                password_form.save()
-                data['password_ok'] = True
-            else:
-                data['password_form_nfe'] = password_form.non_field_errors()
         if 'save_prefs' in request.POST:
             prefs_form = AuthorEditPrefsForm(request.POST, author=author, prefix='prefs_form')
             if prefs_form.is_valid():
                 prefs_form.save()
                 data['prefs_ok'] = True
-                
-    profile_form = AuthorEditProfileForm(instance=author, prefix='profile_form')
-    email_form = AuthorEditEmailForm(author=author, prefix='email_form')
-    password_form = AuthorEditPasswordForm(author=author, prefix='password_form')
-    prefs_form = AuthorEditPrefsForm(author=author, prefix='prefs_form')
+
+    if not profile_form:
+        profile_form = AuthorEditProfileForm(instance=author, prefix='profile_form')
+    if not email_form:
+        email_form = AuthorEditEmailForm(author=author, prefix='email_form')
+    if not password_form:
+        password_form = AuthorEditPasswordForm(author=author, prefix='password_form')
+    if not prefs_form:
+        prefs_form = AuthorEditPrefsForm(author=author, prefix='prefs_form')
     data.update({'profile_form': profile_form, 'email_form': email_form, 'password_form': password_form, 'prefs_form': prefs_form})
     return render(request, 'author_profile_edit.html', data)
 

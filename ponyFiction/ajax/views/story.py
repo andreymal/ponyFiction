@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from cacheops.invalidation import invalidate_obj
+from cacheops import invalidate_obj
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
