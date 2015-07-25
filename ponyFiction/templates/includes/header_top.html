@@ -46,8 +46,8 @@
     		<li id="nav_submitted" class="right"><a href="{% url 'submitted' %}">Новые ({% submitted_stories_count %})</a></li>
             {% endif %}
   		{% else %}
-		{# <li id="nav_registration" ><a href="{% url 'registration_register' %}">Регистрация</a></li> #}
-        <li id="nav_stories_auth"><a href="{% url 'migration_new' %}">Войти через stories.everypony.ru</a></li>
+		{% if REGISTRATION_OPEN %}<li id="nav_registration" ><a href="{% url 'registration_register' %}">Регистрация</a></li>{% endif %}
+        {% if MIGRATION_SITE %}<li id="nav_stories_auth"><a href="{% url 'migration_new' %}">Войти через {{ MIGRATION_NAME }}</a></li>{% endif %}
     	<li class="right">
     		<form class="login-form form-inline" action="{% url 'auth_login' %}" method="POST" enctype="multipart/form-data">
     			{% csrf_token %}

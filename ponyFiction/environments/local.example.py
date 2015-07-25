@@ -11,6 +11,11 @@ DATABASES['default'] = {
 
 SECRET_KEY = '6^j694%m%^etq6@$_d&amp;1h$fv4z4-u!#@+*m233sc-39xdac3du'
 
+# INSTALLED_APPS += ('stories_migration',)
+# TEMPLATES[0]['OPTIONS']['context_processors'] += ['stories_migration.context_processors.project_settings']
+# MIGRATION_SITE = 'https://stories.everypony.ru'
+# MIGRATION_NAME = 'stories.everypony.ru'
+
 # EMAIL_PORT = 1025
 
 # DEBUG = False

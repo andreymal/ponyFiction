@@ -2,14 +2,15 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib.syndication.views import Feed
-from ponyFiction.models import Story, Chapter
-from django.conf import settings
 from django.utils.feedgenerator import Atom1Feed
 from django.shortcuts import get_object_or_404
+from django.conf import settings
+
+from ponyFiction.models import Story, Chapter
 
 
 class stories(Feed):
-    title = 'Новые рассказы - Библиотека EveryPony.ru'
+    title = 'Новые рассказы — {}'.format(settings.SITE_NAME)
     link = '/new/stories/'
     subtitle = 'Новые главы фанфиков'
     title_template = 'feeds/story_title.html'
@@ -24,7 +25,7 @@ class stories(Feed):
 
 
 class chapters(Feed):
-    title = 'Обновления глав - Библиотека EveryPony.ru'
+    title = 'Обновления глав — {}'.format(settings.SITE_NAME)
     link = '/new/chapters/'
     subtitle = 'Новые главы рассказов'
     title_template = 'feeds/chapter_title.html'
