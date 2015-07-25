@@ -23,7 +23,6 @@ DATABASES = {
     }
 }
 
-SITE_ID = 1
 SITE_URL = 'http://localhost:8000'
 SITE_NAME = 'Библиотека everypony.ru'
 SITE_FEEDBACK = 'https://everypony.ru/message'
@@ -69,10 +68,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.flatpages',
     'django.contrib.humanize',
-    # 'django.contrib.messages',
     'django.contrib.staticfiles',
     'ponyFiction',
     'django.contrib.admin',
