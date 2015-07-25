@@ -1,0 +1,20 @@
+[
+  {
+    "fields": {
+      "content": "\t<!-- Header start -->\r\n\t<div class=\"page-header\">\r\n\t\t<ul class=\"servicelinks\">\r\n\t\t\t<li>&nbsp;</li>\r\n\t\t</ul>\r\n\r\n\t\t<a title=\"Подписаться на RSS поток\" href=\"/feeds/stories/\" class=\"rss\"></a>\r\n\t\t<a title=\"Твиттер Everypony.ru\" href=\"https://twitter.com/#!/everypony_ru\" class=\"twitter\"></a>\r\n    \r\n\t\t<ul class=\"main-menu\">\r\n\t\t\t<li id=\"logolink\"><a href=\"/\">Библиотека</a></li>\r\n\t\t\t<li><a href=\"http://everypony.ru\">Блог</a></li>\r\n\t\t\t<li><a href=\"http://forum.everypony.ru\">Форум</a></li>\r\n\t\t\t<li><a href=\"http://wiki.everypony.ru\">Вики</a></li>\r\n\t\t\t<li><a href=\"http://tabun.everypony.ru\">Табун</a></li>\r\n\t\t\t<li><a href=\"http://minecraft.everypony.ru\">Майнкрафт</a></li>\r\n\t\t</ul>\r\n\t</div>\r\n\t<!-- Header end -->",
+      "updated": "2015-01-01 00:00:00",
+      "name": "header"
+    },
+    "model": "ponyFiction.htmlblock",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "content": "<!-- Footer start -->\r\n<div class=\"footer\">\r\n<ul class=\"nav nav-pills nav-main\">\r\n    <li>\r\n        <p>Все права принадлежат пони.</p>\r\n    </li>\r\n    <li id=\"nav_terms\" class=\"right\">\r\n        <a href=\"/page/terms/\">Правила</a>\r\n    </li>\r\n</ul>\r\n</div>\r\n<!-- Footer end -->",
+      "updated": "2015-01-01 00:00:00",
+      "name": "footer"
+    },
+    "model": "ponyFiction.htmlblock",
+    "pk": 2
+  }
+]

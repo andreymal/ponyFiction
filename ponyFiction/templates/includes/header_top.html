@@ -1,26 +1,9 @@
+{% load html_block %}
 {% load random_stories %}
 {% load submitted_stories_count %}
 <!-- Container start -->
 <div class="container">
-	<!-- Header start -->
-	<div class="page-header">
-		<ul class="servicelinks">
-			<li>&nbsp;</li>
-		</ul>
-
-		<a title="Подписаться на RSS поток" href="{% url 'feeds_stories' %}" class="rss"></a>
-		<a title="Твиттер Everypony.ru" href="https://twitter.com/#!/everypony_ru" class="twitter"></a>
-    
-		<ul class="main-menu">
-			<li id="logolink"><a href="{% url 'index' %}">Библиотека</a></li>
-			<li><a href="http://everypony.ru">Блог</a></li>
-			<li><a href="http://forum.everypony.ru">Форум</a></li>
-			<li><a href="http://wiki.everypony.ru">Вики</a></li>
-			<li><a href="http://tabun.everypony.ru">Табун</a></li>
-			<li><a href="http://minecraft.everypony.ru">Майнкрафт</a></li>
-		</ul>
-	</div>
-	<!-- Header end -->
+{% html_block 'header' %}
 	
 	<!-- Logo image and carousel start -->
 	<div class="logopic">
@@ -60,6 +43,4 @@
   		{% endif %}
 	</ul>
 	<!-- Menu end -->
-    {% load flatpages %}
-    {% get_flatpages '/header/' as header_pages %}
-    {% for page in header_pages %}{{ page.content|safe }}{% endfor %}
+{% html_block 'notice' %}
