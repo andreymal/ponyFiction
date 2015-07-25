@@ -1,9 +1,10 @@
 {% extends "common.html" %}
+{% block title %}Авторизация через {{ MIGRATION_NAME }}{% endblock %}
 {% block content %}
 {% load static %}
 <div class="row">
   <div class="span12">
-    <h1>Авторизация через stories.everypony.ru</h1>
+    <h1>Авторизация через {{ MIGRATION_NAME }}</h1>
       <form action="" method="POST" enctype="multipart/form-data" class="form-horizontal migration-form">
       {% csrf_token %}
         <fieldset>
