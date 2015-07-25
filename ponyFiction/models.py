@@ -14,6 +14,7 @@ from ponyFiction.fields import SeparatedValuesField, RatingField, RatingAverageF
 from ponyFiction.fields import SeparatedValuesField
 from django.contrib.auth.models import AbstractUser
 from django.contrib.staticfiles.storage import staticfiles_storage
+from django.utils.datetime_safe import datetime
 
 from ponyFiction.filters import filter_html, filtered_html_property
 from ponyFiction.filters.base import html_doc_to_string
@@ -675,6 +676,20 @@ class StoryEditLogItem(models.Model):
             ['story', 'date'],
             ['is_staff', 'date'],
         ]
+
+
+class StaticPage(models.Model):
+    name = models.CharField(max_length=128, db_index=True, verbose_name="Название")
+    title = models.CharField(max_length=255, verbose_name="Заголовок страницы")
+    content = models.TextField(verbose_name="Содержимое")
+    updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+
+    class Meta:
+        verbose_name = "страница"
+        verbose_name_plural = "страницы"
+
+    def __str__(self):
+        return self.title
 
 
 from . import signals

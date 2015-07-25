@@ -186,8 +186,6 @@ if settings.DEBUG:
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
         (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     )
-urlpatterns += patterns('django.contrib.flatpages.views',
-    (r'^(?P<url>.*/)$', 'flatpage'),
-    url(r'^/terms/', 'flatpage', name='terms'),
-    url(r'^/help', 'flatpage', name='help'),
+urlpatterns += patterns('ponyFiction.views.staticpages',
+    url(r'^page/(?P<name>[A-z0-9-_\.]+)/$', 'view', name='staticpage'),
 )

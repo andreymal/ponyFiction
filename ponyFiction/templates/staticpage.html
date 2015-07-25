@@ -1,0 +1,21 @@
+{% extends "common.html" %}
+{% block title %}{{ page.title }}{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="span12">
+      <ul class="breadcrumb">
+            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
+            <li class="active">{{ page.title }}</li>
+        </ul>
+    </div>
+
+    {{ page.content|safe }}
+
+    <div class="span12">
+      <ul class="breadcrumb">
+            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
+            <li class="active">{{ page.title }}</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
