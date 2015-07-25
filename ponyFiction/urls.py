@@ -178,7 +178,6 @@ urlpatterns += patterns('ponyFiction.views.chapter',
 # Другое
 urlpatterns += patterns('',
     url(r'^not_found/$', TemplateView.as_view(template_name='404.html')),
-    url(r'^bad_gateway/$', TemplateView.as_view(template_name='502.html')),
     url(r'^forbidden/$', TemplateView.as_view(template_name='403.html')),
     url(r'^internal_server_error/$', TemplateView.as_view(template_name='500.html')),
 )

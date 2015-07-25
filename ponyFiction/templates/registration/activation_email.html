@@ -1,0 +1,8 @@
+{% load project_settings %}{% project_settings %}
+<b>Регистрация на сайте</b>
+
+Для активации вашего аккаунта необходимо перейти по ссылке:
+<a href="{{ SITE_URL }}/accounts/activate/{{ activation_key }}/">{{ SITE_URL }}/accounts/activate/{{ activation_key }}/</a>
+Спасибо!
+
+{{ SITE_NAME }}
