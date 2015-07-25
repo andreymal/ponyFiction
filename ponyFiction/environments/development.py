@@ -22,6 +22,8 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.CryptPasswordHasher'
 )
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 PUBLISH_SIZE_LIMIT = 20
 
 CACHEOPS_FAKE = True

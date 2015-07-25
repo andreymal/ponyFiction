@@ -43,19 +43,19 @@ def approve(request, auth_token):
     approved = migration.approved
 
     if not approved:
-        data = cache.get('stories_migration_%d' % migration.user.id)
+        data = cache.get('stories_migration_{}'.format(migration.user.id))
         if not data:
-            link = 'http://stories.everypony.ru/accounts/%d/' % migration.user.id
+            link = '{}/accounts/{}/'.format(settings.MIGRATION_SITE, migration.user_id)
             req = urllib.request.Request(link)
             req.add_header('Accept', 'text/html, text/*, */*')
             req.add_header('Accept-Language', 'ru-RU,ru;q=0.8')
-            req.add_header('User-Agent', 'Mozilla/5.0; stories.andreymal.org/0.1')
+            req.add_header('User-Agent', 'Mozilla/5.0; ponyFiction')
             try:
                 data = urllib.request.urlopen(req).read().decode('utf-8', 'replace')
             except IOError as exc:
                 return render(request, 'migration_approve.html', {'migration': migration, 'nodownload': str(exc), 'nodownload_link': link})
             # простейший анти-DDoS
-            cache.set('stories_migration_%d' % migration.user.id, data, 2)
+            cache.set('stories_migration_{}'.format(migration.user.id), data, 2)
         approved = migration.inline_token in data
 
     if approved:

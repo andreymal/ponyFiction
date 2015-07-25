@@ -4,7 +4,7 @@
 <div class="row">
 	<div class="span12">
 		<ul class="breadcrumb">
-			<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
 			<li><a href="{% url 'author_overview' user.id %}">Мой профиль</a> <span class="divider">/</span></li>
 			<li class="active">{{ page_title }}</li>
 		</ul>   
@@ -129,7 +129,7 @@
 
 	<div class="span12">
 		<ul class="breadcrumb">
-			<li><a href="{% url 'index' %}">Библиотека Everypony.ru</a> <span class="divider">/</span></li>
+			<li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
 			<li><a href="{% url 'author_overview' user.id %}">Мой профиль</a> <span class="divider">/</span></li>
 			<li class="active">{{ page_title }}</li>
 		</ul>   

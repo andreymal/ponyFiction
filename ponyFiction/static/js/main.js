@@ -713,7 +713,7 @@ var pages = {
         }
     },
     help : {
-        regex : new RegExp('^/help/$'),
+        regex : new RegExp('^/page/help/$'),
         action : function() {
             $('#nav_help').addClass('active');
             $('a.tab_inline[data-toggle="tab"]').click(function() {
@@ -725,7 +725,7 @@ var pages = {
         }
     },
     terms : {
-        regex : new RegExp('^/terms/$'),
+        regex : new RegExp('^/page/terms/$'),
         action : function() {
             $('#nav_terms').addClass('active');
         }

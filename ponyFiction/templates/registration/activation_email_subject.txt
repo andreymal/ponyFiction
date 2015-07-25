@@ -1,1 +1,1 @@
-Активация аккаунта – Библиотека рассказов stories.andreymal.org
+{% load project_settings %}{% project_settings %}Активация аккаунта — {{ SITE_NAME }}

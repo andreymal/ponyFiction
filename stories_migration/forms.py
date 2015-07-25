@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 User = apps.get_model(settings.AUTH_USER_MODEL)
 
 class MigrationNewForm(Form):
-    author = CharField(required=True, label='Ник на stories.everypony.ru', max_length=255, widget=TextInput(attrs=dict(maxlength=255)),)
+    author = CharField(required=True, label='Ник на {}'.format(settings.MIGRATION_NAME), max_length=255, widget=TextInput(attrs=dict(maxlength=255)),)
 
     def clean_author(self):
         try:

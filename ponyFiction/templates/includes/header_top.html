@@ -1,26 +1,9 @@
+{% load html_block %}
 {% load random_stories %}
 {% load submitted_stories_count %}
 <!-- Container start -->
 <div class="container">
-	<!-- Header start -->
-	<div class="page-header">
-		<ul class="servicelinks">
-			<li>&nbsp;</li>
-		</ul>
-
-		<a title="Подписаться на RSS поток" href="{% url 'feeds_stories' %}" class="rss"></a>
-		<a title="Твиттер Everypony.ru" href="https://twitter.com/#!/everypony_ru" class="twitter"></a>
-    
-		<ul class="main-menu">
-			<li id="logolink"><a href="{% url 'index' %}">Библиотека</a></li>
-			<li><a href="http://everypony.ru">Блог</a></li>
-			<li><a href="http://forum.everypony.ru">Форум</a></li>
-			<li><a href="http://wiki.everypony.ru">Вики</a></li>
-			<li><a href="http://tabun.everypony.ru">Табун</a></li>
-			<li><a href="http://minecraft.everypony.ru">Майнкрафт</a></li>
-		</ul>
-	</div>
-	<!-- Header end -->
+{% html_block 'header' %}
 	
 	<!-- Logo image and carousel start -->
 	<div class="logopic">
@@ -34,7 +17,7 @@
 	<ul class="nav nav-pills nav-main">
 		<li id="nav_index"><a href="{% url 'index' %}">Главная</a></li>
 		<li id="nav_search"><a href="{% url 'search' %}">Поиск</a></li>
-  		<li id="nav_help"><a href="/help/">Справка</a></li>
+  		<li id="nav_help"><a href="{% url 'staticpage' 'help' %}">Справка</a></li>
   		{% if user.is_authenticated %}
     		<li id="nav_favorites"><a href="{% url 'favorites' user.id %}">Избранное</a></li>
     		<li id="nav_bookmarks"><a href="{% url 'bookmarks' %}">Закладки</a></li>
@@ -46,8 +29,8 @@
     		<li id="nav_submitted" class="right"><a href="{% url 'submitted' %}">Новые ({% submitted_stories_count %})</a></li>
             {% endif %}
   		{% else %}
-		{# <li id="nav_registration" ><a href="{% url 'registration_register' %}">Регистрация</a></li> #}
-        <li id="nav_stories_auth"><a href="{% url 'migration_new' %}">Войти через stories.everypony.ru</a></li>
+		{% if REGISTRATION_OPEN %}<li id="nav_registration" ><a href="{% url 'registration_register' %}">Регистрация</a></li>{% endif %}
+        {% if MIGRATION_SITE %}<li id="nav_stories_auth"><a href="{% url 'migration_new' %}">Войти через {{ MIGRATION_NAME }}</a></li>{% endif %}
     	<li class="right">
     		<form class="login-form form-inline" action="{% url 'auth_login' %}" method="POST" enctype="multipart/form-data">
     			{% csrf_token %}
@@ -60,6 +43,4 @@
   		{% endif %}
 	</ul>
 	<!-- Menu end -->
-    {% load flatpages %}
-    {% get_flatpages '/header/' as header_pages %}
-    {% for page in header_pages %}{{ page.content|safe }}{% endfor %}
+{% html_block 'notice' %}

@@ -109,8 +109,12 @@ urlpatterns += patterns('',
          },
         ),
     url(r'^accounts/', include('registration.backends.default.urls')),
-    url(r'^stories_auth/', include('stories_migration.urls')),
 )
+
+# stories_migration
+if 'stories_migration' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('', url(r'^stories_auth/', include('stories_migration.urls')))
+
 # AJAX
 urlpatterns += patterns('', (r'^ajax/', include('ponyFiction.ajax.urls')))
 
@@ -174,7 +178,6 @@ urlpatterns += patterns('ponyFiction.views.chapter',
 # Другое
 urlpatterns += patterns('',
     url(r'^not_found/$', TemplateView.as_view(template_name='404.html')),
-    url(r'^bad_gateway/$', TemplateView.as_view(template_name='502.html')),
     url(r'^forbidden/$', TemplateView.as_view(template_name='403.html')),
     url(r'^internal_server_error/$', TemplateView.as_view(template_name='500.html')),
 )
@@ -183,8 +186,6 @@ if settings.DEBUG:
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
         (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     )
-urlpatterns += patterns('django.contrib.flatpages.views',
-    (r'^(?P<url>.*/)$', 'flatpage'),
-    url(r'^/terms/', 'flatpage', name='terms'),
-    url(r'^/help', 'flatpage', name='help'),
+urlpatterns += patterns('ponyFiction.views.staticpages',
+    url(r'^page/(?P<name>[A-z0-9-_\.]+)/$', 'view', name='staticpage'),
 )

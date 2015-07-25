@@ -1,4 +1,9 @@
+{% load project_settings %}{% project_settings %}{% autoescape off %}
 Регистрация на сайте
+
 Для активации вашего аккаунта необходимо перейти по ссылке:
-http://stories.andreymal.org/accounts/activate/{{ activation_key }}/
+{{ SITE_URL }}/accounts/activate/{{ activation_key }}/
 Спасибо!
+
+{{ SITE_NAME }}
+{% endautoescape %}

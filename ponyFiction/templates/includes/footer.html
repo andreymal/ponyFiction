@@ -1,10 +1,5 @@
-		<!-- Footer start -->
-		<div class="footer">
-            {% load flatpages %}
-            {% get_flatpages '/footer/' as footer_pages %}
-            {% for page in footer_pages %}{{ page.content|safe }}{% endfor %}
-		</div>
-		<!-- Footer end -->
+{% load html_block %}
+{% html_block 'footer' %}
 	</div>
 	<!-- Container end -->
 	</body>
