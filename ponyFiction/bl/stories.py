@@ -68,7 +68,7 @@ class StoryBL(BaseBL):
                 sphinx.update('stories', fields={'size': int(story.words)}, id=story.id)
         elif f == {'comments'}:
             with sphinx:
-                sphinx.update('stories', fields={'comments': int(story.comments_set.count())}, id=story.id)
+                sphinx.update('stories', fields={'comments': int(story.comment_set.count())}, id=story.id)
         else:
             with sphinx:
                 self.add_stories_to_search((story,))
@@ -155,6 +155,8 @@ class ChapterBL(BaseBL):
         chapter.story.bl.search_update(('words',))
 
     def search(self, query, limit, only_published=True):
+        if settings.SPHINX_DISABLED:
+            return
         sphinx_filters = {}
         if only_published:
             sphinx_filters['published'] = 1

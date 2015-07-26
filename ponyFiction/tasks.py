@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from celery import shared_task
-from django.conf import settings
 
 from .models import Story, Chapter
 
@@ -28,8 +27,6 @@ def sphinx_update_chapter(chapter_id):
 
 @shared_task
 def sphinx_update_comments_count(story_id):
-    if settings.SPHINX_DISABLED:
-        return
     try:
         story = Story.objects.get(pk=story_id)
     except Story.DoesNotExist:
@@ -40,15 +37,11 @@ def sphinx_update_comments_count(story_id):
 
 @shared_task
 def sphinx_delete_story(story_id):
-    if settings.SPHINX_DISABLED:
-        return
     Story.bl.delete_stories_from_search((story_id,))
 
 
 @shared_task
 def sphinx_delete_chapter(story_id, chapter_id):
-    if settings.SPHINX_DISABLED:
-        return
     Chapter.bl.delete_chapters_from_search((chapter_id,))
 
     try:

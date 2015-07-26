@@ -3,16 +3,14 @@
 
 from math import ceil
 
-from django.http import Http404
-from django.shortcuts import redirect
-from django.shortcuts import render
-from django.views.decorators.csrf import csrf_protect
+from django.shortcuts import redirect, render
 
 from ponyFiction import settings as settings
 from ponyFiction.forms.search import SearchForm
-from ponyFiction.models import Story, Chapter, Author
+from ponyFiction.models import Story, Chapter
 from ponyFiction.utils.misc import pagination_ranges
 from ponyFiction.sphinx import SphinxError
+
 
 def search_main(request):
     if request.method not in ('HEAD', 'OPTIONS', 'GET'):
@@ -20,9 +18,6 @@ def search_main(request):
 
     if settings.SPHINX_DISABLED:
         return render(request, 'search_disabled.html')
-
-    if False and not request.GET:
-        return search_form(request)
 
     postform = SearchForm(request.GET)
     return search_action(request, postform)
