@@ -156,7 +156,7 @@ class ChapterBL(BaseBL):
 
     def search(self, query, limit, only_published=True):
         if settings.SPHINX_DISABLED:
-            return
+            return {}, []
         sphinx_filters = {}
         if only_published:
             sphinx_filters['published'] = 1
