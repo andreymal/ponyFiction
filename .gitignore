@@ -1,7 +1,7 @@
 *.pyc
 .project
 .pydevproject
-.idea
+.idea/
 /sphinx
 /.settings
 /static
@@ -13,3 +13,7 @@
 /ponyFiction/environments/local_sphinx.conf
 /environment.txt
 /sphinxroot.txt
+
+ponyFiction/static/dist/
+node_modules/
+bower_components/
