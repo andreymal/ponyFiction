@@ -24,10 +24,8 @@
     "gulp-uglify": "^1.2.0",
     "gulp-util": "~3.0.5",
     "event-stream": "~3.3.1",
-    "vinyl-fs": "~1.0.0",
     "vinyl-buffer": "~1.0.0",
     "vinyl-source-stream": "~1.1.0",
-    "fs": "0.0.2",
     "del": "~1.2.0",
     "glob": "~5.0.14",
     "lodash": "~3.10.0"
