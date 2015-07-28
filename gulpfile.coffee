@@ -5,24 +5,23 @@ gulp = require 'gulp'
 browserify = require 'browserify'
 source = require 'vinyl-source-stream'
 bowerResolve = require 'bower-resolve'
-nodeResolve = require 'resolve'
 stylus = require 'gulp-stylus'
 rename = require 'gulp-rename'
 del = require 'del'
 
 pkginfo = require './package.json'
 bowerinfo = require './bower.json'
+bowerPackages = _.keys(bowerinfo.dependencies) or []
 
 production = process.env.NODE_ENV == 'production'
 
-getBowerPackageIds = -> _.keys(bowerinfo.dependencies) or []
 
 gulp.task 'build:scripts', ['build:scripts:vendor', 'build:scripts:app']
 gulp.task 'default', ['build:scripts', 'build:styles']
 
 gulp.task 'build:scripts:vendor', ->
   b = browserify debug: !production
-  getBowerPackageIds().forEach (id) -> b.require bowerResolve.fastReadSync(id), expose: id
+  bowerPackages.forEach (id) -> b.require bowerResolve.fastReadSync(id), expose: id
 
   b.bundle()
     .pipe source 'vendor.js'
@@ -30,7 +29,7 @@ gulp.task 'build:scripts:vendor', ->
 
 gulp.task 'build:scripts:app', ->
   b = browserify pkginfo.js.entries, debug: !production
-  getBowerPackageIds().forEach (lib) -> b.external lib
+  bowerPackages.forEach (lib) -> b.external lib
 
   b.bundle()
     .pipe source 'app.js'

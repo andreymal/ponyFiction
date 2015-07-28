@@ -24,7 +24,6 @@
     "vinyl-source-stream": "~1.1.0",
     "gulp-stylus": "~2.0.3",
     "bower-resolve": "~2.2.1",
-    "resolve": "~1.1.6",
     "lodash": "~3.10.0",
     "fs": "0.0.2",
     "debowerify": "~1.3.1"
@@ -44,22 +43,22 @@
   },
   "js": {
     "entries": [
-      "./ponyFiction/static/src/js/main.coffee"
+      "./ponyFiction/frontend/js/main.coffee"
     ],
     "watches": [
-      "./ponyFiction/static/src/js/**/*.coffee"
+      "./ponyFiction/frontend/js/**/*.coffee"
     ]
   },
   "css": {
     "entries": [
-      "./ponyFiction/static/src/css/main.styl"
+      "./ponyFiction/frontend/css/main.styl"
     ],
     "watches": [
-      "./ponyFiction/static/src/css/**/*.styl"
+      "./ponyFiction/frontend/css/**/*.styl"
     ],
     "includes": [
       "./bower_components"
     ]
   },
-  "dist": "./ponyFiction/static/dist"
+  "dist": "./static/dist"
 }
