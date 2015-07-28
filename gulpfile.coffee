@@ -1,39 +1,58 @@
 'use strict'
 _ = require 'lodash'
-fs = require 'fs'
 gulp = require 'gulp'
 browserify = require 'browserify'
+es = require 'event-stream'
+buffer = require 'vinyl-buffer'
 source = require 'vinyl-source-stream'
+fs = require 'vinyl-fs'
 bowerResolve = require 'bower-resolve'
 stylus = require 'gulp-stylus'
+uglify = require 'gulp-uglify'
 rename = require 'gulp-rename'
 del = require 'del'
+path = require 'path'
+glob = require 'glob'
 
 pkginfo = require './package.json'
 bowerinfo = require './bower.json'
 bowerPackages = _.keys(bowerinfo.dependencies) or []
 
-production = process.env.NODE_ENV == 'production'
+debug = process.env.NODE_ENV != 'production'
 
 
 gulp.task 'build:scripts', ['build:scripts:vendor', 'build:scripts:app']
 gulp.task 'default', ['build:scripts', 'build:styles']
 
 gulp.task 'build:scripts:vendor', ->
-  b = browserify debug: !production
-  bowerPackages.forEach (id) -> b.require bowerResolve.fastReadSync(id), expose: id
+  b = browserify debug: debug
+  bowerPackages.forEach (id) ->
+    resolvedPath = bowerResolve.fastReadSync(id)
+    b.require resolvedPath, expose: id
 
   b.bundle()
     .pipe source 'vendor.js'
     .pipe gulp.dest pkginfo.dist
 
-gulp.task 'build:scripts:app', ->
-  b = browserify pkginfo.js.entries, debug: !production
-  bowerPackages.forEach (lib) -> b.external lib
 
-  b.bundle()
-    .pipe source 'app.js'
-    .pipe gulp.dest pkginfo.dist
+gulp.task 'build:scripts:app', (done) ->
+  glob pkginfo.js.entries, (err, files) ->
+    if err then done err
+
+    tasks = files.map (file) ->
+      b = browserify debug: debug, entries: [file]
+      bowerPackages.forEach (lib) ->
+        resolvedPath = bowerResolve.fastReadSync lib
+        b.external resolvedPath, expose: lib
+
+      b.bundle()
+        .pipe source path.basename file
+        .pipe rename extname: '.bundle.js'
+        .pipe buffer()
+        .pipe if debug then uglify() else gutil.noop()
+        .pipe gulp.dest pkginfo.dist
+
+    es.merge(tasks).on 'end', done
 
 gulp.task 'build:styles', ->
   gulp.src pkginfo.css.entries
