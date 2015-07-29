@@ -5,7 +5,7 @@ browserify = require 'browserify'
 es = require 'event-stream'
 buffer = require 'vinyl-buffer'
 source = require 'vinyl-source-stream'
-bowerResolve = require 'bower-resolve'
+resolve = require 'resolve'
 stylus = require 'gulp-stylus'
 uglify = require 'gulp-uglify'
 rename = require 'gulp-rename'
@@ -14,8 +14,7 @@ path = require 'path'
 glob = require 'glob'
 
 pkginfo = require './package.json'
-bowerinfo = require './bower.json'
-bowerPackages = _.keys(bowerinfo.dependencies) or []
+packages = _.keys(pkginfo.dependencies) or []
 
 debug = process.env.NODE_ENV != 'production'
 
@@ -25,12 +24,12 @@ gulp.task 'default', ['build:scripts', 'build:styles']
 
 gulp.task 'build:scripts:vendor', ->
   b = browserify debug: debug
-  bowerPackages.forEach (id) ->
-    resolvedPath = bowerResolve.fastReadSync(id)
-    b.require resolvedPath, expose: id
+  packages.forEach (id) -> b.require resolve.sync(id), expose: id
 
   b.bundle()
     .pipe source 'vendor.js'
+    .pipe buffer()
+    .pipe if debug then uglify() else gutil.noop()
     .pipe gulp.dest pkginfo.dist
 
 
@@ -40,9 +39,7 @@ gulp.task 'build:scripts:app', (done) ->
 
     tasks = files.map (file) ->
       b = browserify debug: debug, entries: [file]
-      bowerPackages.forEach (lib) ->
-        resolvedPath = bowerResolve.fastReadSync lib
-        b.external resolvedPath, expose: lib
+      packages.forEach (id) -> b.external resolve.sync(id), expose: id
 
       b.bundle()
         .pipe source path.basename file
