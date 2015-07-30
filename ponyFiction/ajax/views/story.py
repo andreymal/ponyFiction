@@ -16,8 +16,9 @@ from django.utils.decorators import method_decorator
 from ponyFiction.models import Author, Story, Favorites, Bookmark, StoryEditLogItem
 from ponyFiction.ajax.decorators import ajax_required, ajax_login_required
 from ponyFiction.ajax.shortcuts import ajax_response
-from ponyFiction.views.story import StoryDelete, _story_vote
-  
+from ponyFiction.views.story import _story_vote
+
+
 @login_required
 @csrf_protect
 def story_publish_warning_ajax(request, story_id):
@@ -130,17 +131,15 @@ def story_vote_ajax(request, story_id, value):
     return ajax_response(request, {'success': True, 'story_id': story_id, 'value': value}, render_template='includes/story_header_info.html', template_context={'story': story})
 
 
-class AjaxStoryDelete(StoryDelete):
-    
-    template_name = 'includes/ajax/story_ajax_confirm_delete.html'
-    
-    @method_decorator(ajax_required)
-    def dispatch(self, request, *args, **kwargs):
-        return StoryDelete.dispatch(self, request, *args, **kwargs)
-    
-    def delete(self, request, *args, **kwargs):
-        parent_response = super(AjaxStoryDelete, self).delete(self, request, *args, **kwargs)
-        if parent_response.status_code == 302:
-            return HttpResponse(self.story_id)
-        else:
-            return parent_response
+@login_required
+@csrf_protect
+def delete(request, pk):
+    story = get_object_or_404(Story.objects, pk=pk)
+    if not story.deletable_by(request.user):
+        raise PermissionDenied
+
+    if request.method == 'POST':
+        story.bl.delete()
+        return HttpResponse(pk)
+
+    return render(request, 'includes/ajax/story_ajax_confirm_delete.html', {'page_title': 'Подтверждение удаления рассказа', 'story': story})

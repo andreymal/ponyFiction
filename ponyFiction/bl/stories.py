@@ -3,8 +3,10 @@
 
 from django.conf import settings
 
+from .. import tasks
 from .utils import BaseBL
 from ..sphinx import sphinx
+from ..models import CoAuthorsStory, StoryEditLogItem
 
 
 class StoryBL(BaseBL):
@@ -15,6 +17,43 @@ class StoryBL(BaseBL):
         3: "id ASC",  # TODO: rating DESC
         4: "comments DESC"
     }
+
+    def create(self, authors, title, categories, characters, summary, rating, original, freezed, finished, notes=None, classifications=None):
+        story = self.model.objects.create(
+            title=title,
+            summary=summary,
+            rating=rating,
+            original=original,
+            freezed=freezed,
+            finished=finished,
+            notes=notes or '',
+        )
+        story.categories = categories
+        story.characters = characters
+        story.classifications = classifications
+        for author, approved in authors:
+            CoAuthorsStory.objects.create(story=story, author=author, approved=approved)
+
+        tasks.sphinx_update_story.delay(story.id, ())
+        return story
+
+    def update(self, editor, **data):
+        story = self.model
+        for key, value in data.items():
+            setattr(story, key, value)
+        story.save()
+        if editor:
+            StoryEditLogItem.create(
+                action=StoryEditLogItem.Actions.Edit,
+                user=editor,
+                story=story,
+                data=data,
+            )
+        tasks.sphinx_update_story.delay(story.id, ())
+        return story
+
+    def delete(self):
+        self.model.delete()
 
     def add_stories_to_search(self, stories):
         if settings.SPHINX_DISABLED:
@@ -168,7 +207,6 @@ class ChapterBL(BaseBL):
                 weights=settings.SPHINX_CONFIG['weights_chapters'],
                 options=settings.SPHINX_CONFIG['select_options'],
                 limit=limit,
-                sort_by=0,
                 **sphinx_filters
             )
 

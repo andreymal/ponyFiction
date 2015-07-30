@@ -22,7 +22,7 @@ class BaseDownloadFormat(object):
             'ponyFiction.views.story.story_download',
             kwargs = dict(
                 story_id = story.id,
-                filename = slugify(story.title),
+                filename = slugify(story.title or str(story.id)),
                 extension = self.extension,
             )
         )

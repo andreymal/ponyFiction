@@ -3,7 +3,7 @@
 from django.conf.urls import patterns, url
 from ponyFiction.ajax.views import comment, story, chapter
 
-urlpatterns = patterns('',
+urlpatterns = patterns('ponyFiction.ajax.views',
     # Подгрузка комментариев для рассказа
     url(r'story/(?P<story_id>\d+)/comments/page/(?P<page>\d+)/$', comment.CommentsStory.as_view()),
     # Подгрузка комментариев для профиля
@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r'accounts/profile/comments/page/(?P<page>\d+)/$', comment.CommentsAuthor.as_view(), {'user_id': None}),
 
     # Удаление рассказа
-    url(r'story/(?P<pk>\d+)/delete/$', story.AjaxStoryDelete.as_view()),
+    url(r'story/(?P<pk>\d+)/delete/$', 'story.delete'),
     
     # Одобрение рассказа
     url(r'story/(?P<story_id>\d+)/approve/$', story.story_approve_ajax),

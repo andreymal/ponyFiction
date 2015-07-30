@@ -23,6 +23,7 @@
 				<li>Не забудьте опубликовать рассказ в кабинете автора, когда закончите писать чистовик.</li>
 			</ul>
 		{% endif %}
+		{% if saved %}<div class="alert-mini green">Изменения сохранены</div>{% endif %}
 		
 		<form method="POST" enctype="multipart/form-data" class="form-horizontal">
 		{% csrf_token %}
@@ -164,8 +165,11 @@
 				</div>
 				<!-- Действия -->
       			<div class="form-actions">
-      				<!-- Сохранить -->
-      				{{ form.button_submit }}
+				{% if story_edit %}
+					<input type="submit" class="btn btn-primary" value="Сохранить" />
+				{% else %}
+					<input type="submit" class="btn btn-primary" value="Добавить рассказ" />
+				{% endif %}
       			</div>
       			{% if story_edit %}
       				<legend>Главы</legend>

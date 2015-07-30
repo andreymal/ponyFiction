@@ -708,6 +708,3 @@ class HtmlBlock(models.Model):
 
     def __str__(self):
         return self.name
-
-
-from . import signals

@@ -108,12 +108,6 @@ class StoryForm(ModelForm):
         max_length=512,
         error_messages={'required': 'Пожалуйста, назовите ваш рассказ'},
     )
-    # Кнопка "Сохранить"
-    button_submit = Field(
-        required=False,
-        widget=ServiceButtonWidget(attrs={'class': 'btn btn-primary'}),
-        initial = 'Сохранить'
-    )
     # Метакласс
     class Meta:
         model = Story
