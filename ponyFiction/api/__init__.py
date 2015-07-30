@@ -1,3 +1,8 @@
-from jsonrpc.backend.django import api
+from jsonrpc import Dispatcher
+from .story import StoryAPI
 
-__all__ = ("api",)
+__all__ = ("dispatcher",)
+
+dispatcher = Dispatcher()
+
+StoryAPI(dispatcher)

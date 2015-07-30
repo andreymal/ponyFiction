@@ -1,10 +1,15 @@
-from . import api
+from .utils import BaseAPI
 
 
-@api.dispatcher.add_method("story.get_random")
-def get_random(request):
-    return [
-        {
-            "name": "test"
-        }
-    ]
+class StoryAPI(BaseAPI):
+
+    _prefix = "story."
+
+    @staticmethod
+    def get_random(request):
+        """Get random story"""
+        return [
+            {
+                "name": "test"
+            }
+        ]

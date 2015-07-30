@@ -15,7 +15,10 @@ from ponyFiction.views.index import index
 from ponyFiction.views.object_lists import FavoritesList, SubmitsList, BookmarksList
 from ponyFiction.views.story import StoryAdd, StoryEdit, StoryDelete
 from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments, TopStories, StreamStoryEditLog
-from ponyFiction.api import api
+
+from ponyFiction.api import dispatcher
+from jsonrpc.backend.django import JSONRPCAPI
+api = JSONRPCAPI(dispatcher=dispatcher)
 
 admin.autodiscover()
 
@@ -192,5 +195,5 @@ urlpatterns += patterns('ponyFiction.views.staticpages',
 )
 
 urlpatterns += patterns('',
-    url(r'^api/$', include(api.urls)),
+    url(r'^api/', include(api.urls)),
 )
