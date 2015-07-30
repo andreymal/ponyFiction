@@ -1,3 +1,2 @@
 #!/bin/bash
-. env/bin/activate
-exec celery worker -A ponyFiction --loglevel=INFO
+exec ./env/bin/celery worker -A ponyFiction --loglevel=INFO

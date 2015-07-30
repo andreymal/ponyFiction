@@ -22,6 +22,8 @@ CMS библиотеки на stories.everypony.ru
 
  `pip install -r requirements.txt`
 
+* Указываем окружение, скопировав файл `environment.example.txt` в `environment.txt` и `sphinxroot.example.txt` в `sphinxroot.txt`
+
 * Инициализируем базу (будет создан файл `db.sqlite3`), создаём суперпользователя и заполняем базу данными (персонажи, рейтинги, жанры, события):
 
  `python manage.py migrate`
@@ -39,7 +41,7 @@ CMS библиотеки на stories.everypony.ru
 
 ## Развёртывание приближенного к production окружения (с поиском и прочим)
 
-* Выполняем первые четыре пункта из предыдущего списка
+* Выполняем первые пять пунктов из предыдущего списка
 
 * Дополнительно устанавливаем Redis (для cacheops), memcached и Sphinx
 
