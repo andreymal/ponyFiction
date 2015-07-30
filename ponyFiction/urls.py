@@ -15,6 +15,7 @@ from ponyFiction.views.index import index
 from ponyFiction.views.object_lists import FavoritesList, SubmitsList, BookmarksList
 from ponyFiction.views.story import StoryAdd, StoryEdit, StoryDelete
 from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments, TopStories, StreamStoryEditLog
+from ponyFiction.api import api
 
 admin.autodiscover()
 
@@ -188,4 +189,8 @@ if settings.DEBUG:
     )
 urlpatterns += patterns('ponyFiction.views.staticpages',
     url(r'^page/(?P<name>[A-z0-9-_\.]+)/$', 'view', name='staticpage'),
+)
+
+urlpatterns += patterns('',
+    url(r'^api/$', include(api.urls)),
 )
