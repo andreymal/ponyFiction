@@ -15,18 +15,84 @@ from ponyFiction.fields import SeparatedValuesField
 from django.contrib.auth.models import AbstractUser
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.utils.datetime_safe import datetime
+from django.utils.encoding import is_protected_type
 
 from ponyFiction.filters import filter_html, filtered_html_property
 from ponyFiction.filters.base import html_doc_to_string
 from ponyFiction.filters.html import footnotes_to_html
-
 
 # disable username validation to allow editing of users with russian symbols in names
 username_field = {f.name:f for f in AbstractUser._meta.fields}['username']
 username_field.validators = []
 
 
-class Author(AbstractUser):
+class JSONModel(models.Model):
+    def to_dict(self, fields=None, exclude_fields=None, relations=None):
+        opts = self._meta
+        s_opts = self.Serialize
+        result = {}
+
+        # select used fields and relations
+        if fields is None:
+            fields = getattr(s_opts, 'default_fields', None) or opts.get_all_field_names()
+        fields = set(fields) - set(exclude_fields or ())
+
+        if isinstance(relations, (tuple, list, set)):
+            relations = {x: None for x in relations}
+        elif relations is None:
+            relations = getattr(s_opts, 'default_relations', None) or {}
+
+        # get values
+        for f in opts.local_fields:
+            if f.name not in fields:
+                continue
+
+            if f.name in relations and f.rel is not None and hasattr(getattr(self, f.name), 'to_dict'):
+                # ForeignKey
+                item = getattr(self, f.name)
+                args = relations.get(f.name)
+                if not isinstance(args, dict):
+                    args = {'fields': args}
+                result[f.name] = item.to_dict(**args)
+            else:
+                # simple fields and ForeignKey to non-serializable model
+                value = f._get_val_from_obj(self)
+                if is_protected_type(value):
+                    result[f.name] = value
+                else:
+                    result[f.name] = f.value_to_string(self)
+
+        for f in opts.many_to_many:
+            if f.name not in fields:
+                continue
+            items = []
+            for item in getattr(self, f.name).all():
+                if f.name in relations and hasattr(item, 'to_dict'):
+                    # ManyToMany field item
+                    items.append(item.to_dict(relations.get(f.name) if relations else None))
+                else:
+                    # non-serializable ManyToMany field item
+                    items.append(item.pk)
+            result[f.name] = items
+
+        # get values of calculated fields
+        for name in fields & set(getattr(s_opts, 'properties', ())):
+            value = getattr(self, name)
+            if is_protected_type(value):
+                result[name] = value
+            else:
+                result[name] = f.value_to_string(self)
+
+        return result
+
+    class Meta:
+        abstract = True
+
+    class Serialize:
+        pass
+
+
+class Author(AbstractUser, JSONModel):
     """ Модель автора """
 
     bio = models.TextField(max_length=2048, blank=True, verbose_name="О себе")
@@ -45,6 +111,9 @@ class Author(AbstractUser):
     class Meta:
         verbose_name = "автор"
         verbose_name_plural = "авторы"
+
+    class Serialize:
+        default_fields = {'id', 'username'}
 
     bio_as_html = filtered_html_property('bio', filter_html)
 
@@ -109,7 +178,7 @@ class CharacterGroup(models.Model):
         verbose_name_plural = "Группы персонажей"
 
 
-class Character(models.Model):
+class Character(JSONModel):
     """ Модель персонажа """
 
     description = models.TextField(max_length=4096, blank=True, verbose_name="Биография")
@@ -123,8 +192,11 @@ class Character(models.Model):
         verbose_name = "персонаж"
         verbose_name_plural = "персонажи"
 
+    class Serialize:
+        default_fields = {'id', 'name'}
 
-class Category(models.Model):
+
+class Category(JSONModel):
     """ Модель жанра """
 
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
@@ -137,8 +209,11 @@ class Category(models.Model):
         verbose_name = "жанр"
         verbose_name_plural = "жанры"
 
+    class Serialize:
+        default_fields = {'id', 'name'}
 
-class Classifier(models.Model):
+
+class Classifier(JSONModel):
     """ Модель события """
 
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
@@ -151,8 +226,11 @@ class Classifier(models.Model):
         verbose_name = "событие"
         verbose_name_plural = "события"
 
+    class Serialize:
+        default_fields = {'id', 'name'}
 
-class Rating(models.Model):
+
+class Rating(JSONModel):
     """ Модель рейтинга """
 
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
@@ -164,6 +242,9 @@ class Rating(models.Model):
     class Meta:
         verbose_name = "рейтинг"
         verbose_name_plural = "рейтинги"
+
+    class Serialize:
+        default_fields = {'id', 'name'}
 
 
 class BetaReading(models.Model):
@@ -292,13 +373,15 @@ class StoryManager(models.Manager):
         return StoryQuerySet(self.model, using=self._db)
 
     def __getattr__(self, attr, *args, **kwargs):
+        if attr.startswith('_') or attr == 'model':
+            raise AttributeError("'{}' object has no attribute '{}'".format(self.__class__, attr))
         try:
             return getattr(self.__class__, attr, *args, **kwargs)
         except AttributeError:
             return getattr(self.get_queryset(), attr, *args, **kwargs)
 
 
-class Story(models.Model):
+class Story(JSONModel):
     """ Модель рассказа """
 
     title = models.CharField(max_length=512, verbose_name="Название")
@@ -339,6 +422,17 @@ class Story(models.Model):
             ['approved', 'draft', 'date'],
             ['approved', 'draft', 'vote_average', 'vote_stddev'],
         ]
+
+    class Serialize:
+        properties = {'published'}
+        default_fields = {'id', 'title', 'authors', 'characters', 'categories',
+            'date', 'finished', 'freezed', 'original', 'rating', 'summary', 'updated', 'words',
+            'vote_total', 'vote_average', 'vote_stddev', 'published'}
+        default_relations = {
+            'authors': {'id', 'username'},
+            'characters': {'id', 'name'},
+            'categories': {'id', 'name'},
+        }
 
     def __str__(self):
         return "[%.2f ± %.2f] %s" % (self.vote_average, self.vote_stddev, self.title)
