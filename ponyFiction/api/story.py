@@ -10,4 +10,4 @@ class StoryAPI(BaseAPI):
     def get_random(request):
         """Get random stories"""
         stories = Story.bl.get_random()
-        return [s.to_dict({'title', 'url', 'summary', 'categories', 'characters', 'url'}) for s in stories]
+        return [s.to_dict({'title', 'url', 'summary', 'categories', 'characters'}) for s in stories]

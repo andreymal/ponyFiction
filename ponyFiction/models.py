@@ -13,6 +13,7 @@ from django.utils.safestring import mark_safe
 from django.contrib.auth.models import AbstractUser
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.utils.encoding import is_protected_type
+from colorful.fields import RGBColorField
 
 from ponyFiction.filters import filter_html, filtered_html_property
 from ponyFiction.filters.base import html_doc_to_string
@@ -209,6 +210,7 @@ class Category(JSONModel):
 
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
+    color = RGBColorField(verbose_name="Цвет ссылки", default="#808080")
 
     def __str__(self):
         return self.name
@@ -223,7 +225,7 @@ class Category(JSONModel):
 
     class Serialize:
         properties = {'url'}
-        default_fields = {'id', 'name', 'url'}
+        default_fields = {'id', 'name', 'color', 'url'}
 
 
 class Classifier(JSONModel):
@@ -446,7 +448,7 @@ class Story(JSONModel):
         default_relations = {
             'authors': {'id', 'username'},
             'characters': {'id', 'name', 'url', 'thumb'},
-            'categories': {'id', 'name', 'url', 'thumb'},
+            'categories': {'id', 'name', 'url', 'thumb', 'color'},
         }
 
     def __str__(self):
