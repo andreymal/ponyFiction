@@ -155,103 +155,64 @@ def story_edit_log(request, pk):
     return render(request, 'story_edit_log.html', data)
 
 
-class StoryAdd(CreateView):
-    model = Story
-    form_class = StoryForm
-    template_name = 'story_work.html'
-    initial = {'finished': 0, 'freezed': 0, 'original': 1, 'rating': 4, 'button_submit': u'Добавить рассказ'}
+@login_required
+@csrf_protect
+def add(request):
+    if request.method == 'POST':
+        form = StoryForm(request.POST)
+        if form.is_valid():
+            story = Story.bl.create(authors=[(request.user, True)], **form.cleaned_data)
+            return redirect('story_edit', story.id)
+    else:
+        form = StoryForm(initial={'finished': 0, 'freezed': 0, 'original': 1, 'rating': 4})
 
-    @method_decorator(login_required)
-    @method_decorator(csrf_protect)
-    def dispatch(self, request, *args, **kwargs):
-        return CreateView.dispatch(self, request, *args, **kwargs)
-    
-    def form_valid(self, form):
-        story = form.save()
-        CoAuthorsStory.objects.create(story=story, author=self.request.user, approved=True)
-        tasks.sphinx_update_story.delay(story.id, ())
-        return redirect('story_edit', story.id)
-    
-    def get_context_data(self, **kwargs):
-        context = super(StoryAdd, self).get_context_data(**kwargs)
-        extra_context = {
-                         'page_title': 'Новый рассказ',
-                         'story_add': True,
-                         }
-        context.update(extra_context)
-        return context
+    data = {
+        'page_title': 'Новый рассказ',
+        'form': form,
+        'story_add': True
+    }
+    return render(request, 'story_work.html', data)
 
 
-class StoryEdit(UpdateView):
-    model = Story
-    form_class = StoryForm
-    template_name = 'story_work.html'
-    initial = {'button_submit': 'Сохранить изменения'}
-    story = None
-    
-    @method_decorator(login_required)
-    @method_decorator(csrf_protect)
-    def dispatch(self, request, *args, **kwargs):
-        return UpdateView.dispatch(self, request, *args, **kwargs)
-    
-    def form_valid(self, form):
-        story = form.save()
-        StoryEditLogItem.create(
-            action = StoryEditLogItem.Actions.Edit,
-            user = self.request.user,
-            story = story,
-            data = form.cleaned_data,
-        )
-        tasks.sphinx_update_story.delay(story.id, ())
-        return redirect('story_edit', story.id)
-    
-    def get_object(self, queryset=None):
-        self.story = UpdateView.get_object(self, queryset=queryset)
-        if self.story.editable_by(self.request.user):
-            return self.story
-        else:
-            raise PermissionDenied
-    
-    def get_context_data(self, **kwargs):
-        context = super(StoryEdit, self).get_context_data(**kwargs)
-        extra_context = {
-                         'page_title': 'Редактирование «%s»' % self.story.title,
-                         'story_edit': True,
-                         'chapters': self.story.chapter_set.order_by('order')
-                         }
-        context.update(extra_context)
-        return context
+@login_required
+@csrf_protect
+def edit(request, pk):
+    story = get_object_or_404(Story.objects, pk=pk)
+    if not story.editable_by(request.user):
+        raise PermissionDenied
+
+    data = {
+        'story_edit': True,
+        'chapters': story.chapter_set.order_by('order'),
+        'saved': False,
+        'story': story
+    }
+
+    if request.method == 'POST':
+        form = StoryForm(request.POST)
+        if form.is_valid():
+            story.bl.update(editor=request.user, **form.cleaned_data)
+            data['saved'] = True
+    else:
+        form = StoryForm(instance=story)
+
+    data['form'] = form
+    data['page_title'] = 'Редактирование «{}»'.format(story.title)
+    return render(request, 'story_work.html', data)
 
 
-class StoryDelete(DeleteView):
-    model = Story
-    story = None
-    story_id = None
-    template_name = 'story_confirm_delete.html'
-    
-    @method_decorator(login_required)
-    @method_decorator(csrf_protect)
-    def dispatch(self, request, *args, **kwargs):
-        return DeleteView.dispatch(self, request, *args, **kwargs)
-    
-    def get_object(self, queryset=None):
-        self.story = DeleteView.get_object(self, queryset=queryset)
-        self.story_id = self.story.id
-        if self.story.deletable_by(self.request.user):
-            return self.story
-        else:
-            raise PermissionDenied
-        
-    def delete(self, request, *args, **kwargs):
-        self.story = self.get_object()
-        self.story.delete()
+@login_required
+@csrf_protect
+def delete(request, pk):
+    story = get_object_or_404(Story.objects, pk=pk)
+    if not story.deletable_by(request.user):
+        raise PermissionDenied
+
+    if request.method == 'POST':
+        story.bl.delete()
         return redirect('index')
-    
-    def get_context_data(self, **kwargs):
-        context = super(StoryDelete, self).get_context_data(**kwargs)
-        extra_context = {'page_title': 'Подтверждение удаления рассказа', 'story': self.story}
-        context.update(extra_context)
-        return context
+
+    return render(request, 'story_confirm_delete.html', {'page_title': 'Подтверждение удаления рассказа', 'story': story})
     
     
 def story_download(request, story_id, filename, extension):

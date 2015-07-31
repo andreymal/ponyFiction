@@ -20,6 +20,7 @@ from django.utils.encoding import is_protected_type
 from ponyFiction.filters import filter_html, filtered_html_property
 from ponyFiction.filters.base import html_doc_to_string
 from ponyFiction.filters.html import footnotes_to_html
+from ponyFiction.bl.utils import Resource
 
 # disable username validation to allow editing of users with russian symbols in names
 username_field = {f.name:f for f in AbstractUser._meta.fields}['username']
@@ -415,6 +416,8 @@ class Story(JSONModel):
 
     objects = StoryManager()
 
+    bl = Resource('bl.story')
+
     class Meta:
         verbose_name = "рассказ"
         verbose_name_plural = "рассказы"
@@ -536,6 +539,8 @@ class Chapter(models.Model):
     text = models.TextField(blank=True, verbose_name="Текст главы")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     words = models.IntegerField(default=0, verbose_name="Количество слов в главе")
+
+    bl = Resource('bl.chapter')
 
     class Meta:
         verbose_name = "глава"
@@ -797,6 +802,3 @@ class HtmlBlock(models.Model):
 
     def __str__(self):
         return self.name
-
-
-from . import signals

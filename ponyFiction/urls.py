@@ -13,7 +13,6 @@ from ponyFiction.views.chapter import ChapterAdd, ChapterEdit, ChapterDelete
 from ponyFiction.views.comment import CommentEdit, CommentAdd, CommentDelete
 from ponyFiction.views.index import index
 from ponyFiction.views.object_lists import FavoritesList, SubmitsList, BookmarksList
-from ponyFiction.views.story import StoryAdd, StoryEdit, StoryDelete
 from ponyFiction.views.stream import StreamStories, StreamChapters, StreamComments, TopStories, StreamStoryEditLog
 
 from ponyFiction.api import dispatcher
@@ -147,10 +146,10 @@ urlpatterns += patterns('ponyFiction.views.story',
     # Просмотр с подгрузкой определенной страницы комментариев
     url(r'^story/(?P<pk>\d+)/comments/page/(?P<comments_page>\d+)/$', 'story_view', name='story_view_comments_paged'),
     # Добавление
-    url(r'^story/add/$', StoryAdd.as_view(), name='story_add'),
+    url(r'^story/add/$', 'add', name='story_add'),
     # Правка
-    url(r'^story/(?P<pk>\d+)/edit/$', StoryEdit.as_view(), name='story_edit'),
-    url(r'^story/(?P<pk>\d+)/delete/$', StoryDelete.as_view(), name='story_delete'),
+    url(r'^story/(?P<pk>\d+)/edit/$', 'edit', name='story_edit'),
+    url(r'^story/(?P<pk>\d+)/delete/$', 'delete', name='story_delete'),
     # Отправка на публикацию
     url(r'^story/(?P<pk>\d+)/publish/$', 'story_publish', name='story_publish'),
     # Одобрение
