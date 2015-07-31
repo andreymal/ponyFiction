@@ -48,7 +48,7 @@
 			</p>		
 			<p class="story-thumbnails">
 				{% for character in story.characters.all %}
-	     			<a href="{% url 'search_simple' 'character' character.id %}"><img src="{% get_static_prefix %}i/characters/{{ character.id }}.png" alt="{{ character.name }}" title="{{ character.name }}"/></a>
+	     			<a href="{% url 'search_simple' 'character' character.id %}"><img src="{{ character.thumb }}" alt="{{ character.name }}" title="{{ character.name }}"/></a>
       			{% endfor %}
 			</p>
 		{% endspaceless %}
