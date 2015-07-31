@@ -1,17 +1,17 @@
 <form method="POST" enctype="multipart/form-data" action="{% if edit %}{% url 'comment_edit' story.id comment.id %}{% else %}{% url 'comment_add' story.id %}{% endif %}">
-  		{% csrf_token %}
-  	<div class="control-group{% if form.text.errors %} error{% endif %}">
-		<div class="controls">	
-			{{ form.text }}
-		</div>
-		{% if form.text.errors %}
-			{% for error in form.text.errors %}
-	            <span class="help-inline">{{ error }}</span>
-			{% endfor %}
-		{% endif %}
-	</div>
-	<div class="control-group">
-		<a data-dismiss="modal" href="{% url 'story_view' story.id %}" class="btn">Отменить</a>
-		<input class="btn btn-primary comment_submit" type="submit" value="Отправить"/>
-	</div>
+          {% csrf_token %}
+      <div class="control-group{% if form.text.errors %} error{% endif %}">
+        <div class="controls">
+            {{ form.text }}
+        </div>
+        {% if form.text.errors %}
+            {% for error in form.text.errors %}
+                <span class="help-inline">{{ error }}</span>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="control-group">
+        <a data-dismiss="modal" href="{% url 'story_view' story.id %}" class="btn">Отменить</a>
+        <input class="btn btn-primary comment_submit" type="submit" value="Отправить"/>
+    </div>
 </form>

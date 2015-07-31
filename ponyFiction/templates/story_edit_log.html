@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="row">
-	<div class="span12 story-page">
+    <div class="span12 story-page">
         <ul class="breadcrumb">
             <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
             {% if story %}<li><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> <span class="divider">/</span></li>{% endif %}
@@ -30,16 +30,16 @@
 
         {% if page_obj %}
             <div id="pagination" class="center">
-	        	{% if page_obj.has_previous %}
-					<a class="btn" href="{% url pagination_view_name page_obj.previous_page_number %}">← Назад</a>
-				{% endif %}
-				<span class="btn btn-primary">
-					{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
-				</span>
-	        	{% if page_obj.has_next %}
-					<a class="btn" href="{% url pagination_view_name page_obj.next_page_number %}">Вперед →</a>
-				{% endif %}
-	      	</div>
+                {% if page_obj.has_previous %}
+                    <a class="btn" href="{% url pagination_view_name page_obj.previous_page_number %}">← Назад</a>
+                {% endif %}
+                <span class="btn btn-primary">
+                    {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                </span>
+                {% if page_obj.has_next %}
+                    <a class="btn" href="{% url pagination_view_name page_obj.next_page_number %}">Вперед →</a>
+                {% endif %}
+              </div>
         {% endif %}
     </div>
 </div>
