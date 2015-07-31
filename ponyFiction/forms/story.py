@@ -10,7 +10,7 @@ class StoryForm(ModelForm):
            'group_container_class': 'characters-group group-',
            'data_attrs': {'class': 'hidden'},
            'container_attrs': {'class': 'character-item'}
-    }  
+    }
     radio_attrs={
            'btn_attrs': {'type': 'button', 'class': 'btn'},
            'data_attrs': {'class': 'hidden'},

@@ -37,11 +37,11 @@ def filtered_html_property(name, filter_):
     return property(fn)
 
 
-_filter_transforms = {}   
+_filter_transforms = {}
 @html_doc_transform
 def _filter_html(doc, tags, attributes, **kw):
     key = repr((tags, attributes))
-    
+
     if key not in _filter_transforms:
         filters = []
         filters.extend(tags)
@@ -50,11 +50,11 @@ def _filter_html(doc, tags, attributes, **kw):
                 filters.append('%s/@%s' % (tag, attr))
         filters = '|'.join(filters)
         data = HTML_FILTER_TEMPLATE.replace('@FILTERS@', filters)
-        
+
         from lxml import etree
         _filter_transforms[key] = etree.XSLT(etree.XML(data))
     filter_transform = _filter_transforms[key]
-        
+
     kw = transform_xslt_params(kw)
     return filter_transform(doc, **kw).getroot()
 

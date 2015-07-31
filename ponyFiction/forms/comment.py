@@ -15,13 +15,13 @@ class CommentForm(ModelForm):
         label='Добавить комментарий',
         required=False,
     )
-    
+
     def clean_text(self):
         text = self.cleaned_data['text']
         if (len(striptags(text)) < settings.COMMENT_MIN_LENGTH):
             raise ValidationError('Сообщение слишком короткое!')
         return text
-    
+
     class Meta:
         model = Comment
         fields = ('text', )

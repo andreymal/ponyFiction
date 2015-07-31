@@ -252,12 +252,12 @@ CACHEOPS = {
     'ponyFiction.Story': {'ops': 'get', 'timeout': 3600 * 3},
     'ponyFiction.Chapter': {'ops': 'get', 'timeout': 3600 * 3},
     'ponyFiction.Comment': {'ops': 'get', 'timeout': 3600 * 3},
-    
+
     'ponyFiction.Character': {'ops': 'all', 'timeout': 3600 * 24 *30},
     'ponyFiction.Category': {'ops': 'all', 'timeout': 3600 * 24 *30},
     'ponyFiction.Classifier': {'ops': 'all', 'timeout': 3600 * 24 * 30},
     'ponyFiction.Rating': {'ops': 'all', 'timeout': 3600 * 24 * 30},
-    
+
     'auth.*': {'ops': 'all', 'timeout': 3600},
     '*.*': {'ops': 'just_enable', 'timeout': 3600},
 }

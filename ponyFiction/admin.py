@@ -14,7 +14,7 @@ class StoryAdmin(admin.ModelAdmin):
 
 class ChapterAdmin(admin.ModelAdmin):
     raw_id_fields = ('story',)
-    
+
 admin.site.register(Story, StoryAdmin)
 admin.site.register(Chapter, ChapterAdmin)
 admin.site.register([Character, CharacterGroup, Category, Classifier])
@@ -31,7 +31,7 @@ class AuthorChangeForm(UserChangeForm):
 
 class AuthorAdmin(UserAdmin):
     form = AuthorChangeForm
-   
+
     list_display = ('username', 'email', 'last_name', 'first_name', 'is_staff', 'is_active')
     fieldsets = (
         (None, {'fields': ('username', 'password')}),

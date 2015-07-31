@@ -36,7 +36,7 @@ class GroupedModelChoiceField(ModelMultipleChoiceField):
             self.group_label = lambda group: group
         else:
             self.group_label = group_label
-    
+
     def _get_choices(self):
         """
         Exactly as per ModelChoiceField except returns new iterator class

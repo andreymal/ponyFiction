@@ -76,7 +76,7 @@ def author_edit(request):
             profile_form = AuthorEditProfileForm(request.POST, instance=author, prefix='profile_form')
             if profile_form.is_valid():
                 profile_form.save()
-                data['profile_ok'] = True            
+                data['profile_ok'] = True
         if 'save_email' in request.POST:
             email_form = AuthorEditEmailForm(request.POST, author=author, prefix='email_form')
             if email_form.is_valid():

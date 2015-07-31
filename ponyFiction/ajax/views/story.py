@@ -34,7 +34,7 @@ def story_publish_warning_ajax(request, story_id):
         raise PermissionDenied
 
 
-@ajax_required    
+@ajax_required
 @login_required
 @csrf_protect
 @require_POST
@@ -91,7 +91,7 @@ def story_approve_ajax(request, story_id):
 @require_POST
 def story_bookmark_ajax(request, story_id):
     """ Добавление рассказа в закладки """
-    
+
     story = get_object_or_404(Story.objects.accessible(user=request.user), pk=story_id)
     (bookmark, created) = Bookmark.objects.get_or_create(story=story, author=request.user)
     if not created:

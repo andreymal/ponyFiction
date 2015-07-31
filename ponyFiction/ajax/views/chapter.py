@@ -30,15 +30,15 @@ def chapter_sort(request, story_id):
             return HttpResponse('Done')
     else:
         raise PermissionDenied
-    
+
 class AjaxChapterDelete(ChapterDelete):
-    
+
     template_name = 'includes/ajax/chapter_ajax_confirm_delete.html'
-    
+
     @method_decorator(ajax_required)
     def dispatch(self, request, *args, **kwargs):
         return ChapterDelete.dispatch(self, request, *args, **kwargs)
-    
+
     def delete(self, request, *args, **kwargs):
         parent_response = super(AjaxChapterDelete, self).delete(self, request, *args, **kwargs)
         if parent_response.status_code == 302:

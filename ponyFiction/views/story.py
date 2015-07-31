@@ -60,7 +60,7 @@ def story_view(request, pk, comments_page):
        'page_title' : page_title,
        'comment_form': comment_form
        }
-  
+
     return render(request, 'story_view.html', data)
 
 
@@ -213,28 +213,28 @@ def delete(request, pk):
         return redirect('index')
 
     return render(request, 'story_confirm_delete.html', {'page_title': 'Подтверждение удаления рассказа', 'story': story})
-    
-    
+
+
 def story_download(request, story_id, filename, extension):
     from django.core.files.storage import default_storage as storage
     from ..downloads import get_format
-    
+
     debug = settings.DEBUG and 'debug' in request.META['QUERY_STRING']
-    
+
     story = get_object_or_404(Story, pk=story_id)
     fmt = get_format(extension)
     if fmt is None:
         raise Http404
-    
+
     url = fmt.url(story)
     if url != request.path:
         return redirect(url)
     filepath = 'stories/%s/%s.%s' % (story_id, filename, extension)
-    
-    if (not storage.exists(filepath) or 
+
+    if (not storage.exists(filepath) or
         storage.modified_time(filepath) < story.updated or
         debug):
-        
+
         data = fmt.render(
             story=story,
             filename=filename,
@@ -245,7 +245,7 @@ def story_download(request, story_id, filename, extension):
             if storage.exists(filepath):
                 storage.delete(filepath)
             storage.save(filepath, ContentFile(data))
-        
+
     if not debug:
         return redirect(storage.url(filepath))
     else:

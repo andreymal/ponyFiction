@@ -55,7 +55,7 @@ class AuthorEditProfileForm(ModelForm):
         error_messages={'invalid': 'Пожалуйста, исправьте ошибку в логине ВК: похоже, он неправильный'},
         required=False
     )
-            
+
     class Meta:
         model = Author
         fields = ('bio', 'jabber', 'skype', 'tabun', 'forum', 'vk')
@@ -99,7 +99,7 @@ class AuthorEditPrefsForm(Form):
 
     def save(self):
         author = self.author
-        excluded_categories = self.cleaned_data['excluded_categories'] 
+        excluded_categories = self.cleaned_data['excluded_categories']
         author.excluded_categories = obj_to_int_list(excluded_categories)
         author.detail_view = bool(int(self.cleaned_data['detail_view']))
         author.nsfw = bool(int(self.cleaned_data['nsfw']))
@@ -108,7 +108,7 @@ class AuthorEditPrefsForm(Form):
 
 class AuthorEditEmailForm(Form):
     attrs_dict = {'class': 'input-xlarge'}
-    
+
     email = EmailField(
         widget=TextInput(attrs=dict(attrs_dict, maxlength=75, placeholder='Адрес электронной почты')),
         max_length=75,
@@ -120,13 +120,13 @@ class AuthorEditEmailForm(Form):
         label="Пароль",
         help_text='Для безопасной смены почты введите пароль',
     )
-    
+
     def __init__(self, *args, **kwargs):
         self.author = kwargs.pop('author', None)
         super(AuthorEditEmailForm, self).__init__(*args, **kwargs)
         if self.author:
             self.fields['email'].initial = self.author.email
-    
+
     def clean(self):
         cleaned_data = super(AuthorEditEmailForm, self).clean()
         email = cleaned_data.get('email')
@@ -135,7 +135,7 @@ class AuthorEditEmailForm(Form):
             if not self.author.check_password(password):
                 raise ValidationError('Неверный пароль')
         return cleaned_data
-    
+
     def save(self):
         author = self.author
         email = self.cleaned_data['email']
@@ -145,7 +145,7 @@ class AuthorEditEmailForm(Form):
 
 class AuthorEditPasswordForm(Form):
     attrs_dict = {'class': 'input-xlarge'}
-    
+
     old_password = CharField(
         widget=PasswordInput(attrs=dict(attrs_dict, placeholder='****************'), render_value=False),
         label="Старый пароль",
@@ -167,7 +167,7 @@ class AuthorEditPasswordForm(Form):
     def __init__(self, *args, **kwargs):
         self.author = kwargs.pop('author', None)
         super(AuthorEditPasswordForm, self).__init__(*args, **kwargs)
-    
+
     def clean(self):
         cleaned_data = super(AuthorEditPasswordForm, self).clean()
         old_password = cleaned_data.get('old_password')
@@ -184,7 +184,7 @@ class AuthorEditPasswordForm(Form):
         if nfe:
             raise ValidationError(nfe)
         return cleaned_data
-    
+
     def save(self):
         author = self.author
         password = self.cleaned_data['new_password_1']

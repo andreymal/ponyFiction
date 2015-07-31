@@ -40,7 +40,7 @@ class StreamComments(ObjectList):
     paginate_by = settings.COMMENTS_COUNT['stream']
     template_name = 'stream/comments.html'
     page_title = 'Лента комментариев'
-    
+
     def get_queryset(self):
         return Comment.objects.filter(story__in=Story.objects.published).order_by('-date').cache()
 

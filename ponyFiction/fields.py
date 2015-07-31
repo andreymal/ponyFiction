@@ -9,7 +9,7 @@ from ponyFiction.utils.misc import unicode_to_int_list
 
 class SeparatedValuesField(CommaSeparatedIntegerField, metaclass=SubfieldBase):
     token = ','
-    
+
     def to_python(self, value):
         if not value:
             return []
