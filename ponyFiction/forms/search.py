@@ -2,7 +2,8 @@
 from django.forms import Field, Form, ModelMultipleChoiceField, MultipleChoiceField, TextInput, ChoiceField, IntegerField, CharField
 from ponyFiction.forms.fields import GroupedModelChoiceField
 from ponyFiction.models import Character, Category, Classifier, Rating
-from ponyFiction.widgets import NumberInput, ButtonWidget, ServiceButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesButtons, StoriesRadioButtons, StoriesServiceInput
+from ponyFiction.widgets import NumberInput, ButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesButtons, StoriesRadioButtons, StoriesServiceInput
+
 
 class SearchForm(Form):
     checkbox_attrs = {

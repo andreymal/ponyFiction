@@ -12,7 +12,7 @@ urlpatterns = patterns('ponyFiction.ajax.views',
 
     # Удаление рассказа
     url(r'story/(?P<pk>\d+)/delete/$', 'story.delete'),
-    
+
     # Одобрение рассказа
     url(r'story/(?P<story_id>\d+)/approve/$', story.story_approve_ajax),
     # Публикация рассказа
@@ -25,14 +25,14 @@ urlpatterns = patterns('ponyFiction.ajax.views',
     url(r'story/(?P<story_id>\d+)/chapter/\d+/favorite', story.story_favorite_ajax),
     # Голосование за рассказ
     url(r'story/(?P<story_id>\d+)/vote/(?P<value>\d+)/$', story.story_vote_ajax),
-    
+
     # Добавление комментария
     url(r'story/(?P<story_id>\d+)/comment/add/$', comment.AjaxCommentAdd.as_view()),
     # Редактирование комментария
     url(r'story/(?P<story_id>\d+)/comment/(?P<pk>\d+)/edit/$', comment.AjaxCommentEdit.as_view()),
     # Удаление комментария
     url(r'story/(?P<story_id>\d+)/comment/(?P<pk>\d+)/delete/$', comment.AjaxCommentDelete.as_view()),
-    
+
     # AJAX-сортировка глав
     url(r'^story/(?P<story_id>\d+)/edit/ajax$', chapter.chapter_sort),
     # Удаление главы

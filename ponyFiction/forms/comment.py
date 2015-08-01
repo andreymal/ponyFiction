@@ -6,22 +6,21 @@ from django.forms.fields import CharField
 from django.template.defaultfilters import striptags
 
 
-
 class CommentForm(ModelForm):
     attrs_dict = {'class': 'span4'}
-    text=CharField(
+    text = CharField(
         widget=Textarea(attrs=dict(attrs_dict, maxlength=8192, placeholder='Текст нового комментария')),
         max_length=8192,
         label='Добавить комментарий',
         required=False,
     )
-    
+
     def clean_text(self):
         text = self.cleaned_data['text']
-        if (len(striptags(text)) < settings.COMMENT_MIN_LENGTH):
+        if len(striptags(text)) < settings.COMMENT_MIN_LENGTH:
             raise ValidationError('Сообщение слишком короткое!')
         return text
-    
+
     class Meta:
         model = Comment
         fields = ('text', )

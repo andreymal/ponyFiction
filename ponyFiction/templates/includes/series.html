@@ -3,38 +3,38 @@
 {% load story_comments_delta %}
 
 {% for sr in series %}
-	<div class="series-item">
-		<h2>
-			<a href="#">{{ sr.title }}</a>
-			{%if not sr.finished %}
-				<sup class="incomplete">Не закончена</sup>
-			{% else %}
-				<sup class="complete">Закончена</sup>
-			{% endif%}
-			{% if sr.freezed %}<sup class="suspended">Заморожен</sup>{% endif %}
-			<!-- <sup><a class="edit-link" href="#">Редактировать серию</a></sup> -->
-		</h2>
-		<p>
-			{{ sr.story_set.count|rupluralize:'рассказ,рассказа,рассказов' }},
-			{{ sr.views|rupluralize:'просмотр,просмотра,просмотров' }}
-		</p>
-		<!-- Вывод рассказов в сборнике: начало -->
-		<ul>
-			{% for story in sr.story_set.all %}
-				<li>
-					<a href="{% url 'story_view' story.id %}">{{ story.title }}</a>
-					{% if story.freezed %}<sup class="suspended">Заморожен</sup>{% endif %}<br/>
-					{% if story.chapter_set.count > 1 %}
-						{{ story.chapter_set.count|rupluralize:'глава,главы,глав' }},
-					{% endif %}
-					{{ story.views|rupluralize:'просмотр,просмотра,просмотров' }}, 
-					{{ story.comment_set.count|rupluralize:'комментарий,комментария,комментариев' }}
-					{% if story|story_comments_delta:user > 0 %}
-					<sup><span class="green">+{{ story|story_comments_delta:user }}</span></sup>
-				{% endif %} 
-				</li>
-			{% endfor %}
-		</ul>
-		<!-- Вывод рассказов в сборнике: конец -->
-	</div>
+    <div class="series-item">
+        <h2>
+            <a href="#">{{ sr.title }}</a>
+            {%if not sr.finished %}
+                <sup class="incomplete">Не закончена</sup>
+            {% else %}
+                <sup class="complete">Закончена</sup>
+            {% endif%}
+            {% if sr.freezed %}<sup class="suspended">Заморожен</sup>{% endif %}
+            <!-- <sup><a class="edit-link" href="#">Редактировать серию</a></sup> -->
+        </h2>
+        <p>
+            {{ sr.story_set.count|rupluralize:'рассказ,рассказа,рассказов' }},
+            {{ sr.views|rupluralize:'просмотр,просмотра,просмотров' }}
+        </p>
+        <!-- Вывод рассказов в сборнике: начало -->
+        <ul>
+            {% for story in sr.story_set.all %}
+                <li>
+                    <a href="{% url 'story_view' story.id %}">{{ story.title }}</a>
+                    {% if story.freezed %}<sup class="suspended">Заморожен</sup>{% endif %}<br/>
+                    {% if story.chapter_set.count > 1 %}
+                        {{ story.chapter_set.count|rupluralize:'глава,главы,глав' }},
+                    {% endif %}
+                    {{ story.views|rupluralize:'просмотр,просмотра,просмотров' }},
+                    {{ story.comment_set.count|rupluralize:'комментарий,комментария,комментариев' }}
+                    {% if story|story_comments_delta:user > 0 %}
+                    <sup><span class="green">+{{ story|story_comments_delta:user }}</span></sup>
+                {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        <!-- Вывод рассказов в сборнике: конец -->
+    </div>
 {% endfor %}

@@ -1,7 +1,7 @@
 {% load stories %}
 {% if not story_add %}
-	{% if story|editable_by:user %}
-		<div class="story-control-btn btn-group">
+    {% if story|editable_by:user %}
+        <div class="story-control-btn btn-group">
             {% if user.is_staff %}
                 <a class="btn {{ story.approved|yesno:',btn-success' }} btn-mini story_approve" href="{% url 'story_approve' story.id %}">
                     {{ story.approved|yesno:"Отозвать,Одобрить" }}
@@ -19,16 +19,16 @@
             </button>
 
             <ul class="dropdown-menu btn-mini" role="menu">
-			{% if not story_edit and user.is_staff %}
-				<li><a href="{% url 'story_edit' story.id %}">Редактировать</a></li>
-			{% endif %}
+            {% if not story_edit and user.is_staff %}
+                <li><a href="{% url 'story_edit' story.id %}">Редактировать</a></li>
+            {% endif %}
             {% if story|deletable_by:user %}
                 <li><a class="story_delete" href="{% url 'story_delete' story.id %}">Удалить</a></li>
             {% endif %}
-			{% if user.is_staff %}
+            {% if user.is_staff %}
                 <li><a href="{% url 'story_edit_log' story.id %}">Лог модерации</a></li>
             {% endif %}
             </ul>
-		</div>
-	{% endif %}
+        </div>
+    {% endif %}
 {% endif %}

@@ -3,8 +3,7 @@ from __future__ import unicode_literals
 
 from statistics import mean, pstdev
 
-from django.db import models, migrations
-import ponyFiction.fields
+from django.db import migrations
 
 
 def convert_votes(apps, schema_editor):

@@ -3,6 +3,7 @@
 
 from .base import ZipFileDownloadFormat
 
+
 class TXTDownload(ZipFileDownloadFormat):
     extension = 'txt.utf8.zip'
     name = u'TXT (кодировка Unicode)'

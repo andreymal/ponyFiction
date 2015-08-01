@@ -4,43 +4,43 @@
 <!-- Container start -->
 <div class="container">
 {% html_block 'header' %}
-	
-	<!-- Logo image and carousel start -->
-	<div class="logopic">
-		<div id="slides" class="carousel">
-				{% random_stories %}
-		</div>
-	</div>
-	<!-- Logo image and carousel end -->
 
-	<!-- Menu start -->
-	<ul class="nav nav-pills nav-main">
-		<li id="nav_index"><a href="{% url 'index' %}">Главная</a></li>
-		<li id="nav_search"><a href="{% url 'search' %}">Поиск</a></li>
-  		<li id="nav_help"><a href="{% url 'staticpage' 'help' %}">Справка</a></li>
-  		{% if user.is_authenticated %}
-    		<li id="nav_favorites"><a href="{% url 'favorites' user.id %}">Избранное</a></li>
-    		<li id="nav_bookmarks"><a href="{% url 'bookmarks' %}">Закладки</a></li>
-    		<li class="right"><a href="{% url 'auth_logout' %}">Выход</a></li>
-    		<li id="nav_author_overview" class="right"><a href="{% url 'author_overview' user.id %}">Профиль</a></li>
-    		<li id="nav_author_dashboard" class="right"><a class="active" href="{% url 'author_dashboard' %}">Кабинет автора</a></li>
-    		<li id="nav_story_add" class="right"><a href="{% url 'story_add' %}">Добавить рассказ</a></li>
+    <!-- Logo image and carousel start -->
+    <div class="logopic">
+        <div id="slides" class="carousel">
+                {% random_stories %}
+        </div>
+    </div>
+    <!-- Logo image and carousel end -->
+
+    <!-- Menu start -->
+    <ul class="nav nav-pills nav-main">
+        <li id="nav_index"><a href="{% url 'index' %}">Главная</a></li>
+        <li id="nav_search"><a href="{% url 'search' %}">Поиск</a></li>
+          <li id="nav_help"><a href="{% url 'staticpage' 'help' %}">Справка</a></li>
+          {% if user.is_authenticated %}
+            <li id="nav_favorites"><a href="{% url 'favorites' user.id %}">Избранное</a></li>
+            <li id="nav_bookmarks"><a href="{% url 'bookmarks' %}">Закладки</a></li>
+            <li class="right"><a href="{% url 'auth_logout' %}">Выход</a></li>
+            <li id="nav_author_overview" class="right"><a href="{% url 'author_overview' user.id %}">Профиль</a></li>
+            <li id="nav_author_dashboard" class="right"><a class="active" href="{% url 'author_dashboard' %}">Кабинет автора</a></li>
+            <li id="nav_story_add" class="right"><a href="{% url 'story_add' %}">Добавить рассказ</a></li>
             {% if user.is_staff %}
-    		<li id="nav_submitted" class="right"><a href="{% url 'submitted' %}">Новые ({% submitted_stories_count %})</a></li>
+            <li id="nav_submitted" class="right"><a href="{% url 'submitted' %}">Новые ({% submitted_stories_count %})</a></li>
             {% endif %}
-  		{% else %}
-		{% if REGISTRATION_OPEN %}<li id="nav_registration" ><a href="{% url 'registration_register' %}">Регистрация</a></li>{% endif %}
+          {% else %}
+        {% if REGISTRATION_OPEN %}<li id="nav_registration" ><a href="{% url 'registration_register' %}">Регистрация</a></li>{% endif %}
         {% if MIGRATION_SITE %}<li id="nav_stories_auth"><a href="{% url 'migration_new' %}">Войти через {{ MIGRATION_NAME }}</a></li>{% endif %}
-    	<li class="right">
-    		<form class="login-form form-inline" action="{% url 'auth_login' %}" method="POST" enctype="multipart/form-data">
-    			{% csrf_token %}
-      			<input id="id_username" type="text" name="username" placeholder="Логин" class="input-small" maxlength="30">
-      			<input type="password" name="password" id="id_password" placeholder="Пароль" class="input-small">
-      			<button class="btn" type="submit">Войти</button>
-      			<a href="{% url 'password_reset' %}">Забыл<br/> пароль</a>
-    		</form>
-		</li>
-  		{% endif %}
-	</ul>
-	<!-- Menu end -->
+        <li class="right">
+            <form class="login-form form-inline" action="{% url 'auth_login' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                  <input id="id_username" type="text" name="username" placeholder="Логин" class="input-small" maxlength="30">
+                  <input type="password" name="password" id="id_password" placeholder="Пароль" class="input-small">
+                  <button class="btn" type="submit">Войти</button>
+                  <a href="{% url 'password_reset' %}">Забыл<br/> пароль</a>
+            </form>
+        </li>
+          {% endif %}
+    </ul>
+    <!-- Menu end -->
 {% html_block 'notice' %}

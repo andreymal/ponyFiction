@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied
 from cacheops import invalidate_obj
 
 from ponyFiction.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm, AuthorEditPrefsForm
-from ponyFiction.models import Author, Comment, Vote, Story, StoryView
+from ponyFiction.models import Author, Comment, Story, StoryView
 
 
 @csrf_protect
@@ -38,10 +38,10 @@ def author_info(request, user_id, comments_page):
     comments = comments_paged.page(page_current)
 
     data.update({
-        'author' : author,
+        'author': author,
         'stories': stories,
-        'series' : series,
-        'comments' : comments,
+        'series': series,
+        'comments': comments,
         'page_current': page_current,
         'num_pages': num_pages,
         'comments_count': comments_count
@@ -76,7 +76,7 @@ def author_edit(request):
             profile_form = AuthorEditProfileForm(request.POST, instance=author, prefix='profile_form')
             if profile_form.is_valid():
                 profile_form.save()
-                data['profile_ok'] = True            
+                data['profile_ok'] = True
         if 'save_email' in request.POST:
             email_form = AuthorEditEmailForm(request.POST, author=author, prefix='email_form')
             if email_form.is_valid():
@@ -98,6 +98,7 @@ def author_edit(request):
         prefs_form = AuthorEditPrefsForm(author=author, prefix='prefs_form')
     data.update({'profile_form': profile_form, 'email_form': email_form, 'password_form': password_form, 'prefs_form': prefs_form})
     return render(request, 'author_profile_edit.html', data)
+
 
 @login_required
 @csrf_protect

@@ -1,33 +1,33 @@
 {% extends "common.html" %}
 {% block content %}
 <div class="row">
-	<div class="span8">
+    <div class="span8">
     <ul class="breadcrumb">
       <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
       <li><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> <span class="divider">/</span></li>
       <li class="active">{{ page_title }}</li>
     </ul>   
-	<h1>{{ page_title }}</h1>
-	
-	<div class="story-item">
-		<p>Вы действительно хотите удалить главу <strong>«{{ chapter.title }}»</strong> из рассказа <strong>«{{ story.title }}»</strong>?</p>
-		<p>Вся связанная статистика, оценки и комментарии также будут безвозвратно удалены!</p>
-	</div>
+    <h1>{{ page_title }}</h1>
 
-	<form method="POST" enctype="multipart/form-data">
-  		{% csrf_token %}
-      	<div class="control-group">
-			<div class="controls">
-				<a href="{% url 'story_edit' story.id %}" class="btn">Отменить</a>
-				<input type="submit" class="btn btn-danger" value="Удалить">
-			</div>
-		</div>
-	</form>
+    <div class="story-item">
+        <p>Вы действительно хотите удалить главу <strong>«{{ chapter.title }}»</strong> из рассказа <strong>«{{ story.title }}»</strong>?</p>
+        <p>Вся связанная статистика, оценки и комментарии также будут безвозвратно удалены!</p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="control-group">
+            <div class="controls">
+                <a href="{% url 'story_edit' story.id %}" class="btn">Отменить</a>
+                <input type="submit" class="btn btn-danger" value="Удалить">
+            </div>
+        </div>
+    </form>
     <ul class="breadcrumb">
       <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
       <li><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> <span class="divider">/</span></li>
       <li class="active">{{ page_title }}</li>
     </ul>
-	</div>
+    </div>
 </div>
 {% endblock %}

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
-from cacheops.query import cached_as
 
 from ponyFiction.views.object_lists import ObjectList
 from ponyFiction.models import Story, Chapter, Comment, StoryEditLogItem
@@ -40,7 +39,7 @@ class StreamComments(ObjectList):
     paginate_by = settings.COMMENTS_COUNT['stream']
     template_name = 'stream/comments.html'
     page_title = 'Лента комментариев'
-    
+
     def get_queryset(self):
         return Comment.objects.filter(story__in=Story.objects.published).order_by('-date').cache()
 
@@ -54,6 +53,6 @@ class StreamStoryEditLog(ObjectList):
 
     def get_queryset(self):
         if self.request.user.is_staff:
-            return StoryEditLogItem.objects.filter(is_staff = True).order_by('date').select_related()
+            return StoryEditLogItem.objects.filter(is_staff=True).order_by('date').select_related()
         else:
             raise PermissionDenied

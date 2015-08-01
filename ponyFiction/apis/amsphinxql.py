@@ -117,7 +117,7 @@ class SphinxConnection(object):
             raise SphinxError(exc.args[1])
         fields = [x[0] for x in cur.description]
         matches = [dict(zip(fields, x)) for x in cur.fetchall()]
-        
+
         cur.execute('show meta')
         result = dict(cur.fetchall())
         result['matches'] = matches

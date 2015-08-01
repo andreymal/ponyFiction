@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
 from ponyFiction.models import Author, Story
 
+
 class ObjectList(ListView):
     context_object_name = 'stories'
     paginate_by = settings.STORIES_COUNT['page']
@@ -14,15 +15,15 @@ class ObjectList(ListView):
 
     @property
     def page_title(self):
-        raise NotImplementedError("Subclasses should implement this!") 
+        raise NotImplementedError("Subclasses should implement this!")
 
     @property
     def template_name(self):
         raise NotImplementedError("Subclasses should implement this!")
-       
+
     def get_queryset(self):
         raise NotImplementedError("Subclasses should implement this!")
-        
+
     def get_context_data(self, **kwargs):
         context = super(ObjectList, self).get_context_data(**kwargs)
         context.update(
@@ -36,7 +37,7 @@ class FavoritesList(ObjectList):
     @property
     def author(self):
         return get_object_or_404(Author, pk=self.kwargs['user_id'])
-    
+
     template_name = 'favorites.html'
 
     @property
@@ -51,7 +52,7 @@ class FavoritesList(ObjectList):
 
     def get_context_data(self, **kwargs):
         context = ObjectList.get_context_data(self, **kwargs)
-        context['author_id'] = self.author.id # workaround для работы пагинатора в избранном.
+        context['author_id'] = self.author.id  # workaround для работы пагинатора в избранном.
         return context
 
 
@@ -61,18 +62,17 @@ class SubmitsList(ObjectList):
         if not request.user.is_staff:
             raise PermissionDenied
         return super(SubmitsList, self).dispatch(request, *args, **kwargs)
-    
+
     template_name = 'submitted.html'
     page_title = 'Новые поступления'
-    
+
     def get_queryset(self):
         return Story.objects.submitted.prefetch_for_list
-
 
 
 class BookmarksList(ObjectList):
     template_name = 'bookmarks.html'
     page_title = 'Закладки'
-    
+
     def get_queryset(self):
         return self.request.user.bookmarked_story_set.all().cache()

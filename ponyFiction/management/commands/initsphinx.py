@@ -4,8 +4,8 @@
 from django.db.models import Prefetch
 from django.core.management.base import BaseCommand
 
-from ponyFiction import models
-from ponyFiction.sphinx import sphinx, add_stories, add_chapters
+from ponyFiction.sphinx import sphinx
+from ponyFiction.models import Story, Chapter, Author
 
 
 class Command(BaseCommand):
@@ -15,10 +15,10 @@ class Command(BaseCommand):
         ok = 0
         pk = 0
         stories = None
-        count = models.Story.objects.count()
+        count = Story.objects.count()
         while True:
-            stories = tuple(models.Story.objects.all().filter(pk__gt=pk).prefetch_related(
-                Prefetch('authors', queryset=models.Author.objects.all().only('id', 'username')),
+            stories = tuple(Story.objects.all().filter(pk__gt=pk).prefetch_related(
+                Prefetch('authors', queryset=Author.objects.all().only('id', 'username')),
                 'characters',
                 'categories',
                 'classifications',
@@ -27,8 +27,7 @@ class Command(BaseCommand):
             if not stories:
                 break
 
-            with sphinx:
-                add_stories(stories)
+            Story.bl.add_stories_to_search(stories)
             pk = stories[-1].id
             ok += len(stories)
             self.stderr.write(' [%.1f%%] %d/%d stories\r' % (ok * 100 / count, ok, count), ending='')
@@ -41,14 +40,13 @@ class Command(BaseCommand):
         ok = 0
         pk = 0
         chapters = None
-        count = models.Chapter.objects.count()
+        count = Chapter.objects.count()
         while True:
-            chapters = tuple(models.Chapter.objects.all().filter(pk__gt=pk)[:50])
+            chapters = tuple(Chapter.objects.all().filter(pk__gt=pk)[:50])
             if not chapters:
                 break
 
-            with sphinx:
-                add_chapters(chapters)
+            Chapter.bl.add_chapters_to_search(chapters)
             pk = chapters[-1].id
             ok += len(chapters)
             self.stderr.write(' [%.1f%%] %d/%d chapters\r' % (ok * 100 / count, ok, count), ending='')

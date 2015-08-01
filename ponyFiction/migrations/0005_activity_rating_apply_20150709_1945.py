@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from statistics import mean, pstdev
 
-from django.db import models, migrations
+from django.db import migrations
 
 
 def update_activity_votes(apps, schema_editor):

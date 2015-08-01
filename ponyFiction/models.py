@@ -7,7 +7,7 @@ from statistics import mean, pstdev
 from django.db import models
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import Count, Sum, F, Prefetch
+from django.db.models import Count, Prefetch
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.contrib.auth.models import AbstractUser
@@ -22,7 +22,7 @@ from ponyFiction.bl.utils import Resource
 from ponyFiction.fields import SeparatedValuesField, RatingField, RatingAverageField
 
 # disable username validation to allow editing of users with russian symbols in names
-username_field = {f.name:f for f in AbstractUser._meta.fields}['username']
+username_field = {f.name: f for f in AbstractUser._meta.fields}['username']  # pylint: disable=W0212
 username_field.validators = []
 
 
@@ -56,7 +56,7 @@ class JSONModel(models.Model):
                 result[f.name] = item.to_dict(**args)
             else:
                 # simple fields and ForeignKey to non-serializable model
-                value = f._get_val_from_obj(self)
+                value = f._get_val_from_obj(self)  # pylint: disable=W0212
                 if is_protected_type(value):
                     result[f.name] = value
                 else:
@@ -122,7 +122,8 @@ class Author(AbstractUser, JSONModel):
 
     def get_avatar_url(self):
         url = self.get_tabun_avatar_url()
-        if url: return url
+        if url:
+            return url
 
         return staticfiles_storage.url('i/userpic.jpg')
 
@@ -147,11 +148,11 @@ class Author(AbstractUser, JSONModel):
                 import random
                 import lxml.etree as etree
 
-                profile_url = 'https://tabun.everypony.ru/profile/' + self.tabun  # TODO: url injection?
+                profile_url = 'https://tabun.everypony.ru/profile/' + urllib.request.quote(self.tabun)
                 req = urllib.request.Request(profile_url)
                 req.add_header('User-Agent', 'Mozilla/5.0; ponyFiction')  # for CloudFlare
                 data = urllib.request.urlopen(req).read()
-                doc = etree.HTML(data.decode('utf-8'))  # pylint: disable=no-member
+                doc = etree.HTML(data.decode('utf-8'))
                 links = doc.xpath('//*[contains(@class, "profile-info-about")]//a[contains(@class, "avatar")]/img/@src')
                 if links:
                     url = urljoin(profile_url, links[0])
@@ -262,25 +263,6 @@ class Rating(JSONModel):
         default_fields = {'id', 'name'}
 
 
-class BetaReading(models.Model):
-    """ Промежуточная модель хранения взаимосвязей рассказов, бета-читателей и результатов вычитки """
-
-    beta = models.ForeignKey(Author, null=True, verbose_name="Бета")
-    story = models.ForeignKey('Story', null=True, verbose_name="История вычитки")
-    checked = models.BooleanField(default=False, verbose_name="Вычитано бетой")
-
-    def __str__(self):
-        # TODO: self.name is not defined?
-        if self.checked:
-            return "%s -> %s [OK]" % self.name
-        else:
-            return "%s -> %s [?]" % self.name
-
-    class Meta:
-        verbose_name = "вычитка"
-        verbose_name_plural = "вычитки"
-
-
 class InSeriesPermissions(models.Model):
     """ Промежуточная модель хранения взаимосвязей рассказов, серий и разрешений на добавления рассказов в серии """
 
@@ -293,28 +275,6 @@ class InSeriesPermissions(models.Model):
     class Meta:
         verbose_name = "добавление в серию"
         verbose_name_plural = "добавления в серию"
-
-
-class CoAuthorsStory(models.Model):
-    """ Промежуточная модель хранения взаимосвязей авторства рассказов (включая соавторов) """
-
-    author = models.ForeignKey(Author, verbose_name="Автор")
-    story = models.ForeignKey('Story', verbose_name="Рассказ")
-    approved = models.BooleanField(default=False, verbose_name="Подтверждение")
-
-    def __str__(self):
-        return '%s %s' % (self.author.username, self.story.title)
-
-
-class CoAuthorsSeries(models.Model):
-    """ Промежуточная модель хранения взаимосвязей авторства серий (включая соавторов) """
-
-    author = models.ForeignKey(Author, null=True, verbose_name="Автор")
-    series = models.ForeignKey('Series', null=True, verbose_name="Серия")
-    approved = models.BooleanField(default=False, verbose_name="Подтверждение")
-
-    def __str__(self):
-        return '%s %s' % (self.author.username, self.series.title)
 
 
 class Series(models.Model):
@@ -442,9 +402,11 @@ class Story(JSONModel):
 
     class Serialize:
         properties = {'published', 'url'}
-        default_fields = {'id', 'title', 'authors', 'characters', 'categories',
+        default_fields = {
+            'id', 'title', 'authors', 'characters', 'categories',
             'date', 'finished', 'freezed', 'original', 'rating', 'summary', 'updated', 'words',
-            'vote_total', 'vote_average', 'vote_stddev', 'published', 'url'}
+            'vote_total', 'vote_average', 'vote_stddev', 'published', 'url'
+        }
         default_relations = {
             'authors': {'id', 'username'},
             'characters': {'id', 'name', 'url', 'thumb'},
@@ -454,7 +416,7 @@ class Story(JSONModel):
     def __str__(self):
         return "[%.2f ± %.2f] %s" % (self.vote_average, self.vote_stddev, self.title)
 
-    def update_rating(self, rating_only = False):
+    def update_rating(self, rating_only=False):
         votes = self.vote_set.all().values_list('vote_value', flat=True)
         m = mean(votes)
         self.vote_average = m
@@ -514,7 +476,7 @@ class Story(JSONModel):
         return self.is_author(user)
 
     def is_author(self, author):
-        if self.authors.all()._result_cache:
+        if self.authors.all()._result_cache:  # pylint: disable=W0212
             return author in self.authors.all()
         else:
             return self.authors.filter(id=author.id).exists()
@@ -565,7 +527,7 @@ class Chapter(models.Model):
         return '[%s / %s] %s' % (self.id, self.order, self.title)
 
     def get_absolute_url(self):
-        return reverse('chapter_view_single', kwargs = dict(story_id = self.story_id, chapter_order = self.order))
+        return reverse('chapter_view_single', kwargs=dict(story_id=self.story_id, chapter_order=self.order))
 
     def get_prev_chapter(self):
         try:
@@ -608,9 +570,49 @@ class Chapter(models.Model):
     def get_filtered_chapter_text(self):
         return filter_html(
             self.text,
-            tags = settings.CHAPTER_ALLOWED_TAGS,
-            attributes = settings.CHAPTER_ALLOWED_ATTRIBUTES,
+            tags=settings.CHAPTER_ALLOWED_TAGS,
+            attributes=settings.CHAPTER_ALLOWED_ATTRIBUTES,
         )
+
+
+class CoAuthorsStory(models.Model):
+    """ Промежуточная модель хранения взаимосвязей авторства рассказов (включая соавторов) """
+
+    author = models.ForeignKey(Author, verbose_name="Автор")
+    story = models.ForeignKey(Story, verbose_name="Рассказ")
+    approved = models.BooleanField(default=False, verbose_name="Подтверждение")
+
+    def __str__(self):
+        return '%s (%s)' % (self.author.username, self.story.title)
+
+
+class CoAuthorsSeries(models.Model):
+    """ Промежуточная модель хранения взаимосвязей авторства серий (включая соавторов) """
+
+    author = models.ForeignKey(Author, null=True, verbose_name="Автор")
+    series = models.ForeignKey(Series, null=True, verbose_name="Серия")
+    approved = models.BooleanField(default=False, verbose_name="Подтверждение")
+
+    def __str__(self):
+        return '%s (%s)' % (self.author.username, self.series.title)
+
+
+class BetaReading(models.Model):
+    """ Промежуточная модель хранения взаимосвязей рассказов, бета-читателей и результатов вычитки """
+
+    beta = models.ForeignKey(Author, null=True, verbose_name="Бета")
+    story = models.ForeignKey(Story, null=True, verbose_name="История вычитки")
+    checked = models.BooleanField(default=False, verbose_name="Вычитано бетой")
+
+    def __str__(self):
+        if self.checked:
+            return "%s -> %s [OK]" % (self.beta.username, self.story.title)
+        else:
+            return "%s -> %s [?]" % (self.beta.username, self.story.title)
+
+    class Meta:
+        verbose_name = "вычитка"
+        verbose_name_plural = "вычитки"
 
 
 class Comment(models.Model):
@@ -671,7 +673,7 @@ class Favorites(models.Model):
     """ Модель избранного """
 
     author = models.ForeignKey(Author, null=True, verbose_name="Автор")
-    story = models.ForeignKey('Story', related_name="favorites_story_related_set", null=True, verbose_name="Рассказ")
+    story = models.ForeignKey(Story, related_name="favorites_story_related_set", null=True, verbose_name="Рассказ")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления в избранное")
 
     class Meta:
@@ -694,7 +696,7 @@ class Bookmark(models.Model):
         verbose_name_plural = "закладки рассказов"
 
     def __str__(self):
-            return "%s | %s" % (self.author.username, self.story.title)
+        return "%s | %s" % (self.author.username, self.story.title)
 
 
 class StoryView(models.Model):
@@ -771,13 +773,14 @@ class StoryEditLogItem(models.Model):
                 return o.id
             elif isinstance(o, models.query.QuerySet):
                 return list(o)
-        self.json_data = json.dumps(value,
-            ensure_ascii = False,
-            default = default,
+        self.json_data = json.dumps(
+            value,
+            ensure_ascii=False,
+            default=default,
         )
 
     @classmethod
-    def create(cls, data = None, **kw):
+    def create(cls, data=None, **kw):
         obj = cls(**kw)
         obj.is_staff = kw['user'].is_staff
         if data is not None:

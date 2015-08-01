@@ -7,7 +7,6 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 from ponyFiction import feeds
-from ponyFiction.forms.register import AuthorRegistrationForm
 from ponyFiction.views import search, author
 from ponyFiction.views.chapter import ChapterAdd, ChapterEdit, ChapterDelete
 from ponyFiction.views.comment import CommentEdit, CommentAdd, CommentDelete
@@ -88,7 +87,7 @@ urlpatterns += patterns('',
     url(r'^accounts/password/reset/$',
         auth_views.password_reset,
         {
-         'post_reset_redirect' : '/accounts/password/reset/done/',
+         'post_reset_redirect': '/accounts/password/reset/done/',
          'extra_context': {'page_title': 'Восстановление пароля: введите адрес e-mail'}
          },
         name='password_reset'),
@@ -101,7 +100,7 @@ urlpatterns += patterns('',
     url(r'^accounts/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
         auth_views.password_reset_confirm,
         {
-         'post_reset_redirect' : '/accounts/password/done/',
+         'post_reset_redirect': '/accounts/password/done/',
          'extra_context': {'page_title': 'Восстановление пароля: новый пароль'}
          },
         ),

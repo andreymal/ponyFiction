@@ -68,7 +68,7 @@ def search_action(request, postform):
             if settings.DEBUG or request.user.is_superuser:
                 data['error'] += ': ' + str(exc)
             return render(request, 'search.html', data)
-        
+
     else:
         try:
             raw_result, result = Chapter.bl.search(

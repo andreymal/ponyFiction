@@ -19,7 +19,7 @@ class stories(Feed):
 
     def items(self):
         return Story.objects.published.order_by('-date')[:settings.RSS['stories']]
-    
+
     def item_link(self, item):
         return "/story/%i/" % item.id
 
@@ -40,30 +40,30 @@ class chapters(Feed):
             .prefetch_related('story', 'story__authors')
             .order_by('-date').cache()[:settings.RSS['chapters']]
         )
-    
+
     def item_link(self, item):
         return "/story/%i/chapter/%i/" % (item.story_id, item.order)
 
 
-class story(Feed):    
+class story(Feed):
     title_template = 'feeds/chapter_title.html'
     description_template = 'feeds/chapter_description.html'
     feed_type = Atom1Feed
-    
-    def get_object(self, request, story_id):
+
+    def get_object(self, request, story_id):  # pylint: disable=W0221
         return get_object_or_404(Story.objects.published, pk=story_id)
-    
+
     def title(self, obj):
         return obj.title
-    
+
     def link(self, obj):
         return '/story/%i/' % obj.id
-    
+
     def subtitle(self, obj):
         return obj.title
 
     def items(self, obj):
         return Chapter.objects.prefetch_related('story', 'story__authors').filter(story_id=obj.id).order_by('-order')[:settings.RSS['chapters']]
-    
+
     def item_link(self, item):
         return "/story/%i/chapter/%i/" % (item.story_id, item.order)

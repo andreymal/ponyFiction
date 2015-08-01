@@ -7,17 +7,14 @@ from django.core.paginator import Paginator
 from django.http import Http404
 from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from ponyFiction import signals
 from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
-from ponyFiction.models import Story, Vote, CoAuthorsStory, Author, StoryEditLogItem
+from ponyFiction.models import Story, Vote, Author
 from cacheops import invalidate_obj
 from ponyFiction.utils.misc import get_object_or_none
-from ponyFiction import tasks
 
 
 def get_story(request, pk):
@@ -50,17 +47,17 @@ def story_view(request, pk, comments_page):
         vote = None
 
     data = {
-       'story' : story,
-       'vote' : vote,
-       'comments' : comments,
+       'story': story,
+       'vote': vote,
+       'comments': comments,
        'comments_count': comments_count,
-       'chapters' : chapters,
-       'num_pages' : num_pages,
-       'page_current' : page_current,
-       'page_title' : page_title,
+       'chapters': chapters,
+       'num_pages': num_pages,
+       'page_current': page_current,
+       'page_title': page_title,
        'comment_form': comment_form
        }
-  
+
     return render(request, 'story_view.html', data)
 
 
@@ -75,10 +72,10 @@ def story_approve(request, pk):
 @csrf_protect
 def story_publish_warning(request, pk):
     story = get_object_or_404(Story, pk=pk)
-    if (story.editable_by(request.user) or request.user.is_staff):
+    if story.editable_by(request.user) or request.user.is_staff:
         data = {
-                'page_title' : 'Неудачная попытка публикации',
-                'story' : story
+                'page_title': 'Неудачная попытка публикации',
+                'story': story
                 }
         return render(request, 'story_publish_warning.html', data)
     else:
@@ -147,10 +144,10 @@ def story_vote(request, pk, value):
 def story_edit_log(request, pk):
     if not request.user.is_staff:
         raise PermissionDenied
-    story = get_object_or_404(Story, pk = pk)
+    story = get_object_or_404(Story, pk=pk)
     data = dict(
-        edit_log = story.edit_log.order_by('date').select_related('user'),
-        page_title = "История редактирования рассказа \"{}\"".format(story.title),
+        edit_log=story.edit_log.order_by('date').select_related('user'),
+        page_title="История редактирования рассказа \"{}\"".format(story.title),
     )
     return render(request, 'story_edit_log.html', data)
 
@@ -213,28 +210,30 @@ def delete(request, pk):
         return redirect('index')
 
     return render(request, 'story_confirm_delete.html', {'page_title': 'Подтверждение удаления рассказа', 'story': story})
-    
-    
+
+
 def story_download(request, story_id, filename, extension):
     from django.core.files.storage import default_storage as storage
     from ..downloads import get_format
-    
+
     debug = settings.DEBUG and 'debug' in request.META['QUERY_STRING']
-    
+
     story = get_object_or_404(Story, pk=story_id)
     fmt = get_format(extension)
     if fmt is None:
         raise Http404
-    
+
     url = fmt.url(story)
     if url != request.path:
         return redirect(url)
     filepath = 'stories/%s/%s.%s' % (story_id, filename, extension)
-    
-    if (not storage.exists(filepath) or 
+
+    if (
+        not storage.exists(filepath) or
         storage.modified_time(filepath) < story.updated or
-        debug):
-        
+        debug
+    ):
+
         data = fmt.render(
             story=story,
             filename=filename,
@@ -245,7 +244,7 @@ def story_download(request, story_id, filename, extension):
             if storage.exists(filepath):
                 storage.delete(filepath)
             storage.save(filepath, ContentFile(data))
-        
+
     if not debug:
         return redirect(storage.url(filepath))
     else:
