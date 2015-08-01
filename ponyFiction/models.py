@@ -10,17 +10,16 @@ from django.core.cache import cache
 from django.db.models import Count, Sum, F, Prefetch
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
-from ponyFiction.fields import SeparatedValuesField, RatingField, RatingAverageField
-from ponyFiction.fields import SeparatedValuesField
 from django.contrib.auth.models import AbstractUser
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.utils.datetime_safe import datetime
 from django.utils.encoding import is_protected_type
+from colorful.fields import RGBColorField
 
 from ponyFiction.filters import filter_html, filtered_html_property
 from ponyFiction.filters.base import html_doc_to_string
 from ponyFiction.filters.html import footnotes_to_html
 from ponyFiction.bl.utils import Resource
+from ponyFiction.fields import SeparatedValuesField, RatingField, RatingAverageField
 
 # disable username validation to allow editing of users with russian symbols in names
 username_field = {f.name:f for f in AbstractUser._meta.fields}['username']
@@ -82,7 +81,7 @@ class JSONModel(models.Model):
             if is_protected_type(value):
                 result[name] = value
             else:
-                result[name] = f.value_to_string(self)
+                result[name] = str(value)
 
         return result
 
@@ -189,12 +188,21 @@ class Character(JSONModel):
     def __str__(self):
         return self.name
 
+    @property
+    def url(self):
+        return reverse('search_simple', args=['character', self.id])
+
+    @property
+    def thumb(self):
+        return staticfiles_storage.url('i/characters/{}.png'.format(self.id))
+
     class Meta:
         verbose_name = "персонаж"
         verbose_name_plural = "персонажи"
 
     class Serialize:
-        default_fields = {'id', 'name'}
+        properties = {'url', 'thumb'}
+        default_fields = {'id', 'name', 'url', 'thumb'}
 
 
 class Category(JSONModel):
@@ -202,16 +210,22 @@ class Category(JSONModel):
 
     description = models.TextField(max_length=4096, blank=True, verbose_name="Описание")
     name = models.CharField(max_length=256, verbose_name="Название")
+    color = RGBColorField(verbose_name="Цвет ссылки", default="#808080")
 
     def __str__(self):
         return self.name
+
+    @property
+    def url(self):
+        return reverse('search_simple', args=['category', self.id])
 
     class Meta:
         verbose_name = "жанр"
         verbose_name_plural = "жанры"
 
     class Serialize:
-        default_fields = {'id', 'name'}
+        properties = {'url'}
+        default_fields = {'id', 'name', 'color', 'url'}
 
 
 class Classifier(JSONModel):
@@ -427,14 +441,14 @@ class Story(JSONModel):
         ]
 
     class Serialize:
-        properties = {'published'}
+        properties = {'published', 'url'}
         default_fields = {'id', 'title', 'authors', 'characters', 'categories',
             'date', 'finished', 'freezed', 'original', 'rating', 'summary', 'updated', 'words',
-            'vote_total', 'vote_average', 'vote_stddev', 'published'}
+            'vote_total', 'vote_average', 'vote_stddev', 'published', 'url'}
         default_relations = {
             'authors': {'id', 'username'},
-            'characters': {'id', 'name'},
-            'categories': {'id', 'name'},
+            'characters': {'id', 'name', 'url', 'thumb'},
+            'categories': {'id', 'name', 'url', 'thumb', 'color'},
         }
 
     def __str__(self):
@@ -474,6 +488,10 @@ class Story(JSONModel):
                 stars.append(1 if devmax >= i - 0.75 else 0)
 
         return stars
+
+    @property
+    def url(self):
+        return reverse('story_view', args=[self.id])
 
     @property
     def published(self):
@@ -522,9 +540,6 @@ class Story(JSONModel):
                 'url': f.url(self),
             })
         return downloads
-
-    def get_absolute_url(self):
-        return reverse('story_view', kwargs=dict(pk=self.pk))
 
 
 class Chapter(models.Model):
@@ -629,7 +644,7 @@ class Comment(models.Model):
     brief_text_as_html = filtered_html_property('brief_text', filter_html)
 
     def get_absolute_url(self):
-        return '%s#%s' % (self.story.get_absolute_url(), self.get_html_id())
+        return '%s#%s' % (self.story.url, self.get_html_id())
 
     def get_html_id(self):
         return 'comment_%s' % self.id

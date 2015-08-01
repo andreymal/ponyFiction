@@ -22,7 +22,7 @@
 			{% spaceless %}
 				<span class="category-list">
 					{% for category in story.categories.all %}
-						<a class="gen gen-{{ category.id }}" href="{% url 'search_simple' 'category' category.id %}">{{ category.name }}</a>
+						<a class="gen" style="background-color: {{ category.color }}" href="{% url 'search_simple' 'category' category.id %}">{{ category.name }}</a>
 					{% endfor %}
 				</span>
 				{{ story.words|rupluralize:'слово,слова,слов' }} от {% include 'includes/story_authors_list.html' %}
@@ -59,7 +59,7 @@
 			{% spaceless %}
 				<span class="character-list">
 					{% for character in story.characters.all %}
-						<a href="{% url 'search_simple' 'character' character.id %}"><img src="{% get_static_prefix %}i/characters/{{ character.id }}.png" alt="{{ character.name }}" title="{{ character.name }}"/></a>
+						<a href="{% url 'search_simple' 'character' character.id %}"><img src="{{ character.thumb }}" alt="{{ character.name }}" title="{{ character.name }}"/></a>
 					{% endfor %}
 				</span>
 			{% endspaceless %}

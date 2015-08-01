@@ -3,84 +3,96 @@
     "model": "ponyFiction.category",
     "pk": 1,
     "fields": {
-      "name": "Приключения"
+      "name": "Приключения",
+      "color": "#3F74CE"
     }
   },
   {
     "model": "ponyFiction.category",
     "pk": 2,
     "fields": {
-      "name": "Кроссовер"
+      "name": "Кроссовер",
+      "color": "#EDA21F"
     }
   },
   {
     "model": "ponyFiction.category",
     "pk": 3,
     "fields": {
-      "name": "Романтика"
+      "name": "Романтика",
+      "color": "#CEC12A"
     }
   },
   {
     "model": "ponyFiction.category",
     "pk": 4,
     "fields": {
-      "name": "Драма"
+      "name": "Драма",
+      "color": "#45C950"
     }
   },
   {
     "model": "ponyFiction.category",
     "pk": 5,
     "fields": {
-      "name": "Ангст"
+      "name": "Ангст",
+      "color": "#45C9AB"
     }
   },
   {
     "model": "ponyFiction.category",
     "pk": 6,
     "fields": {
-      "name": "Флафф"
+      "name": "Флафф",
+      "color": "#CA6565"
     }
   },
   {
     "model": "ponyFiction.category",
     "pk": 7,
     "fields": {
-      "name": "Юмор"
+      "name": "Юмор",
+      "color": "#D84A9D"
     }
   },
   {
     "model": "ponyFiction.category",
     "pk": 8,
     "fields": {
-      "name": "Зарисовка"
+      "name": "Зарисовка",
+      "color": "#8738D8"
     }
   },
   {
     "model": "ponyFiction.category",
     "pk": 9,
     "fields": {
-      "name": "Экшн"
+      "name": "Экшн",
+      "color": "#B5835A"
     }
   },
   {
     "model": "ponyFiction.category",
     "pk": 10,
     "fields": {
-      "name": "Ужасы"
+      "name": "Ужасы",
+      "color": "#808080"
     }
   },
   {
     "model": "ponyFiction.category",
     "pk": 11,
     "fields": {
-      "name": "Эротика"
+      "name": "Эротика",
+      "color": "#CA0707"
     }
   },
   {
     "model": "ponyFiction.category",
     "pk": 12,
     "fields": {
-      "name": "Повседневность"
+      "name": "Повседневность",
+      "color": "#8760B0"
     }
   }
 ]
