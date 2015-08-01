@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.forms import SelectMultiple, CheckboxSelectMultiple, Widget
 from itertools import chain
 from django.forms.widgets import CheckboxInput, Input, RadioFieldRenderer, RadioSelect, TextInput
@@ -10,6 +11,7 @@ except ImportError:
     from django.utils.encoding import force_text as force_unicode
 from django.utils.safestring import mark_safe
 from django.forms.utils import flatatt
+
 from ponyFiction import settings as settings
 
 
@@ -79,7 +81,7 @@ class StoriesImgSelect(SelectMultiple):
     def render_option(self, attrs, name, selected_choices, option_value, option_label):
         container_attrs = attrs['container_attrs']
         data_attrs = attrs['data_attrs']
-        img_url = settings.STATIC_URL+'i/characters/%s.png' % option_value
+        img_url = staticfiles_storage.url('i/characters/{}.png'.format(option_value))
         img_class = 'ui-selected' if option_value in selected_choices else ''
         item_image = '<img class="%s" src="%s" alt="%s" title="%s" />' % (img_class, img_url, option_label, option_label)
         cb = CheckboxInput(data_attrs, check_test=lambda x: x in selected_choices)

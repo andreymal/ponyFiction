@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import random
+
 from django.conf import settings
+from django.core.cache import cache
 
 from .. import tasks
 from .utils import BaseBL
@@ -156,6 +159,17 @@ class StoryBL(BaseBL):
         result = [result[i] for i in ids if i in result]
 
         return raw_result, result
+
+    def get_random(self, count=10):
+        # это быстрее, чем RAND() в MySQL
+        ids = cache.get('all_story_ids')
+        if not ids:
+            ids = tuple(self.model.objects.published.order_by('date').values_list('id', flat=True))
+            cache.set('all_story_ids', ids, 300)
+        if len(ids) > count:
+            ids = random.sample(ids, count)
+        stories = self.model.objects.filter(id__in=ids).prefetch_for_list
+        return stories
 
 
 class ChapterBL(BaseBL):
