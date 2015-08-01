@@ -7,7 +7,7 @@ from statistics import mean, pstdev
 from django.db import models
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import Count, Sum, F, Prefetch
+from django.db.models import Count, Prefetch
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.contrib.auth.models import AbstractUser
@@ -148,11 +148,11 @@ class Author(AbstractUser, JSONModel):
                 import random
                 import lxml.etree as etree
 
-                profile_url = 'https://tabun.everypony.ru/profile/' + self.tabun  # TODO: url injection?
+                profile_url = 'https://tabun.everypony.ru/profile/' + urllib.request.quote(self.tabun)
                 req = urllib.request.Request(profile_url)
                 req.add_header('User-Agent', 'Mozilla/5.0; ponyFiction')  # for CloudFlare
                 data = urllib.request.urlopen(req).read()
-                doc = etree.HTML(data.decode('utf-8'))  # pylint: disable=no-member
+                doc = etree.HTML(data.decode('utf-8'))
                 links = doc.xpath('//*[contains(@class, "profile-info-about")]//a[contains(@class, "avatar")]/img/@src')
                 if links:
                     url = urljoin(profile_url, links[0])
