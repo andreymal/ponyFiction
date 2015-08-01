@@ -25,6 +25,7 @@ class AuthorModelBackend(ModelBackend):
     @property
     def user_class(self):
         if not hasattr(self, '_user_class'):
+            # pylint: disable=attribute-defined-outside-init
             self._user_class = apps.get_model(settings.AUTH_USER_MODEL)
             if not self._user_class:
                 raise ImproperlyConfigured('Could not get custom user model')

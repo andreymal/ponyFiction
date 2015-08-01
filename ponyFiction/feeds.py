@@ -50,7 +50,7 @@ class story(Feed):
     description_template = 'feeds/chapter_description.html'
     feed_type = Atom1Feed
 
-    def get_object(self, request, story_id):
+    def get_object(self, request, story_id):  # pylint: disable=W0221
         return get_object_or_404(Story.objects.published, pk=story_id)
 
     def title(self, obj):

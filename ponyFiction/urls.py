@@ -7,7 +7,6 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 from ponyFiction import feeds
-from ponyFiction.forms.register import AuthorRegistrationForm
 from ponyFiction.views import search, author
 from ponyFiction.views.chapter import ChapterAdd, ChapterEdit, ChapterDelete
 from ponyFiction.views.comment import CommentEdit, CommentAdd, CommentDelete

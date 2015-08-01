@@ -23,7 +23,7 @@ from ponyFiction.filters.html import footnotes_to_html
 from ponyFiction.bl.utils import Resource
 
 # disable username validation to allow editing of users with russian symbols in names
-username_field = {f.name:f for f in AbstractUser._meta.fields}['username']
+username_field = {f.name:f for f in AbstractUser._meta.fields}['username']  # pylint: disable=W0212
 username_field.validators = []
 
 
@@ -57,7 +57,7 @@ class JSONModel(models.Model):
                 result[f.name] = item.to_dict(**args)
             else:
                 # simple fields and ForeignKey to non-serializable model
-                value = f._get_val_from_obj(self)
+                value = f._get_val_from_obj(self)  # pylint: disable=W0212
                 if is_protected_type(value):
                     result[f.name] = value
                 else:
@@ -247,25 +247,6 @@ class Rating(JSONModel):
 
     class Serialize:
         default_fields = {'id', 'name'}
-
-
-class BetaReading(models.Model):
-    """ Промежуточная модель хранения взаимосвязей рассказов, бета-читателей и результатов вычитки """
-
-    beta = models.ForeignKey(Author, null=True, verbose_name="Бета")
-    story = models.ForeignKey('Story', null=True, verbose_name="История вычитки")
-    checked = models.BooleanField(default=False, verbose_name="Вычитано бетой")
-
-    def __str__(self):
-        # TODO: self.name is not defined?
-        if self.checked:
-            return "%s -> %s [OK]" % self.name
-        else:
-            return "%s -> %s [?]" % self.name
-
-    class Meta:
-        verbose_name = "вычитка"
-        verbose_name_plural = "вычитки"
 
 
 class InSeriesPermissions(models.Model):
@@ -475,7 +456,7 @@ class Story(JSONModel):
         return self.is_author(user)
 
     def is_author(self, author):
-        if self.authors.all()._result_cache:
+        if self.authors.all()._result_cache:  # pylint: disable=W0212
             return author in self.authors.all()
         else:
             return self.authors.filter(id=author.id).exists()
@@ -597,6 +578,24 @@ class CoAuthorsSeries(models.Model):
 
     def __str__(self):
         return '%s %s' % (self.author.username, self.series.title)
+
+
+class BetaReading(models.Model):
+    """ Промежуточная модель хранения взаимосвязей рассказов, бета-читателей и результатов вычитки """
+
+    beta = models.ForeignKey(Author, null=True, verbose_name="Бета")
+    story = models.ForeignKey(Story, null=True, verbose_name="История вычитки")
+    checked = models.BooleanField(default=False, verbose_name="Вычитано бетой")
+
+    def __str__(self):
+        if self.checked:
+            return "%s -> %s [OK]" % (self.beta.username, self.story.title)
+        else:
+            return "%s -> %s [?]" % (self.beta.username, self.story.title)
+
+    class Meta:
+        verbose_name = "вычитка"
+        verbose_name_plural = "вычитки"
 
 
 class Comment(models.Model):

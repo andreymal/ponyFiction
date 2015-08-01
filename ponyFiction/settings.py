@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# pylint: disable=W0122
+
 import os
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))

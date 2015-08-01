@@ -35,7 +35,7 @@ class StoriesServiceInput(Widget):
 
 
 class StoriesCheckboxSelectMultiple(CheckboxSelectMultiple):
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, choices=()):
         if value is None:
             value = []
         value = [int(x) for x in value]
@@ -88,7 +88,7 @@ class StoriesImgSelect(SelectMultiple):
 
 
 class StoriesButtons(CheckboxSelectMultiple):
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, choices=()):
         if value is None:
             value = []
         attrs = self.attrs
