@@ -424,6 +424,7 @@ a.gen:hover {
 	background-color: #999;
 }
 
+/* TODO: remove after widgets fix */
 .gen-1 {
 	background-color: #3f74ce;
 }
