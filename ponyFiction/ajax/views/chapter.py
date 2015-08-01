@@ -11,6 +11,7 @@ from ponyFiction.views.chapter import ChapterDelete
 from ponyFiction.ajax.decorators import ajax_required
 from django.utils.decorators import method_decorator
 
+
 @ajax_required
 @login_required
 @csrf_protect
@@ -30,6 +31,7 @@ def chapter_sort(request, story_id):
             return HttpResponse('Done')
     else:
         raise PermissionDenied
+
 
 class AjaxChapterDelete(ChapterDelete):
     template_name = 'includes/ajax/chapter_ajax_confirm_delete.html'

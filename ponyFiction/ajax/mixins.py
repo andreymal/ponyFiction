@@ -2,6 +2,7 @@
 from django.http.response import HttpResponse
 from django.template.loader import render_to_string
 
+
 class AJAXHTTPResponseMixin(object):
     """
     A mixin that can be used to render a template to AJAX response.

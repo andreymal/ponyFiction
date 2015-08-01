@@ -22,8 +22,8 @@ def story_publish_warning_ajax(request, story_id):
     story = get_object_or_404(Story, pk=story_id)
     if story.editable_by(request.user) or request.user.is_staff:
         data = {
-            'page_title' : 'Неудачная попытка публикации',
-            'story' : story,
+            'page_title': 'Неудачная попытка публикации',
+            'story': story,
             'need_words': settings.PUBLISH_SIZE_LIMIT
         }
         return render(request, 'includes/ajax/story_ajax_publish_warning.html', data)
@@ -45,9 +45,9 @@ def story_publish_ajax(request, story_id):
             else:
                 story.draft = True
             StoryEditLogItem.create(
-                action = StoryEditLogItem.Actions.Unpublish if story.draft else StoryEditLogItem.Actions.Publish,
-                user = request.user,
-                story = story,
+                action=StoryEditLogItem.Actions.Unpublish if story.draft else StoryEditLogItem.Actions.Publish,
+                user=request.user,
+                story=story,
             )
             story.save(update_fields=['draft', 'approved'])
             return HttpResponse(story_id)
@@ -72,9 +72,9 @@ def story_approve_ajax(request, story_id):
             story.date = datetime.now()
             story.approved = True
         StoryEditLogItem.create(
-            action = StoryEditLogItem.Actions.Approve if story.approved else StoryEditLogItem.Actions.Unapprove,
-            user = request.user,
-            story = story,
+            action=StoryEditLogItem.Actions.Approve if story.approved else StoryEditLogItem.Actions.Unapprove,
+            user=request.user,
+            story=story,
         )
         story.save(update_fields=['approved', 'date'])
         return HttpResponse(story_id)

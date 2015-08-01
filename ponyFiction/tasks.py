@@ -25,6 +25,7 @@ def sphinx_update_chapter(chapter_id):
 
     chapter.bl.search_add()
 
+
 @shared_task
 def sphinx_update_comments_count(story_id):
     try:

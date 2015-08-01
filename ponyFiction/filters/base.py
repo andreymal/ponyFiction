@@ -10,7 +10,7 @@ from django.conf import settings as django_settings
 
 def load_xslt_transform(file_path):
     with open(file_path, 'rb') as f:
-        return etree.XSLT(etree.XML(f.read(), base_url = file_path))
+        return etree.XSLT(etree.XML(f.read(), base_url=file_path))
 
 
 def html_doc_transform(fn):
@@ -47,11 +47,13 @@ def transform_xslt_params(kw):
 
 def xslt_transform_loader(file_path):
     dir_path = os.path.dirname(file_path)
+
     def factory(xslt_name):
         xslt_path = os.path.join(dir_path, xslt_name)
 
         if not django_settings.DEBUG:
             transform_ = load_xslt_transform(xslt_path)
+
             def transform(doc, **kw):
                 kw = transform_xslt_params(kw)
                 return transform_(doc, **kw).getroot()

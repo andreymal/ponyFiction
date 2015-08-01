@@ -5,12 +5,15 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
 from ponyFiction.forms.register import username_field
-from ponyFiction.models import (Author, Character, CharacterGroup, Category, Classifier,
-    Rating, Series, Story, Chapter, Comment, BetaReading, StaticPage, HtmlBlock)
+from ponyFiction.models import (
+    Author, Character, CharacterGroup, Category, Classifier,
+    Rating, Series, Story, Chapter, Comment, BetaReading, StaticPage, HtmlBlock
+)
 
 
 class StoryAdmin(admin.ModelAdmin):
     exclude = ('vote',)
+
 
 class ChapterAdmin(admin.ModelAdmin):
     raw_id_fields = ('story',)

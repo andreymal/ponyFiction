@@ -3,6 +3,7 @@
 
 from .base import ZipFileDownloadFormat
 
+
 class HTMLDownload(ZipFileDownloadFormat):
     extension = 'html.zip'
     name = 'HTML'

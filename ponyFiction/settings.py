@@ -16,7 +16,7 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 
-DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS' : False}
+DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS': False}
 
 DATABASES = {
     'default': {
@@ -136,11 +136,11 @@ COMPRESS_HTML = True
 
 SPHINX_DISABLED = False
 SPHINX_CONFIG = {
-    'connection_params' : {'unix_socket': '/tmp/sphinx_fanfics.socket', 'charset': 'utf8'},
-    'excerpts_opts' : {'chunk_separator' : '…', 'limit' : 2048, 'around' : 10, 'html_strip_mode' : 'strip'},
+    'connection_params': {'unix_socket': '/tmp/sphinx_fanfics.socket', 'charset': 'utf8'},
+    'excerpts_opts': {'chunk_separator': '…', 'limit': 2048, 'around': 10, 'html_strip_mode': 'strip'},
 
-    'weights_stories' : {'title' : 100, 'summary' : 50, 'notes' : 25, 'username': 150},
-    'weights_chapters' : {'text' : 100, 'title' : 50, 'notes' : 25},
+    'weights_stories': {'title': 100, 'summary': 50, 'notes': 25, 'username': 150},
+    'weights_chapters': {'text': 100, 'title': 50, 'notes': 25},
 
     'limit': 10,
     'select_options': {
@@ -149,18 +149,18 @@ SPHINX_CONFIG = {
         'max_matches': 1000,
         'retry_count': 5,
         'retry_delay': 1,
-        'max_query_time': 10
+        'max_query_time': 10,
     },
 }
 
 COMMENTS_COUNT = {
-    'page' : 50,
-    'main' : 5,
-    'stream' : 50,
+    'page': 50,
+    'main': 5,
+    'stream': 50,
     'author_page': 10
 }
-STORIES_COUNT = {'page' : 10, 'main' : 10, 'stream' : 20}
-CHAPTERS_COUNT = {'page' : 10, 'main' : 10, 'stream' : 20}
+STORIES_COUNT = {'page': 10, 'main': 10, 'stream': 20}
+CHAPTERS_COUNT = {'page': 10, 'main': 10, 'stream': 20}
 COMMENTS_ORPHANS = 5
 COMMENT_MIN_LENGTH = 1
 BRIEF_COMMENT_LENGTH = 100
@@ -255,8 +255,8 @@ CACHEOPS = {
     'ponyFiction.Chapter': {'ops': 'get', 'timeout': 3600 * 3},
     'ponyFiction.Comment': {'ops': 'get', 'timeout': 3600 * 3},
 
-    'ponyFiction.Character': {'ops': 'all', 'timeout': 3600 * 24 *30},
-    'ponyFiction.Category': {'ops': 'all', 'timeout': 3600 * 24 *30},
+    'ponyFiction.Character': {'ops': 'all', 'timeout': 3600 * 24 * 30},
+    'ponyFiction.Category': {'ops': 'all', 'timeout': 3600 * 24 * 30},
     'ponyFiction.Classifier': {'ops': 'all', 'timeout': 3600 * 24 * 30},
     'ponyFiction.Rating': {'ops': 'all', 'timeout': 3600 * 24 * 30},
 

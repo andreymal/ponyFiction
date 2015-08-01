@@ -12,8 +12,6 @@ except ImportError:
 from django.utils.safestring import mark_safe
 from django.forms.utils import flatatt
 
-from ponyFiction import settings as settings
-
 
 # Убрать при первой возможности
 class NumberInput(TextInput):

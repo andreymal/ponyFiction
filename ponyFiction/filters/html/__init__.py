@@ -11,6 +11,7 @@ post_normalize_html = xslt_transform_function('post-normalize-html.xslt')
 
 default_block_elements = (lxml.html.defs.block_tags | frozenset(['footnote', 'body'])) - frozenset(['p'])
 
+
 @html_doc_transform
 def normalize_html(doc, block_elements=default_block_elements, **kw):
     for e in doc.xpath('//' + '|//'.join(block_elements)):
@@ -19,12 +20,13 @@ def normalize_html(doc, block_elements=default_block_elements, **kw):
     doc = pre_normalize_html(doc, **kw)
     doc = split_elements(
         doc,
-        separators = ['p-splitter'],
-        block_elements = block_elements
+        separators=['p-splitter'],
+        block_elements=block_elements
     )
     squash_paragraph_attributes(doc)
     doc = post_normalize_html(doc, **kw)
     return doc
+
 
 @html_doc_transform
 def split_elements(doc, separators=None, block_elements=lxml.html.defs.block_tags):
@@ -67,6 +69,7 @@ def iter_splitted_elements(element, separators, block_elements):
     x = etree.Element(tag, attrib)
     x.extend(accum)
     yield x
+
 
 def squash_paragraph_attributes(doc):
     for p in doc.xpath('//p'):

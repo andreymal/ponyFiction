@@ -11,6 +11,7 @@ typo_patterns = [
 ]
 typo_patterns = [(re.compile(p), r) for p, r in typo_patterns]
 
+
 @html_text_transform
 def typo(text):
     for p, r in typo_patterns:

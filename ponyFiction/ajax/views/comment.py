@@ -9,8 +9,8 @@ from ponyFiction.views.object_lists import ObjectList
 from django.utils.decorators import method_decorator
 from ponyFiction.ajax.decorators import ajax_required
 
-class AjaxCommentAdd(CommentAdd, AJAXHTTPResponseMixin):
 
+class AjaxCommentAdd(CommentAdd, AJAXHTTPResponseMixin):
     response_template_name = 'includes/comments.html'
 
     @property
@@ -28,8 +28,8 @@ class AjaxCommentAdd(CommentAdd, AJAXHTTPResponseMixin):
         else:
             return parent_response
 
-class AjaxCommentEdit(CommentEdit, AJAXHTTPResponseMixin):
 
+class AjaxCommentEdit(CommentEdit, AJAXHTTPResponseMixin):
     response_template_name = 'includes/comments.html'
 
     @property
@@ -47,8 +47,8 @@ class AjaxCommentEdit(CommentEdit, AJAXHTTPResponseMixin):
         else:
             return parent_response
 
-class AjaxCommentDelete(CommentDelete):
 
+class AjaxCommentDelete(CommentDelete):
     template_name = 'includes/ajax/comment_ajax_confirm_delete.html'
 
     @method_decorator(ajax_required)
@@ -62,12 +62,12 @@ class AjaxCommentDelete(CommentDelete):
         else:
             return parent_response
 
+
 class CommentsStory(ObjectList):
     """ Подгрузка комментариев к рассказу"""
 
     context_object_name = 'comments'
     paginate_by = settings.COMMENTS_COUNT['page']
-
 
     @property
     def template_name(self):
@@ -86,8 +86,9 @@ class CommentsStory(ObjectList):
         return story.comment_set.order_by('date').cache()
 
     def get_paginator(self, *a, **kw):
-        kw.update(orphans = settings.COMMENTS_ORPHANS)
+        kw.update(orphans=settings.COMMENTS_ORPHANS)
         return super(CommentsStory, self).get_paginator(*a, **kw)
+
 
 class CommentsAuthor(ObjectList):
     """ Подгрузка комментариев для профиля """

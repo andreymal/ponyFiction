@@ -22,7 +22,7 @@ from ponyFiction.bl.utils import Resource
 from ponyFiction.fields import SeparatedValuesField, RatingField, RatingAverageField
 
 # disable username validation to allow editing of users with russian symbols in names
-username_field = {f.name:f for f in AbstractUser._meta.fields}['username']  # pylint: disable=W0212
+username_field = {f.name: f for f in AbstractUser._meta.fields}['username']  # pylint: disable=W0212
 username_field.validators = []
 
 
@@ -402,9 +402,11 @@ class Story(JSONModel):
 
     class Serialize:
         properties = {'published', 'url'}
-        default_fields = {'id', 'title', 'authors', 'characters', 'categories',
+        default_fields = {
+            'id', 'title', 'authors', 'characters', 'categories',
             'date', 'finished', 'freezed', 'original', 'rating', 'summary', 'updated', 'words',
-            'vote_total', 'vote_average', 'vote_stddev', 'published', 'url'}
+            'vote_total', 'vote_average', 'vote_stddev', 'published', 'url'
+        }
         default_relations = {
             'authors': {'id', 'username'},
             'characters': {'id', 'name', 'url', 'thumb'},
@@ -581,7 +583,7 @@ class CoAuthorsStory(models.Model):
     approved = models.BooleanField(default=False, verbose_name="Подтверждение")
 
     def __str__(self):
-        return '%s %s' % (self.author.username, self.story.title)
+        return '%s (%s)' % (self.author.username, self.story.title)
 
 
 class CoAuthorsSeries(models.Model):
@@ -592,7 +594,7 @@ class CoAuthorsSeries(models.Model):
     approved = models.BooleanField(default=False, verbose_name="Подтверждение")
 
     def __str__(self):
-        return '%s %s' % (self.author.username, self.series.title)
+        return '%s (%s)' % (self.author.username, self.series.title)
 
 
 class BetaReading(models.Model):

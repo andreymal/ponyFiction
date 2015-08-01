@@ -5,6 +5,7 @@ import json
 from django.http import HttpResponse
 from django.template import RequestContext, loader
 
+
 def ajax_response(request, data, status=200, render_template=None, template_context=None):
     if render_template:
         template = loader.get_template(render_template)

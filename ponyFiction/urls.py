@@ -87,7 +87,7 @@ urlpatterns += patterns('',
     url(r'^accounts/password/reset/$',
         auth_views.password_reset,
         {
-         'post_reset_redirect' : '/accounts/password/reset/done/',
+         'post_reset_redirect': '/accounts/password/reset/done/',
          'extra_context': {'page_title': 'Восстановление пароля: введите адрес e-mail'}
          },
         name='password_reset'),
@@ -100,7 +100,7 @@ urlpatterns += patterns('',
     url(r'^accounts/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
         auth_views.password_reset_confirm,
         {
-         'post_reset_redirect' : '/accounts/password/done/',
+         'post_reset_redirect': '/accounts/password/done/',
          'extra_context': {'page_title': 'Восстановление пароля: новый пароль'}
          },
         ),

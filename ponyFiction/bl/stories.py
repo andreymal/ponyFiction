@@ -155,7 +155,7 @@ class StoryBL(BaseBL):
             )
 
         ids = [x['id'] for x in raw_result['matches']]
-        result = {x.id:x for x in self.model.objects.prefetch_for_list.filter(id__in=ids)}
+        result = {x.id: x for x in self.model.objects.prefetch_for_list.filter(id__in=ids)}
         result = [result[i] for i in ids if i in result]
 
         return raw_result, result
@@ -225,7 +225,7 @@ class ChapterBL(BaseBL):
             )
 
             ids = [x['id'] for x in raw_result['matches']]
-            dresult = {x.id:x for x in self.model.objects.prefetch_related('story', 'story__authors').filter(id__in=ids)}
+            dresult = {x.id: x for x in self.model.objects.prefetch_related('story', 'story__authors').filter(id__in=ids)}
             result = []
             for i in ids:
                 if i not in dresult:

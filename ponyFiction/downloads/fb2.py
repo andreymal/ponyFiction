@@ -3,6 +3,7 @@
 
 from .base import ZipFileDownloadFormat
 
+
 class FB2Download(ZipFileDownloadFormat):
     extension = 'fb2.zip'
     name = 'FB2'
@@ -13,15 +14,15 @@ class FB2Download(ZipFileDownloadFormat):
         from ..filters import fb2
 
         chapters = story.chapter_set.order_by('order')
-        chapters = [fb2.html_to_fb2(c.get_filtered_chapter_text(), title = c.title) for c in chapters]
+        chapters = [fb2.html_to_fb2(c.get_filtered_chapter_text(), title=c.title) for c in chapters]
         chapters = [self._get_annotation_doc(story)] + chapters
 
         doc = fb2.join_fb2_docs(
             chapters,
-            title = story.title,
-            author_name = story.authors.all()[0].username, # TODO: multiple authors
+            title=story.title,
+            author_name=story.authors.all()[0].username,  # TODO: multiple authors
         )
-        return etree.tostring(doc, encoding = 'UTF-8', xml_declaration = True)
+        return etree.tostring(doc, encoding='UTF-8', xml_declaration=True)
 
     def render_zip_contents(self, zipfile, filename, **kw):
         data = self.render_fb2(**kw)
@@ -31,7 +32,7 @@ class FB2Download(ZipFileDownloadFormat):
         from ..filters import fb2
 
         doc = fb2.html_to_fb2('<annotation>%s</annotation>' % story.summary_as_html)
-        for body in doc.xpath('//fb2:body', namespaces = { 'fb2': 'http://www.gribuser.ru/xml/fictionbook/2.0' }):
+        for body in doc.xpath('//fb2:body', namespaces={'fb2': 'http://www.gribuser.ru/xml/fictionbook/2.0'}):
             body.getparent().remove(body)
 
         return doc

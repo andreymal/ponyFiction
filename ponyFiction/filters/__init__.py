@@ -15,15 +15,17 @@ empty_lines_re = re.compile(r'\n[\s\n]*\n')
 
 
 def filter_html(text,
-                tags = settings.ALLOWED_TAGS,
-                attributes = settings.ALLOWED_ATTRIBUTES):
+                tags=settings.ALLOWED_TAGS,
+                attributes=settings.ALLOWED_ATTRIBUTES):
     doc = typo(text)
-    doc = normalize_html(doc, convert_linebreaks = True)
-    doc = _filter_html(doc,
-        tags = tags,
-        attributes = attributes
+    doc = normalize_html(doc, convert_linebreaks=True)
+    doc = _filter_html(
+        doc,
+        tags=tags,
+        attributes=attributes
     )
     return doc
+
 
 def filtered_html_property(name, filter_):
     def fn(self):
@@ -39,6 +41,8 @@ def filtered_html_property(name, filter_):
 
 
 _filter_transforms = {}
+
+
 @html_doc_transform
 def _filter_html(doc, tags, attributes, **kw):
     key = repr((tags, attributes))

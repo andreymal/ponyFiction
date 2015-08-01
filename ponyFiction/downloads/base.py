@@ -20,10 +20,10 @@ class BaseDownloadFormat(object):
     def url(self, story):
         return reverse(
             'ponyFiction.views.story.story_download',
-            kwargs = dict(
-                story_id = story.id,
-                filename = slugify(story.title or str(story.id)),
-                extension = self.extension,
+            kwargs=dict(
+                story_id=story.id,
+                filename=slugify(story.title or str(story.id)),
+                extension=self.extension,
             )
         )
 
@@ -40,7 +40,7 @@ class ZipFileDownloadFormat(BaseDownloadFormat):
         from io import BytesIO
 
         buf = BytesIO()
-        zf = zipfile.ZipFile(buf, mode = 'w', compression = zipfile.ZIP_DEFLATED)
+        zf = zipfile.ZipFile(buf, mode='w', compression=zipfile.ZIP_DEFLATED)
         try:
             self.render_zip_contents(zf, **kw)
         finally:

@@ -3,6 +3,7 @@
 
 from unidecode import unidecode  # pylint: disable=unused-import
 
+
 def _monkey_patch():
     from unidecode import x004
     data = dict((chr(i + 0x400), x) for i, x in enumerate(x004.data))
