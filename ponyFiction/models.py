@@ -400,7 +400,7 @@ class Story(JSONModel):
     def __str__(self):
         return "[%.2f ± %.2f] %s" % (self.vote_average, self.vote_stddev, self.title)
 
-    def update_rating(self, rating_only = False):
+    def update_rating(self, rating_only=False):
         votes = self.vote_set.all().values_list('vote_value', flat=True)
         m = mean(votes)
         self.vote_average = m
@@ -756,7 +756,8 @@ class StoryEditLogItem(models.Model):
                 return o.id
             elif isinstance(o, models.query.QuerySet):
                 return list(o)
-        self.json_data = json.dumps(value,
+        self.json_data = json.dumps(
+            value,
             ensure_ascii=False,
             default=default,
         )

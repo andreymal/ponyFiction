@@ -6,10 +6,9 @@ from django.forms.fields import CharField
 from django.template.defaultfilters import striptags
 
 
-
 class CommentForm(ModelForm):
     attrs_dict = {'class': 'span4'}
-    text=CharField(
+    text = CharField(
         widget=Textarea(attrs=dict(attrs_dict, maxlength=8192, placeholder='Текст нового комментария')),
         max_length=8192,
         label='Добавить комментарий',

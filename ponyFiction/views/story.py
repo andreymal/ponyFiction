@@ -47,14 +47,14 @@ def story_view(request, pk, comments_page):
         vote = None
 
     data = {
-       'story' : story,
-       'vote' : vote,
-       'comments' : comments,
+       'story': story,
+       'vote': vote,
+       'comments': comments,
        'comments_count': comments_count,
-       'chapters' : chapters,
-       'num_pages' : num_pages,
-       'page_current' : page_current,
-       'page_title' : page_title,
+       'chapters': chapters,
+       'num_pages': num_pages,
+       'page_current': page_current,
+       'page_title': page_title,
        'comment_form': comment_form
        }
 
@@ -74,8 +74,8 @@ def story_publish_warning(request, pk):
     story = get_object_or_404(Story, pk=pk)
     if story.editable_by(request.user) or request.user.is_staff:
         data = {
-                'page_title' : 'Неудачная попытка публикации',
-                'story' : story
+                'page_title': 'Неудачная попытка публикации',
+                'story': story
                 }
         return render(request, 'story_publish_warning.html', data)
     else:
@@ -144,10 +144,10 @@ def story_vote(request, pk, value):
 def story_edit_log(request, pk):
     if not request.user.is_staff:
         raise PermissionDenied
-    story = get_object_or_404(Story, pk = pk)
+    story = get_object_or_404(Story, pk=pk)
     data = dict(
-        edit_log = story.edit_log.order_by('date').select_related('user'),
-        page_title = "История редактирования рассказа \"{}\"".format(story.title),
+        edit_log=story.edit_log.order_by('date').select_related('user'),
+        page_title="История редактирования рассказа \"{}\"".format(story.title),
     )
     return render(request, 'story_edit_log.html', data)
 
@@ -228,9 +228,11 @@ def story_download(request, story_id, filename, extension):
         return redirect(url)
     filepath = 'stories/%s/%s.%s' % (story_id, filename, extension)
 
-    if (not storage.exists(filepath) or
+    if (
+        not storage.exists(filepath) or
         storage.modified_time(filepath) < story.updated or
-        debug):
+        debug
+    ):
 
         data = fmt.render(
             story=story,

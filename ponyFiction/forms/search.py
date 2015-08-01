@@ -4,6 +4,7 @@ from ponyFiction.forms.fields import GroupedModelChoiceField
 from ponyFiction.models import Character, Category, Classifier, Rating
 from ponyFiction.widgets import NumberInput, ButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesButtons, StoriesRadioButtons, StoriesServiceInput
 
+
 class SearchForm(Form):
     checkbox_attrs = {
         'btn_attrs': {'type': 'button', 'class': 'btn'},

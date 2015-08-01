@@ -38,10 +38,10 @@ def author_info(request, user_id, comments_page):
     comments = comments_paged.page(page_current)
 
     data.update({
-        'author' : author,
+        'author': author,
         'stories': stories,
-        'series' : series,
-        'comments' : comments,
+        'series': series,
+        'comments': comments,
         'page_current': page_current,
         'num_pages': num_pages,
         'comments_count': comments_count
@@ -98,6 +98,7 @@ def author_edit(request):
         prefs_form = AuthorEditPrefsForm(author=author, prefix='prefs_form')
     data.update({'profile_form': profile_form, 'email_form': email_form, 'password_form': password_form, 'prefs_form': prefs_form})
     return render(request, 'author_profile_edit.html', data)
+
 
 @login_required
 @csrf_protect

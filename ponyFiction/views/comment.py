@@ -9,11 +9,12 @@ from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from ponyFiction.forms.comment import CommentForm
 from ponyFiction.models import Story, Comment
 
+
 class CommentAdd(CreateView):
     model = Comment
     form_class = CommentForm
     template_name = 'comment_work.html'
-    initial={'button_submit': u'Добавить'}
+    initial = {'button_submit': u'Добавить'}
     comment = None
     story = None
 
@@ -38,11 +39,12 @@ class CommentAdd(CreateView):
         context.update(extra_context)
         return context
 
+
 class CommentEdit(UpdateView):
     model = Comment
     form_class = CommentForm
     template_name = 'comment_work.html'
-    initial={'button_submit': u'Сохранить изменения'}
+    initial = {'button_submit': 'Сохранить изменения'}
     comment = None
 
     @method_decorator(login_required)
@@ -66,6 +68,7 @@ class CommentEdit(UpdateView):
         extra_context = {'page_title': u'Редактировать комментарий', 'story': self.comment.story, 'comment': self.comment, 'edit': True}
         context.update(extra_context)
         return context
+
 
 class CommentDelete(DeleteView):
     model = Comment

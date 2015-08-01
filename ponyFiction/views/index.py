@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from ponyFiction.models import Story, Category, Chapter, Comment
 
+
 @csrf_protect
 def index(request):
     page_title = 'Главная'
@@ -20,7 +21,7 @@ def index(request):
     )
     # так намного быстрее
     story_ids = [y.story_id for y in chapters]
-    chapters_stories = {x.id:x for x in Story.objects.filter(id__in=story_ids).prefetch_related('authors')}
+    chapters_stories = {x.id: x for x in Story.objects.filter(id__in=story_ids).prefetch_related('authors')}
     chapters = [(x, chapters_stories[x.story_id]) for x in chapters]
 
     comments = (
@@ -30,10 +31,10 @@ def index(request):
     )
 
     data = {
-        'categories' : categories,
-        'stories' : stories,
-        'chapters' : chapters,
-        'comments' : comments,
-        'page_title' : page_title,
+        'categories': categories,
+        'stories': stories,
+        'chapters': chapters,
+        'comments': comments,
+        'page_title': page_title,
     }
     return render(request, 'index.html', data)

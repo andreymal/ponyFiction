@@ -24,10 +24,10 @@ def chapter_view(request, story_id=False, chapter_order=False):
             signals.story_viewed.send(sender=Author, instance=request.user, story=story, chapter=chapter)
         data = {
            'story': story,
-           'chapter' : chapter,
-           'prev_chapter' : prev_chapter,
-           'next_chapter' : next_chapter,
-           'page_title' : page_title,
+           'chapter': chapter,
+           'prev_chapter': prev_chapter,
+           'next_chapter': next_chapter,
+           'page_title': page_title,
            'allchapters': False
         }
     else:
@@ -37,17 +37,18 @@ def chapter_view(request, story_id=False, chapter_order=False):
             signals.story_viewed.send(sender=Author, instance=request.user, story=story, chapter=None)
         data = {
             'story': story,
-            'chapters' : chapters,
-            'page_title' : page_title,
+            'chapters': chapters,
+            'page_title': page_title,
             'allchapters': True
         }
     return render(request, 'chapter_view.html', data)
+
 
 class ChapterAdd(CreateView):
     model = Chapter
     form_class = ChapterForm
     template_name = 'chapter_work.html'
-    initial={'button_submit': u'Добавить'}
+    initial = {'button_submit': u'Добавить'}
     story = None
 
     @method_decorator(login_required)
@@ -72,11 +73,12 @@ class ChapterAdd(CreateView):
         context.update(extra_context)
         return context
 
+
 class ChapterEdit(UpdateView):
     model = Chapter
     form_class = ChapterForm
     template_name = 'chapter_work.html'
-    initial={'button_submit': u'Сохранить изменения'}
+    initial = {'button_submit': u'Сохранить изменения'}
     chapter = None
 
     @method_decorator(login_required)

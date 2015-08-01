@@ -37,7 +37,7 @@ class AuthorEditProfileForm(ModelForm):
         max_length=32,
         label='Логин на Табуне',
         error_messages={'invalid': 'Пожалуйста, исправьте ошибку в имени пользователя: похоже, оно неправильно'},
-       required=False
+        required=False
     )
     forum = URLField(
         widget=TextInput(attrs=dict(attrs_dict, maxlength=32, placeholder='URL вашего профиля')),
@@ -89,6 +89,7 @@ class AuthorEditPrefsForm(Form):
         required=True,
         widget=StoriesRadioButtons(attrs=radio_attrs),
     )
+
     def __init__(self, *args, **kwargs):
         self.author = kwargs.pop('author', None)
         super(AuthorEditPrefsForm, self).__init__(*args, **kwargs)
@@ -164,6 +165,7 @@ class AuthorEditPasswordForm(Form):
         help_text='Повторите новый пароль, чтобы не забыть',
         error_messages={'required': 'Поле нельзя оставить пустым'}
         )
+
     def __init__(self, *args, **kwargs):
         self.author = kwargs.pop('author', None)
         super(AuthorEditPasswordForm, self).__init__(*args, **kwargs)

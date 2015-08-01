@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
 from ponyFiction.models import Author, Story
 
+
 class ObjectList(ListView):
     context_object_name = 'stories'
     paginate_by = settings.STORIES_COUNT['page']
@@ -51,7 +52,7 @@ class FavoritesList(ObjectList):
 
     def get_context_data(self, **kwargs):
         context = ObjectList.get_context_data(self, **kwargs)
-        context['author_id'] = self.author.id # workaround для работы пагинатора в избранном.
+        context['author_id'] = self.author.id  # workaround для работы пагинатора в избранном.
         return context
 
 
@@ -67,7 +68,6 @@ class SubmitsList(ObjectList):
 
     def get_queryset(self):
         return Story.objects.submitted.prefetch_for_list
-
 
 
 class BookmarksList(ObjectList):

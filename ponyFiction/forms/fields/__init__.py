@@ -14,8 +14,10 @@ class GroupedModelChoiceIterator(ModelChoiceIterator):
             if self.field.choice_cache is None:
                 self.field.choice_cache = [
                     (group, [self.choice(ch) for ch in choices])
-                        for group,choices in groupby(self.queryset.all(),
-                            key=lambda row: getattr(row, self.field.group_by_field))
+                    for group, choices in groupby(
+                        self.queryset.all(),
+                        key=lambda row: getattr(row, self.field.group_by_field)
+                    )
                 ]
             for choice in self.field.choice_cache:
                 yield choice

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from django import template
 register = template.Library()
+
+
 @register.filter
 def rupluralize(value, arg='число,числа,чисел'):
     args = arg.split(',')

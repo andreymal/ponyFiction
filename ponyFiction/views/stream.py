@@ -53,6 +53,6 @@ class StreamStoryEditLog(ObjectList):
 
     def get_queryset(self):
         if self.request.user.is_staff:
-            return StoryEditLogItem.objects.filter(is_staff = True).order_by('date').select_related()
+            return StoryEditLogItem.objects.filter(is_staff=True).order_by('date').select_related()
         else:
             raise PermissionDenied
