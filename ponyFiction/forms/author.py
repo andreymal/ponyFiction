@@ -177,7 +177,7 @@ class AuthorEditPasswordForm(Form):
         if not(old_password and new_password_1 and new_password_2):
             nfe.append('Введены не все данные')
         else:
-            if not (self.author.check_password(old_password)):
+            if not self.author.check_password(old_password):
                 nfe.append('Старый пароль неверный')
             if new_password_1 != new_password_2:
                 nfe.append('Пароли не совпадают')

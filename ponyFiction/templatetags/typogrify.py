@@ -5,6 +5,6 @@ register = template.Library()
 
 @register.filter
 def typogrify(string):
-    if type(string) is not unicode:
-        string = unicode(string)
+    if not isinstance(string, str):
+        string = str(string)
     return typo(string)

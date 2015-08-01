@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
-from cacheops.query import cached_as
 
 from ponyFiction.views.object_lists import ObjectList
 from ponyFiction.models import Story, Chapter, Comment, StoryEditLogItem

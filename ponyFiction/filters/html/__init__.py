@@ -12,7 +12,7 @@ post_normalize_html = xslt_transform_function('post-normalize-html.xslt')
 block_elements = (lxml.html.defs.block_tags | frozenset(['footnote', 'body'])) - frozenset(['p'])
 
 @html_doc_transform
-def normalize_html(doc, block_elements = block_elements, **kw):
+def normalize_html(doc, block_elements=block_elements, **kw):
     for e in doc.xpath('//' + '|//'.join(block_elements)):
         e.attrib['block-element'] = 'true'
 
@@ -27,10 +27,10 @@ def normalize_html(doc, block_elements = block_elements, **kw):
     return doc
 
 @html_doc_transform
-def split_elements(doc, separators = [], block_elements = lxml.html.defs.block_tags):
+def split_elements(doc, separators=None, block_elements=lxml.html.defs.block_tags):
     block_elements = (block_elements | frozenset(['body'])) - frozenset(['p'])
     for body in doc.xpath('//body'):
-        list(iter_splitted_elements(body, separators, block_elements))
+        list(iter_splitted_elements(body, separators or [], block_elements))
     return doc
 
 

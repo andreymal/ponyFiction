@@ -119,9 +119,9 @@ class StoriesRadioFieldRenderer(RadioFieldRenderer):
         attrs = self.attrs
         name = self.name
         value = self.value
-        if (value == 'True'):
+        if value == 'True':
             value = 1
-        elif (value == 'False'):
+        elif value == 'False':
             value = 0
         else:
             value = int(value) if value else False
@@ -138,9 +138,9 @@ class StoriesRadioFieldRenderer(RadioFieldRenderer):
             rendered_btn = btn.render(attrs=btn_attrs)
             btn_container.append(rendered_btn)
             if option_value == value:
-                    rb = StoriesServiceInput(attrs=dict(data_attrs, type='radio', name=name, value=option_value, checked='checked'))
+                rb = StoriesServiceInput(attrs=dict(data_attrs, type='radio', name=name, value=option_value, checked='checked'))
             else:
-                    rb = StoriesServiceInput(attrs=dict(data_attrs, type='radio', name=name, value=option_value))
+                rb = StoriesServiceInput(attrs=dict(data_attrs, type='radio', name=name, value=option_value))
             rendered_rb = rb.render(name, value)
             data_container.append(rendered_rb)
         btn = '<div%s>%s</div>' % (flatatt(btn_container_attrs), ' '.join(btn_container))

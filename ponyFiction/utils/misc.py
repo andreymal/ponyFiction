@@ -4,7 +4,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 
 
-def pagination_ranges(
+def pagination_ranges(  # pylint: disable=too-many-statements
     num_pages,             # sumary page numbers
     page,                  # current page number [1...num_pages] or <=0 if none
     reverse=False,         # reverse enumeration

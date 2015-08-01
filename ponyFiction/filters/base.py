@@ -1,10 +1,7 @@
 #!/ust/bin/env python
 # -*- coding: utf-8 -*-
 
-# pylint: disable=no-member
-
 import os
-import re
 from functools import wraps
 
 from lxml import etree
@@ -38,9 +35,9 @@ def transform_xslt_params(kw):
     for key, value in kw.items():
         if isinstance(value, str):
             value = etree.XSLT.strparam(value)
-        elif type(value) in (int, float):
+        elif isinstance(value, (int, float)):
             value = str(value)
-        elif type(value) is bool:
+        elif isinstance(value, bool):
             value = 'true()' if value else 'false()'
         else:
             raise TypeError(key)
@@ -73,7 +70,8 @@ def html_doc_to_string(doc):
         return doc
 
     body = doc.xpath('//body')
-    if len(body) < 1: return ''
+    if len(body) < 1:
+        return ''
     body = body[0]
     doc = ''.join([(body.text or '')] + [etree.tounicode(elem, method='html') for elem in body.getchildren()])
     return doc

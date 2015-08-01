@@ -123,7 +123,8 @@ class Author(AbstractUser, JSONModel):
 
     def get_avatar_url(self):
         url = self.get_tabun_avatar_url()
-        if url: return url
+        if url:
+            return url
 
         return staticfiles_storage.url('i/userpic.jpg')
 
@@ -279,28 +280,6 @@ class InSeriesPermissions(models.Model):
     class Meta:
         verbose_name = "добавление в серию"
         verbose_name_plural = "добавления в серию"
-
-
-class CoAuthorsStory(models.Model):
-    """ Промежуточная модель хранения взаимосвязей авторства рассказов (включая соавторов) """
-
-    author = models.ForeignKey(Author, verbose_name="Автор")
-    story = models.ForeignKey('Story', verbose_name="Рассказ")
-    approved = models.BooleanField(default=False, verbose_name="Подтверждение")
-
-    def __str__(self):
-        return '%s %s' % (self.author.username, self.story.title)
-
-
-class CoAuthorsSeries(models.Model):
-    """ Промежуточная модель хранения взаимосвязей авторства серий (включая соавторов) """
-
-    author = models.ForeignKey(Author, null=True, verbose_name="Автор")
-    series = models.ForeignKey('Series', null=True, verbose_name="Серия")
-    approved = models.BooleanField(default=False, verbose_name="Подтверждение")
-
-    def __str__(self):
-        return '%s %s' % (self.author.username, self.series.title)
 
 
 class Series(models.Model):
@@ -550,7 +529,7 @@ class Chapter(models.Model):
         return '[%s / %s] %s' % (self.id, self.order, self.title)
 
     def get_absolute_url(self):
-        return reverse('chapter_view_single', kwargs = dict(story_id = self.story_id, chapter_order = self.order))
+        return reverse('chapter_view_single', kwargs=dict(story_id=self.story_id, chapter_order=self.order))
 
     def get_prev_chapter(self):
         try:
@@ -593,9 +572,31 @@ class Chapter(models.Model):
     def get_filtered_chapter_text(self):
         return filter_html(
             self.text,
-            tags = settings.CHAPTER_ALLOWED_TAGS,
-            attributes = settings.CHAPTER_ALLOWED_ATTRIBUTES,
+            tags=settings.CHAPTER_ALLOWED_TAGS,
+            attributes=settings.CHAPTER_ALLOWED_ATTRIBUTES,
         )
+
+
+class CoAuthorsStory(models.Model):
+    """ Промежуточная модель хранения взаимосвязей авторства рассказов (включая соавторов) """
+
+    author = models.ForeignKey(Author, verbose_name="Автор")
+    story = models.ForeignKey(Story, verbose_name="Рассказ")
+    approved = models.BooleanField(default=False, verbose_name="Подтверждение")
+
+    def __str__(self):
+        return '%s %s' % (self.author.username, self.story.title)
+
+
+class CoAuthorsSeries(models.Model):
+    """ Промежуточная модель хранения взаимосвязей авторства серий (включая соавторов) """
+
+    author = models.ForeignKey(Author, null=True, verbose_name="Автор")
+    series = models.ForeignKey(Series, null=True, verbose_name="Серия")
+    approved = models.BooleanField(default=False, verbose_name="Подтверждение")
+
+    def __str__(self):
+        return '%s %s' % (self.author.username, self.series.title)
 
 
 class Comment(models.Model):
@@ -656,7 +657,7 @@ class Favorites(models.Model):
     """ Модель избранного """
 
     author = models.ForeignKey(Author, null=True, verbose_name="Автор")
-    story = models.ForeignKey('Story', related_name="favorites_story_related_set", null=True, verbose_name="Рассказ")
+    story = models.ForeignKey(Story, related_name="favorites_story_related_set", null=True, verbose_name="Рассказ")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления в избранное")
 
     class Meta:
@@ -679,7 +680,7 @@ class Bookmark(models.Model):
         verbose_name_plural = "закладки рассказов"
 
     def __str__(self):
-            return "%s | %s" % (self.author.username, self.story.title)
+        return "%s | %s" % (self.author.username, self.story.title)
 
 
 class StoryView(models.Model):
@@ -757,12 +758,12 @@ class StoryEditLogItem(models.Model):
             elif isinstance(o, models.query.QuerySet):
                 return list(o)
         self.json_data = json.dumps(value,
-            ensure_ascii = False,
-            default = default,
+            ensure_ascii=False,
+            default=default,
         )
 
     @classmethod
-    def create(cls, data = None, **kw):
+    def create(cls, data=None, **kw):
         obj = cls(**kw)
         obj.is_staff = kw['user'].is_staff
         if data is not None:

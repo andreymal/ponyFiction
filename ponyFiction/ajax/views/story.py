@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from json import dumps
-
 from django.conf import settings
 from cacheops import invalidate_obj
 from django.contrib.auth.decorators import login_required
@@ -11,9 +9,8 @@ from django.shortcuts import get_object_or_404, render
 from django.utils.datetime_safe import datetime
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
-from django.utils.decorators import method_decorator
 
-from ponyFiction.models import Author, Story, Favorites, Bookmark, StoryEditLogItem
+from ponyFiction.models import Story, Favorites, Bookmark, StoryEditLogItem
 from ponyFiction.ajax.decorators import ajax_required, ajax_login_required
 from ponyFiction.ajax.shortcuts import ajax_response
 from ponyFiction.views.story import _story_vote
@@ -23,7 +20,7 @@ from ponyFiction.views.story import _story_vote
 @csrf_protect
 def story_publish_warning_ajax(request, story_id):
     story = get_object_or_404(Story, pk=story_id)
-    if (story.editable_by(request.user) or request.user.is_staff):
+    if story.editable_by(request.user) or request.user.is_staff:
         data = {
             'page_title' : 'Неудачная попытка публикации',
             'story' : story,
@@ -41,8 +38,8 @@ def story_publish_warning_ajax(request, story_id):
 def story_publish_ajax(request, story_id):
     """ Публикация рассказа по AJAX """
     story = get_object_or_404(Story, pk=story_id)
-    if (story.editable_by(request.user) or request.user.is_staff):
-        if (story.publishable or (not story.draft and not story.publishable)):
+    if story.editable_by(request.user) or request.user.is_staff:
+        if story.publishable or (not story.draft and not story.publishable):
             if story.draft:
                 story.draft = False
             else:

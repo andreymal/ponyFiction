@@ -30,8 +30,9 @@ def filtered_html_property(name, filter_):
         try:
             return mark_safe(html_doc_to_string(filter_(getattr(self, name))))
         except Exception:
-            import traceback, sys
-            print >> sys.stderr, "filter_html", type(self), self.pk, name, filter_
+            import sys
+            import traceback
+            print("filter_html", type(self), self.pk, name, filter_, file=sys.stderr)
             traceback.print_exc()
             return "#ERROR#"
     return property(fn)

@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied
 from cacheops import invalidate_obj
 
 from ponyFiction.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm, AuthorEditPrefsForm
-from ponyFiction.models import Author, Comment, Vote, Story, StoryView
+from ponyFiction.models import Author, Comment, Story, StoryView
 
 
 @csrf_protect

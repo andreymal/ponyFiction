@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import re, htmlentitydefs, unicodedata
+import re
+import htmlentitydefs
+import unicodedata
+from functools import reduce
 
 __all__ = ('Typographus', 'typo')
 
@@ -34,17 +37,17 @@ sym = {
     }
 
 safeBlocks = {
-    '<pre[^>]*>':    '<\/pre>',
-    '<style[^>]*>':  '<\/style>',
-    '<script[^>]*>': '<\/script>',
-    '<!--':          '-->',
-    '<code[^>]*>':   '<\/code>',
+    r'<pre[^>]*>':    r'<\/pre>',
+    r'<style[^>]*>':  r'<\/style>',
+    r'<script[^>]*>': r'<\/script>',
+    r'<!--':          r'-->',
+    r'<code[^>]*>':   r'<\/code>',
     }
 
-space = '[\s|%s]' % sym['nbsp']
+space = r'[\s|%s]' % sym['nbsp']
 
 html_tag = ''
-hellip = '\.{3,}'
+hellip = r'\.{3,}'
 
 #Слово
 word = '[a-zA-Zа-яА-Я_]'
@@ -54,9 +57,9 @@ phrase_begin = r"(?:%s|%s|\d|\n)" % (hellip, word)
 phrase_end = r"(?:%s|%s|\n)" % (hellip, word)
 
 #Знаки препинания (троеточие и точка - отдельный случай!)
-punctuation = '[?!:,;]'
+punctuation = r'[?!:,;]'
 
-all_punctuation = '[?!:,;\.%s]' % entity('hellip')
+all_punctuation = r'[?!:,;\.%s]' % entity('hellip')
 
 #Аббревиатуры
 abbr = r'(?:ООО|ОАО|ЗАО|ЧП|ИП|НПФ|НИИ)'
@@ -70,8 +73,8 @@ metrics = 'мм|см|м|км|кг|б|кб|мб|гб|dpi|px' # с граммам�
 
 shortages = 'гн|гжа|гр|г|тов|пос|c|ул|д|пер|м'
 
-money = 'руб\.|долл\.|евро|у\.е\.'
-counts = 'млн\.|тыс\.'
+money = r'руб\.|долл\.|евро|у\.е\.'
+counts = r'млн\.|тыс\.'
 
 # any_quote = '(?:%s|%s|%s|%s|&quot;|")' % (sym['lquote'], sym['rquote'], sym['lquote2'], sym['rquote2'])
 
@@ -140,17 +143,17 @@ def compile_ruleset(*ruleset):
     result = []
     for rule_desc in ruleset:
         flag = re.X
-        if type(rule_desc) in [tuple, list]:
+        if isinstance(rule_desc, (tuple, list)):
             pattern, replacement = rule_desc[:2]
             if len(rule_desc) > 2:
                 flag = rule_desc[2]
-        elif type(rule_desc) is dict:
+        elif isinstance(rule_desc, dict):
             pattern = rule_desc['pat']
             replacement = rule_desc['rep']
             if 'mod' in rule_desc:
                 flag = rule_desc['mod']
         else:
-            raise Exception, 'unknown rule: %s' % repr(rule_desc)
+            raise Exception('unknown rule: %s' % repr(rule_desc))
         result.append(Rule(pattern, replacement, flag))
     return result
 
@@ -223,10 +226,10 @@ rules_quotes = compile_ruleset(
 
     # превращаем кавычки в ёлочки. Двойные кавычки склеиваем.
     # ((?:«|»|„|“|&quot;|"))((?:\.{3,5}|[a-zA-Zа-яА-Я_]|\n))
-    ("(%s)(%s)" % (any_quote, phrase_begin), '%s\g<2>' % sym['lquote']),
+    ("(%s)(%s)" % (any_quote, phrase_begin), r'%s\g<2>' % sym['lquote']),
 
     # ((?:(?:\.{3,5}|[a-zA-Zа-яА-Я_])|[0-9]+))((?:«|»|„|“|&quot;|"))
-    (r"((?:%s|%s|(?:[0-9]+)))(%s)" % (phrase_end, all_punctuation, any_quote), '\g<1>%s' % sym['rquote']),
+    (r"((?:%s|%s|(?:[0-9]+)))(%s)" % (phrase_end, all_punctuation, any_quote), r'\g<1>%s' % sym['rquote']),
 
     (sym['rquote'] + any_quote, sym['rquote']+sym['rquote']),
     (any_quote + sym['lquote'], sym['lquote']+sym['lquote']),
@@ -286,8 +289,8 @@ rules_main = compile_ruleset(
 
     # Знак дефиса или два знака дефиса подряд — на знак длинного тире.
     # + Нельзя разрывать строку перед тире, например: Знание — сила, Курить — здоровью вредить.
-    ('(\s+)(--?|—|%s)(?=\s)' % sym['mdash'], sym['nbsp'] + sym['mdash']),
-    ('(^)(--?|—|%s)(?=\s)' % sym['mdash'], sym['mdash']),
+    (r'(\s+)(--?|—|%s)(?=\s)' % sym['mdash'], sym['nbsp'] + sym['mdash']),
+    (r'(^)(--?|—|%s)(?=\s)' % sym['mdash'], sym['mdash']),
 
     # Нельзя оставлять в конце строки предлоги и союзы - убира слеш с i @todo переработать регулярку
     #{"pat": '(?<=\s|^|\W)(%s)(\s+)' % prepos, "rep": '\g<1>'+sym['nbsp'], "mod": re.I},
@@ -297,20 +300,20 @@ rules_main = compile_ruleset(
     (r'(?<=\S)\s+(ж|бы|б|же|ли|ль|либо|или)(?!\w)', sym['nbsp'] + r'\1'),
 
     # # Неразрывный пробел после инициалов.
-    ('([А-ЯA-Z]\.)\s?([А-ЯA-Z]\.)\s?([А-Яа-яA-Za-z]+)', '\g<1>\g<2>%s\g<3>' % sym['nbsp'], re.S),
+    (r'([А-ЯA-Z]\.)\s?([А-ЯA-Z]\.)\s?([А-Яа-яA-Za-z]+)', r'\g<1>\g<2>%s\g<3>' % sym['nbsp'], re.S),
 
     # Сокращения сумм не отделяются от чисел.
-    ('(\d+)\s?(%s)' % counts, '\g<1>%s\g<2>' % sym['nbsp'], re.S),
+    (r'(\d+)\s?(%s)' % counts, r'\g<1>%s\g<2>' % sym['nbsp'], re.S),
 
     #«уе» в денежных суммах
-    ('(\d+|%s)\s?уеs' % counts, '\g<1>%sу.е.' % sym['nbsp']),
+    (r'(\d+|%s)\s?уеs' % counts, r'\g<1>%sу.е.' % sym['nbsp']),
 
     # Денежные суммы, расставляя пробелы в нужных местах.
-    ('(\d+|%s)\s?(%s)' %(counts, money), '\g<1>%s\g<2>' % sym['nbsp'], re.S),
+    (r'(\d+|%s)\s?(%s)' %(counts, money), r'\g<1>%s\g<2>' % sym['nbsp'], re.S),
 
     # Номер версии программы пишем неразрывно с буковкой v.
-    ('([vв]\.) ?([0-9])', '\g<1>%s\g<2>' % sym['nbsp'], re.I),
-    ('(\w) ([vв]\.)', '\g<1>%s\g<2>' % sym['nbsp'], re.I),
+    (r'([vв]\.) ?([0-9])', r'\g<1>%s\g<2>' % sym['nbsp'], re.I),
+    (r'(\w) ([vв]\.)', r'\g<1>%s\g<2>' % sym['nbsp'], re.I),
 
 
     # % не отделяется от числа
@@ -321,20 +324,15 @@ rules_main = compile_ruleset(
 
 
 rules_smiles = compile_ruleset(
-
     (r'[:|;|-]*?\){3,}', sym[':)']),
-
 )
 
 
 final_cleanup = compile_ruleset(
-
     (r'\s(?=%s)' % all_punctuation, ''),
-
 )
 
 class Typographus:
-
     encoding = None
 
     def __init__(self, encoding = None):
@@ -344,11 +342,11 @@ class Typographus:
         safeBlocks[openTag] = closeTag
 
     def getSafeBlockPattern(self):
-        pattern = '(';
+        pattern = '('
         for key, value in safeBlocks.items():
             pattern += "%s.*%s|" % (key, value)
 
-        pattern+= '<[^>]*[\s][^>]*>)';
+        pattern += r'<[^>]*[\s][^>]*>)'
         return pattern
 
 
@@ -356,7 +354,7 @@ class Typographus:
         blocks = {}
         def replace(m):
             value = m.group()
-            if(len(value)==3):
+            if len(value) == 3:
                 return value
 
             key = '<%s>' % (len(blocks))
@@ -378,8 +376,8 @@ class Typographus:
 
     def process(self, string):
 
-        if not isinstance(string, unicode):
-            string = unicode(string)
+        if not isinstance(string, str):
+            string = str(string)
 
         value = self.removeRedundantBlocks(string)
 
@@ -393,7 +391,7 @@ class Typographus:
 
     def typo_text(self, string):
 
-        if (string.strip() == ''):
+        if string.strip() == '':
             return ''
 
         for rule_set in (rules_main, rules_symbols, rules_braces,

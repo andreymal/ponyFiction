@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.forms import CharField, ChoiceField, Field, ModelForm, ModelChoiceField, ModelMultipleChoiceField, TextInput, Textarea
+from django.forms import CharField, ChoiceField, ModelForm, ModelChoiceField, ModelMultipleChoiceField, TextInput, Textarea
 from ponyFiction.forms.fields import GroupedModelChoiceField
 from ponyFiction.models import Character, Category, Classifier, Rating, Story
-from ponyFiction.widgets import ServiceButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesRadioButtons
+from ponyFiction.widgets import StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesRadioButtons
 
 class StoryForm(ModelForm):
     attrs_dict = {'class': 'input-xxlarge'}

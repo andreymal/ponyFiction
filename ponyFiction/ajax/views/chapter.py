@@ -20,8 +20,8 @@ def chapter_sort(request, story_id):
     story = get_object_or_404(Story.objects.accessible(user=request.user), pk=story_id)
     if story.editable_by(request.user):
         new_order = unicode_to_int_list(request.POST.getlist('chapters[]'))
-        if (not new_order or story.chapter_set.count() != len(new_order)):
-                return HttpResponse('Bad request. Incorrect list!', status=400)
+        if not new_order or story.chapter_set.count() != len(new_order):
+            return HttpResponse('Bad request. Incorrect list!', status=400)
         else:
             for new_order_id, chapter_id in enumerate(new_order):
                 chapter = Chapter.objects.get(pk=chapter_id)
@@ -32,7 +32,6 @@ def chapter_sort(request, story_id):
         raise PermissionDenied
 
 class AjaxChapterDelete(ChapterDelete):
-
     template_name = 'includes/ajax/chapter_ajax_confirm_delete.html'
 
     @method_decorator(ajax_required)

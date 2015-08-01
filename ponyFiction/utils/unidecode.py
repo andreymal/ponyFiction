@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from unidecode import unidecode
+from unidecode import unidecode  # pylint: disable=unused-import
 
 def _monkey_patch():
     import unidecode.x004

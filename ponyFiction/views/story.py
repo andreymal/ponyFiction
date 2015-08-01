@@ -7,17 +7,14 @@ from django.core.paginator import Paginator
 from django.http import Http404
 from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from ponyFiction import signals
 from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
-from ponyFiction.models import Story, Vote, CoAuthorsStory, Author, StoryEditLogItem
+from ponyFiction.models import Story, Vote, Author
 from cacheops import invalidate_obj
 from ponyFiction.utils.misc import get_object_or_none
-from ponyFiction import tasks
 
 
 def get_story(request, pk):
@@ -75,7 +72,7 @@ def story_approve(request, pk):
 @csrf_protect
 def story_publish_warning(request, pk):
     story = get_object_or_404(Story, pk=pk)
-    if (story.editable_by(request.user) or request.user.is_staff):
+    if story.editable_by(request.user) or request.user.is_staff:
         data = {
                 'page_title' : 'Неудачная попытка публикации',
                 'story' : story
