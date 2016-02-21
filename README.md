@@ -94,11 +94,15 @@ CELERY_ALWAYS_EAGER = False
 
  `cp local_sphinx.example.conf local_sphinx.conf`
 
-* Создаём каталоги, необходимые для работы Sphinx:
+* В файле `sphinxroot.txt` указываем рабочий каталог Sphinx:
+
+ `echo 'sphinx' > sphinxroot.txt`
+
+* И создаём его:
 
  `mkdir sphinx && mkdir sphinx/binlog`
 
-* И запускаем его:
+* Теперь можно запустить Sphinx:
 
  `searchd --config sphinxconf.py`
 
