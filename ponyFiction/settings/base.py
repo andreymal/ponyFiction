@@ -5,8 +5,8 @@
 
 import os
 
-PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-BASE_DIR = os.path.dirname(PROJECT_DIR)
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.getcwd()
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
@@ -267,19 +267,3 @@ CACHEOPS = {
 
 REGISTRATION_OPEN = True
 LOAD_TABUN_AVATARS = True
-
-
-# specify current environment
-
-ENV = os.getenv('DJANGO_ENV')
-if not ENV:
-    ENV = open(os.path.join(BASE_DIR, 'environment.txt'), 'rb').read().strip().decode('utf-8', 'replace')
-
-if ENV in ('test', 'development', 'staging', 'production'):
-    env_path = os.path.join(PROJECT_DIR, 'environments', ENV + '.py')
-    if os.path.isfile(env_path):
-        exec(open(env_path, 'rb').read())
-
-local_path = os.path.join(PROJECT_DIR, 'environments', 'local.py')
-if os.path.isfile(local_path):
-    exec(open(local_path, 'rb').read())

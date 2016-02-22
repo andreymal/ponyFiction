@@ -22,7 +22,9 @@ CMS библиотеки на stories.everypony.ru
 
  `pip install -r requirements.txt`
 
-* Указываем окружение, скопировав файл `environment.example.txt` в `environment.txt` и `sphinxroot.example.txt` в `sphinxroot.txt`
+* Указываем настройки через переменную окружения:
+
+ `export DJANGO_SETTINGS_MODULE=ponyFiction.settings.development`
 
 * Инициализируем базу (будет создан файл `db.sqlite3`), создаём суперпользователя и заполняем базу данными (персонажи, рейтинги, жанры, события):
 
@@ -41,15 +43,17 @@ CMS библиотеки на stories.everypony.ru
 
 ## Развёртывание приближенного к production окружения (с поиском и прочим)
 
-* Выполняем первые пять пунктов из предыдущего списка
+* Выполняем первые четыре пункта из предыдущего списка
 
 * Дополнительно устанавливаем Redis (для cacheops), memcached и Sphinx
 
 * Устанавливаем и настраиваем MySQL, создаём пользователя и базу данных для сайта
 
-* Создаём файл `ponyFiction/environments/local.py` (в local-файлах хранятся локальные настройки, которые нет смысла публиковать) и включаем в нём всё установленное ранее:
+* Создаём файл `local_settings.py` (в нём хранятся локальные настройки, которые нет смысла публиковать) и включаем в нём всё установленное ранее:
 
 ```
+from ponyFiction.settings.development import *
+
 DATABASES['default'] = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'название базы mysql',
@@ -74,6 +78,10 @@ SPHINX_DISABLED = False
 CELERY_ALWAYS_EAGER = False
 ```
 
+* Прописываем созданные нами настройки в переменную окружения:
+
+ `export DJANGO_SETTINGS_MODULE=local_settings`
+
 * Инициализируем базу, создаём суперпользователя, заполняем базу данными:
 
  `python manage.py migrate`
@@ -82,7 +90,19 @@ CELERY_ALWAYS_EAGER = False
 
  `python manage.py loaddata ponyFiction/fixtures/*`
 
-* Запускаем Sphinx:
+* Создаём файл с локальными настройками Sphinx (и настраиваем по желанию):
+
+ `cp local_sphinx.example.conf local_sphinx.conf`
+
+* В файле `sphinxroot.txt` указываем рабочий каталог Sphinx:
+
+ `echo 'sphinx' > sphinxroot.txt`
+
+* И создаём его:
+
+ `mkdir sphinx && mkdir sphinx/binlog`
+
+* Теперь можно запустить Sphinx:
 
  `searchd --config sphinxconf.py`
 

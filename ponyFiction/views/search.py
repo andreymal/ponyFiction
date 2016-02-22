@@ -3,9 +3,9 @@
 
 from math import ceil
 
+from django.conf import settings
 from django.shortcuts import redirect, render
 
-from ponyFiction import settings as settings
 from ponyFiction.forms.search import SearchForm
 from ponyFiction.models import Story, Chapter
 from ponyFiction.utils.misc import pagination_ranges
