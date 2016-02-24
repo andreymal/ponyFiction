@@ -1,19 +1,13 @@
 *.pyc
-*.sqlite
-*.sqlite3
 /.project
 /.pydevproject
 /.idea/
 /.settings/
-/sphinx/
 /media/
 /static/
 /env/
 /node_modules/
 /bower_components/
-/local_settings.py
-/local_sphinx.conf
-/sphinxroot.txt
 
 # Vagga stuff
 /.vagga
