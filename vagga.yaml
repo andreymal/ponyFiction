@@ -122,6 +122,8 @@ commands:
         - /work/config/uwsgi-app.ini
       celery: !Command
         container: uwsgi-app
+        environ:
+          DJANGO_SETTINGS_MODULE: ponyFiction.settings.development
         run:
         - celery
         - worker
