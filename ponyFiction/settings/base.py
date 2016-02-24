@@ -1,14 +1,30 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 # pylint: disable=W0122
 
 import os
 
+DATABASES = {'default': {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'stories',
+    'USER': 'root',
+    'PASSWORD': 'celestia',
+    'HOST': '127.0.0.1',
+    'PORT': '3306',
+
+}}
+
+CACHES = {'default': {
+    'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+    'LOCATION': '127.0.0.1:11211',
+}}
+
+SECRET_KEY = '6^j694%m%^etq6@$_kigiyig&OTN0to798mhbBN)J-39xdac3440du'
+
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.getcwd()
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -17,13 +33,6 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS': False}
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 SITE_URL = 'http://localhost:8000'
 SITE_NAME = 'Библиотека everypony.ru'
@@ -41,8 +50,6 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = ()
-
-SECRET_KEY = '6^j694%m%^etq6@$_d&amp;1h$fv4z4-u!#@+*m233sc-39xdac3du'
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -124,19 +131,16 @@ TEMPLATES = [
 ]
 
 PASSWORD_HASHERS = (
-    'django.contrib.auth.hashers.BCryptPasswordHasher',
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
-    'django.contrib.auth.hashers.SHA1PasswordHasher',
-    'django.contrib.auth.hashers.MD5PasswordHasher',
-    'django.contrib.auth.hashers.CryptPasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
 )
 
 COMPRESS_HTML = True
 
 SPHINX_DISABLED = False
 SPHINX_CONFIG = {
-    'connection_params': {'unix_socket': '/tmp/sphinx_fanfics.socket', 'charset': 'utf8'},
+    'connection_params': {'host': '127.0.0.1', 'port': '1919', 'charset': 'utf8'},
     'excerpts_opts': {'chunk_separator': '…', 'limit': 2048, 'around': 10, 'html_strip_mode': 'strip'},
 
     'weights_stories': {'title': 100, 'summary': 50, 'notes': 25, 'username': 150},
@@ -174,7 +178,7 @@ REGISTRATION_AUTO_LOGIN = True
 REGISTRATION_FORM = 'ponyFiction.forms.register.AuthorRegistrationForm'
 
 EMAIL_HOST = 'localhost'
-EMAIL_PORT = 25
+EMAIL_PORT = 1025
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
@@ -184,7 +188,6 @@ RECAPTCHA_PUBLIC_KEY = '6LfbstoSAAAAAAcFIteoZTld24mt3s6_sODZnc8J'
 RECAPTCHA_PRIVATE_KEY = '6LfbstoSAAAAAHHN9jYw9Lp9lsunQCILAyAYgoxz'
 RECAPTCHA_USE_SSL = True
 NOCAPTCHA = True
-
 
 ALLOWED_TAGS = [
     'b', 'i', 'strong', 'em', 's', 'u',
@@ -217,12 +220,6 @@ CHAPTER_ALLOWED_ATTRIBUTES = {
     'font': ['size', 'color'],
 }
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-    }
-}
-
 PUBLISH_SIZE_LIMIT = 1000
 STARS_MINIMUM_VOTES = 2
 
@@ -233,11 +230,11 @@ STORY_DOWNLOAD_FORMATS = reversed((
     # 'ponyFiction.downloads.txt.TXT_CP1251Download',
 ))
 
+CACHEOPS_FAKE = False
 CELERY_ALWAYS_EAGER = False
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json', 'msgpack', 'yaml']
-BROKER_URL = 'redis://localhost:6379/0'
-
+BROKER_URL = 'redis://127.0.0.1:6379/0'
 
 CACHEOPS_REDIS = {
     'host': 'localhost',
@@ -263,7 +260,6 @@ CACHEOPS = {
     'auth.*': {'ops': 'all', 'timeout': 3600},
     '*.*': {'ops': 'just_enable', 'timeout': 3600},
 }
-
 
 REGISTRATION_OPEN = True
 LOAD_TABUN_AVATARS = True
