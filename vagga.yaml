@@ -1,0 +1,150 @@
+containers:
+  redis:
+    setup:
+    - !Alpine v3.1
+    - !Install [redis]
+    - !EnsureDir /storage
+    volumes:
+      /storage: !BindRW /work/run/storage/redis
+  memcached:
+    setup:
+    - !Alpine v3.1
+    - !Install [memcached]
+  uwsgi-app:
+    setup:
+      - !Ubuntu trusty
+      - !UbuntuUniverse
+      - !Install
+        - ca-certificates
+        - python3
+        - uwsgi
+        - uwsgi-plugin-python3
+        - libxslt1.1            # lxml
+        - libmysqlclient18      # mysqlclient
+      - !BuildDeps
+        - libmysqlclient-dev    # mysqlclient
+        - libxml2-dev           # lxml
+        - libxslt1-dev          # lxml
+        - python-dev
+        - git
+      - !Py3Requirements /work/config/requirements.txt
+  sphinx:
+    setup:
+    - !Ubuntu trusty
+    - !UbuntuPPA builds/sphinxsearch-rel22
+    - !AptTrust keys: [16932B16]
+    - !Install [sphinxsearch]
+    - !EnsureDir /storage
+    - !EnsureDir /log
+    volumes:
+      /storage: !BindRW /work/run/storage/sphinx
+      /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
+      /log: !BindRW /work/run/log/sphinx
+  nginx:
+    setup:
+    - !Alpine v3.1
+    - !Install [nginx]
+    - !Text
+      /etc/passwd: "root:x:0:0:root:/root:/bin/false\n"
+      /etc/group: "root:x:0:\n"
+    - !EnsureDir /log
+    volumes:
+      /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
+      /log: !BindRW /work/run/log/nginx
+  mysql:
+    setup:
+    - !Ubuntu trusty
+    - !AptTrust keys: [cbcb082a1bb943db]
+    - !UbuntuRepo
+      url: http://ftp.osuosl.org/pub/mariadb/repo/10.0/ubuntu
+      suite: trusty
+      components: [main]
+    - !EnsureDir /storage
+    - !EnsureDir /log
+    - !Install [mariadb-server]
+    - !Sh "chown mysql:mysql -R /storage"
+    - !Sh "chown mysql:mysql -R /log"
+    volumes:
+      /storage: !BindRW /work/run/storage/mysql
+      /log: !BindRW /work/run/log/mysql
+      /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
+
+commands:
+  db_init: !Command
+    description: Initialize fresh MySQL database. The old one will be REMOVED!
+    container: mysql
+    environ:
+      DATADIR: /storage
+      MYSQL_USER: root
+      MYSQL_PASSWORD: celestia
+    run: |
+      rm -r /storage/*
+      rm -r /log/*
+      chown mysql:mysql -R /storage
+      mysql_install_db --user=mysql --datadir=$DATADIR --pid-file=/tmp/mysql.pid --log-bin=mariadb-bin --log-bin-index=mariadb-bin.index
+      mysqld_safe --defaults-extra-file=/work/config/mysql.conf --skip-syslog --no-auto-restart
+      sleep 5
+      mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER password $MYSQL_PASSWORD
+      mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD create stories
+
+  manage.py: !Command
+    description: Django management tool
+    container: uwsgi-app
+    environ:
+      DJANGO_SETTINGS_MODULE: ponyFiction.settings.development
+    run:
+    - python3
+    - manage.py
+
+  run: !Supervise
+    description: Run full server stack using uWSGI app server
+    kill-unresponsive-after: 5
+    children:
+      redis: !Command
+        container: redis
+        run:
+        - redis-server
+        - /work/config/redis.conf
+      memcached: !Command
+        container: memcached
+        run:
+        - memcached
+        - -m512
+        - -uroot
+        - -p11211
+        - -l127.0.0.1
+      uwsgi: !Command
+        container: uwsgi-app
+        environ:
+          DJANGO_SETTINGS_MODULE: ponyFiction.settings.development
+        run:
+        - uwsgi
+        - /work/config/uwsgi-app.ini
+      celery: !Command
+        container: uwsgi-app
+        run:
+        - celery
+        - worker
+        - -A
+        - ponyFiction
+        - --loglevel=INFO
+      nginx: !Command
+        container: nginx
+        run:
+        - nginx
+        - -c
+        - /work/config/nginx.conf
+      sphinx: !Command
+        container: sphinx
+        run:
+        - searchd
+        - --console
+        - --config
+        - /work/config/sphinx.conf
+      mysql: !Command
+        container: mysql
+        run:
+        - mysqld_safe
+        - --defaults-extra-file=/work/config/mysql.conf
+        - --skip-syslog
+        - --console

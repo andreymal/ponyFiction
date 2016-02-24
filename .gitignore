@@ -14,3 +14,7 @@
 /local_settings.py
 /local_sphinx.conf
 /sphinxroot.txt
+
+# Vagga stuff
+/.vagga
+/run
