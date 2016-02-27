@@ -17,7 +17,7 @@ def chapter_view(request, story_id=False, chapter_order=False):
     story = get_story(request, pk=story_id)
     if chapter_order:
         chapter = get_object_or_404(story.chapter_set, order=chapter_order)
-        page_title = chapter.title[0:80]+' : '+chapter.story.title
+        page_title = chapter.title[:80] + ' : ' + chapter.story.title
         prev_chapter = chapter.get_prev_chapter()
         next_chapter = chapter.get_next_chapter()
         if request.user.is_authenticated():
@@ -32,7 +32,7 @@ def chapter_view(request, story_id=False, chapter_order=False):
         }
     else:
         chapters = story.chapter_set.order_by('order').cache()
-        page_title = story.title+u' – все главы'
+        page_title = story.title + ' – все главы'
         if request.user.is_authenticated():
             signals.story_viewed.send(sender=Author, instance=request.user, story=story, chapter=None)
         data = {
@@ -48,7 +48,7 @@ class ChapterAdd(CreateView):
     model = Chapter
     form_class = ChapterForm
     template_name = 'chapter_work.html'
-    initial = {'button_submit': u'Добавить'}
+    initial = {'button_submit': 'Добавить'}
     story = None
 
     @method_decorator(login_required)
@@ -69,7 +69,7 @@ class ChapterAdd(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(ChapterAdd, self).get_context_data(**kwargs)
-        extra_context = {'page_title': u'Добавить новую главу', 'story': self.story}
+        extra_context = {'page_title': 'Добавить новую главу', 'story': self.story}
         context.update(extra_context)
         return context
 
@@ -78,7 +78,7 @@ class ChapterEdit(UpdateView):
     model = Chapter
     form_class = ChapterForm
     template_name = 'chapter_work.html'
-    initial = {'button_submit': u'Сохранить изменения'}
+    initial = {'button_submit': 'Сохранить изменения'}
     chapter = None
 
     @method_decorator(login_required)
@@ -99,7 +99,7 @@ class ChapterEdit(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(ChapterEdit, self).get_context_data(**kwargs)
-        extra_context = {'page_title': u'Редактирование «%s»' % self.chapter.title, 'chapter': self.chapter}
+        extra_context = {'page_title': 'Редактирование «%s»' % self.chapter.title, 'chapter': self.chapter}
         context.update(extra_context)
         return context
 
@@ -135,6 +135,6 @@ class ChapterDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super(ChapterDelete, self).get_context_data(**kwargs)
-        extra_context = {'page_title': u'Подтверждение удаления главы', 'story': self.story, 'chapter': self.chapter}
+        extra_context = {'page_title': 'Подтверждение удаления главы', 'story': self.story, 'chapter': self.chapter}
         context.update(extra_context)
         return context

@@ -144,7 +144,7 @@ class StoryBL(BaseBL):
             sphinx_filters['size__gte'] = int(filters['min_words'])
 
         if filters.get('max_words') is not None:
-            sphinx_filters['size_lte'] = int(filters['max_words'])
+            sphinx_filters['size__lte'] = int(filters['max_words'])
 
         with sphinx:
             raw_result = sphinx.search(

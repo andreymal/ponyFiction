@@ -175,7 +175,7 @@
                       <legend>Главы</legend>
                       <div class="control-group">
                         <div class="controls events">
-                            <ul id="sortable_chapters" class="chapters-control">
+                            <ul id="sortable_chapters" class="chapters-control" data-story="{{ story.id }}">
                                 {% for chapter in chapters %}
                                       <li id="chapter_{{ chapter.id }}" class="btn btn-large">
                                         {{ chapter.title }}
