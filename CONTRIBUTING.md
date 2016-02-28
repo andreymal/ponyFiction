@@ -9,18 +9,26 @@ _Пример дан для **Ubuntu 14.04 LTS**_
 
 1. Установка vagga; подробнее — см. на [странице документации Vagga](http://vagga.readthedocs.org/en/latest/installation.html#ubuntu)
 2. Клонирование репозитория:
+
     `git clone https://github.com/RuFimFiction/ponyFiction.git`
+
     `cd ponyFiction`
 
 3. Создание необходимых каталогов для работы
+
     `mkdir -p run/storage/{redis,sphinx,mysql}`
+
     `mkdir -p run/log/{nginx,sphinx,mysql}`
 
 4. Заполнение базы данных
     * Инициализация чистой базы данных: `vagga db_init`
-    * Накатывание миграций: `vagga manage.py migrate`
+    * Накатывание миграций: `vagga manage.py migrate` (для этого и последующих шагов нужны запущенные mysql и redis: `vagga run --only mysql redis` в отдельном терминале)
     * Создание суперпользователя: `vagga manage.py createsuperuser`
     * Загрузка фикстур: `vagga manage.py loaddata ponyFiction/fixtures/*`
+
+5. Подготовка статических файлов админки
+
+    `vagga manage.py collectstatic --noinput`
 
 После успешного заполнения можно запустить весь стек со всеми контейнерами — `vagga run` 
 
