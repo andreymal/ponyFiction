@@ -34,7 +34,7 @@ urlpatterns = patterns('ponyFiction.ajax.views',
     url(r'story/(?P<story_id>\d+)/comment/(?P<pk>\d+)/delete/$', comment.AjaxCommentDelete.as_view()),
 
     # AJAX-сортировка глав
-    url(r'^story/(?P<story_id>\d+)/edit/ajax$', chapter.chapter_sort),
+    url(r'story/(?P<story_id>\d+)/sort/$', chapter.chapter_sort),
     # Удаление главы
     url(r'chapter/(?P<pk>\d+)/delete/$', chapter.AjaxChapterDelete.as_view()),
 )

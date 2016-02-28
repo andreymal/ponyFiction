@@ -230,16 +230,24 @@ class SphinxPool(object):
         return getattr(self.local.conn, attr, *args, **kwargs)
 
     def __enter__(self):
-        if not hasattr(self.local, 'conn') or self.local.conn is None:
+        if not hasattr(self.local, 'level') or self.local.level == 0:
             if self.conn_queue.empty() and self.count < self.max_conns:
                 self.conn_queue.put(SphinxConnection(self.conn))
             self.local.conn = self.conn_queue.get()
+            self.local.level = 1
+        else:
+            self.local.level += 1
+        return self
 
     def __exit__(self, exc_type=None, exc=None, tb=None):
+        assert self.local.level > 0
         assert self.local.conn is not None
-        if exc:
-            self.local.conn.rollback()
-        else:
-            self.local.conn.commit()
-        self.conn_queue.put(self.local.conn)
-        self.local.conn = None
+
+        self.local.level -= 1
+        if self.local.level == 0:
+            if exc:
+                self.local.conn.rollback()
+            else:
+                self.local.conn.commit()
+            self.conn_queue.put(self.local.conn)
+            self.local.conn = None

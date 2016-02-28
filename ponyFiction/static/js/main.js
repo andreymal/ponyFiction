@@ -330,17 +330,16 @@ var ajax = {
         remove : function(event) {
             event.stopImmediatePropagation();
             event.preventDefault();
-            if (!(pages.story_view.regex.test(window.location.pathname) || pages.story_edit.regex.test(window.location.pathname))) {
-                var url = '/ajax' + $(this).attr('href');
-                $.post(url, function(data) {
-                    $('#story_' + data).slideUp('slow').remove();
-                }).success(function() {
-                    $('.modal').modal('hide').remove();
-                });
-            } else {
+            var url = '/ajax' + $(this).attr('href');
+
+            $.post(url, function(data) {
+                $('#story_' + data).slideUp('slow').remove();
+            }).success(function() {
                 $('.modal').modal('hide').remove();
-                window.location = '/';
-            }
+                if (pages.story_view.regex.test(window.location.pathname) || pages.story_edit.regex.test(window.location.pathname)) {
+                    window.location = '/';
+                }
+            });
         },
     },
     /**
@@ -519,7 +518,7 @@ var listeners = {
                     $.ajax({
                         data : $('#sortable_chapters').sortable('serialize'),
                         type : 'POST',
-                        url : 'ajax'
+                        url : '/ajax/story/' + $('#sortable_chapters').data('story') + '/sort/'
                     });
                 }
             });
