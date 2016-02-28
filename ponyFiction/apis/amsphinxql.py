@@ -233,6 +233,7 @@ class SphinxPool(object):
         if not hasattr(self.local, 'level') or self.local.level == 0:
             if self.conn_queue.empty() and self.count < self.max_conns:
                 self.conn_queue.put(SphinxConnection(self.conn))
+                self.count += 1
             self.local.conn = self.conn_queue.get()
             self.local.level = 1
         else:
