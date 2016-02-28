@@ -124,12 +124,9 @@ commands:
         container: uwsgi-app
         environ:
           DJANGO_SETTINGS_MODULE: ponyFiction.settings.development
-        run:
-        - celery
-        - worker
-        - -A
-        - ponyFiction
-        - --loglevel=INFO
+        run: |
+          sleep 5
+          celery worker -A ponyFiction --loglevel=INFO
       nginx: !Command
         container: nginx
         run:
