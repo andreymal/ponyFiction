@@ -18,8 +18,6 @@ from ponyFiction.api import dispatcher
 from jsonrpc.backend.django import JSONRPCAPI
 api = JSONRPCAPI(dispatcher=dispatcher)
 
-admin.autodiscover()
-
 # Главная страница
 urlpatterns = patterns('', url(r'^$', index, name='index'))
 # Адреса админки
