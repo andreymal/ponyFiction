@@ -25,7 +25,6 @@ PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.getcwd()
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
