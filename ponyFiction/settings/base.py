@@ -139,7 +139,7 @@ COMPRESS_HTML = True
 
 SPHINX_DISABLED = False
 SPHINX_CONFIG = {
-    'connection_params': {'host': '127.0.0.1', 'port': '1919', 'charset': 'utf8'},
+    'connection_params': {'host': '127.0.0.1', 'port': 1919, 'charset': 'utf8'},
     'excerpts_opts': {'chunk_separator': '…', 'limit': 2048, 'around': 10, 'html_strip_mode': 'strip'},
 
     'weights_stories': {'title': 100, 'summary': 50, 'notes': 25, 'username': 150},
