@@ -6,9 +6,7 @@ from django.db import models, migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('ponyFiction', '0006_story_words'),
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
