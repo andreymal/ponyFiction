@@ -37,3 +37,8 @@ CREATE TABLE ponyFiction_staticpage (
   updated DATETIME               NOT NULL
 );
 CREATE INDEX ponyFiction_staticpage_b068931c ON ponyFiction_staticpage (name);
+
+--
+-- Add column for category's label color
+--
+ALTER TABLE ponyFiction_category ADD COLUMN color VARCHAR(7) NOT NULL;
