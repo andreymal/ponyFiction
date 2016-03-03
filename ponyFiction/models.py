@@ -807,16 +807,3 @@ class StaticPage(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class HtmlBlock(models.Model):
-    name = models.CharField(max_length=128, db_index=True, verbose_name="Название")
-    content = models.TextField(verbose_name="Содержимое")
-    updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
-
-    class Meta:
-        verbose_name = "html-блок"
-        verbose_name_plural = "html-блоки"
-
-    def __str__(self):
-        return self.name
