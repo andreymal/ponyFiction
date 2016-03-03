@@ -25,3 +25,15 @@ SET ponyFiction_story.words = IFNULL(
 );
 
 DROP TEMPORARY TABLE tmp_story_words;
+
+--
+-- Create table for static pages
+--
+CREATE TABLE ponyFiction_staticpage (
+  id      INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  name    VARCHAR(128)           NOT NULL,
+  title   VARCHAR(255)           NOT NULL,
+  content LONGTEXT               NOT NULL,
+  updated DATETIME               NOT NULL
+);
+CREATE INDEX ponyFiction_staticpage_b068931c ON ponyFiction_staticpage (name);
