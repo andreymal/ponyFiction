@@ -22,7 +22,6 @@ _Пример дан для **Ubuntu 14.04 LTS**_
 
 4. Заполнение базы данных
     * Инициализация чистой базы данных: `vagga db_init`
-    * Накатывание миграций: `vagga manage.py migrate` (для этого и последующих шагов нужны запущенные mysql и redis: `vagga run --only mysql redis` в отдельном терминале)
     * Создание суперпользователя: `vagga manage.py createsuperuser`
     * Загрузка фикстур: `vagga manage.py loaddata ponyFiction/fixtures/*`
 
