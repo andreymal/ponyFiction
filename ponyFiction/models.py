@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import json
-from statistics import mean, pstdev
 
 from django.db import models
 from django.conf import settings
@@ -19,7 +18,7 @@ from ponyFiction.filters import filter_html, filtered_html_property
 from ponyFiction.filters.base import html_doc_to_string
 from ponyFiction.filters.html import footnotes_to_html
 from ponyFiction.bl.utils import Resource
-from ponyFiction.fields import SeparatedValuesField, RatingField, RatingAverageField
+from ponyFiction.fields import SeparatedValuesField
 
 # disable username validation to allow editing of users with russian symbols in names
 username_field = {f.name: f for f in AbstractUser._meta.fields}['username']  # pylint: disable=W0212
@@ -380,13 +379,10 @@ class Story(JSONModel):
     summary = models.TextField(max_length=4096, verbose_name="Общее описание")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     words = models.PositiveIntegerField(default=0, editable=settings.DEBUG, verbose_name="Количество слов")
-    # vote = models.ManyToManyField('Vote', verbose_name="Голоса за рассказ")
-    vote_total = models.PositiveIntegerField(default=0, editable=settings.DEBUG, verbose_name="Число голосов")
-    # vote_up_count = models.PositiveIntegerField(default=0, editable=settings.DEBUG)
-    # vote_down_count = models.PositiveIntegerField(default=0, editable=settings.DEBUG)
-    # vote_rating = models.FloatField(default=0, editable=settings.DEBUG)
-    vote_average = RatingAverageField(default=3, editable=settings.DEBUG, verbose_name="Средний рейтинг")
-    vote_stddev = models.FloatField(default=0, editable=settings.DEBUG, verbose_name="Среднеквадратичное отклонение")
+    vote = models.ManyToManyField('Vote', verbose_name="Голоса за рассказ")
+    vote_up_count = models.PositiveIntegerField(default = 0, editable = settings.DEBUG)
+    vote_down_count = models.PositiveIntegerField(default = 0, editable = settings.DEBUG)
+    vote_rating = models.FloatField(default = 0, editable = settings.DEBUG)
 
     objects = StoryManager()
 
@@ -397,7 +393,7 @@ class Story(JSONModel):
         verbose_name_plural = "рассказы"
         index_together = [
             ['approved', 'draft', 'date'],
-            ['approved', 'draft', 'vote_average', 'vote_stddev'],
+            ['approved', 'draft', 'vote_rating'],
         ]
 
     class Serialize:
@@ -414,42 +410,48 @@ class Story(JSONModel):
         }
 
     def __str__(self):
-        return "[%.2f ± %.2f] %s" % (self.vote_average, self.vote_stddev, self.title)
+        return u"[+%s/-%s] %s" % (self.vote_up_count, self.vote_down_count, self.title)
 
-    def update_rating(self, rating_only=False):
-        votes = self.vote_set.all().values_list('vote_value', flat=True)
-        m = mean(votes)
-        self.vote_average = m
-        self.vote_stddev = pstdev(votes, m)
-        self.vote_total = len(votes)
-        self.save(update_fields=['vote_average', 'vote_stddev', 'vote_total'])
+    def get_vote_up_count(self):
+        return self.vote.filter(plus=True).count()
 
-    def can_show_stars(self):
-        return self.vote_total >= settings.STARS_MINIMUM_VOTES
+    def get_vote_down_count(self):
+        return self.vote.filter(minus=True).count()
 
-    def stars(self):
-        if not self.can_show_stars():
-            return [6, 6, 6, 6, 6]
+    @property
+    def vote_count(self):
+        return self.vote_up_count + self.vote_down_count
 
-        stars = []
-        avg = self.vote_average
-        devmax = avg + self.vote_stddev
+    def get_vote_rating(self):
+        return self.vote_up_count - self.vote_down_count
 
-        for i in range(1, 6):
-            if avg >= i - 0.25:
-                # полная звезда
-                stars.append(5)
-            elif avg >= i - 0.75:
-                # половина звезды
-                stars.append(4 if devmax >= i - 0.25 else 3)
-            elif devmax >= i - 0.25:
-                # пустая звезда (с полным отклонением)
-                stars.append(2)
-            else:
-                # пустая звезда (с неполным отклонением)
-                stars.append(1 if devmax >= i - 0.75 else 0)
+    def get_vote_rank(self, invalidate = False):
+        key = 'vote_rank_{}'.format(self.pk)
+        value = cache.get(key)
+        if value is None or invalidate:
+            stories = Story.objects.published
+            total_count = stories.count()
+            rank = stories.extra(where = ['vote_up_count+vote_down_count <= %s'], params = [self.vote_count]).count()
+            value = float(rank)/max(total_count, 1)
+            cache.set(key, value, 24*3600)
+        return value
 
-        return stars
+    def update_rating(self, rating_only = False):
+        if not rating_only:
+            self.vote_up_count = self.get_vote_up_count()
+            self.vote_down_count = self.get_vote_down_count()
+        self.vote_rating = self.get_vote_rating()
+        self.get_vote_rank(invalidate = True)
+        self.save(update_fields = ['vote_up_count', 'vote_down_count', 'vote_rating'])
+
+    def iter_horseshoe_images(self):
+        n = int(round(self.get_vote_rank() * 10))
+        k = int(round(float(n*self.vote_up_count)/max(self.vote_count, 1)))
+        for i in range(n):
+            img = 'i/horseshoe-' + 'lr'[i%2]
+            if i+1 > k: img += 'g'
+            img += '.png'
+            yield img
 
     @property
     def url(self):
@@ -656,13 +658,11 @@ class Vote(models.Model):
     """ Модель голосований """
 
     author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE, verbose_name="Автор голоса")
-    story = models.ForeignKey(Story, null=True, on_delete=models.CASCADE, verbose_name="Оцениваемый рассказ")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата голосования")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     ip = models.GenericIPAddressField(default='0.0.0.0', verbose_name="IP автора")
-    # plus = models.NullBooleanField(null=True, verbose_name="Плюс")
-    # minus = models.NullBooleanField(null=True, verbose_name="Минус")
-    vote_value = RatingField(default=3, editable=settings.DEBUG, verbose_name="Значение")
+    plus = models.NullBooleanField(null=True, verbose_name="Плюс")
+    minus = models.NullBooleanField(null=True, verbose_name="Минус")
 
     class Meta:
         verbose_name = "голос"
@@ -723,17 +723,15 @@ class Activity(models.Model):
     story = models.ForeignKey(Story, related_name="story_activity_set", null=True, verbose_name="Рассказ")
     last_views = models.IntegerField(default=0, verbose_name="Последнее количество просмотров")
     last_comments = models.IntegerField(default=0, verbose_name="Последнее количество комментариев")
-    # last_vote_up = models.IntegerField(default=0, verbose_name="Последнее количество голосов 'За'")
-    # last_vote_down = models.IntegerField(default=0, verbose_name="Последнее количество голосов 'Против'")
-    last_vote_average = RatingAverageField(default=3, verbose_name='Последний средний рейтинг')
-    last_vote_stddev = models.FloatField(default=0, verbose_name='Последнее среднеквадратичное отклонение')
+    last_vote_up = models.IntegerField(default=0, verbose_name="Последнее количество голосов 'За'")
+    last_vote_down = models.IntegerField(default=0, verbose_name="Последнее количество голосов 'Против'")
 
     class Meta:
         verbose_name = "активность"
         verbose_name_plural = "активность"
 
     def __str__(self):
-        return "%s: %s [v:%s c:%s %.2f±%.2f]" % (self.author.username, self.story.title, self.last_views, self.last_comments, self.last_vote_average, self.last_vote_stddev)
+        return "%s: %s [v:%s c:%s (+):%s (-):%s]" % (self.author.username, self.story.title, self.last_views, self.last_comments, self.last_vote_up, self.last_vote_down)
 
 
 class StoryEditLogItem(models.Model):

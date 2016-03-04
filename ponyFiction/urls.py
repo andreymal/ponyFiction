@@ -152,7 +152,8 @@ urlpatterns += patterns('ponyFiction.views.story',
     # Добавление в закладки
     url(r'^story/(?P<pk>\d+)/bookmark$', 'story_bookmark', name='story_bookmark'),
     # Голосование за рассказ
-    url(r'^story/(?P<pk>\d+)/vote/(?P<value>\d+)/$', 'story_vote', name='story_vote'),
+    url(r'^story/(?P<pk>\d+)/vote/plus/$', 'story_vote', {'direction': True}, name='story_vote_plus'),
+    url(r'^story/(?P<pk>\d+)/vote/minus/$', 'story_vote', {'direction': False}, name='story_vote_minus'),
 
     url(r'^story/(?P<pk>\d+)/editlog/$', 'story_edit_log', name='story_edit_log'),
     # Загрузка рассказа

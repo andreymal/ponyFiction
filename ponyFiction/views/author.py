@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied
 from cacheops import invalidate_obj
 
 from ponyFiction.forms.author import AuthorEditEmailForm, AuthorEditPasswordForm, AuthorEditProfileForm, AuthorEditPrefsForm
-from ponyFiction.models import Author, Comment, Story, StoryView
+from ponyFiction.models import Author, Comment, Story, StoryView, Vote
 
 
 @csrf_protect
@@ -34,6 +34,9 @@ def author_info(request, user_id, comments_page):
 
     comments_count = comments_list.count()
     series = author.series_set.all().cache()
+    votes = [Vote.objects.filter(plus=True).filter(story__authors__id=author.id).cache().count(),
+             Vote.objects.filter(minus=True).filter(story__authors__id=author.id).cache().count()]
+
     comments_paged = Paginator(comments_list, settings.COMMENTS_COUNT['author_page'], orphans=settings.COMMENTS_ORPHANS)
     num_pages = comments_paged.num_pages
     page_current = int(comments_page) if (0 < int(comments_page) <= num_pages) else 1
@@ -46,7 +49,8 @@ def author_info(request, user_id, comments_page):
         'comments': comments,
         'page_current': page_current,
         'num_pages': num_pages,
-        'comments_count': comments_count
+        'comments_count': comments_count,
+        'votes': votes
     })
 
     return render(request, template, data)

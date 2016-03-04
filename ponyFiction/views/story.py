@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import PermissionDenied
 from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
 from django.http import Http404
@@ -12,7 +12,7 @@ from django.views.decorators.http import require_POST
 from ponyFiction import signals
 from ponyFiction.forms.comment import CommentForm
 from ponyFiction.forms.story import StoryForm
-from ponyFiction.models import Story, Vote, Author
+from ponyFiction.models import Story, Author
 from cacheops import invalidate_obj
 from ponyFiction.utils.misc import get_object_or_none
 
@@ -42,7 +42,7 @@ def story_view(request, pk, comments_page):
         signals.story_visited.send(sender=Author, instance=request.user, story=story, comments_count=comments_list.count())
         if story.chapter_set.count() == 1:
             signals.story_viewed.send(sender=Author, instance=request.user, story=story, chapter=story.chapter_set.all()[0])
-        vote = get_object_or_none(Vote.objects, story=story, author=request.user)
+        vote = get_object_or_none(story.vote, author=request.user)
     else:
         vote = None
 
@@ -117,27 +117,21 @@ def story_bookmark(request, pk):
 
 @login_required
 @csrf_protect
-def _story_vote(request, pk, value):
+@require_POST
+def _story_vote(request, pk, direction):
     story = get_object_or_404(Story.objects.accessible(user=request.user), pk=pk)
     if story.is_author(request.user):
-        raise ValidationError('Нельзя голосовать за свой рассказ')
-
-    try:
-        vote = Vote.objects.get(story=story, author=request.user)
-    except Vote.DoesNotExist:
-        vote = Vote(story=story, author=request.user)
-
-    vote.vote_value = value
+        return story
+    vote = story.vote.get_or_create(author=request.user)[0]
+    vote.plus = direction
+    vote.minus = not direction
     vote.ip = request.META['REMOTE_ADDR']
-    vote.full_clean()
     vote.save()
+    return story
 
 
-def story_vote(request, pk, value):
-    try:
-        _story_vote(request, pk, value)
-    except ValidationError:
-        pass  # TODO: отрефакторить
+def story_vote(request, pk, direction):
+    _story_vote(request, pk, direction)
     return redirect('story_view', pk)
 
 

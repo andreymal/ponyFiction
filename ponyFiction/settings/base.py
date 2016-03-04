@@ -76,7 +76,6 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.humanize',
     'django.contrib.staticfiles',
     'ponyFiction',
     'django.contrib.admin',
@@ -220,7 +219,6 @@ CHAPTER_ALLOWED_ATTRIBUTES = {
 }
 
 PUBLISH_SIZE_LIMIT = 1000
-STARS_MINIMUM_VOTES = 2
 
 STORY_DOWNLOAD_FORMATS = reversed((
     'ponyFiction.downloads.fb2.FB2Download',
