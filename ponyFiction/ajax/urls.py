@@ -24,7 +24,7 @@ urlpatterns = patterns('ponyFiction.ajax.views',
     # Добавление в избранное главы (workaround, пока добавляется весь рассказ)
     url(r'story/(?P<story_id>\d+)/chapter/\d+/favorite', story.story_favorite_ajax),
     # Голосование за рассказ
-    url(r'story/(?P<story_id>\d+)/vote/(?P<value>\d+)/$', story.story_vote_ajax),
+    url(r'story/(?P<story_id>\d+)/vote/(?P<direction>\w+)/$', story.story_vote_ajax),
 
     # Добавление комментария
     url(r'story/(?P<story_id>\d+)/comment/add/$', comment.AjaxCommentAdd.as_view()),

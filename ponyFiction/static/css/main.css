@@ -261,65 +261,6 @@ img.avatar-small, .character-list img {
 }
 
 /* Vote-buttons */
-.vote-area {
-	display: block;
-	margin: 10px 0px;
-}
-
-.starblock {
-	display: inline-block;
-	width: 120px;
-	height: 24px;
-	vertical-align: middle;
-	line-height: 24px;
-	overflow: hidden;
-}
-
-.vote-area .starblock {
-	vertical-align: baseline;
-}
-
-.starvote {
-	background: transparent url('../i/votes.png') no-repeat;
-	width: 24px;
-	height: 24px;
-	display: inline-block;
-	background-position: 0px 0px;
-	background-size: 100%;
-}
-
-.starvote.star-button:hover {
-	background-position: 0px -48px;
-}
-
-.starvote.star-0 {
-	background-position: 0px 0px;
-}
-
-.starvote.star-1 {
-	background-position: 0px -24px;
-}
-
-.starvote.star-2 {
-	background-position: 0px -48px;
-}
-
-.starvote.star-3 {
-	background-position: 0px -72px;
-}
-
-.starvote.star-4 {
-	background-position: 0px -96px;
-}
-
-.starvote.star-5 {
-	background-position: 0px -120px;
-}
-
-.starvote.star-6 {
-	background-position: 0px -144px;
-}
-
 .upvotes {
 	color: #66CC66;
 }

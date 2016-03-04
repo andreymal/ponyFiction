@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+from json import dumps
 
 from django.conf import settings
 from cacheops import invalidate_obj
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.datetime_safe import datetime
@@ -11,8 +12,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
 
 from ponyFiction.models import Story, Favorites, Bookmark, StoryEditLogItem
-from ponyFiction.ajax.decorators import ajax_required, ajax_login_required
-from ponyFiction.ajax.shortcuts import ajax_response
+from ponyFiction.ajax.decorators import ajax_required
 from ponyFiction.views.story import _story_vote
 
 
@@ -112,20 +112,14 @@ def story_favorite_ajax(request, story_id):
     return HttpResponse(story_id)
 
 
-@ajax_login_required
+@ajax_required
+@login_required
+@csrf_protect
 @require_POST
-def story_vote_ajax(request, story_id, value):
-    """ Оценивание рассказа """
-    try:
-        _story_vote(request, story_id, value)
-    except ValidationError as exc:
-        if hasattr(exc, 'error_dict'):
-            errors = '; '.join(dict(exc).values())
-        else:
-            errors = '; '.join(list(exc))
-        return ajax_response(request, {'error': errors, 'success': False}, status=403)
-    story = Story.objects.get(pk=story_id)
-    return ajax_response(request, {'success': True, 'story_id': story_id, 'value': value}, render_template='includes/story_header_info.html', template_context={'story': story})
+def story_vote_ajax(request, story_id, direction):
+    direction = True if (direction == 'plus') else False
+    story = _story_vote(request, story_id, direction)
+    return HttpResponse(dumps([0, 0]))
 
 
 @login_required
