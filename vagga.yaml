@@ -153,3 +153,4 @@ commands:
         - --defaults-extra-file=/work/config/mysql.conf
         - --skip-syslog
         - --console
+        - --debug-gdb
