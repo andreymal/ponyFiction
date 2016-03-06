@@ -4,6 +4,7 @@ containers:
     - !Alpine v3.1
     - !Install [redis]
     - !EnsureDir /storage
+    - !EnsureDir /work/run/storage/redis
     volumes:
       /storage: !BindRW /work/run/storage/redis
   memcached:
@@ -35,7 +36,9 @@ containers:
     - !AptTrust keys: [16932B16]
     - !Install [sphinxsearch]
     - !EnsureDir /storage
+    - !EnsureDir /work/run/storage/sphinx
     - !EnsureDir /log
+    - !EnsureDir /work/run/log/sphinx
     volumes:
       /storage: !BindRW /work/run/storage/sphinx
       /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
@@ -48,6 +51,7 @@ containers:
       /etc/passwd: "root:x:0:0:root:/root:/bin/false\n"
       /etc/group: "root:x:0:\n"
     - !EnsureDir /log
+    - !EnsureDir /work/run/log/nginx
     volumes:
       /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
       /log: !BindRW /work/run/log/nginx
@@ -60,7 +64,9 @@ containers:
       suite: trusty
       components: [main]
     - !EnsureDir /storage
+    - !EnsureDir /work/run/storage/mysql
     - !EnsureDir /log
+    - !EnsureDir /work/run/log/mysql
     - !Install [mariadb-server]
     - !Sh "chown mysql:mysql -R /storage"
     - !Sh "chown mysql:mysql -R /log"
