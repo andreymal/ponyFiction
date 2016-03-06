@@ -14,18 +14,12 @@ _Пример дан для **Ubuntu 14.04 LTS**_
 
     `cd ponyFiction`
 
-3. Создание необходимых каталогов для работы
-
-    `mkdir -p run/storage/{redis,sphinx,mysql}`
-
-    `mkdir -p run/log/{nginx,sphinx,mysql}`
-
-4. Заполнение базы данных
+3. Заполнение базы данных
     * Инициализация чистой базы данных: `vagga db_init`
     * Создание суперпользователя: `vagga manage.py createsuperuser`
     * Загрузка фикстур: `vagga manage.py loaddata ponyFiction/fixtures/*`
 
-5. Подготовка статических файлов админки
+4. Подготовка статических файлов админки
 
     `vagga manage.py collectstatic --noinput`
 
