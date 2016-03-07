@@ -53,7 +53,12 @@ containers:
     - !EnsureDir /log
     - !EnsureDir /work/run/log/nginx
     volumes:
-      /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
+      /tmp: !Tmpfs
+        size: 256Mi
+        mode: 0o1777
+      /var/log/nginx: !Tmpfs
+        size: 1Mi
+        mode: 0o1777
       /log: !BindRW /work/run/log/nginx
   mysql:
     setup:
