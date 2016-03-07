@@ -11,13 +11,12 @@ _Пример дан для **Ubuntu 14.04 LTS**_
 2. Клонирование репозитория:
 
     `git clone https://github.com/RuFimFiction/ponyFiction.git`
-
     `cd ponyFiction`
+    Все последующие команды вызываются из директории ponyFiction
 
 3. Заполнение базы данных
     * Скачивание дампа базы: `wget SOME_HOST/trunk.sql.gz`
     * Инициализация и загрузка дампа базы данных: `vagga db_init trunk.sql.gz`
-    *
 
 4. Запуск и донастройка:
 
