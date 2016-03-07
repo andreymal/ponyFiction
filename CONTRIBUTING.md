@@ -15,9 +15,9 @@ _Пример дан для **Ubuntu 14.04 LTS**_
     `cd ponyFiction`
 
 3. Заполнение базы данных
-    * Инициализация чистой базы данных: `vagga db_init`
+    * Скачивание дампа базы: `wget SOME_HOST/trunk.sql.gz`
+    * Инициализация и загрузка дампа базы данных: `vagga db_init trunk.sql.gz`
     * Создание суперпользователя: `vagga manage.py createsuperuser`
-    * Загрузка фикстур: `vagga manage.py loaddata ponyFiction/fixtures/*`
 
 4. Подготовка статических файлов админки
 

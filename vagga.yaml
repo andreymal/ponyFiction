@@ -77,13 +77,17 @@ containers:
 
 commands:
   db_init: !Command
-    description: Initialize fresh MySQL database. The old one will be REMOVED!
+    description: |
+      Initialize fresh MySQL database. The old one will be REMOVED! Also load dump if provided.
     container: mysql
     environ:
       DATADIR: /storage
       MYSQL_USER: root
       MYSQL_PASSWORD: celestia
-    run: |
+    run:
+    - sh
+    - -c
+    - |
       rm -r /storage/*
       rm -r /log/*
       chown mysql:mysql -R /storage
@@ -92,6 +96,17 @@ commands:
       sleep 5
       mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER password $MYSQL_PASSWORD
       mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD create stories
+      if [ "$#" = 1 ] ; then
+        echo "Loading data from $1"
+        zcat /work/$1 > /tmp/data.sql
+        mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories < /tmp/data.sql
+        rm /tmp/data.sql
+        for migration in $(ls /work/migrations | sort --version-sort) ; do
+          echo "Applying migration $migration"
+          mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories < /work/migrations/$migration
+        done
+      fi
+    - db_init
 
   manage.py: !Command
     description: Django management tool

@@ -12,3 +12,6 @@
 # Vagga stuff
 /.vagga
 /run
+
+# DB dumps
+*.sql.gz
