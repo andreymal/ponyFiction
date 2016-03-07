@@ -11,7 +11,9 @@ _Пример дан для **Ubuntu 14.04 LTS**_
 2. Клонирование репозитория:
 
     `git clone https://github.com/RuFimFiction/ponyFiction.git`
+
     `cd ponyFiction`
+
     Все последующие команды вызываются из директории ponyFiction
 
 3. Заполнение базы данных
