@@ -98,9 +98,7 @@ commands:
       mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD create stories
       if [ "$#" = 1 ] ; then
         echo "Loading data from $1"
-        zcat /work/$1 > /tmp/data.sql
-        mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories < /tmp/data.sql
-        rm /tmp/data.sql
+        zcat /work/$1 | mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories
         for migration in $(ls /work/migrations | sort --version-sort) ; do
           echo "Applying migration $migration"
           mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories < /work/migrations/$migration
