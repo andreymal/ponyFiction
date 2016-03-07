@@ -42,3 +42,8 @@ CREATE INDEX ponyFiction_staticpage_b068931c ON ponyFiction_staticpage (name);
 -- Add column for category's label color
 --
 ALTER TABLE ponyFiction_category ADD COLUMN color VARCHAR(7) NOT NULL;
+
+--
+-- Remove NOT NULL constraint causing manage.py createsuperuser to fail
+--
+ALTER TABLE ponyFiction_author MODIFY COLUMN last_login DATETIME NULL DEFAULT NULL;
