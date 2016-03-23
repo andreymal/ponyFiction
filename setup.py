@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from os.path import dirname, join
 from setuptools import setup, find_packages
 from ponyFiction import VERSION
 
 
-def read(*args):
-    return open(join(dirname(__file__), *args), encoding="utf-8").read()
-
-readme = read("README.md")
-requirements = read("config", "requirements.txt").splitlines(),
+with open('README.rst') as readme_file:
+    readme = readme_file.read()
+with open('HISTORY.rst') as history_file:
+    history = history_file.read()
+with open('config/requirements.txt') as requirements_file:
+    requirements = requirements_file.read().splitlines()
 
 setup(
     name="ponyFiction",
     version=VERSION,
     description="Fanfiction library for everypony.ru",
-    long_description=readme,
+    long_description=readme + '\n\n' + history,
     author="Andriy Kushnir (Orhideous)",
     author_email="me@orhideous.name",
     url="https://github.com/RuFimFiction/ponyFiction",
