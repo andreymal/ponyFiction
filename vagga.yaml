@@ -1,4 +1,13 @@
 containers:
+  build:
+    setup:
+      - !Ubuntu trusty
+      - !Install
+        - ca-certificates
+        - python3
+      - !Py3Install
+        - setuptools
+        - wheel
   redis:
     setup:
     - !Alpine v3.1
