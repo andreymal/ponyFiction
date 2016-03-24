@@ -5,6 +5,7 @@ containers:
       - !Install
         - ca-certificates
         - python3
+        - build-essential
       - !Py3Install
         - setuptools
         - wheel
@@ -52,7 +53,7 @@ containers:
     setup:
       - !Container uwsgi-base
       - !BuildDeps
-        - gcc
+        - build-essential
         - libmysqlclient-dev    # mysqlclient
         - libxml2-dev           # lxml
         - libxslt1-dev          # lxml
@@ -60,7 +61,9 @@ containers:
         - python3-setuptools
       # Install application into immutable container
       # so it can be shipped without additional «raw» code
-      - !Sh "python3 setup.py install"
+      - !Cmd
+        - make
+        - install
 
   uwsgi-pip:
     setup:
@@ -126,8 +129,7 @@ containers:
 
 commands:
   db_init: !Command
-    description: |
-      Initialize fresh MySQL database. The old one will be REMOVED! Also load dump if provided.
+    description: Initialize fresh MySQL database. The old one will be REMOVED! Also load dump if provided.
     container: mysql
     environ:
       DATADIR: /storage
@@ -216,3 +218,9 @@ commands:
         - --skip-syslog
         - --console
         - --debug-gdb
+
+  make: !Command
+    description: "GNU make tool (package, test, clean, etc.)"
+    container: build
+    run:
+    - make
