@@ -1,4 +1,15 @@
 containers:
+  build:
+    setup:
+      - !Ubuntu trusty
+      - !Install
+        - ca-certificates
+        - python3
+        - build-essential
+      - !Py3Install
+        - setuptools
+        - wheel
+
   redis:
     setup:
     - !Alpine v3.1
@@ -7,11 +18,14 @@ containers:
     - !EnsureDir /work/run/storage/redis
     volumes:
       /storage: !BindRW /work/run/storage/redis
+
   memcached:
     setup:
     - !Alpine v3.1
     - !Install [memcached]
-  uwsgi-app:
+
+  # Base application container
+  uwsgi-base:
     setup:
       - !Ubuntu trusty
       - !UbuntuUniverse
@@ -22,13 +36,46 @@ containers:
         - uwsgi-plugin-python3
         - libxslt1.1            # lxml
         - libmysqlclient18      # mysqlclient
+
+  uwsgi-app:
+   setup:
+    - !Container uwsgi-base
+    - !BuildDeps
+      - gcc
+      - libmysqlclient-dev    # mysqlclient
+      - libxml2-dev           # lxml
+      - libxslt1-dev          # lxml
+      - python3-dev
+    # Just deploy neccessary environment for application
+    - !Py3Requirements /work/config/requirements.txt
+
+  uwsgi-pkg:
+    setup:
+      - !Container uwsgi-base
+      - !BuildDeps
+        - build-essential
+        - libmysqlclient-dev    # mysqlclient
+        - libxml2-dev           # lxml
+        - libxslt1-dev          # lxml
+        - python3-dev
+        - python3-setuptools
+      # Install application into immutable container
+      # so it can be shipped without additional «raw» code
+      - !Cmd
+        - make
+        - install
+
+  uwsgi-pip:
+    setup:
+      - !Container uwsgi-base
       - !BuildDeps
         - libmysqlclient-dev    # mysqlclient
         - libxml2-dev           # lxml
         - libxslt1-dev          # lxml
-        - python-dev
-        - git
-      - !Py3Requirements /work/config/requirements.txt
+      # Install application directly from PyPI for
+      # production usage without dev. dependencies
+      - !Py3Install [ponyFiction]
+
   sphinx:
     setup:
     - !Ubuntu trusty
@@ -53,7 +100,12 @@ containers:
     - !EnsureDir /log
     - !EnsureDir /work/run/log/nginx
     volumes:
-      /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
+      /tmp: !Tmpfs
+        size: 256Mi
+        mode: 0o1777
+      /var/log/nginx: !Tmpfs
+        size: 1Mi
+        mode: 0o1777
       /log: !BindRW /work/run/log/nginx
   mysql:
     setup:
@@ -77,8 +129,7 @@ containers:
 
 commands:
   db_init: !Command
-    description: |
-      Initialize fresh MySQL database. The old one will be REMOVED! Also load dump if provided.
+    description: Initialize fresh MySQL database. The old one will be REMOVED! Also load dump if provided.
     container: mysql
     environ:
       DATADIR: /storage
@@ -167,3 +218,9 @@ commands:
         - --skip-syslog
         - --console
         - --debug-gdb
+
+  make: !Command
+    description: "GNU make tool (package, test, clean, etc.)"
+    container: build
+    run:
+    - make
