@@ -11,9 +11,9 @@ help:
 clean: clean-build clean-pyc
 
 clean-build:
-	rm -rf build/
-	rm -rf dist/
-	rm -rf '*.egg-info'
+	rm -rf build
+	rm -rf dist
+	rm -rf *.egg-info
 
 clean-pyc:
 	find ponyFiction -name '*.py[cod]' -type f -delete
@@ -26,7 +26,7 @@ release: clean
 dist: clean
 	python3 setup.py sdist
 	python3 setup.py bdist_wheel
-	ls -l dist
+	ls -hl dist
 
 install: clean
 	python3 setup.py install
