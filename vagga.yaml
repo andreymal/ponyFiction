@@ -32,11 +32,11 @@ containers:
         - libxslt1.1            # lxml
         - libmysqlclient18      # mysqlclient
       - !BuildDeps
+        - gcc
         - libmysqlclient-dev    # mysqlclient
         - libxml2-dev           # lxml
         - libxslt1-dev          # lxml
-        - python-dev
-        - git
+        - python3-dev
       - !Py3Requirements /work/config/requirements.txt
   sphinx:
     setup:
