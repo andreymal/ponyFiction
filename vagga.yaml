@@ -8,6 +8,7 @@ containers:
       - !Py3Install
         - setuptools
         - wheel
+
   redis:
     setup:
     - !Alpine v3.1
@@ -16,11 +17,14 @@ containers:
     - !EnsureDir /work/run/storage/redis
     volumes:
       /storage: !BindRW /work/run/storage/redis
+
   memcached:
     setup:
     - !Alpine v3.1
     - !Install [memcached]
-  uwsgi-app:
+
+  # Base application container
+  uwsgi-base:
     setup:
       - !Ubuntu trusty
       - !UbuntuUniverse
@@ -31,13 +35,44 @@ containers:
         - uwsgi-plugin-python3
         - libxslt1.1            # lxml
         - libmysqlclient18      # mysqlclient
+
+  uwsgi-app:
+   setup:
+    - !Container uwsgi-base
+    - !BuildDeps
+      - gcc
+      - libmysqlclient-dev    # mysqlclient
+      - libxml2-dev           # lxml
+      - libxslt1-dev          # lxml
+      - python3-dev
+    # Just deploy neccessary environment for application
+    - !Py3Requirements /work/config/requirements.txt
+
+  uwsgi-pkg:
+    setup:
+      - !Container uwsgi-base
       - !BuildDeps
         - gcc
         - libmysqlclient-dev    # mysqlclient
         - libxml2-dev           # lxml
         - libxslt1-dev          # lxml
         - python3-dev
-      - !Py3Requirements /work/config/requirements.txt
+        - python3-setuptools
+      # Install application into immutable container
+      # so it can be shipped without additional «raw» code
+      - !Sh "python3 setup.py install"
+
+  uwsgi-pip:
+    setup:
+      - !Container uwsgi-base
+      - !BuildDeps
+        - libmysqlclient-dev    # mysqlclient
+        - libxml2-dev           # lxml
+        - libxslt1-dev          # lxml
+      # Install application directly from PyPI for
+      # production usage without dev. dependencies
+      - !Py3Install [ponyFiction]
+
   sphinx:
     setup:
     - !Ubuntu trusty
