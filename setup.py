@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from pathlib import Path
 from setuptools import setup, find_packages
 from ponyFiction import VERSION
 
@@ -11,6 +12,23 @@ with open('HISTORY.rst') as history_file:
 with open('config/requirements.txt') as requirements_file:
     requirements = requirements_file.read().splitlines()
 
+package_data = {
+    'ponyFiction': [
+        filepath for inner_list in [
+            [Path(*p.parts[1:]).as_posix() for p in Path('ponyFiction/' + path).glob(pattern) if p.is_file()]
+            for path, pattern in [
+                ('templates', '**/*'),
+                ('static', '**/*'),
+                ('frontend', '**/*'),
+                ('filters', '**/*.xslt'),
+                # Temporary workaround
+                ('apis/captcha', '**/*'),
+            ]
+        ]
+        for filepath in inner_list
+    ]
+}
+
 setup(
     name="ponyFiction",
     version=VERSION,
@@ -20,6 +38,7 @@ setup(
     author_email="me@orhideous.name",
     url="https://github.com/RuFimFiction/ponyFiction",
     packages=find_packages(),
+    package_data=package_data,
     include_package_data=True,
     install_requires=requirements,
     license="GPLv3",
