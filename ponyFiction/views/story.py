@@ -212,7 +212,7 @@ def story_download(request, story_id, filename, extension):
 
     debug = settings.DEBUG and 'debug' in request.META['QUERY_STRING']
 
-    story = get_object_or_404(Story, pk=story_id)
+    story = get_story(request, story_id)
     fmt = get_format(extension)
     if fmt is None:
         raise Http404
