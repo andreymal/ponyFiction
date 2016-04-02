@@ -6,7 +6,7 @@ import json
 from django.db import models
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import Count, Prefetch
+from django.db.models import Sum, Count, Prefetch
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.contrib.auth.models import AbstractUser
@@ -443,6 +443,9 @@ class Story(JSONModel):
         self.vote_rating = self.get_vote_rating()
         self.get_vote_rank(invalidate = True)
         self.save(update_fields = ['vote_up_count', 'vote_down_count', 'vote_rating'])
+
+    def update_words_count(self):
+        self.words = self.chapter_set.aggregate(total=Sum('words'))['total']
 
     def iter_horseshoe_images(self):
         n = int(round(self.get_vote_rank() * 10))
