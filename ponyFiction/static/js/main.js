@@ -589,6 +589,9 @@ var pages = {
     chapter_view : {
         regex : new RegExp('^/story/[0-9]+/chapter/(?:[0-9]+|all)/$'),
         action : function() {
+            for ( var listener in listeners.story) {
+                listeners.story[listener]();
+            }
             stuff.panel();
             if ($('#wrapper').hasClass('nsfw')) {
                 $('#nsfwModal').modal();
