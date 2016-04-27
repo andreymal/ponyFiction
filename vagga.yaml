@@ -143,7 +143,7 @@ commands:
       rm -r /log/*
       chown mysql:mysql -R /storage
       mysql_install_db --user=mysql --datadir=$DATADIR --pid-file=/tmp/mysql.pid --log-bin=mariadb-bin --log-bin-index=mariadb-bin.index
-      mysqld_safe --defaults-extra-file=/work/config/mysql.conf --skip-syslog --no-auto-restart
+      mysqld_safe --defaults-extra-file=/work/config/local/mysql.conf --skip-syslog --no-auto-restart
       sleep 5
       mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER password $MYSQL_PASSWORD
       mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD create stories
@@ -174,7 +174,7 @@ commands:
         container: redis
         run:
         - redis-server
-        - /work/config/redis.conf
+        - /work/config/local/redis.conf
       memcached: !Command
         container: memcached
         run:
@@ -189,7 +189,7 @@ commands:
           DJANGO_SETTINGS_MODULE: ponyFiction.settings.development
         run:
         - uwsgi
-        - /work/config/uwsgi-app.ini
+        - /work/config/local/uwsgi-app.ini
       celery: !Command
         container: uwsgi-app
         environ:
@@ -202,19 +202,19 @@ commands:
         run:
         - nginx
         - -c
-        - /work/config/nginx.conf
+        - /work/config/local/nginx.conf
       sphinx: !Command
         container: sphinx
         run:
         - searchd
         - --console
         - --config
-        - /work/config/sphinx.conf
+        - /work/config/local/sphinx.conf
       mysql: !Command
         container: mysql
         run:
         - mysqld_safe
-        - --defaults-extra-file=/work/config/mysql.conf
+        - --defaults-extra-file=/work/config/local/mysql.conf
         - --skip-syslog
         - --console
         - --debug-gdb
