@@ -28,6 +28,12 @@ uwsgi:
   image: uwsgi-pkg
   config: /lithos/uwsgi.yaml
   instances: 1
+celery:
+  kind: Daemon
+  image: uwsgi-pkg
+  config: /lithos/celery.yaml
+  instances: 1
+
 db_init:
   kind: Command
   image: mysql
