@@ -150,10 +150,7 @@ commands:
       DATADIR: /storage
       MYSQL_USER: root
       MYSQL_PASSWORD: celestia
-    run:
-    - sh
-    - -c
-    - |
+    run: |
       rm -r /storage/*
       rm -r /log/*
       chown mysql:mysql -R /storage
