@@ -38,3 +38,8 @@ db_init:
   kind: Command
   image: mysql
   config: /lithos/db_init.yaml
+
+db_patch:
+  kind: Command
+  image: mysql
+  config: /lithos/db_patch.yaml
