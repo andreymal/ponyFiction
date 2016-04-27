@@ -13,3 +13,8 @@ sphinx:
   image: sphinx
   config: /lithos/sphinx.yaml
   instances: 1
+memcached:
+  kind: Daemon
+  image: memcached
+  config: /lithos/memcached.yaml
+  instances: 1

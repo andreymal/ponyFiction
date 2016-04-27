@@ -28,6 +28,11 @@ containers:
     setup:
     - !Alpine v3.1
     - !Install [memcached]
+    # deployment things
+    - !EnsureDir /config
+    - !Copy
+      source: /work/config/prod/daemons
+      path: /lithos
 
   # Base application container
   uwsgi-base:
