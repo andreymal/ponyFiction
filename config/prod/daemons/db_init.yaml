@@ -1,0 +1,37 @@
+kind: Command
+user_id: 1
+volumes:
+  /tmp: !Tmpfs
+    size: 128Mi
+    mode: 0o1777
+  /log: !Persistent
+    path: /log/mysql
+  /storage: !Persistent
+    path: /storage/mysql
+  /config: !Readonly /config
+environ:
+  DATADIR: /storage
+  MYSQL_USER: root
+  MYSQL_PASSWORD: celestia
+fileno-limit: 50ki
+memory-limit: 2Gi
+cpu-shares: 1024
+executable: /bin/sh
+arguments:
+- -c
+- |
+  echo "Cleanup old database"
+  rm -vrf /storage/*
+  echo "Create new database"
+  mysql_install_db --user=daemon --datadir=$DATADIR --pid-file=/tmp/mysql.pid --log-bin=mariadb-bin --log-bin-index=mariadb-bin.index
+  echo "Run MySQL in background"
+  mysqld_safe --defaults-extra-file=/config/mysql.conf --skip-syslog --no-auto-restart
+  sleep 10
+  echo "Set root password"
+  mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER password $MYSQL_PASSWORD
+  echo "Create new database"
+  mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD create stories
+  echo "Shutdown MySQL"
+  mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD shutdown
+  sleep 10
+- --

@@ -16,6 +16,11 @@ containers:
     - !Install [redis]
     - !EnsureDir /storage
     - !EnsureDir /work/run/storage/redis
+    # deployment things
+    - !EnsureDir /config
+    - !Copy
+      source: /work/config/prod/daemons
+      path: /lithos
     volumes:
       /storage: !BindRW /work/run/storage/redis
 
@@ -23,6 +28,11 @@ containers:
     setup:
     - !Alpine v3.1
     - !Install [memcached]
+    # deployment things
+    - !EnsureDir /config
+    - !Copy
+      source: /work/config/prod/daemons
+      path: /lithos
 
   # Base application container
   uwsgi-base:
@@ -36,6 +46,8 @@ containers:
         - uwsgi-plugin-python3
         - libxslt1.1            # lxml
         - libmysqlclient18      # mysqlclient
+      - !Sh |
+          chown root /var/spool/rsyslog
 
   uwsgi-app:
    setup:
@@ -53,28 +65,23 @@ containers:
     setup:
       - !Container uwsgi-base
       - !BuildDeps
-        - build-essential
         - libmysqlclient-dev    # mysqlclient
         - libxml2-dev           # lxml
         - libxslt1-dev          # lxml
-        - python3-dev
-        - python3-setuptools
-      # Install application into immutable container
-      # so it can be shipped without additional «raw» code
-      - !Cmd
-        - make
-        - install
-
-  uwsgi-pip:
-    setup:
-      - !Container uwsgi-base
-      - !BuildDeps
-        - libmysqlclient-dev    # mysqlclient
-        - libxml2-dev           # lxml
-        - libxslt1-dev          # lxml
-      # Install application directly from PyPI for
-      # production usage without dev. dependencies
+      # Install application directly from pre-built wheel
+      # for production usage without dev. dependencies
+      - !PipConfig
+        find-links:
+         - /work/dist/
+        dependencies: true
       - !Py3Install [ponyFiction]
+      # deployment things
+      - !EnsureDir /log
+      - !EnsureDir /storage
+      - !EnsureDir /config
+      - !Copy
+        source: /work/config/prod/daemons
+        path: /lithos
 
   sphinx:
     setup:
@@ -86,6 +93,11 @@ containers:
     - !EnsureDir /work/run/storage/sphinx
     - !EnsureDir /log
     - !EnsureDir /work/run/log/sphinx
+    # deployment things
+    - !EnsureDir /config
+    - !Copy
+      source: /work/config/prod/daemons
+      path: /lithos
     volumes:
       /storage: !BindRW /work/run/storage/sphinx
       /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
@@ -99,6 +111,11 @@ containers:
       /etc/group: "root:x:0:\n"
     - !EnsureDir /log
     - !EnsureDir /work/run/log/nginx
+    # deployment things
+    - !EnsureDir /config
+    - !Copy
+      source: /work/config/prod/daemons
+      path: /lithos
     volumes:
       /tmp: !Tmpfs
         size: 256Mi
@@ -122,6 +139,13 @@ containers:
     - !Install [mariadb-server]
     - !Sh "chown mysql:mysql -R /storage"
     - !Sh "chown mysql:mysql -R /log"
+    # deployment things
+    - !EnsureDir /config
+    - !Copy
+      source: /work/config/prod/daemons
+      path: /lithos
+    - !Sh |
+        chown root /var/spool/rsyslog
     volumes:
       /storage: !BindRW /work/run/storage/mysql
       /log: !BindRW /work/run/log/mysql
@@ -135,15 +159,12 @@ commands:
       DATADIR: /storage
       MYSQL_USER: root
       MYSQL_PASSWORD: celestia
-    run:
-    - sh
-    - -c
-    - |
+    run: |
       rm -r /storage/*
       rm -r /log/*
       chown mysql:mysql -R /storage
       mysql_install_db --user=mysql --datadir=$DATADIR --pid-file=/tmp/mysql.pid --log-bin=mariadb-bin --log-bin-index=mariadb-bin.index
-      mysqld_safe --defaults-extra-file=/work/config/mysql.conf --skip-syslog --no-auto-restart
+      mysqld_safe --defaults-extra-file=/work/config/local/mysql.conf --skip-syslog --no-auto-restart
       sleep 5
       mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER password $MYSQL_PASSWORD
       mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD create stories
@@ -155,7 +176,6 @@ commands:
           mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories < /work/migrations/$migration
         done
       fi
-    - db_init
 
   manage.py: !Command
     description: Django management tool
@@ -174,7 +194,7 @@ commands:
         container: redis
         run:
         - redis-server
-        - /work/config/redis.conf
+        - /work/config/local/redis.conf
       memcached: !Command
         container: memcached
         run:
@@ -188,8 +208,8 @@ commands:
         environ:
           DJANGO_SETTINGS_MODULE: ponyFiction.settings.development
         run:
-        - uwsgi
-        - /work/config/uwsgi-app.ini
+          - uwsgi
+          - /work/config/local/uwsgi.ini
       celery: !Command
         container: uwsgi-app
         environ:
@@ -202,25 +222,40 @@ commands:
         run:
         - nginx
         - -c
-        - /work/config/nginx.conf
+        - /work/config/local/nginx.conf
       sphinx: !Command
         container: sphinx
         run:
         - searchd
         - --console
         - --config
-        - /work/config/sphinx.conf
+        - /work/config/local/sphinx.conf
       mysql: !Command
         container: mysql
         run:
         - mysqld_safe
-        - --defaults-extra-file=/work/config/mysql.conf
+        - --defaults-extra-file=/work/config/local/mysql.conf
         - --skip-syslog
         - --console
         - --debug-gdb
 
-  make: !Command
-    description: "GNU make tool (package, test, clean, etc.)"
+  package: !Command
     container: build
-    run:
-    - make
+    description: "Create Python wheel package"
+    run: |
+      python3 setup.py bdist_wheel
+      echo
+      ls dist
+    epilog: |
+      ---
+      Package is built under dist/
+
+  clean: !Command
+    container: build
+    description: "Clean all packaging junk"
+    run: |
+      rm -rf build
+      rm -rf dist
+      rm -rf *.egg-info
+      find ponyFiction -name '*.py[cod]' -type f -delete
+      find ponyFiction -name '__pycache__' -type d -delete

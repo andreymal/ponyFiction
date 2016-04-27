@@ -1,0 +1,40 @@
+redis:
+  kind: Daemon
+  image: redis
+  config: /lithos/redis.yaml
+  instances: 1
+sphinx:
+  kind: Daemon
+  image: sphinx
+  config: /lithos/sphinx.yaml
+  instances: 1
+memcached:
+  kind: Daemon
+  image: memcached
+  config: /lithos/memcached.yaml
+  instances: 1
+mysql:
+  kind: Daemon
+  image: mysql
+  config: /lithos/mysql.yaml
+  instances: 1
+uwsgi:
+  kind: Daemon
+  image: uwsgi-pkg
+  config: /lithos/uwsgi.yaml
+  instances: 1
+celery:
+  kind: Daemon
+  image: uwsgi-pkg
+  config: /lithos/celery.yaml
+  instances: 1
+
+db_init:
+  kind: Command
+  image: mysql
+  config: /lithos/db_init.yaml
+
+db_patch:
+  kind: Command
+  image: mysql
+  config: /lithos/db_patch.yaml
