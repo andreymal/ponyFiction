@@ -1,8 +1,3 @@
-nginx:
-  kind: Daemon
-  image: nginx
-  config: /lithos/nginx.yaml
-  instances: 1
 redis:
   kind: Daemon
   image: redis
