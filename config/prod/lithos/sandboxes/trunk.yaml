@@ -1,0 +1,7 @@
+image-dir: /opt/ponyFiction/trunk/images
+readonly-paths:
+  /config: /opt/ponyFiction/trunk/config
+writable-paths:
+  /log: /var/log/ponyFiction/trunk
+allow-users: [1]
+allow-groups: [0]
