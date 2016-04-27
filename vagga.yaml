@@ -99,6 +99,11 @@ containers:
       /etc/group: "root:x:0:\n"
     - !EnsureDir /log
     - !EnsureDir /work/run/log/nginx
+    # deployment things
+    - !EnsureDir /config
+    - !Copy
+      source: /work/config/prod/daemons
+      path: /lithos
     volumes:
       /tmp: !Tmpfs
         size: 256Mi
