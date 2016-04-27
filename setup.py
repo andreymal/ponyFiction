@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from pathlib import Path
+from collections import defaultdict
+
 from setuptools import setup, find_packages
+
 from ponyFiction import VERSION
 
+data_files = defaultdict(list)
+for item in filter(lambda p: p.is_file(), Path('static').glob('**/*')):
+    data_files[item.parent.as_posix()].append(item.as_posix())
 
 with open('README.rst', encoding='utf-8') as readme_file:
     readme = readme_file.read()
@@ -21,6 +28,7 @@ setup(
     url="https://github.com/RuFimFiction/ponyFiction",
     packages=find_packages(),
     include_package_data=True,
+    data_files=data_files.items(),
     install_requires=requirements,
     license="GPLv3",
     zip_safe=False,
