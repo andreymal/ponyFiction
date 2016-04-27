@@ -23,3 +23,8 @@ mysql:
   image: mysql
   config: /lithos/mysql.yaml
   instances: 1
+
+db_init:
+  kind: Command
+  image: mysql
+  config: /lithos/db_init.yaml
