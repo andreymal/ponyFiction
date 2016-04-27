@@ -142,6 +142,13 @@ containers:
     - !Install [mariadb-server]
     - !Sh "chown mysql:mysql -R /storage"
     - !Sh "chown mysql:mysql -R /log"
+    # deployment things
+    - !EnsureDir /config
+    - !Copy
+      source: /work/config/prod/daemons
+      path: /lithos
+    - !Sh |
+        chown root /var/spool/rsyslog
     volumes:
       /storage: !BindRW /work/run/storage/mysql
       /log: !BindRW /work/run/log/mysql
@@ -175,7 +182,7 @@ commands:
           mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories < /work/migrations/$migration
         done
       fi
-    - db_init
+    - --
 
   manage.py: !Command
     description: Django management tool

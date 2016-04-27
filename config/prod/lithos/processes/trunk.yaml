@@ -18,3 +18,8 @@ memcached:
   image: memcached
   config: /lithos/memcached.yaml
   instances: 1
+mysql:
+  kind: Daemon
+  image: mysql
+  config: /lithos/mysql.yaml
+  instances: 1
