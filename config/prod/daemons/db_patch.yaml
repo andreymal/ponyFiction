@@ -1,0 +1,39 @@
+kind: Command
+user_id: 1
+volumes:
+  /tmp: !Tmpfs
+    size: 128Mi
+    mode: 0o1777
+  /log: !Persistent
+    path: /log/mysql
+  /storage: !Persistent
+    path: /storage/mysql
+  /config: !Readonly /config
+environ:
+  DATADIR: /storage
+  MYSQL_USER: root
+  MYSQL_PASSWORD: celestia
+fileno-limit: 50ki
+memory-limit: 2Gi
+cpu-shares: 1024
+executable: /bin/sh
+arguments:
+- -c
+- |
+  if [ "$#" = 1 ] ; then
+    echo "Run MySQL in background"
+    mysqld_safe --defaults-extra-file=/config/mysql.conf --skip-syslog --no-auto-restart
+    sleep 10
+    echo "Loading data from $1"
+    if [[ $1 == *.gz ]] ; then
+        zcat $1 | mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories
+    else
+        cat $1 | mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories
+    fi
+    echo "Shutdown MySQL"
+    mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD shutdown
+    sleep 10
+  else
+    echo "No data provided"
+  fi
+- --
