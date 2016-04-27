@@ -26,9 +26,9 @@ arguments:
     sleep 10
     echo "Loading data from $1"
     if [[ $1 == *.gz ]] ; then
-        zcat $1 | mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories
+        zcat $1 | mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories --default-character-set=utf8
     else
-        cat $1 | mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories
+        cat $1 | mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories --default-character-set=utf8
     fi
     echo "Shutdown MySQL"
     mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD shutdown
