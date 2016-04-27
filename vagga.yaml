@@ -91,6 +91,11 @@ containers:
     - !EnsureDir /work/run/storage/sphinx
     - !EnsureDir /log
     - !EnsureDir /work/run/log/sphinx
+    # deployment things
+    - !EnsureDir /config
+    - !Copy
+      source: /work/config/prod/daemons
+      path: /lithos
     volumes:
       /storage: !BindRW /work/run/storage/sphinx
       /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }

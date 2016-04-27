@@ -8,3 +8,8 @@ redis:
   image: redis
   config: /lithos/redis.yaml
   instances: 1
+sphinx:
+  kind: Daemon
+  image: sphinx
+  config: /lithos/sphinx.yaml
+  instances: 1
