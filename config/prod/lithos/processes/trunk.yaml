@@ -3,3 +3,8 @@ nginx:
   image: nginx
   config: /lithos/nginx.yaml
   instances: 1
+redis:
+  kind: Daemon
+  image: redis
+  config: /lithos/redis.yaml
+  instances: 1

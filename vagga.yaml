@@ -16,6 +16,11 @@ containers:
     - !Install [redis]
     - !EnsureDir /storage
     - !EnsureDir /work/run/storage/redis
+    # deployment things
+    - !EnsureDir /config
+    - !Copy
+      source: /work/config/prod/daemons
+      path: /lithos
     volumes:
       /storage: !BindRW /work/run/storage/redis
 

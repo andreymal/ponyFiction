@@ -1,0 +1,11 @@
+user_id: 1
+volumes:
+  /storage: !Persistent
+    path: /storage/redis
+  /config: !Readonly /config
+fileno-limit: 50ki
+memory-limit: 1Gi
+cpu-shares: 1024
+executable: /usr/bin/redis-server
+arguments:
+- /config/redis.conf
