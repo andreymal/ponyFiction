@@ -43,6 +43,23 @@ CREATE INDEX ponyFiction_staticpage_b068931c ON ponyFiction_staticpage (name);
 --
 ALTER TABLE ponyFiction_category ADD COLUMN color VARCHAR(7) NOT NULL;
 
+UPDATE ponyFiction_category
+  SET color = CASE name
+    WHEN 'Приключения' THEN '#3F74CE'
+    WHEN 'Кроссовер' THEN '#EDA21F'
+    WHEN 'Романтика' THEN '#CEC12A'
+    WHEN 'Драма' THEN '#45C950'
+    WHEN 'Ангст' THEN '#45C9AB'
+    WHEN 'Флафф' THEN '#CA6565'
+    WHEN 'Юмор' THEN '#D84A9D'
+    WHEN 'Зарисовка' THEN '#8738D8'
+    WHEN 'Экшн' THEN '#B5835A'
+    WHEN 'Ужасы' THEN '#808080'
+    WHEN 'Эротика' THEN '#CA0707'
+    WHEN 'Повседневность' THEN '#8760B0'
+    ELSE '#cccccc'
+  END;
+
 --
 -- Remove NOT NULL constraint causing manage.py createsuperuser to fail
 --

@@ -7,7 +7,7 @@
   <div class="span12 genra">
     {% spaceless %}
     {% for category in categories %}
-        <a class="gen gen-{{ category.id }}" style="background-color: {{ category.color }}" href="{% url 'search_simple' 'category' category.id %}">{{ category.name }}</a>
+        <a class="gen" style="background-color: {{ category.color }}" href="{% url 'search_simple' 'category' category.id %}">{{ category.name }}</a>
     {% endfor %}
     {% endspaceless %}
   </div>

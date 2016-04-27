@@ -16,9 +16,11 @@ def update_chapter_word_count(sender, instance, **kw):
 
 
 @receiver(post_save, sender=Chapter)
-def update_story_update_time(sender, instance, **kw):
+@receiver(post_delete, sender=Chapter)
+def update_story_on_chapter_set_change(sender, instance, **kw):
     story = Story.objects.get(id=instance.story_id)
-    story.save(update_fields=['updated'])
+    story.update_words_count()
+    story.save(update_fields=['words', 'updated'])
 
 
 @receiver(story_visited, sender=Author)
