@@ -6,17 +6,20 @@ containers:
         - ca-certificates
         - python3
         - build-essential
+        - git
       - !Py3Install
         - setuptools
         - wheel
 
   redis:
     setup:
-    - !Alpine v3.1
+    - !Alpine v3.3
     - !Install [redis]
     - !EnsureDir /storage
     - !EnsureDir /work/run/storage/redis
     # deployment things
+    - !Sh |
+        chmod +r /bin/bbsuid
     - !EnsureDir /config
     - !Copy
       source: /work/config/prod/daemons
@@ -26,9 +29,11 @@ containers:
 
   memcached:
     setup:
-    - !Alpine v3.1
+    - !Alpine v3.3
     - !Install [memcached]
     # deployment things
+    - !Sh |
+        chmod +r /bin/bbsuid
     - !EnsureDir /config
     - !Copy
       source: /work/config/prod/daemons
@@ -70,6 +75,7 @@ containers:
         - libxslt1-dev          # lxml
       # Install application directly from pre-built wheel
       # for production usage without dev. dependencies
+      - !Depends ponyFiction/VERSION
       - !PipConfig
         find-links:
          - /work/dist/
@@ -98,6 +104,8 @@ containers:
     - !Copy
       source: /work/config/prod/daemons
       path: /lithos
+    - !Sh |
+        chown root /var/spool/rsyslog
     volumes:
       /storage: !BindRW /work/run/storage/sphinx
       /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
@@ -146,6 +154,11 @@ containers:
       path: /lithos
     - !Sh |
         chown root /var/spool/rsyslog
+    # remove preinstalled mysql junk
+    - !Sh |
+        rm -r /var/lib/mysql
+        rm -r /var/log/mysql
+        rm /var/log/mysql.*
     volumes:
       /storage: !BindRW /work/run/storage/mysql
       /log: !BindRW /work/run/log/mysql
@@ -173,7 +186,7 @@ commands:
         zcat /work/$1 | mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories
         for migration in $(ls /work/migrations | sort --version-sort) ; do
           echo "Applying migration $migration"
-          mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories < /work/migrations/$migration
+          mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories --default-character-set=utf8 < /work/migrations/$migration
         done
       fi
 
@@ -243,6 +256,7 @@ commands:
     container: build
     description: "Create Python wheel package"
     run: |
+      git describe --tags | sed -e "s/v\(.*\)-\(.*\)-\(.*\)/\1.dev\2+\3/g" > ponyFiction/VERSION
       python3 setup.py bdist_wheel
       echo
       ls dist
