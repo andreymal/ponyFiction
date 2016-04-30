@@ -15,7 +15,10 @@ function deploy() {
     local APP_VERSION=$(git describe --tags)
     # Cleanup
     vagga clean
-    # Build app (and static)
+    # Collect (and build) static
+    # TODO: build static at this step
+    vagga manage.py collectstatic --noinput
+    # Build app
     vagga package
     # Clean unused containers
     vagga _clean --unused
