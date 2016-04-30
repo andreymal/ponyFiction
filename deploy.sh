@@ -6,6 +6,11 @@ CONTAINERS=(redis memcached sphinx mysql uwsgi-pkg)
 
 function deploy() {
     cd ${SOURCE_DIR}
+    # Total cleanup
+    # TODO: Use tags from incoming webhook
+    git reset --hard
+    git fetch
+    git pull
     # Get app version
     local APP_VERSION=$(git describe --tags)
     # Cleanup
@@ -29,10 +34,12 @@ function deploy() {
 
         vagga _build ${name}
 
-        rsync --archive \
+        rsync \
+            --archive \
             --hard-links \
             --delete-after \
             --stats \
+            --omit-dir-times \
             --delay-updates \
             --link-dest ${IMAGE_DIR}/${latest_name} \
             ${root_dir}/ \
@@ -40,7 +47,13 @@ function deploy() {
 
         local tmpdir=$(mktemp -d)
         ln -snf ${full_name} ${tmpdir}/${latest_name}
-        rsync --recursive --links --verbose ${tmpdir}/ ${IMAGE_DIR}/
+        rsync \
+            --recursive \
+            --links \
+            --omit-dir-times \
+            --verbose \
+            ${tmpdir}/ \
+            ${IMAGE_DIR}/
         rm -rf ${tmpdir}
 
         VERSIONS+=([$name]=${full_name})
