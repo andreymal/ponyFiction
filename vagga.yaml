@@ -6,6 +6,7 @@ containers:
         - ca-certificates
         - python3
         - build-essential
+        - git
       - !Py3Install
         - setuptools
         - wheel
@@ -243,6 +244,7 @@ commands:
     container: build
     description: "Create Python wheel package"
     run: |
+      git describe --tags > ponyFiction/VERSION
       python3 setup.py bdist_wheel
       echo
       ls dist

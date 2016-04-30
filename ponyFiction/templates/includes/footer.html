@@ -1,8 +1,12 @@
+{% load version %}
 		<!-- Footer start -->
 		<div class="footer">
 			<ul class="nav nav-pills nav-main">
 				<li>
-					<p>Все права принадлежат пони.</p>
+					<p class="copyright">
+                        Все права принадлежат пони.
+                        <span class="version">Версия библиотеки: {% version %}</span>
+                    </p>
 				</li>
 				<li id="nav_terms" class="right">
 					<a href="{% url 'staticpage' 'terms' %}">Правила</a>

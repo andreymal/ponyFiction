@@ -1450,3 +1450,14 @@ a.btn {
 		width: 56px;
 	}
 }
+.copyright .version {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.5s, opacity 0.3s ease-in-out;
+}
+
+.copyright:hover .version {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0.5s, opacity 0.3s ease-in-out;
+}

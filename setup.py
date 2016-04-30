@@ -5,7 +5,6 @@ from collections import defaultdict
 
 from setuptools import setup, find_packages
 
-from ponyFiction import VERSION
 
 data_files = defaultdict(list)
 for item in filter(lambda p: p.is_file(), Path('static').glob('**/*')):
@@ -17,10 +16,12 @@ with open('HISTORY.rst', encoding='utf-8') as history_file:
     history = history_file.read()
 with open('config/requirements.txt', encoding='utf-8') as requirements_file:
     requirements = requirements_file.read().splitlines()
+with open('ponyFiction/VERSION') as version_file:
+    version = version_file.read().strip()
 
 setup(
     name="ponyFiction",
-    version=VERSION,
+    version=version,
     description="Fanfiction library for everypony.ru",
     long_description=readme + '\n\n' + history,
     author="Andriy Kushnir (Orhideous)",

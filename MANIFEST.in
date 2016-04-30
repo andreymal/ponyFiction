@@ -1,3 +1,4 @@
+include ponyFiction/VERSION
 recursive-include ponyFiction/templates *
 recursive-include ponyFiction/filters *.xslt
 recursive-include ponyFiction/apis/captcha *
