@@ -50,9 +50,6 @@ function deploy() {
     # Load templating helpers
     . /usr/local/bin/mo
     mo ${SOURCE_DIR}/config/prod/lithos/processes/trunk.yaml.template > ${NEW_CONFIG}
-    # Switch all containers to new version
-    lithos_switch trunk ${NEW_CONFIG}
-    cp -f ${NEW_CONFIG} /etc/lithos/processes/trunk.yaml
 }
 
 usage(){
