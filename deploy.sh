@@ -9,7 +9,7 @@ function deploy() {
     # Total cleanup
     # TODO: Use tags from incoming webhook
     git reset --hard
-    git fetch
+    git pull
     git show HEAD --summary
     # Get app version
     local APP_VERSION=$(git describe --tags)
