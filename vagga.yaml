@@ -27,18 +27,6 @@ containers:
     volumes:
       /storage: !BindRW /work/run/storage/redis
 
-  memcached:
-    setup:
-    - !Alpine v3.3
-    - !Install [memcached]
-    # deployment things
-    - !Sh |
-        chmod +r /bin/bbsuid
-    - !EnsureDir /config
-    - !Copy
-      source: /work/config/prod/daemons
-      path: /lithos
-
   # Base application container
   uwsgi-base:
     setup:
@@ -208,14 +196,6 @@ commands:
         run:
         - redis-server
         - /work/config/local/redis.conf
-      memcached: !Command
-        container: memcached
-        run:
-        - memcached
-        - -m512
-        - -uroot
-        - -p11211
-        - -l127.0.0.1
       uwsgi: !Command
         container: uwsgi-app
         environ:

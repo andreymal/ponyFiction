@@ -2,7 +2,7 @@
 set -e
 
 SYMLINK_NAME="latest"
-CONTAINERS=(redis memcached sphinx mysql uwsgi-pkg)
+CONTAINERS=(redis sphinx mysql uwsgi-pkg)
 
 function deploy() {
     cd ${SOURCE_DIR}

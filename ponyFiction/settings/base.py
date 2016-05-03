@@ -14,10 +14,12 @@ DATABASES = {'default': {
 
 }}
 
-CACHES = {'default': {
-    'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-    'LOCATION': '127.0.0.1:11211',
-}}
+CACHES = {
+    'default': {
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': 'localhost:6379',
+    }
+}
 
 SECRET_KEY = '6^j694%m%^etq6@$_kigiyig&OTN0to798mhbBN)J-39xdac3440du'
 
@@ -73,6 +75,7 @@ NSFW_RATING_IDS = (1,)
 
 INSTALLED_APPS = (
     'cacheops',
+    'redis_cache',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

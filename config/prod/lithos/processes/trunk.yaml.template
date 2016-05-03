@@ -8,11 +8,6 @@ sphinx:
   image: {{VERSIONS.sphinx}}
   config: /lithos/sphinx.yaml
   instances: 1
-memcached:
-  kind: Daemon
-  image: {{VERSIONS.memcached}}
-  config: /lithos/memcached.yaml
-  instances: 1
 mysql:
   kind: Daemon
   image: {{VERSIONS.mysql}}
