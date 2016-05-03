@@ -11,6 +11,7 @@
 
 # Vagga stuff
 /.vagga
+.vagga.settings.yaml
 /run
 
 # DB dumps
