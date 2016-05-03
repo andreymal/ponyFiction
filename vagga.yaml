@@ -76,6 +76,12 @@ containers:
       - !Copy
         source: /work/config/prod/daemons
         path: /lithos
+      - !EnsureDir /state
+      - !Sh |
+          /bin/ln -sfn /state/hosts /etc/hosts
+          /bin/ln -sfn /state/resolv.conf /etc/resolv.conf
+      resolv-conf-path: /state/resolv.conf
+      hosts-file-path: /state/hosts
 
   sphinx:
     setup:
@@ -147,6 +153,12 @@ containers:
         rm -r /var/lib/mysql
         rm -r /var/log/mysql
         rm /var/log/mysql.*
+    - !EnsureDir /state
+    - !Sh |
+        /bin/ln -sfn /state/hosts /etc/hosts
+        /bin/ln -sfn /state/resolv.conf /etc/resolv.conf
+    resolv-conf-path: /state/resolv.conf
+    hosts-file-path: /state/hosts
     volumes:
       /storage: !BindRW /work/run/storage/mysql
       /log: !BindRW /work/run/log/mysql
