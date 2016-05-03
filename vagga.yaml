@@ -80,8 +80,8 @@ containers:
       - !Sh |
           /bin/ln -sfn /state/hosts /etc/hosts
           /bin/ln -sfn /state/resolv.conf /etc/resolv.conf
-      resolv-conf-path: /state/resolv.conf
-      hosts-file-path: /state/hosts
+    resolv-conf-path: /state/resolv.conf
+    hosts-file-path: /state/hosts
 
   sphinx:
     setup:
