@@ -111,7 +111,7 @@ containers:
       /config: !BindRO /work/config/local
   nginx:
     setup:
-    - !Alpine v3.1
+    - !Alpine v3.3
     - !Install [nginx]
     - !Text
       /etc/passwd: "root:x:0:0:root:/root:/bin/false\n"
