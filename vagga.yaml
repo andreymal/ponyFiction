@@ -128,67 +128,80 @@ containers:
       /log: !BindRW /work/run/log/nginx
   mysql:
     setup:
-    - !Ubuntu trusty
-    - !AptTrust keys: [cbcb082a1bb943db]
-    - !UbuntuRepo
-      url: http://ftp.osuosl.org/pub/mariadb/repo/10.0/ubuntu
-      suite: trusty
-      components: [main]
+    - !Alpine v3.3
+    - !Install
+      - mariadb
+      - mariadb-client
+    - !EnsureDir /config
     - !EnsureDir /storage
-    - !EnsureDir /work/run/storage/mysql
     - !EnsureDir /log
     - !EnsureDir /work/run/log/mysql
-    - !Install [mariadb-server]
-    - !Sh "chown mysql:mysql -R /storage"
-    - !Sh "chown mysql:mysql -R /log"
+    - !EnsureDir /work/run/storage/mysql
     # deployment things
-    - !EnsureDir /config
     - !Copy
       source: /work/config/prod/daemons
       path: /lithos
-    - !Sh |
-        chown root /var/spool/rsyslog
+    - !Sh "chmod +r /bin/bbsuid"
     # remove preinstalled mysql junk
-    - !Sh |
-        rm -r /var/lib/mysql
-        rm -r /var/log/mysql
-        rm /var/log/mysql.*
+    - !Remove /var/lib/mysql
     - !EnsureDir /state
-    - !Sh |
-        /bin/ln -sfn /state/hosts /etc/hosts
-        /bin/ln -sfn /state/resolv.conf /etc/resolv.conf
-    resolv-conf-path: /state/resolv.conf
-    hosts-file-path: /state/hosts
     volumes:
       /storage: !BindRW /work/run/storage/mysql
       /log: !BindRW /work/run/log/mysql
       /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
+      /config: !BindRO /work/config/local
 
 commands:
   db_init: !Command
     description: Initialize fresh MySQL database. The old one will be REMOVED! Also load dump if provided.
     container: mysql
+    accepts-arguments: true
     environ:
-      DATADIR: /storage
-      MYSQL_USER: root
-      MYSQL_PASSWORD: celestia
+      DB_DATADIR: /storage
+      DB_HOST: 127.0.0.1
+      DB_DATABASE: stories
+      DB_USERNAME: celestia
+      DB_PASSWORD: solar_eclipse
     run: |
+      echo "Cleanup old database"
       rm -r /storage/*
       rm -r /log/*
-      chown mysql:mysql -R /storage
-      mysql_install_db --user=mysql --datadir=$DATADIR --pid-file=/tmp/mysql.pid --log-bin=mariadb-bin --log-bin-index=mariadb-bin.index
-      mysqld_safe --defaults-extra-file=/work/config/local/mysql.conf --skip-syslog --no-auto-restart
-      sleep 5
-      mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER password $MYSQL_PASSWORD
-      mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD create stories
+      echo "Create new database"
+      mysql_install_db --datadir=$DB_DATADIR
+      mysqld_safe --defaults-extra-file=/config/mysql.conf --skip-syslog --no-auto-restart
+      while [ ! -f /tmp/mysqld.pid ]; do sleep 0.1; done # wait for server to be ready
+      echo "Create new database"
+      mysqladmin --defaults-extra-file=/config/mysql.conf create $DB_DATABASE
+      mysql --defaults-extra-file=/config/mysql.conf -e "CREATE USER '$DB_USERNAME'@'$DB_HOST' IDENTIFIED BY '$DB_PASSWORD';"
+      mysql --defaults-extra-file=/config/mysql.conf -e "GRANT ALL PRIVILEGES ON $DB_DATABASE.* TO '$DB_USERNAME'@'$DB_HOST';"
+      mysqladmin --defaults-extra-file=/config/mysql.conf flush-privileges
       if [ "$#" = 1 ] ; then
-        echo "Loading data from $1"
-        zcat /work/$1 | mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories
-        for migration in $(ls /work/migrations | sort --version-sort) ; do
+        case "$1" in
+          *.gz )
+            echo "Loading compressed data from $1"
+            viewer=zcat
+            ;;
+          *)
+            echo "Loading raw data from $1"
+            viewer=cat
+            ;;
+        esac
+        $viewer $1 | mysql \
+          --defaults-extra-file=/config/mysql.conf \
+          --user=$DB_USERNAME \
+          --password=$DB_PASSWORD \
+          --database=$DB_DATABASE
+        for migration in $(ls -v /work/migrations) ; do
           echo "Applying migration $migration"
-          mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories --default-character-set=utf8 < /work/migrations/$migration
+          mysql \
+          --defaults-extra-file=/config/mysql.conf \
+          --user=$DB_USERNAME \
+          --password=$DB_PASSWORD \
+          --database=$DB_DATABASE \
+           < /work/migrations/$migration
         done
       fi
+      mysqladmin --defaults-extra-file=/config/mysql.conf shutdown
 
   manage.py: !Command
     description: Django management tool
@@ -239,7 +252,7 @@ commands:
         container: mysql
         run:
         - mysqld_safe
-        - --defaults-extra-file=/work/config/local/mysql.conf
+        - --defaults-extra-file=/config/mysql.conf
         - --skip-syslog
         - --console
         - --debug-gdb

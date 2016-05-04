@@ -10,9 +10,9 @@ volumes:
     path: /storage/mysql
   /config: !Readonly /config
 environ:
-  DATADIR: /storage
-  MYSQL_USER: root
-  MYSQL_PASSWORD: celestia
+  DB_DATABASE: stories
+  DB_USERNAME: celestia
+  DB_PASSWORD: solar_eclipse
 fileno-limit: 50ki
 memory-limit: 2Gi
 cpu-shares: 1024
@@ -23,16 +23,23 @@ arguments:
   if [ "$#" = 1 ] ; then
     echo "Run MySQL in background"
     mysqld_safe --defaults-extra-file=/config/mysql.conf --skip-syslog --no-auto-restart
-    sleep 10
-    echo "Loading data from $1"
-    if [[ $1 == *.gz ]] ; then
-        zcat $1 | mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories --default-character-set=utf8
-    else
-        cat $1 | mysql --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=stories --default-character-set=utf8
-    fi
-    echo "Shutdown MySQL"
-    mysqladmin --host=127.0.0.1 --port=3306 --user=$MYSQL_USER --password=$MYSQL_PASSWORD shutdown
-    sleep 10
+    while [ ! -f /tmp/mysqld.pid ]; do sleep 0.1; done # wait for server to be ready
+    case "$1" in
+      *.gz )
+        echo "Loading compressed data from $1"
+        viewer=zcat
+        ;;
+      *)
+        echo "Loading raw data from $1"
+        viewer=cat
+        ;;
+    esac
+    $viewer $1 | mysql \
+      --defaults-extra-file=/config/mysql.conf \
+      --user=$DB_USERNAME \
+      --password=$DB_PASSWORD \
+      --database=$DB_DATABASE
+    mysqladmin --defaults-extra-file=/config/mysql.conf shutdown
   else
     echo "No data provided"
   fi

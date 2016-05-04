@@ -4,15 +4,16 @@
 
 import os
 
-DATABASES = {'default': {
-    'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'stories',
-    'USER': 'root',
-    'PASSWORD': 'celestia',
-    'HOST': '127.0.0.1',
-    'PORT': '3306',
-
-}}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'stories',
+        'USER': 'celestia',
+        'PASSWORD': 'solar_eclipse',
+        'HOST': '127.0.0.1',
+        'PORT': '3306'
+    }
+}
 
 CACHES = {
     'default': {
