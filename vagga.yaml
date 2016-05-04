@@ -26,6 +26,7 @@ containers:
       path: /lithos
     volumes:
       /storage: !BindRW /work/run/storage/redis
+      /config: !BindRO /work/config/local
 
   # Base application container
   uwsgi-base:
@@ -43,8 +44,9 @@ containers:
           chown root /var/spool/rsyslog
 
   uwsgi-app:
-   setup:
+    setup:
     - !Container uwsgi-base
+    - !EnsureDir /config
     - !BuildDeps
       - gcc
       - libmysqlclient-dev    # mysqlclient
@@ -53,6 +55,8 @@ containers:
       - python3-dev
     # Just deploy neccessary environment for application
     - !Py3Requirements /work/config/requirements.txt
+    volumes:
+      /config: !BindRO /work/config/local
 
   uwsgi-pkg:
     setup:
@@ -104,6 +108,7 @@ containers:
       /storage: !BindRW /work/run/storage/sphinx
       /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
       /log: !BindRW /work/run/log/sphinx
+      /config: !BindRO /work/config/local
   nginx:
     setup:
     - !Alpine v3.1
@@ -119,13 +124,10 @@ containers:
       source: /work/config/prod/daemons
       path: /lithos
     volumes:
-      /tmp: !Tmpfs
-        size: 256Mi
-        mode: 0o1777
-      /var/log/nginx: !Tmpfs
-        size: 1Mi
-        mode: 0o1777
       /log: !BindRW /work/run/log/nginx
+      /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
+      /var/log/nginx: !Tmpfs { size: 1Mi, mode: 0o1777 }
+      /config: !BindRO /work/config/local
   mysql:
     setup:
     - !Alpine v3.3
@@ -219,14 +221,14 @@ commands:
         container: redis
         run:
         - redis-server
-        - /work/config/local/redis.conf
+        - /config/redis.conf
       uwsgi: !Command
         container: uwsgi-app
         environ:
           DJANGO_SETTINGS_MODULE: ponyFiction.settings.development
         run:
           - uwsgi
-          - /work/config/local/uwsgi.ini
+          - /config/uwsgi.ini
       celery: !Command
         container: uwsgi-app
         environ:
@@ -239,14 +241,14 @@ commands:
         run:
         - nginx
         - -c
-        - /work/config/local/nginx.conf
+        - /config/nginx.conf
       sphinx: !Command
         container: sphinx
         run:
         - searchd
         - --console
         - --config
-        - /work/config/local/sphinx.conf
+        - /config/sphinx.conf
       mysql: !Command
         container: mysql
         run:
