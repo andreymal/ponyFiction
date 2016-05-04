@@ -9,6 +9,7 @@ volumes:
   /storage: !Persistent
     path: /storage/mysql
   /config: !Readonly /config
+  /srv: !Readonly /srv
 environ:
   DB_DATABASE: stories
   DB_USERNAME: celestia
@@ -39,7 +40,7 @@ arguments:
       --user=$DB_USERNAME \
       --password=$DB_PASSWORD \
       --database=$DB_DATABASE
-    mysqladmin --defaults-extra-file=/config/mysql.conf shutdown
+    mysqladmin --defaults-extra-file=/config/mysql.conf -uroot -proot shutdown
   else
     echo "No data provided"
   fi
