@@ -1,6 +1,7 @@
 image-dir: /opt/ponyFiction/trunk/images
 readonly-paths:
   /config: /opt/ponyFiction/trunk/config
+  /srv: /opt/ponyFiction/trunk/srv
 writable-paths:
   /storage: /opt/ponyFiction/trunk/storage
   /log: /var/log/ponyFiction/trunk
