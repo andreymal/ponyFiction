@@ -140,6 +140,7 @@ containers:
     - !EnsureDir /log
     - !EnsureDir /work/run/log/mysql
     - !EnsureDir /work/run/storage/mysql
+    - !EnsureDir /work/run/storage/srv
     # deployment things
     - !Copy
       source: /work/config/prod/daemons
@@ -153,6 +154,7 @@ containers:
       /log: !BindRW /work/run/log/mysql
       /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
       /config: !BindRO /work/config/local
+      /srv: !BindRO /work/run/storage/srv
 
 commands:
   db_init: !Command
