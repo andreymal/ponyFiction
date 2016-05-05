@@ -1,11 +1,10 @@
 containers:
   build:
     setup:
-      - !Ubuntu trusty
+      - !Alpine v3.3
       - !Install
         - ca-certificates
         - python3
-        - build-essential
         - git
       - !Py3Install
         - setuptools
