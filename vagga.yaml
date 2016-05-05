@@ -88,21 +88,20 @@ containers:
 
   sphinx:
     setup:
-    - !Ubuntu trusty
-    - !UbuntuPPA builds/sphinxsearch-rel22
-    - !AptTrust keys: [16932B16]
-    - !Install [sphinxsearch]
+    - !Alpine v3.3
+    - !Sh |
+        echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories
+        apk update
+    - !Install [sphinx@testing]
     - !EnsureDir /storage
-    - !EnsureDir /work/run/storage/sphinx
     - !EnsureDir /log
+    - !EnsureDir /work/run/storage/sphinx
     - !EnsureDir /work/run/log/sphinx
     # deployment things
     - !EnsureDir /config
     - !Copy
       source: /work/config/prod/daemons
       path: /lithos
-    - !Sh |
-        chown root /var/spool/rsyslog
     volumes:
       /storage: !BindRW /work/run/storage/sphinx
       /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
