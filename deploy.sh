@@ -61,7 +61,7 @@ function deploy() {
         VERSIONS+=([$name]=${full_name})
     done
     # Create new config for lithos
-    local NEW_CONFIG=${CONFIG_DIR}/${APP_VERSION}.yaml
+    local NEW_CONFIG=${PROCESSES_DIR}/${APP_VERSION}.yaml
     # Load templating helpers
     . /usr/local/bin/mo
     mo ${SOURCE_DIR}/config/prod/lithos/processes/trunk.yaml.template > ${NEW_CONFIG}
@@ -73,13 +73,13 @@ Deploy stories
 
 Пример использования:
     ./deploy.sh \
-        --config-dir /opt/ponyFiction/config \
+        --processes-dir /opt/ponyFiction/processes \
         --image-dir /opt/ponyFiction/image \
         --source-dir /opt/ponyFiction/source
 
 Параметры:
    -h, --help           Справка по использованию
-   -c, --config-dir     Путь к конфигурациям дерева процессов lithos
+   -p, --processes-dir  Путь к конфигурациям дерева процессов lithos
    -i, --image-dir      Путь к каталогу контейнеров
    -s, --source-dir     Путь к исходному коду
 EOT
@@ -91,7 +91,7 @@ exit 0;
 while [ $# -gt 0 ]
 do
     case "$1" in
-        -c|--config-dir) CONFIG_DIR=$2; shift;;
+        -p|--processes-dir) PROCESSES_DIR=$2; shift;;
         -s|--source-dir) SOURCE_DIR=$2; shift;;
         -i|--image-dir) IMAGE_DIR=$2; shift;;
         -h|--help) usage;;
@@ -100,7 +100,7 @@ do
     shift
 done
 
-if [ -z ${CONFIG_DIR+x} ] ||
+if [ -z ${PROCESSES_DIR+x} ] ||
    [ -z ${SOURCE_DIR+x} ] ||
    [ -z ${IMAGE_DIR+x} ];
 then
