@@ -22,9 +22,6 @@ arguments:
 - -c
 - |
   if [ "$#" = 1 ] ; then
-    echo "Run MySQL in background"
-    mysqld_safe --defaults-extra-file=/config/mysql.conf --skip-syslog --no-auto-restart
-    while [ ! -f /tmp/mysqld.pid ]; do sleep 0.1; done # wait for server to be ready
     case "$1" in
       *.gz )
         echo "Loading compressed data from $1"
@@ -40,7 +37,6 @@ arguments:
       --user=$DB_USERNAME \
       --password=$DB_PASSWORD \
       --database=$DB_DATABASE
-    mysqladmin --defaults-extra-file=/config/mysql.conf -uroot -proot shutdown
   else
     echo "No data provided"
   fi
