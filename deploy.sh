@@ -65,6 +65,8 @@ function deploy() {
     # Load templating helpers
     . /usr/local/bin/mo
     mo ${SOURCE_DIR}/config/prod/lithos/processes/trunk.yaml.template > ${NEW_CONFIG}
+    # For lithos_switch
+    ln -s ${NEW_CONFIG} ${PROCESSES_DIR}/latest.yaml
 }
 
 usage(){
