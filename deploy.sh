@@ -62,11 +62,12 @@ function deploy() {
     done
     # Create new config for lithos
     local NEW_CONFIG=${PROCESSES_DIR}/${APP_VERSION}.yaml
+    local LATEST_CONFIG_LINK=${PROCESSES_DIR}/latest.yaml
     # Load templating helpers
     . /usr/local/bin/mo
     mo ${SOURCE_DIR}/config/prod/lithos/processes/trunk.yaml.template > ${NEW_CONFIG}
     # For lithos_switch
-    ln -s ${NEW_CONFIG} ${PROCESSES_DIR}/latest.yaml
+    ln -sf ${NEW_CONFIG} ${LATEST_CONFIG_LINK}
 }
 
 usage(){
