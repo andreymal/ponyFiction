@@ -7,7 +7,6 @@
 /static/
 /env/
 /node_modules/
-/bower_components/
 
 # Vagga stuff
 /.vagga
