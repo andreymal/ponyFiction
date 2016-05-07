@@ -3,14 +3,17 @@ minimum-vagga: v0.5.0
 containers:
   build:
     setup:
-      - !Alpine v3.3
-      - !Install
-        - ca-certificates
-        - python3
-        - git
-      - !Py3Install
-        - setuptools
-        - wheel
+    - !Alpine v3.3
+    - !Install [python3, git]
+    - !Py3Install [setuptools, wheel]
+    - !NpmDependencies
+      file: package.json
+      peer: true
+      optional: true
+      dev: true
+    environ:
+      NODE_PATH: /usr/lib/node_modules
+
   redis:
     setup:
     - !Alpine v3.3
@@ -280,3 +283,18 @@ commands:
       rm -rf *.egg-info
       find ponyFiction -name '*.py[cod]' -type f -delete
       find ponyFiction -name '__pycache__' -type d -delete
+
+  gulp: !Command
+    container: build
+    description: Gulp command
+    run: gulp
+    accepts-arguments: true
+
+  assets: !Supervise
+    description: Build all assets for production
+    children:
+      gulp: !Command
+        container: build
+        environ:
+          NODE_ENV: production
+        run: gulp less
