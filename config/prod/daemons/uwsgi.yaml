@@ -1,7 +1,7 @@
 user_id: 1
 volumes:
   /tmp: !Tmpfs
-    size: 64Mi
+    size: 256Mi
     mode: 0o1777
   /log: !Persistent
     path: /log/uwsgi
