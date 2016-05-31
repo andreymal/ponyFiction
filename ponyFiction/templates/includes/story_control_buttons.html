@@ -3,22 +3,22 @@
     {% if story|editable_by:user %}
         <div class="story-control-btn btn-group">
             {% if user.is_staff %}
-                <a class="btn {{ story.approved|yesno:',btn-success' }} btn-mini story_approve" href="{% url 'story_approve' story.id %}">
-                    {{ story.approved|yesno:"Отозвать,Одобрить" }}
+                <a class="btn {{ story.approved|yesno:',btn-success' }} btn-xs btn-default story_approve" href="{% url 'story_approve' story.id %}">
+                   <img src="/static/i/fork.png" style="width: 16px; height: 16px;"> {{ story.approved|yesno:"Отозвать,Одобрить" }}
                 </a>
             {% endif %}
-            <a class="btn btn-mini story_publish{% if story.publishable and story.draft %} btn-primary{% endif %}" href="{% url 'story_publish' story.id %}">
-                {{ story.draft|yesno:"Опубликовать,В черновики" }}
+            <a class="btn btn-xs btn-default story_publish{% if story.publishable and story.draft %} btn-primary{% endif %}" href="{% url 'story_publish' story.id %}">
+               <img src="/static/i/fork.png" style="width: 16px; height: 16px;"> {{ story.draft|yesno:"Опубликовать,В черновики" }}
             </a>
             {% if not user.is_staff and not story_edit %}
-                <a class="btn btn-warning btn-mini" href="{% url 'story_edit' story.id %}">Редактировать</a>
+                <a class="btn btn-warning btn-xs btn-default" href="{% url 'story_edit' story.id %}">Редактировать</a>
             {% endif %}
 
-            <button class="btn btn-mini dropdown-toggle" type="button" id="storyDropdownMenu{{ story.id }}" data-toggle="dropdown" aria-expanded="true">
+            <button class="btn btn-xs btn-default dropdown-toggle" type="button" id="storyDropdownMenu{{ story.id }}" data-toggle="dropdown" aria-expanded="true">
                 <span class="caret"></span>
             </button>
 
-            <ul class="dropdown-menu btn-mini" role="menu">
+            <ul class="dropdown-menu btn-xs btn-default" role="menu">
             {% if not story_edit and user.is_staff %}
                 <li><a href="{% url 'story_edit' story.id %}">Редактировать</a></li>
             {% endif %}

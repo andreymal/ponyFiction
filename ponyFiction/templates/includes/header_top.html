@@ -27,6 +27,10 @@
         <div id="slides" class="carousel">
             {% random_stories %}
         </div>
+        <div id="news" class="carousel pull-left">
+            <h3>Ещё одна новость</h3>
+			<p>Таким образом укрепление и развитие структуры играет важную роль в формировании систем массового участия. Задача организации, в особенности же рамки и место обучения кадров обеспечивает широкому кругу (специалистов) участие в формировании новых предложений.</p>
+        </div>
     </div>
     <!-- Logo image and carousel end -->
 
@@ -34,14 +38,48 @@
     <ul class="nav nav-pills nav-main">
         <li id="nav_index"><a href="{% url 'index' %}">Главная</a></li>
         <li id="nav_search"><a href="{% url 'search' %}">Поиск</a></li>
-          <li id="nav_help"><a href="{% url 'staticpage' 'help' %}">Справка</a></li>
+		<li class="dropdown">
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">FAQ<span class="caret"></span></a>
+		<ul class="dropdown-menu" role="menu">
+              <li class="disabled"><a href="#">Правила</a></li>
+              <li class="disabled"><a href="#">Начинающему</a></li>
+              <li class="disabled"><a href="#">Полезные ссылки</a></li>
+              <li class="disabled"><a href="#">Благодарности</a></li>
+          </ul>
+		</li>
+  		
+		<li class="dropdown">
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Топ<span class="caret"></span></a>
+		<ul class="dropdown-menu" role="menu">
+              <li class="disabled"><a href="#">Лучшие</a></li>
+              <li class="disabled"><a href="#">Новые</a></li>
+              <li class="disabled"><a href="#">Дикие</a></li>
+              <li class="disabled"><a href="#">Активные</a></li>
+			  <li class="disabled"><a href="#">Комментируемые</a></li>
+          </ul>
+		</li>
           {% if user.is_authenticated %}
-            <li id="nav_favorites"><a href="{% url 'favorites' user.id %}">Избранное</a></li>
-            <li id="nav_bookmarks"><a href="{% url 'bookmarks' %}">Закладки</a></li>
-            <li class="right"><a href="{% url 'auth_logout' %}">Выход</a></li>
-            <li id="nav_author_overview" class="right"><a href="{% url 'author_overview' user.id %}">Профиль</a></li>
-            <li id="nav_author_dashboard" class="right"><a class="active" href="{% url 'author_dashboard' %}">Кабинет автора</a></li>
-            <li id="nav_story_add" class="right"><a href="{% url 'story_add' %}">Добавить рассказ</a></li>
+        	<li class="right dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ user.username }}<span class="caret"></span></a>
+			<ul class="dropdown-menu" role="menu">
+			  <li><img src="" class="profile-img"></li>
+			  <li><a class="profile-link" href="{% url 'author_overview' user.id %}">Профиль</a></li>
+			  <li><a class="profile-link" href="{% url 'bookmarks' %}">Закладки</a></li>
+              <li><a class="profile-link" href="{% url 'author_profile_edit' %}">Настройки</a></li>
+              <li><a class="profile-link" href="{% url 'favorites' user.id %}">Избранное</a></li>
+			  <li class="divider" style="clear:both"></li>
+              <li><a href="{% url 'story_add' %}">Добавить рассказ</a></li>
+			  <li><a href="{% url 'author_dashboard' %}">Мои рассказы</a></li>
+			  <li class="divider" style="clear:both"></li>
+			  <li><a class="profile-link danger" href="{% url 'auth_logout' %}">Выход</a></li>
+			</ul>
+    		</li>
+			<li class="right">
+				<a href="#"><span class="glyphicon glyphicon-comment"></span> (0)</a>
+    		</li>
+			<li class="right">
+				<a href="#"><span class="glyphicon glyphicon-book"></span> (0)</a>	
+    		</li>			
             {% if user.is_staff %}
             <li id="nav_submitted" class="right"><a href="{% url 'submitted' %}">Новые ({% submitted_stories_count %})</a></li>
             {% endif %}
@@ -51,9 +89,9 @@
         <li class="right">
             <form class="login-form form-inline" action="{% url 'auth_login' %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
-                  <input id="id_username" type="text" name="username" placeholder="Логин" class="input-small" maxlength="30">
-                  <input type="password" name="password" id="id_password" placeholder="Пароль" class="input-small">
-                  <button class="btn" type="submit">Войти</button>
+                  <input id="id_username" type="text" name="username" placeholder="Логин" class="form-control" maxlength="30">
+                  <input type="password" name="password" id="id_password" placeholder="Пароль" class="form-control">
+                  <button class="btn btn-default" type="submit">Войти</button>
                   <a href="{% url 'password_reset' %}">Забыл<br/> пароль</a>
             </form>
         </li>

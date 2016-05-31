@@ -4,14 +4,14 @@
         {% block comment_control_buttons %}
             {% include 'includes/comment_control_buttons.html' %}
         {% endblock %}
-        <div class="comment">
+        <div class="well well-small">
             {% block comment_text %}{{ comment.text_as_html|safe }}{% endblock %}
         </div>
         <p class="meta">
             {% with user=comment.author %}
                 {% include 'includes/userlink.html' %}
             {% endwith %}
-            {{ comment.date|timesince }} назад{% if not story %} о <a href="{% url 'story_view' comment.story_id %}"><b>{{ comment.story.title }}</b></a>{% endif %}&nbsp;<a href="{{ comment.get_absolute_url }}">#</a>
+            {{ comment.date}} {% if not story %} о <a href="{% url 'story_view' comment.story_id %}"><b>{{ comment.story.title }}</b></a>{% endif %}&nbsp;<a><span class="glyphicon glyphicon-star" style="color: gold;"></span></a>&nbsp;<a href="{{ comment.get_absolute_url }}">#</a>
         </p>
     </div>
 {% empty %}

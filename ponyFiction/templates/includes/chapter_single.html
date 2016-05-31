@@ -1,11 +1,14 @@
-<div class="chapter-text">
+<div class="chapter-text not-wide">
     <h1 id="chapter{{ chapter.id }}">{{ chapter.title }}</h1>
     {% if chapter.notes %}
         <blockquote>{{ chapter.notes_as_html }}</blockquote>
     {% endif %}
     {{ chapter.text_as_html }}
     {% if next_chapter %}
-        <p><a href="{% url 'chapter_view_single' story.id next_chapter.order %}">Читать дальше</a></p>
+        <p><a href="{% url 'chapter_view_single' story.id next_chapter.order %}">Вперёд</a></p>
+		{% if prev_chapter %}
+			<p><a href="{% url 'chapter_view_single' story.id prev_chapter.order %}">Назад</a></p>
+		{% endif %}
     {% elif not story.finished and not story.freezed and not allchapters %}
         <p><strong>Продолжение следует...</strong></p>
     {% endif %}

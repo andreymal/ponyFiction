@@ -11,7 +11,7 @@
         {% endif %}
     </div>
     <div class="control-group">
-        <a data-dismiss="modal" href="{% url 'story_view' story.id %}" class="btn">Отменить</a>
-        <input class="btn btn-primary comment_submit" type="submit" value="Отправить"/>
+        <a data-dismiss="modal" href="{% url 'story_view' story.id %}" class="btn btn-danger">Отменить</a>
+        <input class="btn btn-success comment_submit" type="submit" value="Отправить"/>
     </div>
 </form>

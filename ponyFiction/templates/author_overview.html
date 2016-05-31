@@ -2,81 +2,75 @@
 {% block content %}
 {% load pluralize %}
 <div class="row">
-    <div class="span12">
+    <div class="col-md-12">
         <ul class="breadcrumb">
-            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-            <li class="active">{% if author.story_set.count > 0 %}Автор{% else %}Читатель{% endif %}: {{ author.username }}</li>
+              <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
+              <li class="active">Автор: {{ author.username }}</li>
         </ul>
     </div>
-    <div class="span8">
-        <h1 id="author-name">
-            <img src="{{ author.get_avatar_url }}" width="42" title="{{ author.username }}" alt="{{ author.username }}" class="userpic"/>
-            {{ author.username }}
-            {% if user.is_staff %}
-                {# <a href="{% url 'author_approve' author.id %}" id="author_approve" class="btn btn-small{% if author.approved %} btn-primary{% endif %}">{% if author.approved %}Проверен{% else %}Не проверен{% endif %}</a> #}
-                <form style="margin: 0; display: inline-block;" method="POST" action="{% url 'author_ban' author.id %}" id="author_ban">
+	<div class="col-md-12">
+			{% if user.is_staff %}
+                {# <a href="{% url 'author_approve' author.id %}" id="author_approve" class="btn btn-xs btn-default{% if author.approved %} btn-primary{% endif %}">{% if author.approved %}Проверен{% else %}Не проверен{% endif %}</a> #}
+                <form style="margin: 0; position: absolute; right: 10px;" method="POST" action="{% url 'author_ban' author.id %}" id="author_ban">
                     {% csrf_token %}
-                    <input type="submit" class="btn btn-small{% if not author.is_active %} btn-danger {% endif %}" value="{% if author.is_active %}Не забанен{% else %}Забанен{% endif %}" />
+                    <input type="submit" class="btn btn-xs btn-default{% if not author.is_active %} btn-danger {% endif %}" value="{% if author.is_active %}Не забанен{% else %}Забанен{% endif %}" />
                 </form>
             {% else %}
                 {% if not author.is_active %}
                     <sup id="banned">Read-only</sup>
                 {% endif %}
             {% endif %}
-            {% if user.is_authenticated and user.id == author.id %}
-                <sup><a class="edit-link" href="{% url 'author_profile_edit' %}">Редактировать профиль</a></sup>
-            {% endif %}
-        </h1>
-        <p>
-            {% if stories.count > 0 %}
-                Написал <b>{{ stories.count|rupluralize:'рассказ,рассказа,рассказов' }}</b>
-            {% else %}
-                Пока ничего не написал
-            {% endif %}
-             и
-            {% if author.comment_set.count > 0 %}
-                оставил <b>{{ author.comment_set.count|rupluralize:'комментарий,комментария,комментариев' }}</b>.
-            {% else %}
-                ничего не комментировал.
-            {% endif %}
-            {% if author.favorites_story_set.count > 0 %}
-                Занес в избранное <a href="{% url 'favorites' author.id %}">{{ author.favorites_story_set.count|rupluralize:'рассказ,рассказа,рассказов' }}</a>.
-            {% endif %}
-        </p>
-        <p class="author-description">{{ author.bio_as_html|striptags }}</p>
-        <p class="contact-links">
-            {% if author.jabber %}<a href="xmpp:{{ author.jabber }}" class="jabberlink">{{ author.jabber }}</a><br/>{% endif %}
-            {% if author.skype %}<a href="skype:{{ author.skype }}" class="skypelink">{{ author.skype }}</a><br/>{% endif %}
-            {% if author.tabun %}<a href="https://tabun.everypony.ru/profile/{{ author.tabun }}/" class="tabunlink">{{ author.tabun }}</a><br/>{% endif %}
-            {% if author.forum %}<a href="{{ author.forum }}" class="forumlink">{{ author.username }}</a><br/>{% endif %}
-            {% if author.vk %}<a href="https://vk.com/{{ author.vk }}" class="vkontaktlink">{{ author.vk }}</a><br/>{% endif %}
-        </p>
-    </div>
-    <div class="span8">
-        {% if series %}
-            <h2>Сборники автора ({{ author.series_set.count }})</h2>
-            {% include "includes/series.html" %}
-        {% endif %}
-
-        <h2>Рассказы автора</h2>
-        {% include "includes/stories.html" %}
-    </div>
-
-    <div class="span4">
-        {% if comments_count > 0 %}
-            <h2>Комментарии автора ({{ comments_count }})</h2>
+		<div class="profile-head">
+			<img src="{{ author.get_avatar_url }}" title="{{ author.username }}" alt="{{ author.username }}">
+			<span class="profile-text-heading"><span>{{ author.username }} <a href="#"><span class="glyphicon glyphicon-envelope"></span></a></span></span><br>
+			<span class="profile-text contact-links">
+            {% if author.jabber %}<a href="xmpp:{{ author.jabber }}" class="jabberlink">{{ author.jabber }}</a>{% endif %}
+            {% if author.skype %}<a href="skype:{{ author.skype }}" class="skypelink">{{ author.skype }}</a>{% endif %}
+            {% if author.tabun %}<a href="https://tabun.everypony.ru/profile/{{ author.tabun }}/" class="tabunlink">{{ author.tabun }}</a>{% endif %}
+            {% if author.forum %}<a href="{{ author.forum }}" class="forumlink">{{ author.username }}</a>{% endif %}
+            {% if author.vk %}<a href="https://vk.com/{{ author.vk }}" class="vkontaktlink">{{ author.vk }}</a>{% endif %}			
+			</span><br>
+			<span class="profile-text"><a disabled>Добавить в друзья</a>
+		</span></div>
+		<ul class="nav nav-tabs" style="border-bottom: 1px solid #ddd;">
+			<li class="active"><a href="#info"  class="active" aria-controls="info" role="tab" data-toggle="tab">Информация</a></li>
+			<li><a href="#userstories" aria-controls="userstories" role="tab" data-toggle="tab">Рассказы ({% if stories.count > 0 %}{{ stories.count }}{% else %}0{% endif %})</a></li>
+			<li><a href="#comments" aria-controls="comments" role="tab" data-toggle="tab">Комментарии ({% if comments_count > 0 %}{{ comments_count }}{% else %}0{% endif %})</a></li>
+			<li><a href="#userrecense" aria-controls="userrecense" role="tab" data-toggle="tab">Рецензии (0)</a></li>
+			<li><a href="#userfavorite" aria-controls="userfavorite" role="tab" data-toggle="tab">Избранное ({% if author.favorites_story_set.count > 0 %}{{ author.favorites_story_set.count }}{% else %}0{% endif %})</a></li>
+		</ul>
+		<div class="tab-content" id="tabusercontent">
+			<div role="tabpanel" class="tab-pane profile-tab active" id="info">
+			<h3>Автор о себе:</h3>
+			<p>{{ author.bio_as_html|striptags }}</p>
+			<h3>Личные данные:</h3>
+			<ul class="info-list">
+				<li><span>Пол:</span> <strong></strong></li>
+				<li><span>Дата рождения:</span> <strong></strong></li>
+				<li><span>Местоположение:</span> <strong></strong></li>
+				<li><span>Зарегистрирован:</span> <strong></strong></li>
+			</ul>
+			</div>
+			<div role="tabpanel" class="tab-pane profile-tab fade in" id="userstories">
+			{% include "includes/stories.html" %}
+			</div>
+			<div role="tabpanel" class="tab-pane profile-tab fade" id="userrecense">
+			<h3>Здесь пока ничего нет</h3>
+			</div>
+			<div role="tabpanel" class="tab-pane profile-tab fade" id="userfavorite">
+			<h3>Здесь пока ничего нет</h3>
+			</div>
+			<div role="tabpanel" class="tab-pane profile-tab fade" id="comments">
+			{% if comments_count > 0 %}
             <div id="comments-list">
             {% include "includes/brief_comments.html" %}
             </div>
             {% include "includes/comments_pagination_author_overview.html" %}
-        {% endif %}
-    </div>
-
-      <div class="span12">
-        <ul class="breadcrumb">
-              <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-              <li class="active">Автор: {{ author.username }}</li>
-        </ul>
-      </div>
+			{% else %}
+			<h3>Здесь пока ничего нет</h3>
+			{% endif %}
+			</div>
+		</div>
+	</div>
 </div>
 {% endblock %}

@@ -1,6 +1,6 @@
 {% if user.is_staff %}
-    <span class="story-control-btn">
-        <a class="btn btn-warning btn-mini comment_edit" href="{% url 'comment_edit' comment.story.id comment.id %}">Редактировать</a>
-        <a class="btn btn-danger btn-mini comment_delete" href="{% url 'comment_delete' comment.story.id comment.id %}">Удалить</a>
+    <span class="story-control-btn btn-group" style="position: relative; bottom: 22px;">
+        <a class="btn btn-warning btn-xs btn-default comment_edit" href="{% url 'comment_edit' comment.story.id comment.id %}">Редактировать</a>
+        <a class="btn btn-danger btn-xs btn-default comment_delete" href="{% url 'comment_delete' comment.story.id comment.id %}">Удалить</a>
     </span>
 {% endif %}

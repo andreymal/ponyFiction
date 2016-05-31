@@ -1,7 +1,7 @@
 {% extends "common.html" %}
 {% block content %}
 <div class="row">
-    <div class="span12">
+    <div class="col-md-12">
         <ul class="breadcrumb">
             <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
             <li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>
@@ -14,7 +14,7 @@
             {% endif %}
         </ul>
     </div>
-    <div class="span12">
+    <div class="col-md-12">
         {% if story %}
             <h1>Добавление новой главы</h1>
             <p>Перед добавлением главы рекомендуем прочитать <a href="{% url 'staticpage' 'terms' %}">правила</a> и <a href="{% url 'staticpage' 'help' %}">справку</a>. Они сделают вашу жизнь и жизни читателей проще.</p>
@@ -74,7 +74,7 @@
         {% include "includes/chapter_single.html" %}
     {% endif %}
 
-    <div class="span12">
+    <div class="col-md-12">
         <ul class="breadcrumb">
             <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
             <li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>

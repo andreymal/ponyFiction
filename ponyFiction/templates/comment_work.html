@@ -1,7 +1,7 @@
 {% extends "common.html" %}
 {% block content %}
 <div class="row">
-    <div class="span8">
+    <div class="col-md-8">
     <ul class="breadcrumb">
       <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
       <li><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> <span class="divider">/</span></li>

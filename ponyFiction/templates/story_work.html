@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="span12">
+    <div class="col-md-12">
         <ul class="breadcrumb">
             <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
             <li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>
@@ -10,7 +10,7 @@
         </ul>
     </div>
 
-    <div class="span12">
+    <div class="col-md-12">
         <h1>
             {{ page_title }}
             {% include 'includes/story_control_buttons.html' %}
@@ -180,8 +180,8 @@
                                       <li id="chapter_{{ chapter.id }}" class="btn btn-large">
                                         {{ chapter.title }}
                                         <div class="btn-group">
-                                            <a class="btn btn-warning btn-mini" href="{% url 'chapter_edit' chapter.id %}">править</a>
-                                            <a class="btn btn-danger btn-mini chapter_delete" href="{% url 'chapter_delete' chapter.id %}">удалить</a>
+                                            <a class="btn btn-warning btn-xs btn-default" href="{% url 'chapter_edit' chapter.id %}">править</a>
+                                            <a class="btn btn-danger btn-xs btn-default chapter_delete" href="{% url 'chapter_delete' chapter.id %}">удалить</a>
                                         </div>
                                     </li>
                                 {% endfor %}
@@ -194,7 +194,7 @@
         </form>
       </div>
 
-    <div class="span12">
+    <div class="col-md-12">
         <ul class="breadcrumb">
               <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
               <li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>
