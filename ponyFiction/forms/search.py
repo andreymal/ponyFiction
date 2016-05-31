@@ -7,15 +7,15 @@ from ponyFiction.widgets import NumberInput, ButtonWidget, StoriesImgSelect, Sto
 
 class SearchForm(Form):
     checkbox_attrs = {
-        'btn_attrs': {'type': 'button', 'class': 'btn'},
+        'btn_attrs': {'type': 'button', 'class': 'btn btn-default'},
         'data_attrs': {'class': 'hidden'},
-        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-checkbox'},
+        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-checkbox', 'role': 'group'},
         'data_container_attrs': {'class': 'buttons-data'},
     }
     radio_attrs = {
-        'btn_attrs': {'type': 'button', 'class': 'btn'},
+        'btn_attrs': {'type': 'button', 'class': 'btn btn-default'},
         'data_attrs': {'class': 'hidden'},
-        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-radio'},
+        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-radio', 'role': 'group'},
         'data_container_attrs': {'class': 'buttons-data'},
     }
     img_attrs = {
@@ -31,7 +31,7 @@ class SearchForm(Form):
                 'size': 32,
                 'placeholder': 'Пинки-поиск',
                 'id': 'appendedInputButtons',
-                'class': 'span3',
+                'class': 'col-md-3 form-control',
                 'maxlength': 128,
             }
         ),
@@ -44,7 +44,7 @@ class SearchForm(Form):
             attrs={
                 'size': 8,
                 'placeholder': 'От',
-                'class': 'span3',
+                'class': 'col-md-3 form-control',
                 'maxlength': 8,
                 'min': 0,
                 'max': 99999000,
@@ -58,7 +58,7 @@ class SearchForm(Form):
             attrs={
                 'size': 8,
                 'placeholder': 'До',
-                'class': 'span3',
+                'class': 'col-md-3 form-control',
                 'maxlength': 8,
                 'min': 0,
                 'max': 99999000,
@@ -119,7 +119,7 @@ class SearchForm(Form):
         widget=ButtonWidget(
             attrs={
                 'type': 'button',
-                'class': 'btn btn-collapse',
+                'class': 'btn btn-collapse btn-default',
                 'data-toggle': 'collapse',
                 'data-target': '#more-info',
                 'text': 'Еще более тонкий поиск'
@@ -132,7 +132,7 @@ class SearchForm(Form):
         widget=ButtonWidget(
             attrs={
                 'type': 'button',
-                'class': 'btn btn-collapse',
+                'class': 'btn btn-collapse btn-default',
                 'data-toggle': 'collapse',
                 'data-target': '#more-filters',
                 'text': 'Фильтры поиска'
@@ -145,7 +145,7 @@ class SearchForm(Form):
         widget=ButtonWidget(
             attrs={
                 'type': 'button',
-                'class': 'btn btn-collapse',
+                'class': 'btn btn-collapse btn-default',
                 'data-toggle': 'collapse',
                 'data-target': '#more-sort',
                 'text': 'Сортировка результатов'
@@ -164,7 +164,7 @@ class SearchForm(Form):
         widget=StoriesServiceInput(
             attrs={
                 'type': 'reset',
-                'class': 'btn',
+                'class': 'btn btn-default',
                 'id': 'reset_search',
                 'value': 'Очистить',
             }

@@ -6,8 +6,8 @@ from ponyFiction.widgets import ServiceButtonWidget
 
 class ChapterForm(ModelForm):
     """ Форма добавления новой главы к рассказу """
-    textarea_dict = {'class': 'input-xxlarge chapter-textarea'}
-    attrs_dict = {'class': 'input-xxlarge'}
+    textarea_dict = {'class': 'form-control chapter-textarea'}
+    attrs_dict = {'class': 'form-control'}
 
     # Название
     title = CharField(

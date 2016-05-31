@@ -6,7 +6,7 @@ from ponyFiction.widgets import StoriesImgSelect, StoriesCheckboxSelectMultiple,
 
 
 class StoryForm(ModelForm):
-    attrs_dict = {'class': 'input-xxlarge'}
+    attrs_dict = {'class': 'form-control'}
     img_attrs = {
            'group_container_class': 'characters-group group-',
            'data_attrs': {'class': 'hidden'},
@@ -14,16 +14,16 @@ class StoryForm(ModelForm):
     }
 
     radio_attrs = {
-       'btn_attrs': {'type': 'button', 'class': 'btn'},
+       'btn_attrs': {'type': 'button', 'class': 'btn btn-default'},
        'data_attrs': {'class': 'hidden'},
-       'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-radio'},
+       'btn_container_attrs': {'class': 'btn-group buttons-visible', 'role': 'group', 'data-toggle': 'buttons-radio'},
        'data_container_attrs': {'class': 'buttons-data'},
     }
 
     checkbox_attrs = {
-       'btn_attrs': {'type': 'button', 'class': 'btn'},
+       'btn_attrs': {'type': 'button', 'class': 'btn btn-default'},
        'data_attrs': {'class': 'hidden'},
-       'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-checkbox'},
+       'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-checkbox', 'role': 'group'},
        'data_container_attrs': {'class': 'buttons-data'},
     }
 

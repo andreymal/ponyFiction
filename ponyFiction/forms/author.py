@@ -8,7 +8,7 @@ from django.forms.fields import ChoiceField
 
 
 class AuthorEditProfileForm(ModelForm):
-    attrs_dict = {'class': 'input-xlarge'}
+    attrs_dict = {'class': 'form-control'}
     bio = CharField(
         widget=Textarea(attrs=dict(attrs_dict, maxlength=2048, placeholder='Небольшое описание, отображается в профиле')),
         max_length=2048,
@@ -63,15 +63,15 @@ class AuthorEditProfileForm(ModelForm):
 
 class AuthorEditPrefsForm(Form):
     checkbox_attrs = {
-        'btn_attrs': {'type': 'button', 'class': 'btn'},
+        'btn_attrs': {'type': 'button', 'class': 'btn btn-default'},
         'data_attrs': {'class': 'hidden'},
-        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-checkbox'},
+        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-checkbox', 'role': 'group'},
         'data_container_attrs': {'class': 'buttons-data'},
     }
     radio_attrs = {
-        'btn_attrs': {'type': 'button', 'class': 'btn'},
+        'btn_attrs': {'type': 'button', 'class': 'btn btn-default'},
         'data_attrs': {'class': 'hidden'},
-        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-radio'},
+        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-radio', 'role': 'group'},
         'data_container_attrs': {'class': 'buttons-data'},
     }
     excluded_categories = ModelMultipleChoiceField(
@@ -108,7 +108,7 @@ class AuthorEditPrefsForm(Form):
 
 
 class AuthorEditEmailForm(Form):
-    attrs_dict = {'class': 'input-xlarge'}
+    attrs_dict = {'class': 'form-control'}
 
     email = EmailField(
         widget=TextInput(attrs=dict(attrs_dict, maxlength=75, placeholder='Адрес электронной почты')),
@@ -145,7 +145,7 @@ class AuthorEditEmailForm(Form):
 
 
 class AuthorEditPasswordForm(Form):
-    attrs_dict = {'class': 'input-xlarge'}
+    attrs_dict = {'class': 'form-control'}
 
     old_password = CharField(
         widget=PasswordInput(attrs=dict(attrs_dict, placeholder='****************'), render_value=False),
