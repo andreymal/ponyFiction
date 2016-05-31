@@ -287,7 +287,7 @@ commands:
   gulp: !Command
     container: build
     description: Gulp command
-    run: gulp
+    run: gulp $@
     accepts-arguments: true
 
   assets: !Supervise

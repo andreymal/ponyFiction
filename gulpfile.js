@@ -40,11 +40,11 @@ gulp.task('watch', function () {
 });
 
 gulp.task('less', function () {
-    gulp.src('assets/styles/**/*.less')
+    gulp.src('assets/styles/*.less')
         .pipe(less({
             paths: [
                 './assets/styles',
-                './node_modules',
+                '/usr/lib/node_modules',
                 process.env.NODE_PATH
             ]
         }))
