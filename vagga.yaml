@@ -290,11 +290,3 @@ commands:
     run: gulp $@
     accepts-arguments: true
 
-  assets: !Supervise
-    description: Build all assets for production
-    children:
-      gulp: !Command
-        container: build
-        environ:
-          NODE_ENV: production
-        run: gulp less
