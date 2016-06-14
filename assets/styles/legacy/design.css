@@ -1,7 +1,7 @@
 /* ToDo отправить коммент - кнопка странная */
 /* Body and base */
 body {
-	background: #f6f6f6 url('../i/body-bg.png') repeat 0 0;
+	background: #f6f6f6 url(/images/main/body-bg.png) repeat 0 0;
 }
 
 .container {
@@ -26,7 +26,7 @@ body {
 /* Header */
 
 .page-header {
-	background: #1D2A4F url('../i/header-bg.jpg') no-repeat 0 0;
+	background: #1D2A4F url(/images/main/header-bg.jpg) no-repeat 0 0;
 	height: 80px;
 	font-family: Georgia, Times, serif;
 	margin: 0px;
@@ -35,7 +35,7 @@ body {
 
 .logopic {
 	height: 240px;
-	background: transparent url('../i/logopics/logopic-6.jpg') no-repeat 0 0;
+	background: transparent url(/images/logopics/logopic-6.jpg) no-repeat 0 0;
 	background-size: cover;
 }
 
@@ -100,7 +100,7 @@ a.slidesjs-navigation {
 /* Main menu */
 .nav-pills.nav-main {
 	padding: 10px 15px 10px;
-	background: #1D2A4F url('../i/menu-bg.jpg') no-repeat 0 0;
+	background: #1D2A4F url(/images/main/menu-bg.jpg) no-repeat 0 0;
 	margin-bottom: 0;
 	font-size: 16px;
 }
@@ -311,7 +311,7 @@ img.avatar-small, .character-list img {
 .vote .upvote {
 	color: green;
 	padding: 4px 0 5px 30px;
-	background: transparent url('../i/upvote-24.png?1') no-repeat 0 0;
+	background: transparent url(/images/main/upvote-24.png) no-repeat 0 0;
 }
 
 .vote .upvote.unvoted:not(:hover) {
@@ -322,7 +322,7 @@ img.avatar-small, .character-list img {
 	color: red;
 	padding: 4px 30px 5px 0;
 	margin-right: 0.5em;
-	background: transparent url('../i/downvote-24.png?1') no-repeat 100% 0;
+	background: transparent url(/images/main/downvote-24.png) no-repeat 100% 0;
 }
 
 .vote .downvote.unvoted:not(:hover) {
@@ -659,51 +659,51 @@ select.select-size {
 }
 
 .pdf {
-	background: transparent url('../i/pdf.png') no-repeat 0 0;
+	background: transparent url(/images/main/pdf.png) no-repeat 0 0;
 }
 
 .txt {
-	background: transparent url('../i/txt.png') no-repeat 0 0;
+	background: transparent url(/images/main/txt.png) no-repeat 0 0;
 }
 
 .html {
-	background: transparent url('../i/html.png') no-repeat 0 0;
+	background: transparent url(/images/main/html.png) no-repeat 0 0;
 }
 
 .fb2 {
-	background: transparent url('../i/fb2.png') no-repeat 0 0;
+	background: transparent url(/images/main/fb2.png) no-repeat 0 0;
 }
 
 .mobi {
-	background: transparent url('../i/epub.png') no-repeat 0 0;
+	background: transparent url(/images/main/epub.png) no-repeat 0 0;
 }
 
 .up {
-	background: transparent url('../i/up.png') no-repeat 0 0;
+	background: transparent url(/images/main/up.png) no-repeat 0 0;
 }
 
 .down {
-	background: transparent url('../i/down.png') no-repeat 0 0;
+	background: transparent url(/images/main/down.png) no-repeat 0 0;
 }
 
 .smaller {
-	background: transparent url('../i/smaller.png') no-repeat 0 0;
+	background: transparent url(/images/main/smaller.png) no-repeat 0 0;
 }
 
 .bigger {
-	background: transparent url('../i/bigger.png') no-repeat 0 0;
+	background: transparent url(/images/main/bigger.png) no-repeat 0 0;
 }
 
 .favorite {
-	background: transparent url('../i/star.png') no-repeat 0 0;
+	background: transparent url(/images/main/star.png) no-repeat 0 0;
 }
 
 .bookmark {
-	background: transparent url('../i/bookmark.png') no-repeat 0 0;
+	background: transparent url(/images/main/bookmark.png) no-repeat 0 0;
 }
 
 .feed {
-	background: transparent url('../i/feed.png') no-repeat 0 0;
+	background: transparent url(/images/main/feed.png) no-repeat 0 0;
 }
 
 .feed:hover,.favorited,.scon.favorite:hover,.bookmarked,.bookmark:hover
@@ -1030,23 +1030,23 @@ a.btn {
 	line-height: 16px;
 	height: 16px;
 	padding: 0 0 0 22px;
-	background: transparent url('../i/jabber.png') no-repeat 0 0;
+	background: transparent url(/images/main/jabber.png) no-repeat 0 0;
 }
 
 .contact-links .skypelink {
-	background-image: url('../i/skype.png');
+	background-image: url(/images/main/skype.png);
 }
 
 .contact-links .tabunlink {
-	background-image: url('../i/tabun.png');
+	background-image: url(/images/main/tabun.png);
 }
 
 .contact-links .forumlink {
-	background-image: url('../i/forum.png');
+	background-image: url(/images/main/forum.png);
 }
 
 .contact-links .vkontaktlink {
-	background-image: url('../i/vk.png');
+	background-image: url(/images/main/vk.png);
 }
 
 /* === Bottom of the page stuff === */
@@ -1097,7 +1097,7 @@ a.btn {
 /* Footer */
 .footer {
 	padding: 10px 20px 5px;
-	background: #1D2A4F url('../i/header-bg.jpg') no-repeat 0 0;
+	background: #1D2A4F url(/images/main/header-bg.jpg) no-repeat 0 0;
 	color: #FAFAE8;
 	text-align: center;
 	border-radius: 0 0 8px 8px;
@@ -1123,20 +1123,20 @@ a.btn {
 }
 
 .page-404 {
-	background: transparent url('../i/pageart/404.png') no-repeat 90% 100%;
+	background: transparent url(/images/pageart/404.png) no-repeat 90% 100%;
 }
 
 .page-500 {
-	background: transparent url('../i/pageart/500.png') no-repeat 90% 100%;
+	background: transparent url(/images/pageart/500.png) no-repeat 90% 100%;
 }
 
 .page-tech-work {
-	background: transparent url('../i/pageart/tech-work.png') no-repeat 90%
+	background: transparent url(/images/pageart/tech-work.png) no-repeat 90%
 		100%;
 }
 
 .page-502 {
-	background: transparent url('../i/pageart/502.png') no-repeat 90% 80%;
+	background: transparent url(/images/pageart/502.png) no-repeat 90% 80%;
 }
 
 .passres-form-text {
@@ -1144,22 +1144,22 @@ a.btn {
 }
 
 .passres-form {
-	background: transparent url('../i/pageart/passres-form.png') no-repeat
+	background: transparent url(/images/pageart/passres-form.png) no-repeat
 		90% 90%;
 }
 
 .passres-confirm {
-	background: transparent url('../i/pageart/passres-confirm.png')
+	background: transparent url(/images/pageart/passres-confirm.png)
 		no-repeat 90% 100%;
 }
 
 .passres-complete {
-	background: transparent url('../i/pageart/passres-complete.png')
+	background: transparent url(/images/pageart/passres-complete.png)
 		no-repeat 90% 100%;
 }
 
 .passres-done {
-	background: transparent url('../i/pageart/passres-done.png') no-repeat
+	background: transparent url(/images/pageart/passres-done.png) no-repeat
 		90% 90%;
 }
 
@@ -1172,11 +1172,11 @@ a.btn {
 }
 
 .login-page {
-	background: transparent url('../i/pageart/login.png') no-repeat 90% 100%;
+	background: transparent url(/images/pageart/login.png) no-repeat 90% 100%;
 }
 
 .comment-form {
-	background: transparent url('../i/pageart/comments.png') no-repeat 90%
+	background: transparent url(/images/pageart/comments.png) no-repeat 90%
 		100%;
 }
 
@@ -1193,15 +1193,15 @@ a.btn {
 }
 
 .page-faq {
-	background: transparent url('../i/pageart/faq.png') no-repeat 90% 100%;
+	background: transparent url(/images/pageart/faq.png) no-repeat 90% 100%;
 }
 
 .page-terms {
-	background: transparent url('../i/pageart/terms.png') no-repeat 90% 100%;
+	background: transparent url(/images/pageart/terms.png) no-repeat 90% 100%;
 }
 
 .page-help {
-	background: transparent url('../i/pageart/help.png') no-repeat 90% 100%;
+	background: transparent url(/images/pageart/help.png) no-repeat 90% 100%;
 }
 
 /* Больное наследие Еврипони */
@@ -1279,11 +1279,11 @@ a.btn {
  * RSS + Twitter icons
 */
 .twitter {
-	background-image: url('../i/twitter.png');
+	background-image: url(/images/main/twitter.png);
 }
 
 .rss {
-	background-image: url('../i/rss.png');
+	background-image: url(/images/main/rss.png);
 }
 
 .rss:hover,.twitter:hover {

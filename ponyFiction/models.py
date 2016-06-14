@@ -124,14 +124,14 @@ class Author(AbstractUser, JSONModel):
         if url:
             return url
 
-        return staticfiles_storage.url('i/userpic.jpg')
+        return staticfiles_storage.url('images/main/userpic.jpg')
 
     def get_small_avatar_url(self):
         url = self.get_tabun_avatar_url()
         if url:
             return url.replace('100x100', '24x24')
 
-        return staticfiles_storage.url('i/userpic.jpg')
+        return staticfiles_storage.url('images/main/userpic.jpg')
 
     def get_tabun_avatar_url(self):
         if not self.tabun:
@@ -194,7 +194,7 @@ class Character(JSONModel):
 
     @property
     def thumb(self):
-        return staticfiles_storage.url('i/characters/{}.png'.format(self.id))
+        return staticfiles_storage.url('images/characters/{}.png'.format(self.id))
 
     class Meta:
         verbose_name = "персонаж"
@@ -451,7 +451,7 @@ class Story(JSONModel):
         n = int(round(self.get_vote_rank() * 10))
         k = int(round(float(n*self.vote_up_count)/max(self.vote_count, 1)))
         for i in range(n):
-            img = 'i/horseshoe-' + 'lr'[i%2]
+            img = 'images/main/horseshoe-' + 'lr'[i%2]
             if i+1 > k: img += 'g'
             img += '.png'
             yield img
