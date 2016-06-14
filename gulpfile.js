@@ -11,7 +11,12 @@ var path = require('path');
 var DEBUG = process.env.NODE_ENV != "production";
 
 
-gulp.task('image:optimize', function () {
+gulp.task('images:copy', function () {
+    gulp.src('assets/images/**')
+        .pipe(gulp.dest('static/images'));
+});
+
+gulp.task('images:optimize', function () {
     gulp.src('assets/images/**')
         .pipe(imagemin({
             progressive: true,
@@ -23,23 +28,19 @@ gulp.task('image:optimize', function () {
         .pipe(gulp.dest('static/images'));
 });
 
-gulp.task('fonts', function () {
+gulp.task('fonts:copy', function () {
     gulp.src('assets/fonts/**')
         .pipe(gulp.dest('static/fonts'));
 });
 
-gulp.task('css:lint', function () {
+gulp.task('styles:lint', function () {
     gulp.src(['static/styles/*.css'])
         .pipe(prefix('last 3 version', '> 1%', {cascade: true}))
         .pipe(csslint('.csslintrc'))
         .pipe(csslint.reporter());
 });
 
-gulp.task('watch', function () {
-    gulp.watch(['assets/styles/**/*.less'], ['less:dev', 'css:lint']);
-});
-
-gulp.task('less', function () {
+gulp.task('styles:compile', function () {
     gulp.src('assets/styles/*.less')
         .pipe(less({
             paths: [
@@ -51,3 +52,12 @@ gulp.task('less', function () {
         .pipe(DEBUG ? gutil.noop() : cleanCss())
         .pipe(gulp.dest('static/styles/'));
 });
+
+gulp.task('assets:dev', ['images:copy', 'fonts:copy', 'styles:compile']);
+
+gulp.task('assets:production', ['images:optimize', 'fonts:copy', 'styles:compile']);
+
+gulp.task('watch', function () {
+    gulp.watch(['assets/styles/**/*.less', 'assets/fonts/*', 'assets/images/**/*'], ['assets:dev']);
+});
+
