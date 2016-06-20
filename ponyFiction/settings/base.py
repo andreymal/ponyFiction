@@ -51,7 +51,6 @@ MEDIA_URL = '/media/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
-STATICFILES_DIRS = ()
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -68,7 +67,6 @@ MIDDLEWARE_CLASSES = (
 INTERNAL_IPS = ('127.0.0.1',)
 ROOT_URLCONF = 'ponyFiction.urls'
 ALLOWED_HOSTS = ['*']
-WSGI_APPLICATION = 'ponyFiction.wsgi.application'
 
 NSFW_RATING_IDS = (1,)
 
