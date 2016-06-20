@@ -2,8 +2,6 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var csslint = require('gulp-csslint');
 var cleanCss = require('gulp-clean-css');
-var imagemin = require('gulp-imagemin');
-var pngcrush = require('imagemin-pngcrush');
 var less = require('gulp-less');
 var prefix = require('gulp-autoprefixer');
 var path = require('path');
@@ -13,18 +11,6 @@ var DEBUG = process.env.NODE_ENV != "production";
 
 gulp.task('images:copy', function () {
     gulp.src('assets/images/**')
-        .pipe(gulp.dest('static/images'));
-});
-
-gulp.task('images:optimize', function () {
-    gulp.src('assets/images/**')
-        .pipe(imagemin({
-            progressive: true,
-            svgoPlugins: [{
-                removeViewBox: false
-            }],
-            use: [pngcrush()]
-        }))
         .pipe(gulp.dest('static/images'));
 });
 
@@ -62,7 +48,7 @@ gulp.task('scripts:compile', function () {
 
 gulp.task('assets:dev', ['images:copy', 'fonts:copy', 'styles:compile', 'scripts:compile']);
 
-gulp.task('assets:production', ['images:optimize', 'fonts:copy', 'styles:compile', 'scripts:compile']);
+gulp.task('assets:production', ['images:copy', 'fonts:copy', 'styles:compile', 'scripts:compile']);
 
 gulp.task('watch', function () {
     gulp.watch(
