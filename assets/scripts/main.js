@@ -730,7 +730,7 @@ var stuff = {
         } else {
             var stories_gr = $.cookie('stories_gr');
         }
-        var new_image = "url(/static/i/logopics/logopic-" + stories_gr + ".jpg)";
+        var new_image = "url(/static/images/logopics/logopic-" + stories_gr + ".jpg)";
         $('.logopic').css('background-image', new_image);
     },
     // Плавающая панелька
@@ -848,8 +848,8 @@ var stuff = {
                 restartDelay : 2500
             }
         });
-        $('.slidesjs-previous').html('<img src="/static/i/arrow-left.png" />');
-        $('.slidesjs-next').html('<img src="/static/i/arrow-right.png" />');
+        $('.slidesjs-previous').html('<img src="/static/images/main/arrow-left.png" />');
+        $('.slidesjs-next').html('<img src="/static/images/main/arrow-right.png" />');
     }
 }
 // При загрузке страницы
