@@ -15,7 +15,7 @@ function deploy() {
     # Cleanup
     vagga clean
     # Collect (and build) static
-    vagga gulp assets:production
+    vagga gulp assets
     vagga manage.py collectstatic --noinput
     # Build app
     vagga package
