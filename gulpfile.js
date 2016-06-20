@@ -65,6 +65,15 @@ gulp.task('assets:dev', ['images:copy', 'fonts:copy', 'styles:compile', 'scripts
 gulp.task('assets:production', ['images:optimize', 'fonts:copy', 'styles:compile', 'scripts:compile']);
 
 gulp.task('watch', function () {
-    gulp.watch(['assets/styles/**/*.less', 'assets/fonts/*', 'assets/images/**/*'], ['assets:dev']);
+    gulp.watch(
+        [
+            'assets/styles/**/*.css',  // Until conversion of all legacy CSS files
+            'assets/scripts/*.js',  // Until conversion of all legacy JSS files
+            'assets/styles/**/*.less',
+            'assets/fonts/*',
+            'assets/images/**/*'
+        ],
+        ['assets:dev']
+    );
 });
 
