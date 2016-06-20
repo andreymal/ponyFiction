@@ -48,7 +48,7 @@ gulp.task('scripts:compile', function () {
 
 gulp.task('assets:dev', ['images:copy', 'fonts:copy', 'styles:compile', 'scripts:compile']);
 
-gulp.task('assets:production', ['images:copy', 'fonts:copy', 'styles:compile', 'scripts:compile']);
+gulp.task('assets', ['images:copy', 'fonts:copy', 'styles:compile', 'scripts:compile']);
 
 gulp.task('watch', function () {
     gulp.watch(
