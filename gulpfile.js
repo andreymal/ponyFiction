@@ -45,9 +45,6 @@ gulp.task('scripts:compile', function () {
         .pipe(gulp.dest('static/scripts'));
 });
 
-
-gulp.task('assets:dev', ['images:copy', 'fonts:copy', 'styles:compile', 'scripts:compile']);
-
 gulp.task('assets', ['images:copy', 'fonts:copy', 'styles:compile', 'scripts:compile']);
 
 gulp.task('watch', function () {
