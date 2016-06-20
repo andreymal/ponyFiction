@@ -20,7 +20,7 @@
     "gulp-csslint": "0.3.0",
     "gulp-less": "3.1.0",
     "gulp-watch": "4.3.5",
-    "gulp-util": "3.0.7",
+    "gulp-util": "3.0.7"
   },
   "dependencies": {
     "bootstrap-less": "3.3.8"
