@@ -53,9 +53,16 @@ gulp.task('styles:compile', function () {
         .pipe(gulp.dest('static/styles/'));
 });
 
-gulp.task('assets:dev', ['images:copy', 'fonts:copy', 'styles:compile']);
+gulp.task('scripts:compile', function () {
+    // Simple copy by now
+    gulp.src('assets/scripts/**')
+        .pipe(gulp.dest('static/scripts'));
+});
 
-gulp.task('assets:production', ['images:optimize', 'fonts:copy', 'styles:compile']);
+
+gulp.task('assets:dev', ['images:copy', 'fonts:copy', 'styles:compile', 'scripts:compile']);
+
+gulp.task('assets:production', ['images:optimize', 'fonts:copy', 'styles:compile', 'scripts:compile']);
 
 gulp.task('watch', function () {
     gulp.watch(['assets/styles/**/*.less', 'assets/fonts/*', 'assets/images/**/*'], ['assets:dev']);
