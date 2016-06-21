@@ -7,7 +7,7 @@ from registration.forms import RegistrationFormUniqueEmail
 from django.forms import CharField, EmailField, PasswordInput, RegexField, TextInput
 
 
-attrs_dict = {'class': 'required input-xlarge'}
+attrs_dict = {'class': 'required form-control'}
 username_field = RegexField(
     regex=r'^[0-9a-zA-Z\u0430-\u044f\u0410-\u042f\u0451\u0401_@+-.. ]+$',
     widget=TextInput(attrs=dict(attrs_dict, maxlength=32)),
