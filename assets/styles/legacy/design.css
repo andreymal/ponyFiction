@@ -1,4 +1,3 @@
-/* ToDo отправить коммент - кнопка странная */
 /* Body and base */
 body {
 	background: #f6f6f6 url(../images/main/body-bg.png) repeat 0 0;
@@ -364,13 +363,14 @@ h1 .alert {
 
 /* Genra */
 .gen {
-	padding: 4px 9px;
+	padding: 6px 9px;
 	border-radius: 5px;
 	color: #fff;
 	text-decoration: none !important;
 	display: inline-block;
 	line-height: 16px;
 	margin: 0 4px 4px 0;
+	cursor: pointer;
 }
 
 .error .gen {
@@ -884,7 +884,7 @@ input.hidden {
 }
 
 .collapse p {
-	padding: 8px 0 8px 10px;
+	padding: 8px 0px;
 	line-height: 22px;
 	margin: 0;
 }
@@ -1297,6 +1297,7 @@ a.btn {
     margin: 6px 0 0 12px;
     position: relative;
     right: 15px;
+    z-index: 1;
 }
 
 /* === Adaptive overrides === */
@@ -1692,4 +1693,8 @@ blockquote {
 	width: 16px;
 	height: 16px;
 	text-decoration: none;
+}
+
+#appendedInputButtons {
+	z-index: 2;
 }
