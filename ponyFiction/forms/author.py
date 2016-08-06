@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from ponyFiction.models import Author, Category
-from django.forms import CharField, EmailField, Form, ModelForm, PasswordInput, RegexField, TextInput, Textarea, ValidationError, URLField
+from django.forms import CharField, EmailField, Form, ModelForm, PasswordInput, RadioSelect, RegexField, TextInput, Textarea, ValidationError, URLField
 from ponyFiction.utils.misc import obj_to_int_list
-from ponyFiction.widgets import StoriesButtons, StoriesRadioButtons
+from ponyFiction.widgets import StoriesButtons
 from django.forms.models import ModelMultipleChoiceField
 from django.forms.fields import ChoiceField
 
@@ -68,12 +68,6 @@ class AuthorEditPrefsForm(Form):
         'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-checkbox', 'role': 'group'},
         'data_container_attrs': {'class': 'buttons-data'},
     }
-    radio_attrs = {
-        'btn_attrs': {'type': 'button', 'class': 'btn btn-default'},
-        'data_attrs': {'class': 'hidden'},
-        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-radio', 'role': 'group'},
-        'data_container_attrs': {'class': 'buttons-data'},
-    }
     excluded_categories = ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         required=False,
@@ -82,12 +76,12 @@ class AuthorEditPrefsForm(Form):
     detail_view = ChoiceField(
         choices=[(0, 'Кратко'), (1, 'Подробно')],
         required=True,
-        widget=StoriesRadioButtons(attrs=radio_attrs),
+        widget=RadioSelect,
     )
     nsfw = ChoiceField(
         choices=[(0, 'Показать'), (1, 'Скрыть')],
         required=True,
-        widget=StoriesRadioButtons(attrs=radio_attrs),
+        widget=RadioSelect,
     )
 
     def __init__(self, *args, **kwargs):

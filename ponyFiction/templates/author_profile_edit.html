@@ -155,13 +155,13 @@
                                 <label>Скрыть жанры:</label><br>
                                 {{ prefs_form.excluded_categories }}
                             </div><br>
-                            <div class="padded bootstrap radio">
+                            <div class="padded bootstrap">
                                 <label>Показать рассказ в списках:</label><br>
-                                {{ prefs_form.detail_view }}
+                                {% include "includes/bootstrap/button_radio.html" with field=prefs_form.detail_view %}
                             </div><br>
-                            <div class="padded bootstrap radio">
+                            <div class="padded bootstrap">
                                 <label>NSFW-предупреждения:</label><br>
-                                {{ prefs_form.nsfw }}
+                                {% include "includes/bootstrap/button_radio.html" with field=prefs_form.nsfw %}
                             </div><br>
                             <div class="form-actions">
                                 <input class="btn btn-primary" type="submit" name="save_prefs" value="Сохранить личные настройки"/>
