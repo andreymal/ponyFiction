@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.forms import Field, Form, ModelMultipleChoiceField, MultipleChoiceField, TextInput, ChoiceField, IntegerField, CharField
+from django.forms import Field, Form, ModelMultipleChoiceField, MultipleChoiceField, TextInput, ChoiceField, IntegerField, CharField, RadioSelect
 from ponyFiction.forms.fields import GroupedModelChoiceField
 from ponyFiction.models import Character, Category, Classifier, Rating
-from ponyFiction.widgets import NumberInput, ButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesButtons, StoriesRadioButtons, StoriesServiceInput
+from ponyFiction.widgets import NumberInput, ButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesButtons, StoriesServiceInput
 
 
 class SearchForm(Form):
@@ -10,12 +10,6 @@ class SearchForm(Form):
         'btn_attrs': {'type': 'button', 'class': 'btn btn-default'},
         'data_attrs': {'class': 'hidden'},
         'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-checkbox', 'role': 'group'},
-        'data_container_attrs': {'class': 'buttons-data'},
-    }
-    radio_attrs = {
-        'btn_attrs': {'type': 'button', 'class': 'btn btn-default'},
-        'data_attrs': {'class': 'hidden'},
-        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-radio', 'role': 'group'},
         'data_container_attrs': {'class': 'buttons-data'},
     }
     img_attrs = {
@@ -155,8 +149,9 @@ class SearchForm(Form):
     # Сортировка
     sort = ChoiceField(
         choices=[(0, 'По релевантности'), (1, 'По дате'), (2, 'По размеру'), (4, 'По комментам')],
+        initial=0,
         required=True,
-        widget=StoriesRadioButtons(attrs=radio_attrs),
+        widget=RadioSelect,
     )
 
     button_reset = Field(
@@ -173,6 +168,7 @@ class SearchForm(Form):
     # Тип поиска
     type = ChoiceField(
         choices=[(0, 'По описанию'), (1, 'По главам')],
+        initial=0,
         required=True,
-        widget=StoriesRadioButtons(attrs=radio_attrs),
+        widget=RadioSelect,
     )
