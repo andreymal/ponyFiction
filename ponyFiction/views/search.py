@@ -20,6 +20,9 @@ def search_main(request):
         return render(request, 'search_disabled.html')
 
     postform = SearchForm(request.GET)
+    if not postform.is_valid():
+        return search_form(request)
+
     return search_action(request, postform)
 
 
