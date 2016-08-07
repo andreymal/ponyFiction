@@ -774,39 +774,6 @@ var stuff = {
         }
     },
 
-    // Обработка состояний BootStrap Elements
-    bootstrap : function() {
-        var group = $(this);
-        var buttons_container = $('.buttons-visible', group)
-        var data_container = $('.buttons-data', group)
-        var type = group.hasClass('checkbox') ? 'checkbox' : 'radio'
-
-        // Обработка проставленных заранее чекбоксов и радиоселектов
-        $('input', data_container).each(function() {
-            var input = $(this);
-            var value = input.attr('value');
-            if (!!(input.prop('checked'))) {
-                $('button[value=' + value + ']', buttons_container).addClass('active');
-            }
-        });
-        // Onclick-обработчик
-        $('button', buttons_container).each(
-                function() {
-                    var button = $(this);
-                    button.on('click', function() {
-                        var value = button.attr('value');
-                        if (type == 'checkbox') {
-                            var input = $('input:checkbox[value=' + value + ']', data_container);
-                            input.prop('checked', !($('input:checked[value=' + value + ']', data_container).length | 0));
-                        } else if (type == 'radio') {
-                            if (!(!!($('input:radio[value=' + value + ']', data_container).prop('checked')))) {
-                                $('input:radio', data_container).prop('checked', false);
-                                $('input:radio[value=' + value + ']', data_container).prop('checked', true);
-                            }
-                        }
-                    });
-                });
-    },
     // Конфигурация заголовка AJAX-запроса с CSRF Cookie
     ajaxsetup : function() {
         $.ajaxSetup({
@@ -857,7 +824,6 @@ $(function() {
     stuff.logo();
     stuff.ajaxsetup();
     stuff.carousel();
-    $('.bootstrap').each(stuff.bootstrap);
     stuff.page();
     stuff.panel();
 });
