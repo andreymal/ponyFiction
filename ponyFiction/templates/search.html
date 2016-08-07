@@ -47,21 +47,21 @@
                 <!--Начало спойлера -->
                 <div id="more-info" class="collapse">
                     <h3>Дополнительные настройки поиска:</h3>
-                    <div class="padded bootstrap checkbox">
+                    <div class="padded bootstrap">
                         <h4>Происхождение</h4>
-                        {{ form.original }}
+                        {% include "includes/bootstrap/button_checkbox.html" with field=form.original %}
                     </div>
-                    <div class="padded bootstrap checkbox">
+                    <div class="padded bootstrap">
                         <h4>Статус рассказа</h4>
-                        {{ form.finished }}
+                        {% include "includes/bootstrap/button_checkbox.html" with field=form.finished %}
                     </div>
-                    <div class="padded bootstrap checkbox">
+                    <div class="padded bootstrap">
                         <h4>Активность</h4>
-                        {{ form.freezed }}
+                        {% include "includes/bootstrap/button_checkbox.html" with field=form.freezed %}
                     </div>
-                    <div class="padded bootstrap checkbox">
+                    <div class="padded bootstrap">
                         <h4>Рейтинг</h4>
-                        {{ form.rating }}
+                        {% include "includes/bootstrap/button_checkbox.html" with field=form.rating %}
                     </div>
                     <div class="padded medium-input">
                         <h4>Размер рассказа</h4>

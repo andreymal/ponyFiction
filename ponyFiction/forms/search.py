@@ -1,17 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.forms import Field, Form, ModelMultipleChoiceField, MultipleChoiceField, TextInput, ChoiceField, IntegerField, CharField, RadioSelect
+from django.forms import CheckboxSelectMultiple, Field, Form, ModelMultipleChoiceField, MultipleChoiceField, TextInput, ChoiceField, IntegerField, CharField, RadioSelect
 from ponyFiction.forms.fields import GroupedModelChoiceField
 from ponyFiction.models import Character, Category, Classifier, Rating
-from ponyFiction.widgets import NumberInput, ButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesButtons, StoriesServiceInput
+from ponyFiction.widgets import NumberInput, ButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesServiceInput
 
 
 class SearchForm(Form):
-    checkbox_attrs = {
-        'btn_attrs': {'type': 'button', 'class': 'btn btn-default'},
-        'data_attrs': {'class': 'hidden'},
-        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-checkbox', 'role': 'group'},
-        'data_container_attrs': {'class': 'buttons-data'},
-    }
     img_attrs = {
         'group_container_class': 'characters-group group-',
         'data_attrs': {'class': 'hidden'},
@@ -81,25 +75,25 @@ class SearchForm(Form):
     original = MultipleChoiceField(
         choices=[(0, 'Перевод'), (1, 'Оригинал')],
         required=False,
-        widget=StoriesButtons(attrs=checkbox_attrs),
+        widget=CheckboxSelectMultiple,
     )
     # Статус рассказа
     finished = MultipleChoiceField(
         choices=[(0, 'Не завершен'), (1, 'Завершен')],
         required=False,
-        widget=StoriesButtons(attrs=checkbox_attrs),
+        widget=CheckboxSelectMultiple,
     )
     # Активность рассказа
     freezed = MultipleChoiceField(
         choices=[(0, 'Активен'), (1, 'Заморожен')],
         required=False,
-        widget=StoriesButtons(attrs=checkbox_attrs),
+        widget=CheckboxSelectMultiple,
     )
     # Рейтинги
     rating = ModelMultipleChoiceField(
         queryset=Rating.objects.all(),
         required=False,
-        widget=StoriesButtons(attrs=checkbox_attrs),
+        widget=CheckboxSelectMultiple,
     )
     # События
     cls = ModelMultipleChoiceField(
