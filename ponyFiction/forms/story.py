@@ -13,13 +13,6 @@ class StoryForm(ModelForm):
            'container_attrs': {'class': 'character-item'}
     }
 
-    checkbox_attrs = {
-       'btn_attrs': {'type': 'button', 'class': 'btn btn-default'},
-       'data_attrs': {'class': 'hidden'},
-       'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-checkbox', 'role': 'group'},
-       'data_container_attrs': {'class': 'buttons-data'},
-    }
-
     # Персонажи
     characters = GroupedModelChoiceField(
         required=False,
