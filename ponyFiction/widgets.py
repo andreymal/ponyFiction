@@ -34,32 +34,6 @@ class StoriesServiceInput(Widget):
         return mark_safe('<input%s />' % flatatt(self.attrs))
 
 
-class StoriesCheckboxSelectMultiple(CheckboxSelectMultiple):
-    def render(self, name, value, attrs=None, choices=()):
-        if value is None:
-            value = []
-        value = [int(x) for x in value]
-        attrs = self.attrs
-        label_attrs = attrs.pop('label_attrs', None)
-        label_id_related_attr = attrs.pop('label_id_related_attr', False)
-        output = []
-        if label_attrs is not None:
-            label_class = '%s' % ' '.join(label_attrs)
-        else:
-            label_class = ''
-        for (option_value, option_label) in self.choices:
-            cb = CheckboxInput(attrs, check_test=lambda x: x in value)
-            rendered_cb = cb.render(name, option_value)
-            option_label = force_unicode(option_label)
-            if label_id_related_attr:
-                label_id_related_class = ' '+label_id_related_attr+'%s ' % option_value
-            else:
-                label_id_related_class = ''
-            label_class_final = ' class="%s%s"' % (label_class, label_id_related_class)
-            output.append('<label%s>%s %s</label>' % (label_class_final, rendered_cb, option_label))
-        return mark_safe('\n'.join(output))
-
-
 class StoriesImgSelect(SelectMultiple):
     def render(self, name, value, attrs=None, choices=()):
         if value is None:

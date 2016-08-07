@@ -2,7 +2,7 @@
 from django.forms import CheckboxSelectMultiple, Field, Form, ModelMultipleChoiceField, MultipleChoiceField, TextInput, ChoiceField, IntegerField, CharField, RadioSelect
 from ponyFiction.forms.fields import GroupedModelChoiceField
 from ponyFiction.models import Character, Category, Classifier, Rating
-from ponyFiction.widgets import NumberInput, ButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesServiceInput
+from ponyFiction.widgets import NumberInput, ButtonWidget, StoriesImgSelect, StoriesServiceInput
 
 
 class SearchForm(Form):
@@ -57,12 +57,7 @@ class SearchForm(Form):
     genre = ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         required=False,
-        widget=StoriesCheckboxSelectMultiple(
-            attrs={
-                'label_attrs': ['checkbox', 'inline', 'gen'],
-                'label_id_related_attr': 'gen-',
-            },
-        ),
+        widget=CheckboxSelectMultiple,
     )
     # Персонажи
     char = GroupedModelChoiceField(
@@ -99,7 +94,7 @@ class SearchForm(Form):
     cls = ModelMultipleChoiceField(
         queryset=Classifier.objects.all(),
         required=False,
-        widget=StoriesCheckboxSelectMultiple(attrs={'label_attrs': ['checkbox', 'inline']}),
+        widget=CheckboxSelectMultiple,
     )
     # Кнопка "Развернуть тонкие настройки поиска"
     button_advanced = Field(

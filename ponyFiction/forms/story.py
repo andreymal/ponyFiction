@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.forms import CharField, ChoiceField, ModelForm, ModelChoiceField, ModelMultipleChoiceField, RadioSelect, TextInput, Textarea
+from django.forms import CharField, CheckboxSelectMultiple, ChoiceField, ModelForm, ModelChoiceField, ModelMultipleChoiceField, RadioSelect, TextInput, Textarea
 from ponyFiction.forms.fields import GroupedModelChoiceField
 from ponyFiction.models import Character, Category, Classifier, Rating, Story
-from ponyFiction.widgets import StoriesImgSelect, StoriesCheckboxSelectMultiple
+from ponyFiction.widgets import StoriesImgSelect
 
 
 class StoryForm(ModelForm):
@@ -27,9 +27,7 @@ class StoryForm(ModelForm):
     categories = ModelMultipleChoiceField(
         required=True,
         queryset=Category.objects.all(),
-        widget=StoriesCheckboxSelectMultiple(
-            attrs={'label_attrs': ['checkbox', 'inline', 'gen'], 'label_id_related_attr': 'gen-'}
-        ),
+        widget=CheckboxSelectMultiple,
         label='Жанры',
         help_text='Выберите жанр вашего рассказа',
         error_messages={'required': 'Жанры - обязательное поле'}
@@ -39,7 +37,7 @@ class StoryForm(ModelForm):
     classifications = ModelMultipleChoiceField(
         required=False,
         queryset=Classifier.objects.all(),
-        widget=StoriesCheckboxSelectMultiple(attrs={'label_attrs': ['checkbox', 'inline']}),
+        widget=CheckboxSelectMultiple,
         label='События',
         help_text='Ключевые события рассказа',
     )

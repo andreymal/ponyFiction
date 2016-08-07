@@ -54,7 +54,11 @@
                         {% else %}
                             <span class="help-block small">{{ form.categories.help_text }}</span>
                         {% endif %}
-                          {{ form.categories }}
+                        {% for checkbox in form.categories %}
+                            <label class="inline gen gen-{{checkbox.choice_value}} {% if checkbox.is_checked %} active {% endif %}">
+                                {{ checkbox.tag }} {{ checkbox.choice_label }}
+                            </label>
+                        {% endfor %}
                      </div>
                 </div>
                 <!-- Персонажи -->
@@ -168,7 +172,11 @@
                         {% else %}
                             <span class="help-block small">{{ form.classifications.help_text }}</span>
                         {% endif %}
-                          {{ form.classifications }}
+                        {% for checkbox in form.classifications %}
+                            <label class="checkbox inline {% if checkbox.is_checked %} active {% endif %}">
+                                {{ checkbox.tag }} {{ checkbox.choice_label }}
+                            </label>
+                        {% endfor %}
                       </div>
                 </div>
                 <!-- Действия -->
