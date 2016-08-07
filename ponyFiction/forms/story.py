@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.forms import CharField, ChoiceField, ModelForm, ModelChoiceField, ModelMultipleChoiceField, TextInput, Textarea
+from django.forms import CharField, ChoiceField, ModelForm, ModelChoiceField, ModelMultipleChoiceField, RadioSelect, TextInput, Textarea
 from ponyFiction.forms.fields import GroupedModelChoiceField
 from ponyFiction.models import Character, Category, Classifier, Rating, Story
-from ponyFiction.widgets import StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesRadioButtons
+from ponyFiction.widgets import StoriesImgSelect, StoriesCheckboxSelectMultiple
 
 
 class StoryForm(ModelForm):
@@ -11,13 +11,6 @@ class StoryForm(ModelForm):
            'group_container_class': 'characters-group group-',
            'data_attrs': {'class': 'hidden'},
            'container_attrs': {'class': 'character-item'}
-    }
-
-    radio_attrs = {
-       'btn_attrs': {'type': 'button', 'class': 'btn btn-default'},
-       'data_attrs': {'class': 'hidden'},
-       'btn_container_attrs': {'class': 'btn-group buttons-visible', 'role': 'group', 'data-toggle': 'buttons-radio'},
-       'data_container_attrs': {'class': 'buttons-data'},
     }
 
     checkbox_attrs = {
@@ -62,7 +55,8 @@ class StoryForm(ModelForm):
     finished = ChoiceField(
         required=True,
         choices=[(0, 'Не закончен'), (1, 'Закончен')],
-        widget=StoriesRadioButtons(attrs=radio_attrs),
+        widget=RadioSelect,
+        initial=0,
         label='Статус',
         help_text='Завершен ли рассказ',
         error_messages={'required': 'Нужно обязательно указать статус рассказа!'},
@@ -72,7 +66,8 @@ class StoryForm(ModelForm):
     freezed = ChoiceField(
         required=True,
         choices=[(0, 'Активен'), (1, 'Заморожен')],
-        widget=StoriesRadioButtons(attrs=radio_attrs),
+        widget=RadioSelect,
+        initial=0,
         label='Состояние',
         help_text='Активность рассказа (пишется ли он сейчас)',
         error_messages={'required': 'Нужно обязательно указать состояние рассказа!'},
@@ -82,7 +77,8 @@ class StoryForm(ModelForm):
     original = ChoiceField(
         required=True,
         choices=[(1, 'Оригинал'), (0, 'Перевод')],
-        widget=StoriesRadioButtons(attrs=radio_attrs),
+        widget=RadioSelect,
+        initial=1,
         label='Происхождение',
         error_messages={'required': 'Нужно обязательно указать происхождение рассказа!'},
     )
@@ -92,7 +88,8 @@ class StoryForm(ModelForm):
         required=True,
         empty_label=None,
         queryset=Rating.objects.order_by('-id'),
-        widget=StoriesRadioButtons(attrs=radio_attrs),
+        widget=RadioSelect,
+        initial='G',
         label='Рейтинг',
         error_messages={'required': 'Нужно обязательно указать рейтинг рассказа!'},
     )
