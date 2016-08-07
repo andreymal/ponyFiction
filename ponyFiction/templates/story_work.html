@@ -54,7 +54,11 @@
                         {% else %}
                             <span class="help-block small">{{ form.categories.help_text }}</span>
                         {% endif %}
-                          {{ form.categories }}
+                        {% for checkbox in form.categories %}
+                            <label class="inline gen gen-{{checkbox.choice_value}} {% if checkbox.is_checked %} active {% endif %}">
+                                {{ checkbox.tag }} {{ checkbox.choice_label }}
+                            </label>
+                        {% endfor %}
                      </div>
                 </div>
                 <!-- Персонажи -->
@@ -100,7 +104,9 @@
                 <!-- Рейтинг -->
                 <div class="control-group{% if form.rating.errors %} error{% endif %}">
                     <label class="control-label">{{ form.rating.label }}</label>
-                    <div class="controls bootstrap radio">{{ form.rating }}
+                    <div class="controls bootstrap">
+                        {% include "includes/bootstrap/button_radio.html" with field=form.rating %}
+
                         {% if form.rating.errors %}
                             {% for error in form.rating.errors %}
                                 <span class="help-inline">{{ error }}</span>
@@ -113,7 +119,9 @@
                 <!-- Оригинал/перевод -->
                 <div class="control-group{% if form.original.errors %} error{% endif %}">
                     <label class="control-label">{{ form.original.label }}</label>
-                    <div class="controls bootstrap radio">{{ form.original }}
+                    <div class="controls bootstrap">
+                        {% include "includes/bootstrap/button_radio.html" with field=form.original %}
+
                         {% if form.original.errors %}
                             {% for error in form.original.errors %}
                                 <span class="help-inline">{{ error }}</span>
@@ -126,7 +134,9 @@
                 <!-- Заморожен/активен -->
                 <div class="control-group{% if form.freezed.errors %} error{% endif %}">
                     <label class="control-label">{{ form.freezed.label }}</label>
-                    <div class="controls bootstrap radio">{{ form.freezed }}
+                    <div class="controls bootstrap">
+                        {% include "includes/bootstrap/button_radio.html" with field=form.freezed %}
+
                         {% if form.freezed.errors %}
                             {% for error in form.freezed.errors %}
                                 <span class="help-inline">{{ error }}</span>
@@ -139,7 +149,9 @@
                 <!-- Закончен/не закончен -->
                 <div class="control-group{% if form.finished.errors %} error{% endif %}">
                     <label class="control-label">{{ form.finished.label }}</label>
-                    <div class="controls bootstrap radio">{{ form.finished }}
+                    <div class="controls bootstrap">
+                        {% include "includes/bootstrap/button_radio.html" with field=form.finished %}
+
                         {% if form.finished.errors %}
                             {% for error in form.finished.errors %}
                                 <span class="help-inline">{{ error }}</span>
@@ -160,7 +172,11 @@
                         {% else %}
                             <span class="help-block small">{{ form.classifications.help_text }}</span>
                         {% endif %}
-                          {{ form.classifications }}
+                        {% for checkbox in form.classifications %}
+                            <label class="checkbox inline {% if checkbox.is_checked %} active {% endif %}">
+                                {{ checkbox.tag }} {{ checkbox.choice_label }}
+                            </label>
+                        {% endfor %}
                       </div>
                 </div>
                 <!-- Действия -->

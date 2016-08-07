@@ -1,23 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.forms import Field, Form, ModelMultipleChoiceField, MultipleChoiceField, TextInput, ChoiceField, IntegerField, CharField
+from django.forms import CheckboxSelectMultiple, Field, Form, ModelMultipleChoiceField, MultipleChoiceField, TextInput, ChoiceField, IntegerField, CharField, RadioSelect
 from ponyFiction.forms.fields import GroupedModelChoiceField
 from ponyFiction.models import Character, Category, Classifier, Rating
-from ponyFiction.widgets import NumberInput, ButtonWidget, StoriesImgSelect, StoriesCheckboxSelectMultiple, StoriesButtons, StoriesRadioButtons, StoriesServiceInput
+from ponyFiction.widgets import NumberInput, ButtonWidget, StoriesImgSelect, StoriesServiceInput
 
 
 class SearchForm(Form):
-    checkbox_attrs = {
-        'btn_attrs': {'type': 'button', 'class': 'btn btn-default'},
-        'data_attrs': {'class': 'hidden'},
-        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-checkbox', 'role': 'group'},
-        'data_container_attrs': {'class': 'buttons-data'},
-    }
-    radio_attrs = {
-        'btn_attrs': {'type': 'button', 'class': 'btn btn-default'},
-        'data_attrs': {'class': 'hidden'},
-        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-radio', 'role': 'group'},
-        'data_container_attrs': {'class': 'buttons-data'},
-    }
     img_attrs = {
         'group_container_class': 'characters-group group-',
         'data_attrs': {'class': 'hidden'},
@@ -69,12 +57,7 @@ class SearchForm(Form):
     genre = ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         required=False,
-        widget=StoriesCheckboxSelectMultiple(
-            attrs={
-                'label_attrs': ['checkbox', 'inline', 'gen'],
-                'label_id_related_attr': 'gen-',
-            },
-        ),
+        widget=CheckboxSelectMultiple,
     )
     # Персонажи
     char = GroupedModelChoiceField(
@@ -87,31 +70,31 @@ class SearchForm(Form):
     original = MultipleChoiceField(
         choices=[(0, 'Перевод'), (1, 'Оригинал')],
         required=False,
-        widget=StoriesButtons(attrs=checkbox_attrs),
+        widget=CheckboxSelectMultiple,
     )
     # Статус рассказа
     finished = MultipleChoiceField(
         choices=[(0, 'Не завершен'), (1, 'Завершен')],
         required=False,
-        widget=StoriesButtons(attrs=checkbox_attrs),
+        widget=CheckboxSelectMultiple,
     )
     # Активность рассказа
     freezed = MultipleChoiceField(
         choices=[(0, 'Активен'), (1, 'Заморожен')],
         required=False,
-        widget=StoriesButtons(attrs=checkbox_attrs),
+        widget=CheckboxSelectMultiple,
     )
     # Рейтинги
     rating = ModelMultipleChoiceField(
         queryset=Rating.objects.all(),
         required=False,
-        widget=StoriesButtons(attrs=checkbox_attrs),
+        widget=CheckboxSelectMultiple,
     )
     # События
     cls = ModelMultipleChoiceField(
         queryset=Classifier.objects.all(),
         required=False,
-        widget=StoriesCheckboxSelectMultiple(attrs={'label_attrs': ['checkbox', 'inline']}),
+        widget=CheckboxSelectMultiple,
     )
     # Кнопка "Развернуть тонкие настройки поиска"
     button_advanced = Field(
@@ -155,8 +138,9 @@ class SearchForm(Form):
     # Сортировка
     sort = ChoiceField(
         choices=[(0, 'По релевантности'), (1, 'По дате'), (2, 'По размеру'), (4, 'По комментам')],
+        initial=0,
         required=True,
-        widget=StoriesRadioButtons(attrs=radio_attrs),
+        widget=RadioSelect,
     )
 
     button_reset = Field(
@@ -173,6 +157,7 @@ class SearchForm(Form):
     # Тип поиска
     type = ChoiceField(
         choices=[(0, 'По описанию'), (1, 'По главам')],
+        initial=0,
         required=True,
-        widget=StoriesRadioButtons(attrs=radio_attrs),
+        widget=RadioSelect,
     )
