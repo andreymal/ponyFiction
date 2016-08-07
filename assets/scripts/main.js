@@ -883,10 +883,3 @@ $(function(){
     }
 });
 $(function() {$("#toTop").scrollToTop();});
-
-//Теперь бутстрап кнопки будут оставаться нажатыми
-$( document ).ready(function() {
-	$('.btn-group').on('click', '.btn', function () {
-		$(this).removeClass('active').siblings().addClass('active').removeClass('active');
-	});
-});
