@@ -85,30 +85,3 @@ class StoriesImgSelect(SelectMultiple):
         cb = CheckboxInput(data_attrs, check_test=lambda x: x in selected_choices)
         rendered_cb = cb.render(name, option_value)
         return mark_safe('<span%s>%s%s</span>' % (flatatt(container_attrs), rendered_cb, item_image))
-
-
-class StoriesButtons(CheckboxSelectMultiple):
-    def render(self, name, value, attrs=None, choices=()):
-        if value is None:
-            value = []
-        attrs = self.attrs
-        btn_attrs = attrs.pop('btn_attrs', {})
-        data_attrs = attrs.pop('data_attrs', {})
-        btn_container_attrs = attrs.pop('btn_container_attrs', {})
-        data_container_attrs = attrs.pop('data_container_attrs', {})
-        btn_container = []
-        data_container = []
-        output = []
-        for (option_value, option_label) in self.choices:
-            option_label = force_unicode(option_label)
-            btn = ButtonWidget(attrs=dict(btn_attrs, text=option_label, value=option_value))
-            rendered_btn = btn.render(attrs=btn_attrs)
-            btn_container.append(rendered_btn)
-            cb = CheckboxInput(data_attrs, check_test=lambda x: str(x) in value)
-            rendered_cb = cb.render(name, option_value)
-            data_container.append(rendered_cb)
-        btn = '<div%s>%s</div>' % (flatatt(btn_container_attrs), ' '.join(btn_container))
-        data = '<div%s>%s</div>' % (flatatt(data_container_attrs), ' '.join(data_container))
-        output.append(btn)
-        output.append(data)
-        return mark_safe('\n'.join(output))
