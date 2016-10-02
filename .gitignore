@@ -1,17 +1,24 @@
-*.pyc
-*.sqlite
-*.sqlite3
+*.py[cod]
+__pycache__
 /.project
 /.pydevproject
 /.idea/
 /.settings/
-/sphinx/
 /media/
 /static/
 /env/
 /node_modules/
-/bower_components/
-/ponyFiction/environments/local.py
-/ponyFiction/environments/local_sphinx.conf
-/environment.txt
-/sphinxroot.txt
+
+# Vagga stuff
+/.vagga
+.vagga.settings.yaml
+/run
+
+# DB dumps
+*.sql.gz
+
+# Build stuff
+/build
+/dist
+/*.egg-info
+/ponyFiction/VERSION

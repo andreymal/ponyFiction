@@ -1,0 +1,19 @@
+user_id: 1
+volumes:
+  /tmp: !Tmpfs
+    size: 128Mi
+    mode: 0o1777
+  /log: !Persistent
+    path: /log/mysql
+  /storage: !Persistent
+    path: /storage/mysql
+  /config: !Readonly /config
+fileno-limit: 50ki
+memory-limit: 2Gi
+cpu-shares: 1024
+executable: /usr/bin/mysqld_safe
+arguments:
+- --defaults-extra-file=/config/mysql.conf
+- --skip-syslog
+- --console
+- --debug-gdb

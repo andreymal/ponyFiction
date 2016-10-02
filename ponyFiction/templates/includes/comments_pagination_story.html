@@ -1,8 +1,8 @@
 {% if num_pages != 1 %}
     <div id="pagination" class="center">
-        <a href="{% url 'story_view_comments_paged' story.id page_current|add:'-1' %}" id="ajax_prev_comment" class="btn{% if page_current == 1 %} hidden{% endif %}">← Старые</a>
+        <a href="{% url 'story_view_comments_paged' story.id page_current|add:'-1' %}" id="ajax_prev_comment" class="btn btn-default{% if page_current == 1 %} hidden{% endif %}">← Старые</a>
         <span id="ajax_pages_comment" class="btn btn-primary">{{ page_current }} / {{ num_pages }}</span>
-        <a href="{% url 'story_view_comments_paged' story.id page_current|add:'1' %}" id="ajax_next_comment" class="btn{% if page_current == num_pages %} hidden{% endif %}">Новые →</a>
+        <a href="{% url 'story_view_comments_paged' story.id page_current|add:'1' %}" id="ajax_next_comment" class="btn btn-default{% if page_current == num_pages %} hidden{% endif %}">Новые →</a>
         <input type="hidden" id="num_pages" value="{{ num_pages }}">
     </div>
 {% endif %}

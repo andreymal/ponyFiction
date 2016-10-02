@@ -4,12 +4,9 @@
 import random
 
 from django.conf import settings
-from django.core.cache import cache
 
-from .. import tasks
 from .utils import BaseBL
 from ..sphinx import sphinx
-from ..models import CoAuthorsStory, StoryEditLogItem
 
 
 class StoryBL(BaseBL):
@@ -22,6 +19,9 @@ class StoryBL(BaseBL):
     }
 
     def create(self, authors, title, categories, characters, summary, rating, original, freezed, finished, notes=None, classifications=None):
+        from ..models import CoAuthorsStory
+        from ..tasks import sphinx_update_story
+
         story = self.model.objects.create(
             title=title,
             summary=summary,
@@ -37,10 +37,13 @@ class StoryBL(BaseBL):
         for author, approved in authors:
             CoAuthorsStory.objects.create(story=story, author=author, approved=approved)
 
-        tasks.sphinx_update_story.delay(story.id, ())
+        sphinx_update_story.delay(story.id, ())
         return story
 
     def update(self, editor, **data):
+        from ..models import StoryEditLogItem
+        from ..tasks import sphinx_update_story
+
         story = self.model
         for key, value in data.items():
             setattr(story, key, value)
@@ -52,7 +55,7 @@ class StoryBL(BaseBL):
                 story=story,
                 data=data,
             )
-        tasks.sphinx_update_story.delay(story.id, ())
+        sphinx_update_story.delay(story.id, ())
         return story
 
     def delete(self):
@@ -141,7 +144,7 @@ class StoryBL(BaseBL):
             sphinx_filters['size__gte'] = int(filters['min_words'])
 
         if filters.get('max_words') is not None:
-            sphinx_filters['size_lte'] = int(filters['max_words'])
+            sphinx_filters['size__lte'] = int(filters['max_words'])
 
         with sphinx:
             raw_result = sphinx.search(
@@ -161,6 +164,7 @@ class StoryBL(BaseBL):
         return raw_result, result
 
     def get_random(self, count=10):
+        from django.core.cache import cache
         # это быстрее, чем RAND() в MySQL
         ids = cache.get('all_story_ids')
         if not ids:

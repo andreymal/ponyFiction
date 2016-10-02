@@ -1,9 +1,9 @@
 {% extends "common.html" %}
 {% block content %}
 <div class="row">
-    <div class="span8">
+    <div class="col-md-8">
     <ul class="breadcrumb">
-      <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
+      <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider"></span></li>
       <li class="active">{{ page_title }}</li>
     </ul>   
         <h2>{{ page_title }}</h2>
@@ -13,7 +13,7 @@
         </div>
         {% block after_list %}{% endblock %}
     <ul class="breadcrumb">
-      <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
+      <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider"></span></li>
       <li class="active">{{ page_title }}</li>
     </ul>
     </div>

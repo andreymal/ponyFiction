@@ -1,0 +1,7 @@
+<div class="btn-group" data-toggle="buttons">
+    {% for radio in field %}
+    <label class="btn btn-default {% if radio.is_checked %} active {% endif %}">
+        {{ radio.tag }} {{ radio.choice_label }}
+    </label>
+    {% endfor %}
+</div>

@@ -1,5 +1,5 @@
 {% for chapter, story in chapters %}
-    <div class="story-item">
+    <div class="story-item well well-small">
         <h3><a href="{% url 'chapter_view_single' chapter.story_id chapter.order %}">{{ chapter.title }}</a></h3>
           <p><a href="{% url 'story_view' chapter.story_id %}">{{ story.title }}</a> от <a class="authorlink" href="{% url 'author_overview' story.authors.all.0.id %}">{{ story.authors.all.0.username }}</a> {{ chapter.date|timesince }} назад</p>
     </div>

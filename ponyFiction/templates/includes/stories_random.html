@@ -12,7 +12,7 @@
                 </span>
             {% endspaceless %}
         </p>
-        {% if random_story.cover %}<img class="thumbnail" src="i/tumb.jpg" alt=""/>{% endif %}
+        {% if random_story.cover %}<img class="thumbnail" src="{% static 'images/main/tumb.jpg' %}"/>{% endif %}
         <p>{{ random_story.summary_as_html|striptags|truncatewords:20 }}</p>
         <p class="meta">
             {% spaceless %}

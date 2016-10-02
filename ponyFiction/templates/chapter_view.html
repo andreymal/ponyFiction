@@ -3,7 +3,7 @@
 <div class="row">
     {% include "includes/chapter_breadcrumbs.html" %}
     {% if allchapters %}
-        <div class="span12 story-chapter-page">
+        <div class="col-md-12 story-chapter-page" id="story-page-story">
             {% include "includes/story_panel.html" %}
             <h1>{{ story.title }}</h1>
             {% for chapter in chapters %}
@@ -11,7 +11,7 @@
             {% endfor %}
         </div>
     {% else %}
-        <div class="span12 story-chapter-page">
+        <div class="col-md-12 story-chapter-page" id="story-page-story">
             {% include "includes/story_panel.html" %}
             {% include "includes/chapter_single.html" %}
         </div>

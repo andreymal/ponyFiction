@@ -1,0 +1,19 @@
+user_id: 1
+volumes:
+  /tmp: !Tmpfs
+    size: 256Mi
+    mode: 0o1777
+  /log: !Persistent
+    path: /log/uwsgi
+  /storage: !Persistent
+    path: /storage/uwsgi
+  /config: !Readonly /config
+environ:
+  PYTHONPATH: $PYTHONPATH:/config
+  DJANGO_SETTINGS_MODULE: trunk
+fileno-limit: 50ki
+memory-limit: 2Gi
+cpu-shares: 1024
+executable: /usr/bin/uwsgi
+arguments:
+- /config/uwsgi.ini

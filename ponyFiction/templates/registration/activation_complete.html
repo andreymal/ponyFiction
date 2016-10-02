@@ -2,20 +2,20 @@
 
 {% block content %}
 <div class="row">
-    <div class="span12">
+    <div class="col-md-12">
       <ul class="breadcrumb">
             <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
             <li class="active">{{ page_title }}</li>
         </ul>
     </div>
 
-    <div class="span12 reg-complete">
+    <div class="col-md-12 reg-complete">
     <h1>Учетная запись активирована</h1>
     <p>Приветствуем!</p>
     <p>Ваша учетная запись активирована.{# <a href="{% url 'auth_login' %}">Заходите</a> на сайт.</p>#}
   </div>
 
-    <div class="span12">
+    <div class="col-md-12">
       <ul class="breadcrumb">
             <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
             <li class="active">{{ page_title }}</li>

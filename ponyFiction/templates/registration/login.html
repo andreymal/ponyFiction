@@ -3,7 +3,7 @@
 {% block content %}
 {% load static %}
 <div class="row login-page">
-    <div class="span12">
+    <div class="col-md-12">
         <ul class="breadcrumb">
             <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
             <li class="active">{{ page_title }}</li>
@@ -11,12 +11,12 @@
     </div>
 
     {% if user.is_authenticated %}
-        <div class="span12 login-text">
+        <div class="col-md-12 login-text">
             Что такое, {{ user.username }}? Вы же уже авторизованы.
             Впрочем, всегда можно <a href="{% url 'auth_logout' %}">выйти</a>.
         </div>
     {% else %}
-    <div class="span12 login-text">
+    <div class="col-md-12 login-text">
         <h1>Парадный вход в библиотеку</h1>
             <form action="" method="POST" enctype="multipart/form-data" class="form-horizontal registration-form">
             {% csrf_token %}
@@ -48,7 +48,7 @@
         </form>
     </div>
     {% endif %}
-    <div class="span12">
+    <div class="col-md-12">
         <ul class="breadcrumb">
             <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
             <li class="active">{{ page_title }}</li>

@@ -25,7 +25,7 @@ class ObjectList(ListView):
         raise NotImplementedError("Subclasses should implement this!")
 
     def get_context_data(self, **kwargs):
-        context = super(ObjectList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update(
             page_title=self.page_title,
             pagination_view_name=self.view_name,
@@ -61,7 +61,7 @@ class SubmitsList(ObjectList):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_staff:
             raise PermissionDenied
-        return super(SubmitsList, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     template_name = 'submitted.html'
     page_title = 'Новые поступления'
@@ -73,6 +73,10 @@ class SubmitsList(ObjectList):
 class BookmarksList(ObjectList):
     template_name = 'bookmarks.html'
     page_title = 'Закладки'
+
+    @method_decorator(login_required())
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         return self.request.user.bookmarked_story_set.all().cache()

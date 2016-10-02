@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="span12">
+    <div class="col-md-12">
         <ul class="breadcrumb">
             <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
             <li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>
@@ -10,7 +10,7 @@
         </ul>
     </div>
 
-    <div class="span12">
+    <div class="col-md-12">
         <h1>
             {{ page_title }}
             {% include 'includes/story_control_buttons.html' %}
@@ -54,7 +54,11 @@
                         {% else %}
                             <span class="help-block small">{{ form.categories.help_text }}</span>
                         {% endif %}
-                          {{ form.categories }}
+                        {% for checkbox in form.categories %}
+                            <label class="inline gen gen-{{checkbox.choice_value}} {% if checkbox.is_checked %} active {% endif %}">
+                                {{ checkbox.tag }} {{ checkbox.choice_label }}
+                            </label>
+                        {% endfor %}
                      </div>
                 </div>
                 <!-- Персонажи -->
@@ -100,7 +104,9 @@
                 <!-- Рейтинг -->
                 <div class="control-group{% if form.rating.errors %} error{% endif %}">
                     <label class="control-label">{{ form.rating.label }}</label>
-                    <div class="controls bootstrap radio">{{ form.rating }}
+                    <div class="controls bootstrap">
+                        {% include "includes/bootstrap/button_radio.html" with field=form.rating %}
+
                         {% if form.rating.errors %}
                             {% for error in form.rating.errors %}
                                 <span class="help-inline">{{ error }}</span>
@@ -113,7 +119,9 @@
                 <!-- Оригинал/перевод -->
                 <div class="control-group{% if form.original.errors %} error{% endif %}">
                     <label class="control-label">{{ form.original.label }}</label>
-                    <div class="controls bootstrap radio">{{ form.original }}
+                    <div class="controls bootstrap">
+                        {% include "includes/bootstrap/button_radio.html" with field=form.original %}
+
                         {% if form.original.errors %}
                             {% for error in form.original.errors %}
                                 <span class="help-inline">{{ error }}</span>
@@ -126,7 +134,9 @@
                 <!-- Заморожен/активен -->
                 <div class="control-group{% if form.freezed.errors %} error{% endif %}">
                     <label class="control-label">{{ form.freezed.label }}</label>
-                    <div class="controls bootstrap radio">{{ form.freezed }}
+                    <div class="controls bootstrap">
+                        {% include "includes/bootstrap/button_radio.html" with field=form.freezed %}
+
                         {% if form.freezed.errors %}
                             {% for error in form.freezed.errors %}
                                 <span class="help-inline">{{ error }}</span>
@@ -139,7 +149,9 @@
                 <!-- Закончен/не закончен -->
                 <div class="control-group{% if form.finished.errors %} error{% endif %}">
                     <label class="control-label">{{ form.finished.label }}</label>
-                    <div class="controls bootstrap radio">{{ form.finished }}
+                    <div class="controls bootstrap">
+                        {% include "includes/bootstrap/button_radio.html" with field=form.finished %}
+
                         {% if form.finished.errors %}
                             {% for error in form.finished.errors %}
                                 <span class="help-inline">{{ error }}</span>
@@ -160,7 +172,11 @@
                         {% else %}
                             <span class="help-block small">{{ form.classifications.help_text }}</span>
                         {% endif %}
-                          {{ form.classifications }}
+                        {% for checkbox in form.classifications %}
+                            <label class="checkbox inline {% if checkbox.is_checked %} active {% endif %}">
+                                {{ checkbox.tag }} {{ checkbox.choice_label }}
+                            </label>
+                        {% endfor %}
                       </div>
                 </div>
                 <!-- Действия -->
@@ -175,13 +191,13 @@
                       <legend>Главы</legend>
                       <div class="control-group">
                         <div class="controls events">
-                            <ul id="sortable_chapters" class="chapters-control">
+                            <ul id="sortable_chapters" class="chapters-control" data-story="{{ story.id }}">
                                 {% for chapter in chapters %}
                                       <li id="chapter_{{ chapter.id }}" class="btn btn-large">
                                         {{ chapter.title }}
                                         <div class="btn-group">
-                                            <a class="btn btn-warning btn-mini" href="{% url 'chapter_edit' chapter.id %}">править</a>
-                                            <a class="btn btn-danger btn-mini chapter_delete" href="{% url 'chapter_delete' chapter.id %}">удалить</a>
+                                            <a class="btn btn-warning btn-xs btn-default" href="{% url 'chapter_edit' chapter.id %}">править</a>
+                                            <a class="btn btn-danger btn-xs btn-default chapter_delete" href="{% url 'chapter_delete' chapter.id %}">удалить</a>
                                         </div>
                                     </li>
                                 {% endfor %}
@@ -194,7 +210,7 @@
         </form>
       </div>
 
-    <div class="span12">
+    <div class="col-md-12">
         <ul class="breadcrumb">
               <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
               <li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>

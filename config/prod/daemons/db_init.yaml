@@ -1,0 +1,35 @@
+kind: Command
+user_id: 1
+volumes:
+  /tmp: !Tmpfs
+    size: 128Mi
+    mode: 0o1777
+  /log: !Persistent
+    path: /log/mysql
+  /storage: !Persistent
+    path: /storage/mysql
+  /config: !Readonly /config
+environ:
+  DB_DATADIR: /storage
+  DB_HOST: 127.0.0.1
+  DB_DATABASE: stories
+  DB_USERNAME: celestia
+  DB_PASSWORD: solar_eclipse
+fileno-limit: 50ki
+memory-limit: 2Gi
+cpu-shares: 1024
+executable: /bin/sh
+arguments:
+- -c
+- |
+  rm -vrf /storage/*
+  mysql_install_db --datadir=$DB_DATADIR
+  mysqld_safe --defaults-extra-file=/config/mysql.conf --skip-syslog --no-auto-restart
+  while [ ! -f /tmp/mysqld.pid ]; do sleep 0.1; done # wait for server to be ready
+  mysqladmin --defaults-extra-file=/config/mysql.conf -uroot -h $DB_HOST password 'root'
+  mysqladmin --defaults-extra-file=/config/mysql.conf -uroot -proot create $DB_DATABASE
+  mysql --defaults-extra-file=/config/mysql.conf -uroot -proot -e "CREATE USER '$DB_USERNAME'@'$DB_HOST' IDENTIFIED BY '$DB_PASSWORD';"
+  mysql --defaults-extra-file=/config/mysql.conf -uroot -proot -e "GRANT ALL PRIVILEGES ON $DB_DATABASE.* TO '$DB_USERNAME'@'$DB_HOST';"
+  mysqladmin --defaults-extra-file=/config/mysql.conf -uroot -proot flush-privileges
+  mysqladmin --defaults-extra-file=/config/mysql.conf -uroot -proot shutdown
+- --

@@ -1,8 +1,8 @@
 {% if num_pages != 1 %}
     <div id="pagination" class="center">
-        <a href="{% url 'author_dashboard_comments_paged' page_current|add:'-1' %}" id="ajax_prev_comment" class="btn{% if page_current == 1 %} hidden{% endif %}">← Новые</a>
+        <a href="{% url 'author_dashboard_comments_paged' page_current|add:'-1' %}" id="ajax_prev_comment" class="btn btn-default{% if page_current == 1 %} hidden{% endif %}">← Новые</a>
         <span id="ajax_pages_comment" class="btn btn-primary">{{ page_current }} / {{ num_pages }}</span>
-        <a href="{% url 'author_dashboard_comments_paged' page_current|add:'1' %}" id="ajax_next_comment" class="btn{% if page_current == num_pages %} hidden{% endif %}">Старые →</a>
+        <a href="{% url 'author_dashboard_comments_paged' page_current|add:'1' %}" id="ajax_next_comment" class="btn btn-default{% if page_current == num_pages %} hidden{% endif %}">Старые →</a>
         <input type="hidden" id="num_pages" value="{{ num_pages }}">
     </div>
 {% endif %}

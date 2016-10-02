@@ -4,18 +4,18 @@
 {% load static %}
 
 <div class="row welcome-box">
-  <div class="span12 genra">
+  <div class="col-md-12 genra">
     {% spaceless %}
     {% for category in categories %}
-        <a class="gen gen-{{ category.id }}" style="background-color: {{ category.color }}" href="{% url 'search_simple' 'category' category.id %}">{{ category.name }}</a>
+        <a class="gen" style="background-color: {{ category.color }}" href="{% url 'search_simple' 'category' category.id %}">{{ category.name }}</a>
     {% endfor %}
     {% endspaceless %}
   </div>
 </div>
 
 <div class="row">
-    <div class="span8 top-list">
-        <h2>Новые добавления</h2>
+    <div class="col-md-8 top-list">
+    <h2>Новые добавления</h2>
         {% include "includes/stories.html" %}
         <p class="more">
             <a href="{% url 'stream_stories' %}">Лента добавлений</a>
@@ -24,13 +24,24 @@
             {% if user.is_staff %}| <a href="{% url 'stream_edit_log' 'last' %}">Лог модерации</a>{% endif %}
         </p>
     </div>
-    <div class="span4 sidelist top-list">
-        <h2>Обновившиеся рассказы</h2>
-        {% include "includes/chapters_short.html" %}
-        <p class="more"><a href="{% url 'stream_chapters' %}">Лента обновлений</a> | <a href="{% url 'feeds_chapters' %}">RSS</a></p>
-        <h2>Последние комментарии</h2>
-        {% include "includes/brief_comments.html" %}
-        <p class="more"><a href="{% url 'stream_comments' %}">Лента комментариев</a></p>
+    <div class="col-md-4 sidelist top-list">
+	<h2>Лента обновлений</h2>
+		<ul class="nav nav-tabs" role="tablist">
+			<li role="presentation" class="active"><a href="#chapters" aria-controls="chapters" role="tab" data-toggle="tab">Рассказы</a></li>
+			<li role="presentation"><a href="#comments" aria-controls="comments" role="tab" data-toggle="tab">Комментарии</a></li>
+		</ul>
+	<div class="well well-small">
+		<div class="tab-content">
+			<div role="tabpanel" class="tab-pane active" id="chapters">
+				{% include "includes/chapters_short.html" %}
+				<p class="more"><a href="{% url 'stream_chapters' %}">Лента обновлений</a> | <a href="{% url 'feeds_chapters' %}">RSS</a></p>
+			</div>
+			<div role="tabpanel" class="tab-pane" id="comments">
+				{% include "includes/brief_comments.html" %}
+				<p class="more"><a href="{% url 'stream_comments' %}">Лента комментариев</a></p>
+			</div>
+		</div>
     </div>
+	</div>
 </div>
 {% endblock %}

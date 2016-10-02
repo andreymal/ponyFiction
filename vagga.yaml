@@ -1,0 +1,292 @@
+minimum-vagga: v0.5.0
+
+containers:
+  build:
+    setup:
+    - !Alpine v3.3
+    - !Install [python3, git]
+    - !Py3Install [setuptools, wheel]
+    - !NpmDependencies
+      file: package.json
+      peer: true
+      optional: true
+      dev: true
+    environ:
+      NODE_PATH: /usr/lib/node_modules
+
+  redis:
+    setup:
+    - !Alpine v3.3
+    - !Install [redis]
+    - !EnsureDir /storage
+    - !EnsureDir /work/run/storage/redis
+    # deployment things
+    - !Sh "chmod +r /bin/bbsuid"
+    - !EnsureDir /config
+    - !Copy
+      source: /work/config/prod/daemons
+      path: /lithos
+    volumes:
+      /storage: !BindRW /work/run/storage/redis
+      /config: !BindRO /work/config/local
+
+  # Base application container
+  uwsgi-base:
+    setup:
+      - !Ubuntu trusty
+      - !UbuntuUniverse
+      - !Install
+        - ca-certificates
+        - python3
+        - uwsgi
+        - uwsgi-plugin-python3
+        - libxslt1.1            # lxml
+        - libmysqlclient18      # mysqlclient
+      - !Sh |
+          chown root /var/spool/rsyslog
+
+  uwsgi-app:
+    setup:
+    - !Container uwsgi-base
+    - !EnsureDir /config
+    - !BuildDeps
+      - gcc
+      - libmysqlclient-dev    # mysqlclient
+      - libxml2-dev           # lxml
+      - libxslt1-dev          # lxml
+      - python3-dev
+    # Just deploy neccessary environment for application
+    - !Py3Requirements /work/config/requirements.txt
+    volumes:
+      /config: !BindRO /work/config/local
+
+  uwsgi-pkg:
+    setup:
+      - !Container uwsgi-base
+      - !BuildDeps
+        - libmysqlclient-dev    # mysqlclient
+        - libxml2-dev           # lxml
+        - libxslt1-dev          # lxml
+      # Install application directly from pre-built wheel
+      # for production usage without dev. dependencies
+      - !Depends ponyFiction/VERSION
+      - !PipConfig
+        find-links:
+         - /work/dist/
+        dependencies: true
+      - !Py3Install [ponyFiction]
+      # deployment things
+      - !EnsureDir /log
+      - !EnsureDir /storage
+      - !EnsureDir /config
+      - !Copy
+        source: /work/config/prod/daemons
+        path: /lithos
+      - !EnsureDir /state
+      - !Sh |
+          /bin/ln -sfn /state/hosts /etc/hosts
+          /bin/ln -sfn /state/resolv.conf /etc/resolv.conf
+    resolv-conf-path: /state/resolv.conf
+    hosts-file-path: /state/hosts
+
+  sphinx:
+    setup:
+    - !Alpine v3.3
+    - !Sh |
+        echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories
+        apk update
+    - !Install [sphinx@testing]
+    - !EnsureDir /storage
+    - !EnsureDir /log
+    - !EnsureDir /work/run/storage/sphinx
+    - !EnsureDir /work/run/log/sphinx
+    # deployment things
+    - !Sh "chmod +r /bin/bbsuid"
+    - !EnsureDir /config
+    - !Copy
+      source: /work/config/prod/daemons
+      path: /lithos
+    volumes:
+      /storage: !BindRW /work/run/storage/sphinx
+      /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
+      /log: !BindRW /work/run/log/sphinx
+      /config: !BindRO /work/config/local
+  nginx:
+    setup:
+    - !Alpine v3.3
+    - !Install [nginx]
+    - !Text
+      /etc/passwd: "root:x:0:0:root:/root:/bin/false\n"
+      /etc/group: "root:x:0:\n"
+    - !EnsureDir /log
+    - !EnsureDir /work/run/log/nginx
+    # deployment things
+    - !EnsureDir /config
+    - !Copy
+      source: /work/config/prod/daemons
+      path: /lithos
+    volumes:
+      /log: !BindRW /work/run/log/nginx
+      /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
+      /var/log/nginx: !Tmpfs { size: 1Mi, mode: 0o1777 }
+      /config: !BindRO /work/config/local
+  mysql:
+    setup:
+    - !Alpine v3.3
+    - !Install
+      - mariadb
+      - mariadb-client
+    - !EnsureDir /config
+    - !EnsureDir /storage
+    - !EnsureDir /srv
+    - !EnsureDir /log
+    - !EnsureDir /work/run/log/mysql
+    - !EnsureDir /work/run/storage/mysql
+    - !EnsureDir /work/run/storage/srv
+    # deployment things
+    - !Copy
+      source: /work/config/prod/daemons
+      path: /lithos
+    - !Sh "chmod +r /bin/bbsuid"
+    # remove preinstalled mysql junk
+    - !Remove /var/lib/mysql
+    - !EnsureDir /state
+    volumes:
+      /storage: !BindRW /work/run/storage/mysql
+      /log: !BindRW /work/run/log/mysql
+      /tmp: !Tmpfs { size: 256Mi, mode: 0o1777 }
+      /config: !BindRO /work/config/local
+      /srv: !BindRO /work/run/storage/srv
+
+commands:
+  db_init: !Command
+    description: Initialize fresh MySQL database. The old one will be REMOVED! Also load dump if provided.
+    container: mysql
+    accepts-arguments: true
+    environ:
+      DB_DATADIR: /storage
+      DB_HOST: 127.0.0.1
+      DB_DATABASE: stories
+      DB_USERNAME: celestia
+      DB_PASSWORD: solar_eclipse
+    run: |
+      echo "Cleanup old database"
+      rm -r /storage/*
+      rm -r /log/*
+      mysql_install_db --datadir=$DB_DATADIR
+      mysqld_safe --defaults-extra-file=/config/mysql.conf --skip-syslog --no-auto-restart
+      while [ ! -f /tmp/mysqld.pid ]; do sleep 0.1; done # wait for server to be ready
+      mysqladmin --defaults-extra-file=/config/mysql.conf create $DB_DATABASE
+      mysql --defaults-extra-file=/config/mysql.conf -e "CREATE USER '$DB_USERNAME'@'$DB_HOST' IDENTIFIED BY '$DB_PASSWORD';"
+      mysql --defaults-extra-file=/config/mysql.conf -e "GRANT ALL PRIVILEGES ON $DB_DATABASE.* TO '$DB_USERNAME'@'$DB_HOST';"
+      mysqladmin --defaults-extra-file=/config/mysql.conf flush-privileges
+      if [ "$#" = 1 ] ; then
+        case "$1" in
+          *.gz )
+            echo "Loading compressed data from $1"
+            viewer=zcat
+            ;;
+          *)
+            echo "Loading raw data from $1"
+            viewer=cat
+            ;;
+        esac
+        $viewer $1 | mysql \
+          --defaults-extra-file=/config/mysql.conf \
+          --user=$DB_USERNAME \
+          --password=$DB_PASSWORD \
+          --database=$DB_DATABASE
+        for migration in $(ls -v /work/migrations) ; do
+          echo "Applying migration $migration"
+          mysql \
+          --defaults-extra-file=/config/mysql.conf \
+          --user=$DB_USERNAME \
+          --password=$DB_PASSWORD \
+          --database=$DB_DATABASE \
+           < /work/migrations/$migration
+        done
+      fi
+      mysqladmin --defaults-extra-file=/config/mysql.conf shutdown
+
+  manage.py: !Command
+    description: Django management tool
+    container: uwsgi-app
+    environ:
+      DJANGO_SETTINGS_MODULE: ponyFiction.settings.development
+    run:
+    - python3
+    - manage.py
+
+  run: !Supervise
+    description: Run full server stack using uWSGI app server
+    kill-unresponsive-after: 5
+    children:
+      redis: !Command
+        container: redis
+        run:
+        - redis-server
+        - /config/redis.conf
+      uwsgi: !Command
+        container: uwsgi-app
+        environ:
+          DJANGO_SETTINGS_MODULE: ponyFiction.settings.development
+        run:
+          - uwsgi
+          - /config/uwsgi.ini
+      celery: !Command
+        container: uwsgi-app
+        environ:
+          DJANGO_SETTINGS_MODULE: ponyFiction.settings.development
+        run: |
+          sleep 5
+          celery worker -A ponyFiction --loglevel=INFO
+      nginx: !Command
+        container: nginx
+        run:
+        - nginx
+        - -c
+        - /config/nginx.conf
+      sphinx: !Command
+        container: sphinx
+        run:
+        - searchd
+        - --console
+        - --config
+        - /config/sphinx.conf
+      mysql: !Command
+        container: mysql
+        run:
+        - mysqld_safe
+        - --defaults-extra-file=/config/mysql.conf
+        - --skip-syslog
+        - --console
+        - --debug-gdb
+
+  package: !Command
+    container: build
+    description: "Create Python wheel package"
+    run: |
+      git describe --tags | sed -e "s/v\(.*\)-\(.*\)-\(.*\)/\1.dev\2+\3/g" > ponyFiction/VERSION
+      python3 setup.py bdist_wheel
+      echo
+      ls dist
+    epilog: |
+      ---
+      Package is built under dist/
+
+  clean: !Command
+    container: build
+    description: "Clean all packaging junk"
+    run: |
+      rm -rf build
+      rm -rf dist
+      rm -rf *.egg-info
+      find ponyFiction -name '*.py[cod]' -type f -delete
+      find ponyFiction -name '__pycache__' -type d -delete
+
+  gulp: !Command
+    container: build
+    description: Gulp command
+    run: gulp $@
+    accepts-arguments: true
+

@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 from ponyFiction.models import Author, Category
-from django.forms import CharField, EmailField, Form, ModelForm, PasswordInput, RegexField, TextInput, Textarea, ValidationError, URLField
+from django.forms import CharField, CheckboxSelectMultiple, EmailField, Form, ModelForm, PasswordInput, RadioSelect, RegexField, TextInput, Textarea, ValidationError, URLField
 from ponyFiction.utils.misc import obj_to_int_list
-from ponyFiction.widgets import StoriesButtons, StoriesRadioButtons
 from django.forms.models import ModelMultipleChoiceField
 from django.forms.fields import ChoiceField
 
 
 class AuthorEditProfileForm(ModelForm):
-    attrs_dict = {'class': 'input-xlarge'}
+    attrs_dict = {'class': 'form-control'}
     bio = CharField(
         widget=Textarea(attrs=dict(attrs_dict, maxlength=2048, placeholder='Небольшое описание, отображается в профиле')),
         max_length=2048,
@@ -62,32 +61,20 @@ class AuthorEditProfileForm(ModelForm):
 
 
 class AuthorEditPrefsForm(Form):
-    checkbox_attrs = {
-        'btn_attrs': {'type': 'button', 'class': 'btn'},
-        'data_attrs': {'class': 'hidden'},
-        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-checkbox'},
-        'data_container_attrs': {'class': 'buttons-data'},
-    }
-    radio_attrs = {
-        'btn_attrs': {'type': 'button', 'class': 'btn'},
-        'data_attrs': {'class': 'hidden'},
-        'btn_container_attrs': {'class': 'btn-group buttons-visible', 'data-toggle': 'buttons-radio'},
-        'data_container_attrs': {'class': 'buttons-data'},
-    }
     excluded_categories = ModelMultipleChoiceField(
         queryset=Category.objects.all(),
         required=False,
-        widget=StoriesButtons(attrs=checkbox_attrs),
+        widget=CheckboxSelectMultiple,
     )
     detail_view = ChoiceField(
         choices=[(0, 'Кратко'), (1, 'Подробно')],
         required=True,
-        widget=StoriesRadioButtons(attrs=radio_attrs),
+        widget=RadioSelect,
     )
     nsfw = ChoiceField(
         choices=[(0, 'Показать'), (1, 'Скрыть')],
         required=True,
-        widget=StoriesRadioButtons(attrs=radio_attrs),
+        widget=RadioSelect,
     )
 
     def __init__(self, *args, **kwargs):
@@ -95,8 +82,8 @@ class AuthorEditPrefsForm(Form):
         super(AuthorEditPrefsForm, self).__init__(*args, **kwargs)
         if self.author:
             self.fields['excluded_categories'].initial = ','.join(str(x) for x in self.author.excluded_categories)
-            self.fields['detail_view'].initial = self.author.detail_view
-            self.fields['nsfw'].initial = self.author.nsfw
+            self.fields['detail_view'].initial = int(self.author.detail_view)
+            self.fields['nsfw'].initial = int(self.author.nsfw)
 
     def save(self):
         author = self.author
@@ -108,7 +95,7 @@ class AuthorEditPrefsForm(Form):
 
 
 class AuthorEditEmailForm(Form):
-    attrs_dict = {'class': 'input-xlarge'}
+    attrs_dict = {'class': 'form-control'}
 
     email = EmailField(
         widget=TextInput(attrs=dict(attrs_dict, maxlength=75, placeholder='Адрес электронной почты')),
@@ -145,7 +132,7 @@ class AuthorEditEmailForm(Form):
 
 
 class AuthorEditPasswordForm(Form):
-    attrs_dict = {'class': 'input-xlarge'}
+    attrs_dict = {'class': 'form-control'}
 
     old_password = CharField(
         widget=PasswordInput(attrs=dict(attrs_dict, placeholder='****************'), render_value=False),

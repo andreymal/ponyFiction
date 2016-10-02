@@ -3,9 +3,9 @@
 
 from math import ceil
 
+from django.conf import settings
 from django.shortcuts import redirect, render
 
-from ponyFiction import settings as settings
 from ponyFiction.forms.search import SearchForm
 from ponyFiction.models import Story, Chapter
 from ponyFiction.utils.misc import pagination_ranges
@@ -20,6 +20,9 @@ def search_main(request):
         return render(request, 'search_disabled.html')
 
     postform = SearchForm(request.GET)
+    if not postform.is_valid():
+        return search_form(request)
+
     return search_action(request, postform)
 
 

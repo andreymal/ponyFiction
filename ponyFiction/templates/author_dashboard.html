@@ -4,14 +4,14 @@
 
 
 <div class="row">
-    <div class="span12">
+    <div class="col-md-12">
         <ul class="breadcrumb">
             <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
             <li class="active">{% if author.story_set.count > 0 %}Кабинет автора{% else %}Кабинет потенциального автора{% endif %} {{ author.username }}</li>
         </ul>
     </div>
     <!-- Вывод шапки -->
-    <div class="span8">
+    <div class="col-md-8">
         <h1 id="author-name">
             <img src="{{ author.get_avatar_url }}" width="42" title="{{ author.username }}" alt="{{ author.username }}"/>
             {{ author.username }}
@@ -36,7 +36,7 @@
             {% endif%}
         </p>
     </div>
-    <div class="span8 top-list">
+    <div class="col-md-8 top-list">
         <!-- Сборники -->
         <div class="series-block">
             <!-- Начало вывода сборников, если они есть -->
@@ -48,12 +48,12 @@
         </div>
 
         <h2>
-            Мои рассказы <a class="btn btn-success btn-small" href="{% url 'story_add' %}">Добавить рассказ</a>
+            Мои рассказы <a class="btn btn-success btn-sm" href="{% url 'story_add' %}">Добавить рассказ</a>
         </h2>
         {% include "includes/stories.html" %}
     </div>
 
-    <div class="span4 top-list sidelist">
+    <div class="col-md-4 top-list sidelist">
         {% if comments_count > 0 %}
             <h2>Комментарии читателей ({{ comments_count }})</h2>
             <div id="comments-list">
@@ -63,7 +63,7 @@
         {% endif %}
     </div>
 
-    <div class="span12">
+    <div class="col-md-12">
         <ul class="breadcrumb">
             <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
             <li class="active">{% if author.story_set.count > 0 %}Кабинет автора{% else %}Читательский билет{% endif %} {{ author.username }}</li>
