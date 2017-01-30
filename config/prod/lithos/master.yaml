@@ -1,5 +1,0 @@
-cgroup-controllers:
-  - cpu
-  - cpuacct
-  - memory
-  - blkio
