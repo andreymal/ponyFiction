@@ -7,10 +7,12 @@ cache:
     - .vagga/.cache
 
 addons:
-  ssh_known_hosts: internal.everypony.ru
+  ssh_known_hosts:
+    - internal.everypony.ru
+    - $deploy_host #probe
 
 before_install:
-  - sudo echo 'deb [arch=amd64 trusted=yes] http://ubuntu.zerogw.com vagga main' >> /etc/apt/sources.list.d/vagga.list
+  - echo 'deb [arch=amd64 trusted=yes] http://ubuntu.zerogw.com vagga main' | sudo tee /etc/apt/sources.list.d/vagga.list
   - sudo apt-get update
 
 install:
