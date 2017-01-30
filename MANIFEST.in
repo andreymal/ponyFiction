@@ -1,6 +1,0 @@
-include ponyFiction/VERSION
-recursive-include ponyFiction/templates *
-recursive-include ponyFiction/filters *.xslt
-recursive-include ponyFiction/apis/captcha *
-recursive-exclude * __pycache__
-recursive-exclude * *.py[co]

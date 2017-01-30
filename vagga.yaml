@@ -60,35 +60,6 @@ containers:
     volumes:
       /config: !BindRO /work/config/local
 
-  uwsgi-pkg:
-    setup:
-      - !Container uwsgi-base
-      - !BuildDeps
-        - libmysqlclient-dev    # mysqlclient
-        - libxml2-dev           # lxml
-        - libxslt1-dev          # lxml
-      # Install application directly from pre-built wheel
-      # for production usage without dev. dependencies
-      - !Depends ponyFiction/VERSION
-      - !PipConfig
-        find-links:
-         - /work/dist/
-        dependencies: true
-      - !Py3Install [ponyFiction]
-      # deployment things
-      - !EnsureDir /log
-      - !EnsureDir /storage
-      - !EnsureDir /config
-      - !Copy
-        source: /work/config/prod/daemons
-        path: /lithos
-      - !EnsureDir /state
-      - !Sh |
-          /bin/ln -sfn /state/hosts /etc/hosts
-          /bin/ln -sfn /state/resolv.conf /etc/resolv.conf
-    resolv-conf-path: /state/resolv.conf
-    hosts-file-path: /state/hosts
-
   sphinx:
     setup:
     - !Alpine v3.3
