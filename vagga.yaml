@@ -233,18 +233,6 @@ commands:
         - --console
         - --debug-gdb
 
-  package: !Command
-    container: build
-    description: "Create Python wheel package"
-    run: |
-      git describe --tags | sed -e "s/v\(.*\)-\(.*\)-\(.*\)/\1.dev\2+\3/g" > ponyFiction/VERSION
-      python3 setup.py bdist_wheel
-      echo
-      ls dist
-    epilog: |
-      ---
-      Package is built under dist/
-
   clean: !Command
     container: build
     description: "Clean all packaging junk"
