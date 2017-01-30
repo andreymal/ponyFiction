@@ -1,0 +1,17 @@
+kind: Command
+user-id: 1
+group-id: 1
+volumes:
+  /state: !Statedir {}
+  /storage: !Persistent
+    path: /storage/redis
+    mkdir: true
+    mode: 0o700
+    user: 1
+    group: 1
+fileno-limit: 50ki
+memory-limit: 256Mi
+cpu-shares: 128
+interactive: true
+executable: /usr/bin/redis-cli
+arguments: []
