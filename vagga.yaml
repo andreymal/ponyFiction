@@ -45,6 +45,38 @@ containers:
     - !EnsureDir /config
     - !Sh "chmod +r /bin/bbsuid"
 
+  frontend:
+    setup:
+    - !Container _base_alpine
+    - !NpmDependencies
+      file: package.json
+      peer: true
+      optional: true
+      dev: true
+    environ:
+      NODE_PATH: /usr/lib/node_modules
+
+  static-trunk:
+    setup:
+    - !Container frontend
+    - !EnsureDir /static
+    - !Copy
+      source: /work/assets
+      path: /tmp/assets
+    - !Copy
+      source: /work/gulpfile.js
+      path: /tmp/gulpfile.js
+    - !Env
+      NODE_PATH: /usr/lib/node_modules
+      NODE_ENV: production
+    - !RunAs
+      work-dir: /tmp
+      script: gulp assets
+    - !Copy
+      source: /tmp/static
+      path: /static
+    data-dirs: [/static]
+
   redis-dev:
     setup:
     - !Container _base_alpine
@@ -220,6 +252,11 @@ commands:
     run:
       - uwsgi
       - /config/uwsgi/uwsgi.ini
+
+  gulp: !Command
+    container: frontend
+    description: Gulp command
+    run: [gulp]
 
   run: !Supervise
     description: Run full server stack
