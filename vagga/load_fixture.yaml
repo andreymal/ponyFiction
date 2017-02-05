@@ -1,13 +1,13 @@
 |
   mysqld_safe --skip-syslog --no-auto-restart
   while [ ! -f /tmp/mysqld.pid ]; do sleep 0.1; done
-  case "$0" in
-    *.gz )
-      echo "Loading compressed data from $0"
+  case "$1" in
+    *.gz)
+      echo "Loading compressed data from $1"
       viewer=zcat
       ;;
     *.sql)
-      echo "Loading raw data from $0"
+      echo "Loading raw data from $1"
       viewer=cat
       ;;
     *)
@@ -16,5 +16,5 @@
       exit 1
       ;;
   esac
-  $viewer $0 | mysql --user=$DB_USERNAME --password=$DB_PASSWORD --database=$DB_DATABASE
+  $viewer $1 | mysql --user=$DB_USERNAME --password=$DB_PASSWORD --database=$DB_DATABASE
   mysqladmin shutdown
