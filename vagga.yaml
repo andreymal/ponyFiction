@@ -162,6 +162,7 @@ containers:
       - uwsgi-python3
       - libxslt-dev
       - mariadb-dev
+      - ca-certificates
     - !Py3Requirements requirements.txt
     volumes:
       <<: *local_volumes
