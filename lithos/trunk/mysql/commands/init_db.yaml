@@ -18,6 +18,12 @@ volumes:
     mode: 0o700
     user: 1
     group: 1
+  /log: !Persistent
+    path: /log/mysql
+    mkdir: true
+    mode: 0o700
+    user: 1
+    group: 1
 environ:
   DB_HOST: 127.0.0.1
   DB_DATABASE: stories

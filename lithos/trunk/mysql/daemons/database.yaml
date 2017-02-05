@@ -11,6 +11,12 @@ volumes:
     mode: 0o700
     user: 1
     group: 1
+  /log: !Persistent
+    path: /log/mysql
+    mkdir: true
+    mode: 0o700
+    user: 1
+    group: 1
 fileno-limit: 50ki
 memory-limit: 2Gi
 cpu-shares: 1024
