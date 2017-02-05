@@ -178,11 +178,6 @@ urlpatterns += patterns('',
     url(r'^forbidden/$', TemplateView.as_view(template_name='403.html')),
     url(r'^internal_server_error/$', TemplateView.as_view(template_name='500.html')),
 )
-if settings.DEBUG:
-    urlpatterns += patterns('',
-        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
-        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
-    )
 urlpatterns += patterns('ponyFiction.views.staticpages',
     url(r'^page/(?P<name>[A-z0-9-_\.]+)/$', 'view', name='staticpage'),
 )

@@ -45,6 +45,15 @@ containers:
     - !EnsureDir /config
     - !Sh "chmod +r /bin/bbsuid"
 
+  _ddt_static:
+    setup:
+    - !Container _base_alpine
+    - !Py3Install [django-debug-toolbar]
+    - !Copy
+      source: /usr/lib/python3.5/site-packages/debug_toolbar/static/debug_toolbar
+      path: /debug_toolbar
+    data-dirs: [/debug_toolbar]
+
   frontend:
     setup:
     - !Container _base_alpine
@@ -72,9 +81,20 @@ containers:
     - !RunAs
       work-dir: /tmp
       script: gulp assets
-    - !Copy
-      source: /tmp/static
-      path: /static
+    # TODO: replace this pseudo-versioning with smth. prettier
+    - !Build
+      container: _ddt_static
+      source: /
+      temporary-mount: /mnt
+    - !Sh |
+        cd /tmp
+        head /dev/urandom | md5sum -b | cut -d" " -f1 > frontend.version
+        mkdir -p /static/images/
+        cp -r static/images/logopics /static/images/
+        cp -r static/images/main /static/images/
+        cp -r /mnt/debug_toolbar static
+        mv static /static/`cat frontend.version`
+        mv frontend.version /static/
     data-dirs: [/static]
 
   redis-dev:
@@ -199,6 +219,28 @@ containers:
     volumes:
       <<: *local_volumes
 
+  uwsgi-trunk:
+    setup:
+    - !Container uwsgi-dev
+    - !*Unpack
+      - *trunk_stuff
+      - *host_resolution
+    - !Copy
+      source: /work/ponyFiction
+      path: /app
+    - !Sh python3 -m compileall /app
+    - !BuildDeps [git]
+    - !Sh git describe --always > /app/backend.version
+    - !Build
+      container: static-trunk
+      source: /static
+      temporary-mount: /mnt
+    - !Copy
+      source: /mnt/frontend.version
+      path: /app/frontend.version
+    resolv-conf-path: /state/resolv.conf
+    hosts-file-path: /state/hosts
+
 commands:
   _init_db: !Command
     description: Initialize and populate MySQL database
@@ -248,7 +290,8 @@ commands:
     container: uwsgi-dev
     description: Run application
     environ:
-      DJANGO_SETTINGS_MODULE: ponyFiction.settings.development
+      PYTHONPATH: /config/application
+      DJANGO_SETTINGS_MODULE: local
     run:
       - uwsgi
       - /config/uwsgi/uwsgi.ini
@@ -257,6 +300,15 @@ commands:
     container: frontend
     description: Gulp command
     run: [gulp]
+
+  build-static: !Command
+    container: _base_alpine
+    description: Build static files
+    volumes:
+      /mnt: !Container static-trunk
+    run: |
+      cp -rf /mnt/static /work/
+      mv static/frontend.version /work/
 
   run: !Supervise
     description: Run full server stack
