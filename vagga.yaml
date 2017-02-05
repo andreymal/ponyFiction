@@ -93,9 +93,6 @@ containers:
       - mariadb-client
       - perl
       - perl-dbd-mysql
-    - !Copy
-      source: /work/config/local/mysql
-      path: /etc/mysql
     - !EnsureDir /storage
     - !EnsureDir /backup
     volumes:
@@ -103,6 +100,7 @@ containers:
         name: mysql
         init-command: _init_db
       /backup: !Persistent {name: backup}
+      /etc/mysql: !BindRO /work/config/local/mysql
 
   mysql-trunk:
     setup:
