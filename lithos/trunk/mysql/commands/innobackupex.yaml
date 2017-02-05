@@ -21,5 +21,6 @@ volumes:
 fileno-limit: 50ki
 memory-limit: 2Gi
 cpu-shares: 1024
+interactive: true
 executable: /usr/bin/innobackupex
 arguments: []
