@@ -25,4 +25,4 @@ memory-limit: 1Gi
 cpu-shares: 1024
 executable: /usr/sbin/uwsgi
 arguments:
-- /config/uwsgi.ini
+- /config/uwsgi/uwsgi.ini
