@@ -50,7 +50,7 @@ MEDIA_ROOT = '/media/'
 MEDIA_URL = '/media/'
 
 STATIC_ROOT = '/dummy'
-STATIC_BASE = "http://localhost:8000/static/"
+STATIC_BASE = "http://localhost:8000/static"
 STATIC_VERSION = open("frontend.version").read().strip()
 STATIC_URL = '{}/{}/'.format(STATIC_BASE, STATIC_VERSION)
 
