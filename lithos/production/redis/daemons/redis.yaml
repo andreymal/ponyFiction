@@ -13,4 +13,4 @@ memory-limit: 2Gi
 cpu-shares: 1024
 executable: /usr/bin/redis-server
 arguments:
-- /config/redis.conf
+- /config/redis/redis.conf

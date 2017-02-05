@@ -67,7 +67,7 @@ containers:
 
   redis-production:
     setup:
-    - !Container redis
+    - !Container redis-dev
     - !*Unpack
       - *production_stuff
       - *host_resolution
@@ -158,7 +158,7 @@ commands:
   redis: &redis !Command
     container: redis-dev
     description: Run redis server (cache and broker for celery)
-    run: redis-server /config/redis.conf
+    run: redis-server /config/redis/redis.conf
 
   sphinx: &sphinx !Command
     container: sphinx-dev
