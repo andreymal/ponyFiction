@@ -27,6 +27,8 @@ script:
   - vagga _build redis-trunk
   - vagga _build mysql-trunk
   - vagga _build sphinx-trunk
+  - vagga _build static-trunk
+  - vagga _build uwsgi-trunk
 
 deploy:
   - provider: script
@@ -35,7 +37,8 @@ deploy:
       ./deploy/script.sh
       --project stories
       --type trunk
-      --containers "redis mysql sphinx"
+      --blobs "static"
+      --containers "redis mysql sphinx uwsgi"
       --destination $deploy_destination
       --server $deploy_host
       --port $deploy_port

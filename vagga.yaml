@@ -290,8 +290,8 @@ commands:
     container: uwsgi-dev
     description: Run application
     environ:
-      PYTHONPATH: /config/application
-      DJANGO_SETTINGS_MODULE: local
+      PYTHONPATH: /config/python
+      DJANGO_SETTINGS_MODULE: app
     run:
       - uwsgi
       - /config/uwsgi/uwsgi.ini
