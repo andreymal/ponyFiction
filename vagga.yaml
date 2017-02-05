@@ -74,6 +74,14 @@ containers:
     resolv-conf-path: /state/resolv.conf
     hosts-file-path: /state/hosts
 
+  nginx:
+    setup:
+    - !Container _base_alpine
+    - !Install [nginx]
+    volumes:
+      <<: *local_volumes
+      /var/log/nginx: !Snapshot
+
   sphinx-dev:
     setup:
     - !Container _base_alpine
@@ -147,6 +155,16 @@ containers:
     resolv-conf-path: /state/resolv.conf
     hosts-file-path: /state/hosts
 
+  uwsgi-dev:
+    setup:
+    - !Container _base_alpine
+    - !Install
+      - uwsgi-python3
+      - libxslt-dev
+      - mariadb-dev
+    - !Py3Requirements requirements.txt
+    volumes:
+      <<: *local_volumes
 
 commands:
   _init_db: !Command
@@ -179,6 +197,11 @@ commands:
     description: Run redis server (cache and broker for celery)
     run: redis-server /config/redis/redis.conf
 
+  nginx: &nginx !Command
+    container: nginx
+    description: Run nginx webserver
+    run: nginx -c /config/nginx/nginx.conf
+
   sphinx: &sphinx !Command
     container: sphinx-dev
     description: Run sphinx search service
@@ -188,6 +211,14 @@ commands:
     - --config
     - /config/sphinx/sphinx.conf
 
+  uwsgi: &uwsgi !Command
+    container: uwsgi-dev
+    description: Run application
+    environ:
+      DJANGO_SETTINGS_MODULE: ponyFiction.settings.development
+    run:
+      - uwsgi
+      - /config/uwsgi/uwsgi.ini
 
   run: !Supervise
     description: Run full server stack
@@ -195,3 +226,6 @@ commands:
     children:
       redis: *redis
       mysql: *mysql
+      sphinx: *sphinx
+      uwsgi: *uwsgi
+      nginx: *nginx
