@@ -105,7 +105,10 @@ containers:
     setup:
     - !Container _base_alpine
     # TODO: Replace with ordinary install when https://github.com/alpinelinux/aports/pull/808/files will be merged
-    - !Sh apk add xtrabackup@testing --update-cache --repository https://files.everypony.org/alpine/testing --allow-untrusted
+    - !Download
+      url: https://files.everypony.org/alpine/testing/x86_64/xtrabackup-2.4.5-r0.apk
+      path: /tmp/xtrabackup-2.4.5-r0.apk
+    - !Sh apk add /tmp/xtrabackup-2.4.5-r0.apk --allow-untrusted
     - !Install
       - mariadb
       - mariadb-client
