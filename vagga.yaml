@@ -31,9 +31,9 @@ _templates:
   environ:
     local_db: &local_db
       DB_HOST: 127.0.0.1
-      DB_DATABASE: tabun
-      DB_USERNAME: tabun
-      DB_PASSWORD: tabun
+      DB_DATABASE: stories
+      DB_USERNAME: celestia
+      DB_PASSWORD: solar_eclipse
 
 containers:
   _base_alpine:
@@ -91,8 +91,8 @@ containers:
     - !EnsureDir /backup
     volumes:
       /storage: !Persistent
-        name: mysql,
-        # init-command: _init_db
+        name: mysql
+        init-command: _init_db
       /backup: !Persistent {name: backup}
 
   mysql-trunk:
@@ -134,6 +134,13 @@ commands:
     accepts-arguments: true
     run: !*Include vagga/load_fixture.yaml
 
+  mysql: &mysql !Command
+    container: mysql-dev
+    description: Run mysql database server
+    user-id: 1
+    external-user-id: 0
+    run: mysqld_safe --skip-syslog --console --debug-gdb
+
   redis-cli: &redis !Command
     container: redis
     description: Run redis CLI
@@ -149,3 +156,4 @@ commands:
     kill-unresponsive-after: 5
     children:
       redis: *redis
+      mysql: *mysql

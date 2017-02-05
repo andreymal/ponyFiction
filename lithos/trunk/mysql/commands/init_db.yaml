@@ -1,0 +1,41 @@
+kind: Command
+user-id: 1
+group-id: 1
+volumes:
+  /state: !Statedir {}
+  /tmp: !Tmpfs
+    size: 128Mi
+    mode: 0o1777
+  /storage: !Persistent
+    path: /storage/mysql
+    mkdir: true
+    mode: 0o700
+    user: 1
+    group: 1
+  /backup: !Persistent
+    path: /storage/backup
+    mkdir: true
+    mode: 0o700
+    user: 1
+    group: 1
+environ:
+  DB_HOST: 127.0.0.1
+  DB_DATABASE: stories
+  DB_USERNAME: celestia
+  DB_PASSWORD: solar_eclipse
+fileno-limit: 50ki
+memory-limit: 2Gi
+cpu-shares: 1024
+executable: /bin/sh
+arguments:
+- -c
+- |
+  mysql_install_db
+  mysqld_safe --skip-syslog --no-auto-restart
+  while [ ! -f /tmp/mysqld.pid ]; do sleep 0.1; done
+  mysqladmin create $DB_DATABASE
+  mysql -e "CREATE USER '$DB_USERNAME'@'$DB_HOST' IDENTIFIED BY '$DB_PASSWORD';"
+  mysql -e "GRANT ALL PRIVILEGES ON $DB_DATABASE.* TO '$DB_USERNAME'@'$DB_HOST';"
+  mysqladmin flush-privileges
+  MYSQL="mysql --user=$DB_USERNAME --password=$DB_PASSWORD --database=$DB_DATABASE"
+  mysqladmin shutdown
