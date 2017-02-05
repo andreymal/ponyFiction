@@ -83,6 +83,24 @@ containers:
       <<: *local_volumes
       /storage: !Persistent {name: sphinx}
 
+  sphinx-trunk:
+    setup:
+    - !Container sphinx-dev
+    - !*Unpack
+      - *trunk_stuff
+      - *host_resolution
+    resolv-conf-path: /state/resolv.conf
+    hosts-file-path: /state/hosts
+
+  sphinx-production:
+    setup:
+    - !Container sphinx-dev
+    - !*Unpack
+      - *production_stuff
+      - *host_resolution
+    resolv-conf-path: /state/resolv.conf
+    hosts-file-path: /state/hosts
+
   mysql-dev:
     setup:
     - !Container _base_alpine

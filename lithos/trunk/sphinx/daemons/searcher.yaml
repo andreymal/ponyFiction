@@ -1,13 +1,22 @@
 user_id: 1
+group-id: 1
 volumes:
+  /state: !Statedir {}
   /tmp: !Tmpfs
     size: 128Mi
     mode: 0o1777
-  /log: !Persistent
-    path: /log/sphinx
   /storage: !Persistent
     path: /storage/sphinx
-  /config: !Readonly /config
+    mkdir: true
+    mode: 0o700
+    user: 1
+    group: 1
+  /log: !Persistent
+    path: /log/sphinx
+    mkdir: true
+    mode: 0o700
+    user: 1
+    group: 1
 fileno-limit: 50ki
 memory-limit: 1Gi
 cpu-shares: 1024
@@ -15,4 +24,4 @@ executable: /usr/bin/searchd
 arguments:
 - --console
 - --config
-- /config/sphinx.conf
+- /config/sphinx/sphinx.conf
