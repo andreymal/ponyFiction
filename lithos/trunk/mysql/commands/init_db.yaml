@@ -35,8 +35,7 @@ arguments:
   mysqld_safe --skip-syslog --no-auto-restart
   while [ ! -f /tmp/mysqld.pid ]; do sleep 0.1; done
   mysqladmin create $DB_DATABASE
-  mysql -e "CREATE USER '$DB_USERNAME'@'$DB_HOST' IDENTIFIED BY '$DB_PASSWORD';"
-  mysql -e "GRANT ALL PRIVILEGES ON $DB_DATABASE.* TO '$DB_USERNAME'@'$DB_HOST';"
+  mysql --user=root -e "CREATE USER '$DB_USERNAME'@'$DB_HOST' IDENTIFIED BY '$DB_PASSWORD';"
+  mysql --user=root -e "GRANT ALL PRIVILEGES ON $DB_DATABASE.* TO '$DB_USERNAME'@'$DB_HOST';"
   mysqladmin flush-privileges
-  MYSQL="mysql --user=$DB_USERNAME --password=$DB_PASSWORD --database=$DB_DATABASE"
   mysqladmin shutdown
