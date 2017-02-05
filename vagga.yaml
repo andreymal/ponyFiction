@@ -28,6 +28,12 @@ _templates:
       - !Sh |
           /bin/ln -sfn /state/hosts /etc/hosts
           /bin/ln -sfn /state/resolv.conf /etc/resolv.conf
+  environ:
+    local_db: &local_db
+      DB_HOST: 127.0.0.1
+      DB_DATABASE: tabun
+      DB_USERNAME: tabun
+      DB_PASSWORD: tabun
 
 containers:
   _base_alpine:
@@ -68,7 +74,65 @@ containers:
     resolv-conf-path: /state/resolv.conf
     hosts-file-path: /state/hosts
 
+  mysql-dev:
+    setup:
+    - !Container _base_alpine
+    # TODO: Replace with ordinary install when https://github.com/alpinelinux/aports/pull/808/files will be merged
+    - !Sh apk add xtrabackup@testing --update-cache --repository https://files.everypony.org/alpine/testing --allow-untrusted
+    - !Install
+      - mariadb
+      - mariadb-client
+      - perl
+      - perl-dbd-mysql
+    - !Copy
+      source: /work/config/local/mysql
+      path: /etc/mysql
+    - !EnsureDir /storage
+    - !EnsureDir /backup
+    volumes:
+      /storage: !Persistent
+        name: mysql,
+        # init-command: _init_db
+      /backup: !Persistent {name: backup}
+
+  mysql-trunk:
+    setup:
+    - !Container mysql-dev
+    - !*Unpack
+      - *trunk_stuff
+      - *host_resolution
+    - !Copy
+      source: /config/mysql
+      path: /etc/mysql
+    resolv-conf-path: /state/resolv.conf
+    hosts-file-path: /state/hosts
+
+  mysql-production:
+    setup:
+    - !Container mysql-dev
+    - !*Unpack
+      - *production_stuff
+      - *host_resolution
+    - !Copy
+      source: /config/mysql
+      path: /etc/mysql
+    resolv-conf-path: /state/resolv.conf
+    hosts-file-path: /state/hosts
+
+
 commands:
+  _init_db: !Command
+    description: Initialize and populate MySQL database
+    container: mysql-dev
+    environ: *local_db
+    run: !*Include vagga/init_db.yaml
+
+  _load_fixture: !Command
+    description: Load fixture into database
+    container: mysql-dev
+    environ: *local_db
+    accepts-arguments: true
+    run: !*Include vagga/load_fixture.yaml
 
   redis-cli: &redis !Command
     container: redis
