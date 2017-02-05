@@ -74,6 +74,15 @@ containers:
     resolv-conf-path: /state/resolv.conf
     hosts-file-path: /state/hosts
 
+  sphinx-dev:
+    setup:
+    - !Container _base_alpine
+    - !Install [sphinx@community]
+    - !EnsureDir /storage
+    volumes:
+      <<: *local_volumes
+      /storage: !Persistent {name: sphinx}
+
   mysql-dev:
     setup:
     - !Container _base_alpine
@@ -150,6 +159,16 @@ commands:
     container: redis-dev
     description: Run redis server (cache and broker for celery)
     run: redis-server /config/redis.conf
+
+  sphinx: &sphinx !Command
+    container: sphinx-dev
+    description: Run sphinx search service
+    run:
+    - searchd
+    - --console
+    - --config
+    - /config/sphinx/sphinx.conf
+
 
   run: !Supervise
     description: Run full server stack
