@@ -45,7 +45,7 @@ containers:
     - !EnsureDir /config
     - !Sh "chmod +r /bin/bbsuid"
 
-  redis:
+  redis-dev:
     setup:
     - !Container _base_alpine
     - !Install [redis]
@@ -58,7 +58,7 @@ containers:
 
   redis-trunk:
     setup:
-    - !Container redis
+    - !Container redis-dev
     - !*Unpack
       - *trunk_stuff
       - *host_resolution
@@ -142,12 +142,12 @@ commands:
     run: mysqld_safe --skip-syslog --console --debug-gdb
 
   redis-cli: &redis !Command
-    container: redis
+    container: redis-dev
     description: Run redis CLI
     run: [redis-cli]
 
   redis: &redis !Command
-    container: redis
+    container: redis-dev
     description: Run redis server (cache and broker for celery)
     run: redis-server /config/redis.conf
 
