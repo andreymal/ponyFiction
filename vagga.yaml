@@ -43,6 +43,7 @@ containers:
     - !AlpineRepo {branch: edge, repo: testing, tag: testing}
     - !AlpineRepo {branch: edge, repo: community, tag: community}
     - !EnsureDir /config
+    - !EnsureDir /storage
     - !Sh "chmod +r /bin/bbsuid"
 
   _ddt_static:
@@ -101,7 +102,6 @@ containers:
     setup:
     - !Container _base_alpine
     - !Install [redis]
-    - !EnsureDir /storage
     volumes:
       <<: *local_volumes
       /storage: !Tmpfs
@@ -138,7 +138,6 @@ containers:
     setup:
     - !Container _base_alpine
     - !Install [sphinx@community]
-    - !EnsureDir /storage
     volumes:
       <<: *local_volumes
       /storage: !Persistent {name: sphinx}
@@ -174,7 +173,6 @@ containers:
       - mariadb-client
       - perl
       - perl-dbd-mysql
-    - !EnsureDir /storage
     - !EnsureDir /backup
     volumes:
       /storage: !Persistent
