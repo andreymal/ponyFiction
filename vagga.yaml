@@ -245,7 +245,7 @@ commands:
     environ: *local_db
     run: !*Include vagga/init_db.yaml
 
-  _load_fixture: !Command
+  load_fixture: !Command
     description: Load fixture into database
     container: mysql-dev
     environ: *local_db
@@ -329,3 +329,13 @@ commands:
       sphinx: *sphinx
       uwsgi: *uwsgi
       nginx: *nginx
+
+  manage.py: !Command
+    description: Django management tool
+    container: uwsgi-dev
+    environ:
+      PYTHONPATH: /config/python
+      DJANGO_SETTINGS_MODULE: app
+    run:
+    - python3
+    - manage.py
