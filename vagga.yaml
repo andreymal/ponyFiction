@@ -223,9 +223,8 @@ containers:
     - !*Unpack
       - *trunk_stuff
       - *host_resolution
-    - !Copy
-      source: /work/ponyFiction
-      path: /app
+    - !EnsureDir /app
+    - !Sh cp -r /work/ponyFiction /app
     - !Sh python3 -m compileall /app
     - !BuildDeps [git]
     - !Sh git describe --always > /app/backend.version
