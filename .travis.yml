@@ -44,4 +44,4 @@ deploy:
       --port $deploy_port
       --user $deploy_user
     on:
-      branch: deploy
+      branch: development
