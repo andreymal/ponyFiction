@@ -46,16 +46,7 @@ containers:
     - !EnsureDir /storage
     - !Sh "chmod +r /bin/bbsuid"
 
-  _ddt_static:
-    setup:
-    - !Container _base_alpine
-    - !Py3Install [django-debug-toolbar]
-    - !Copy
-      source: /usr/lib/python3.5/site-packages/debug_toolbar/static/debug_toolbar
-      path: /debug_toolbar
-    data-dirs: [/debug_toolbar]
-
-  frontend:
+  frontend-build:
     setup:
     - !Container _base_alpine
     - !NpmDependencies
@@ -66,9 +57,9 @@ containers:
     environ:
       NODE_PATH: /usr/lib/node_modules
 
-  static-trunk:
+  frontend-scripts:
     setup:
-    - !Container frontend
+    - !Container frontend-build
     - !EnsureDir /static
     - !Copy
       source: /work/assets
@@ -79,23 +70,56 @@ containers:
     - !Env
       NODE_PATH: /usr/lib/node_modules
       NODE_ENV: production
+    # TODO: replace this pseudo-versioning with smth. prettier
     - !RunAs
       work-dir: /tmp
-      script: gulp assets
-    # TODO: replace this pseudo-versioning with smth. prettier
+      script: |
+        gulp assets
+        mv static /
+        head /dev/urandom | md5sum -b | cut -d" " -f1 > /static/frontend.version
+    auto-clean: true
+    data-dirs: [/static]
+
+  frontend-bundled:
+    setup:
+    - !Container uwsgi-dev
+    - !EnsureDir /static
+    - !Env
+      PYTHONPATH: /work/config/local/python
+      DJANGO_SETTINGS_MODULE: app
+    - !RunAs
+      work-dir: /work
+      script: python3 manage.py collectstatic --noinput
+    auto-clean: true
+    data-dirs: [/static]
+
+  static-trunk:
+    setup:
+    - !Container _base_alpine
+    - !EnsureDir /static
+    # Copy all static from bundled Django apps
     - !Build
-      container: _ddt_static
-      source: /
-      temporary-mount: /mnt
-    - !Sh |
-        cd /tmp
-        head /dev/urandom | md5sum -b | cut -d" " -f1 > frontend.version
-        mkdir -p /static/images/
-        cp -r static/images/logopics /static/images/
-        cp -r static/images/main /static/images/
-        cp -r /mnt/debug_toolbar static
-        mv static /static/`cat frontend.version`
-        mv frontend.version /static/
+      container: frontend-bundled
+      source: /static
+      temporary-mount: /tmp/bundled
+    # Then append static from build system
+    - !Build
+      container: frontend-scripts
+      source: /static
+      temporary-mount: /tmp/scripts
+    # Organize them
+    # FIXME
+    - !RunAs
+      work-dir: /static
+      script: |
+        VER=`cat /tmp/scripts/frontend.version`
+        mkdir $VER
+        cp -r /tmp/bundled/* $VER/
+        cp /tmp/scripts/frontend.version .
+        cp -r /tmp/scripts/* $VER
+        mkdir images
+        cp -r /tmp/scripts/images/main/ images/
+        cp -r /tmp/scripts/images/logopics images/
     data-dirs: [/static]
 
   redis-dev:
