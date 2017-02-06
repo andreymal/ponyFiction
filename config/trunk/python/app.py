@@ -12,7 +12,7 @@ DATABASES = {
         'USER': 'celestia',
         'PASSWORD': 'solar_eclipse',
         'HOST': '127.0.0.1',
-        'PORT': '4418'
+        'PORT': '4416'
     }
 }
 CACHES = {
