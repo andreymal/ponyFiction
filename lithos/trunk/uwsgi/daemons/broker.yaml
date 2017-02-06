@@ -26,7 +26,6 @@ cpu-shares: 1024
 workdir: /app
 executable: /usr/bin/celery
 arguments:
-- celery
 - worker
 - -A
 - ponyFiction
