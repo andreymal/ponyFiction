@@ -46,11 +46,13 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = False
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = '/media/'
 MEDIA_URL = '/media/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = '/static/'
+STATIC_ROOT = '/dummy'
+STATIC_BASE = "http://localhost:8000/static"
+STATIC_VERSION = open("frontend.version").read().strip()
+STATIC_URL = '{}/{}/'.format(STATIC_BASE, STATIC_VERSION)
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',

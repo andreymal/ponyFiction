@@ -1,0 +1,32 @@
+kind: Command
+user-id: 1
+group-id: 1
+volumes:
+  /state: !Statedir {}
+  /tmp: !Tmpfs
+    size: 128Mi
+    mode: 0o1777
+  /storage: !Persistent
+    path: /storage/mysql
+    mkdir: true
+    mode: 0o700
+    user: 1
+    group: 1
+  /backup: !Persistent
+    path: /storage/backup
+    mkdir: true
+    mode: 0o700
+    user: 1
+    group: 1
+  /log: !Persistent
+    path: /log/mysql
+    mkdir: true
+    mode: 0o700
+    user: 1
+    group: 1
+fileno-limit: 50ki
+memory-limit: 2Gi
+cpu-shares: 1024
+interactive: true
+executable: /usr/bin/innobackupex
+arguments: []
