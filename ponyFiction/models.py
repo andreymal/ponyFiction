@@ -808,3 +808,19 @@ class StaticPage(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class NewsItem(models.Model):
+    title = models.CharField(max_length=255, verbose_name="Заголовок новости")
+    text = models.TextField(blank=True, verbose_name="Текст новости")
+    visible = models.BooleanField(default=False, verbose_name="Опубликована")
+    updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+
+    bl = Resource('bl.newsitem')
+
+    class Meta:
+        verbose_name = "новость"
+        verbose_name_plural = "новости"
+
+    def __str__(self):
+        return self.title
