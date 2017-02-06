@@ -1,0 +1,8 @@
+{% load static %}
+
+{% if item %}
+    <div id="news" class="carousel pull-left">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+    </div>
+{% endif %}

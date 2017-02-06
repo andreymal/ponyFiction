@@ -1,4 +1,5 @@
 {% load random_stories %}
+{% load news_block %}
 {% load submitted_stories_count %}
 <!-- Container start -->
 <div class="container">
@@ -27,10 +28,7 @@
         <div id="slides" class="carousel">
             {% random_stories %}
         </div>
-        <div id="news" class="carousel pull-left">
-            <h3>Ещё одна новость</h3>
-			<p>Таким образом укрепление и развитие структуры играет важную роль в формировании систем массового участия. Задача организации, в особенности же рамки и место обучения кадров обеспечивает широкому кругу (специалистов) участие в формировании новых предложений.</p>
-        </div>
+        {% news_block %}
     </div>
     <!-- Logo image and carousel end -->
 

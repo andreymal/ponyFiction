@@ -9,6 +9,7 @@ from ponyFiction.models import (
     Author, Character, CharacterGroup, Category, Classifier,
     Rating, Series, Story, Chapter, Comment, BetaReading, StaticPage
 )
+from ponyFiction.models import NewsItem
 
 
 class StoryAdmin(admin.ModelAdmin):
@@ -22,6 +23,7 @@ admin.site.register(Story, StoryAdmin)
 admin.site.register(Chapter, ChapterAdmin)
 admin.site.register([Character, CharacterGroup, Category, Classifier])
 admin.site.register([Rating, Series, Comment, BetaReading, StaticPage])
+admin.site.register(NewsItem)
 
 
 class AuthorChangeForm(UserChangeForm):
