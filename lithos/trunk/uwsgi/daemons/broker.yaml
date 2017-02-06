@@ -1,0 +1,33 @@
+user_id: 1
+group-id: 1
+volumes:
+  /state: !Statedir {}
+  /tmp: !Tmpfs
+    size: 128Mi
+    mode: 0o1777
+  /storage: !Persistent
+    path: /storage/uwsgi
+    mkdir: true
+    mode: 0o700
+    user: 1
+    group: 1
+  /log: !Persistent
+    path: /log/celery
+    mkdir: true
+    mode: 0o700
+    user: 1
+    group: 1
+environ:
+  PYTHONPATH: /config/python
+  DJANGO_SETTINGS_MODULE: app
+fileno-limit: 50ki
+memory-limit: 1Gi
+cpu-shares: 1024
+workdir: /app
+executable: /usr/bin/celery
+arguments:
+- celery
+- worker
+- -A
+- ponyFiction
+- --loglevel=INFO

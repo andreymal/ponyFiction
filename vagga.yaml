@@ -294,6 +294,19 @@ commands:
       - uwsgi
       - /config/uwsgi/uwsgi.ini
 
+  celery: &celery !Command
+    container: uwsgi-dev
+    description: Run celery worker
+    environ:
+      PYTHONPATH: /config/python
+      DJANGO_SETTINGS_MODULE: app
+    run:
+      - celery
+      - worker
+      - -A
+      - ponyFiction
+      - --loglevel=INFO
+
   gulp: !Command
     container: frontend
     description: Gulp command
