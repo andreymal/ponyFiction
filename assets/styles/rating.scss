@@ -1,0 +1,30 @@
+@mixin glue() {
+    margin-left: 2px;
+    margin-right: -2px;
+}
+@mixin pad() {
+  margin-left: -2px;
+  margin-right: 2px;
+}
+
+.horseshue {
+  display: inline-block;
+  width: 12px;
+  height: 24px;
+}
+.horseshoe-l {
+  @include glue;
+  background: url(../images/main/horseshoe-l.png) no-repeat;
+}
+.horseshoe-lg {
+  @include glue;
+  background: url(../images/main/horseshoe-lg.png) no-repeat;
+}
+.horseshoe-r {
+  @include pad;
+  background: url(../images/main/horseshoe-r.png) no-repeat;
+}
+.horseshoe-rg {
+  @include pad;
+  background: url(../images/main/horseshoe-rg.png) no-repeat;
+}

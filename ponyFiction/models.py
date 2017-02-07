@@ -443,14 +443,11 @@ class Story(JSONModel):
     def update_words_count(self):
         self.words = self.chapter_set.aggregate(total=Sum('words'))['total']
 
-    def iter_horseshoe_images(self):
+    def iter_horseshoe_codes(self):
         n = int(round(self.get_vote_rank() * 10))
         k = int(round(float(n*self.vote_up_count)/max(self.vote_count, 1)))
         for i in range(n):
-            img = 'images/main/horseshoe-' + 'lr'[i%2]
-            if i+1 > k: img += 'g'
-            img += '.png'
-            yield img
+            yield 'lr'[i % 2] + ('g' if i+1 > k else '')
 
     @property
     def url(self):
