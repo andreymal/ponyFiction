@@ -37,14 +37,6 @@
 .markItUpFooter {
 	width:100%;
 }
-.markItUpResizeHandle {
-	overflow:hidden;
-	width:22px; height:5px;
-	margin-left:auto;
-	margin-right:auto;
-	background-image:url(../images/handle.png);
-	cursor:n-resize;
-}
 /***************************************************************************************/
 /* first row of buttons */
 .markItUpHeader ul li	{
@@ -54,10 +46,6 @@
 }
 .markItUpHeader ul li:hover > ul{
 	display:block;
-}
-.markItUpHeader ul .markItUpDropMenu {
-	background:transparent url(../images/menu.png) no-repeat 115% 50%;
-	margin-right:5px;
 }
 .markItUpHeader ul .markItUpDropMenu li {
 	margin-right:0px;
@@ -73,9 +61,6 @@
 .markItUpHeader ul ul li {
 	float:none;
 	border-bottom:1px solid #000;
-}
-.markItUpHeader ul ul .markItUpDropMenu {
-	background:#FFF url(../images/submenu.png) no-repeat 100% 50%;
 }
 .markItUpHeader ul .markItUpSeparator {
 	margin:0 7px;

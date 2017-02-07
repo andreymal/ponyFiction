@@ -54,6 +54,7 @@ containers:
       peer: true
       optional: true
       dev: true
+    - !Sh npm rebuild node-sass
     environ:
       NODE_PATH: /usr/lib/node_modules
 
@@ -336,10 +337,12 @@ commands:
       - ponyFiction
       - --loglevel=INFO
 
-  gulp: !Command
-    container: frontend
-    description: Gulp command
-    run: [gulp]
+  webpack: !Command
+    container: frontend-build
+    description: Webpack command
+    volumes:
+      /root: !Snapshot
+    run: [webpack]
 
   build-static: !Command
     container: _base_alpine
