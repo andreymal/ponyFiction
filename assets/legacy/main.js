@@ -1,6 +1,12 @@
-requestRunning = false;
-modalDisplaying = false;
+$ = require('jquery');
+require('jquery-ui');
+require('../legacy/jquery.markitup.js');
+require('../legacy/jquery.slides.min.js');
+import cookie from 'js-cookie';
+import markitupConfig from './markitup-config';
 
+var requestRunning = false;
+var modalDisplaying = false;
 /**
  * ОБРАБОТЧИКИ
  */
@@ -44,7 +50,7 @@ var ajax = {
                 modal.html(data).on('show', function() {
                     var textarea = $('textarea', this);
                     if (textarea.length) {
-                        textarea.markItUp(mySettings);
+                        textarea.markItUp(markitupConfig);
                     }
                 }).modal();
             },
@@ -722,13 +728,13 @@ var stuff = {
     // Ротатор шапок
     logo : function() {
         var len = 8
-        if ($.cookie('stories_gr') == null) {
+        if (cookie.get('stories_gr') == null) {
             var stories_gr = Math.floor(Math.random() * len) + 1;
-            $.cookie('stories_gr', stories_gr, {
+            cookie.set('stories_gr', stories_gr, {
                 expires : 1
             });
         } else {
-            var stories_gr = $.cookie('stories_gr');
+            var stories_gr = cookie.get('stories_gr');
         }
         var new_image = "url(/static/images/logopics/logopic-" + stories_gr + ".jpg)";
         $('.logopic').css('background-image', new_image);
@@ -781,7 +787,7 @@ var stuff = {
             crossDomain : false,
             error : ajax.errorhandler,
             beforeSend : function(request) {
-                request.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+                request.setRequestHeader("X-CSRFToken", cookie.get('csrftoken'));
             }
         });
     },

@@ -1,4 +1,4 @@
-import {ProvidePlugin, DefinePlugin} from 'webpack';
+import {ProvidePlugin, DefinePlugin, optimize} from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import path from 'path';
 import fs from 'fs';
@@ -22,7 +22,8 @@ export default {
     entry: {
         bootstrap: 'bootstrap-loader',
         styles: './assets/styles/main.scss',
-        app: './assets/app/'
+        app: './assets/app/',
+        vendor: ['jquery', 'jquery-ui']
     },
     output: {
         path: path.resolve(__dirname, "dist"),
@@ -82,6 +83,10 @@ export default {
             'process.env': {
                 NODE_ENV: JSON.stringify('production'),
             },
+        }),
+        new optimize.CommonsChunkPlugin({
+            name: 'vendor',
+            minChunks: Infinity
         }),
         new VersionPlugin()
     ]
