@@ -214,6 +214,9 @@ containers:
     - !Copy
       source: /config/mysql
       path: /etc/mysql
+    - !Copy
+      source: /work/fixtures
+      path: /fixtures
     resolv-conf-path: /state/resolv.conf
     hosts-file-path: /state/hosts
 
@@ -226,6 +229,9 @@ containers:
     - !Copy
       source: /config/mysql
       path: /etc/mysql
+    - !Copy
+      source: /work/fixtures
+      path: /fixtures
     resolv-conf-path: /state/resolv.conf
     hosts-file-path: /state/hosts
 

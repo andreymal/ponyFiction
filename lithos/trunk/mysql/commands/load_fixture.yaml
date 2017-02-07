@@ -1,0 +1,45 @@
+kind: Command
+user-id: 1
+group-id: 1
+volumes:
+  /state: !Statedir {}
+  /tmp: !Tmpfs
+    size: 128Mi
+    mode: 0o1777
+  /storage: !Persistent
+    path: /storage/mysql
+    mkdir: true
+    mode: 0o700
+    user: 1
+    group: 1
+  /log: !Persistent
+    path: /log/mysql
+    mkdir: true
+    mode: 0o700
+    user: 1
+    group: 1
+environ:
+  DB_DATABASE: stories
+fileno-limit: 50ki
+memory-limit: 2Gi
+cpu-shares: 1024
+interactive: true
+executable: /bin/sh
+arguments:
+- -c
+- |
+  case "$1" in
+    *.gz)
+      echo "Loading compressed data from $1"
+      viewer=zcat
+      ;;
+    *.sql)
+      echo "Loading raw data from $1"
+      viewer=cat
+      ;;
+    *)
+      echo "Wrong fixture format or missing file"
+      exit 1
+      ;;
+  esac
+  $viewer $1 | mysql --database=$DB_DATABASE
