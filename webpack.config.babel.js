@@ -26,8 +26,8 @@ export default {
     },
     output: {
         path: path.resolve(__dirname, "dist"),
-        publicPath: "/",
-        filename: 'js/[name].bundle.js'
+        publicPath: "./",
+        filename: '[name].bundle.js'
     },
     module: {
         rules: [
@@ -75,7 +75,7 @@ export default {
             jquery: 'jquery'
         }),
         new ExtractTextPlugin({
-            filename: 'styl/[name].css',
+            filename: '[name].css',
             allChunks: true
         }),
         new DefinePlugin({

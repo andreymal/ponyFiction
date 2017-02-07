@@ -192,10 +192,6 @@ class Character(JSONModel):
     def url(self):
         return reverse('search_simple', args=['character', self.id])
 
-    @property
-    def thumb(self):
-        return staticfiles_storage.url('images/characters/{}.png'.format(self.id))
-
     class Meta:
         verbose_name = "персонаж"
         verbose_name_plural = "персонажи"

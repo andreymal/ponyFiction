@@ -52,7 +52,11 @@
             {% spaceless %}
                 <span class="character-list">
                     {% for character in story.characters.all %}
-                        <a href="{% url 'search_simple' 'character' character.id %}"><img src="{{ character.thumb }}" alt="{{ character.name }}" title="{{ character.name }}"/></a>
+                        <a
+                            class="character character-small character-{{ character.id }}"
+                            href="{% url 'search_simple' 'character' character.id %}"
+                            title="{{ character.name }}"
+                        ></a>
                     {% endfor %}
                 </span>
 				<p>Теги: {% for classifier in story.classifications.all %}<a href="{% url 'search_simple' 'classifier' classifier.id %}">{{ classifier.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
