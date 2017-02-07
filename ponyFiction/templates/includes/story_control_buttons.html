@@ -4,12 +4,12 @@
     {% if story|editable_by:user %}
         <div class="story-control-btn btn-group">
             {% if user.is_staff %}
-                <a class="btn {{ story.approved|yesno:',btn-success' }} btn-xs btn-default story_approve" href="{% url 'story_approve' story.id %}">
-                   <img src="{% static 'images/main/fork.png' %}" style="width: 16px; height: 16px;"> {{ story.approved|yesno:"Отозвать,Одобрить" }}
+                <a class="btn btn-approve {{ story.approved|yesno:',btn-success' }} btn-xs btn-default story_approve" href="{% url 'story_approve' story.id %}">
+                   {{ story.approved|yesno:"Отозвать,Одобрить" }}
                 </a>
             {% endif %}
-            <a class="btn btn-xs btn-default story_publish{% if story.publishable and story.draft %} btn-primary{% endif %}" href="{% url 'story_publish' story.id %}">
-               <img src="{% static 'images/main/fork.png' %}" style="width: 16px; height: 16px;"> {{ story.draft|yesno:"Опубликовать,В черновики" }}
+            <a class="btn btn-approve btn-xs btn-default story_publish{% if story.publishable and story.draft %} btn-primary{% endif %}" href="{% url 'story_publish' story.id %}">
+               {{ story.draft|yesno:"Опубликовать,В черновики" }}
             </a>
             {% if not user.is_staff and not story_edit %}
                 <a class="btn btn-warning btn-xs btn-default" href="{% url 'story_edit' story.id %}">Редактировать</a>

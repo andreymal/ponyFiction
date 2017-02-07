@@ -273,14 +273,6 @@ img.avatar-small, .character-list img {
 	font-size: 12px;
 }
 
-.story-control-btn {
-	float: right;
-}
-
-.story-control-btn a {
-    text-decoration: none;
-}
-
 /* Vote-buttons */
 .upvotes {
 	color: #66CC66;

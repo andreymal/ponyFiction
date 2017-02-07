@@ -1,0 +1,12 @@
+.story-control-btn {
+  float: right;
+  a {
+    text-decoration: none;
+  }
+}
+
+.story-control-btn.btn-approve {
+  width: 16px;
+  height: 16px;
+  // FIXME: missed icon!
+}
