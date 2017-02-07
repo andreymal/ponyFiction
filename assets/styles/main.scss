@@ -1,6 +1,8 @@
 @import "./design.css";
 @import "./markitup.main.css";
-@import "./markitup.set.css";
+.markItUp {
+  @import "./markitup.set";
+}
 
 @import "characters";
 @import "rating";
