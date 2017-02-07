@@ -1,27 +1,21 @@
 {% load static %}
 
-{% for random_story in random_stories %}
+{% for story in random_stories %}
     <div class="story-item">
-        <h3><a href="{% url 'story_view' random_story.id %}">{{ random_story.title }}</a></h3>
+        <h3><a href="{% url 'story_view' story.id %}">{{ story.title }}</a></h3>
         <p class="meta">
             {% spaceless %}
                 <span class="category-list">
-                    {% for category in random_story.categories.all %}
+                    {% for category in story.categories.all %}
                         <a class="gen" style="background-color: {{ category.color }}" href="{% url 'search_simple' 'category' category.id %}">{{ category.name }}</a>
                     {% endfor %}
                 </span>
             {% endspaceless %}
         </p>
-        {% if random_story.cover %}<img class="thumbnail" src="{% static 'images/main/tumb.jpg' %}"/>{% endif %}
-        <p>{{ random_story.summary_as_html|striptags|truncatewords:20 }}</p>
+        {% if story.cover %}<img class="thumbnail" src="{% static 'images/main/tumb.jpg' %}"/>{% endif %}
+        <p>{{ story.summary_as_html|striptags|truncatewords:20 }}</p>
         <p class="meta">
-            {% spaceless %}
-                <span class="character-list">
-                    {% for character in random_story.characters.all %}
-                        <a href="{% url 'search_simple' 'character' character.id %}"><img src="{{ character.thumb }}" alt="{{ character.name }}" title="{{ character.name }}"/></a>
-                    {% endfor %}
-                </span>
-            {% endspaceless %}
+            {% include 'includes/character_row.html' %}
         </p>
     </div>
 {% endfor %}

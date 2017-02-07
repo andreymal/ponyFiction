@@ -50,15 +50,7 @@
         {% endif %}
         <p class="meta">
             {% spaceless %}
-                <span class="character-list">
-                    {% for character in story.characters.all %}
-                        <a
-                            class="character character-small character-{{ character.id }}"
-                            href="{% url 'search_simple' 'character' character.id %}"
-                            title="{{ character.name }}"
-                        ></a>
-                    {% endfor %}
-                </span>
+            {% include 'includes/character_row.html' %}
 				<p>Теги: {% for classifier in story.classifications.all %}<a href="{% url 'search_simple' 'classifier' classifier.id %}">{{ classifier.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
             {% endspaceless %}
         </p>

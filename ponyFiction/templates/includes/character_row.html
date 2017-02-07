@@ -1,0 +1,11 @@
+{% spaceless %}
+<span class="character-list">
+    {% for character in story.characters.all %}
+        <a
+            class="character character-small character-{{ character.id }}"
+            href="{% url 'search_simple' 'character' character.id %}"
+            title="{{ character.name }}"
+        ></a>
+    {% endfor %}
+</span>
+{% endspaceless %}
