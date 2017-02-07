@@ -28,13 +28,13 @@ executable: /bin/sh
 arguments:
 - -c
 - |
-  case "$1" in
+  case "$0" in
     *.gz)
-      echo "Loading compressed data from $1"
+      echo "Loading compressed data from $0"
       viewer=zcat
       ;;
     *.sql)
-      echo "Loading raw data from $1"
+      echo "Loading raw data from $0"
       viewer=cat
       ;;
     *)
@@ -42,4 +42,4 @@ arguments:
       exit 1
       ;;
   esac
-  $viewer $1 | mysql --database=$DB_DATABASE
+  $viewer $0 | mysql --user=root --database=$DB_DATABASE
