@@ -384,12 +384,12 @@ p.meta .gen {
 
 a.gen:hover {
 	color: #fff !important;
-	background-color: #999;
+	background-color: #999 !important;
 }
 
 a.gen:active {
 	color: #fff !important;
-	background-color: #999;
+	background-color: #999 !important;
 }
 
 .gen-1 {
