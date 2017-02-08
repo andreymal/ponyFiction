@@ -526,6 +526,10 @@ label.gen input {
 	line-height: 26px;
 }
 
+.row .col-md-6:last-child {
+	text-align: right;
+}
+
 .chapter-text p,.chapter-text span {
 	margin-bottom: 20px;
 }
