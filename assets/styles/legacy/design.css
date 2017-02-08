@@ -384,12 +384,12 @@ p.meta .gen {
 
 a.gen:hover {
 	color: #fff !important;
-	background-color: #999;
+	background-color: #999 !important;
 }
 
 a.gen:active {
 	color: #fff !important;
-	background-color: #999;
+	background-color: #999 !important;
 }
 
 .gen-1 {
@@ -524,6 +524,10 @@ label.gen input {
 	font-family: Verdana, Arial, sans-serif;
 	font-size: 14px;
 	line-height: 26px;
+}
+
+.row .col-md-6:last-child {
+	text-align: right;
 }
 
 .chapter-text p,.chapter-text span {
@@ -857,6 +861,11 @@ input.hidden {
 	
 }
 
+.control-reset-password {
+	margin: 10px 0;
+	max-width: 300px;
+}
+
 .reg-complete {
 	padding-bottom: 200px;
 }
@@ -1101,6 +1110,7 @@ a.btn {
 	color: #FAFAE8;
 	text-align: center;
 	border-radius: 0 0 8px 8px;
+	margin-top: 15px;
 }
 
 .footer .nav.nav-pills.nav-main {
