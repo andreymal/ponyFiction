@@ -69,6 +69,12 @@ export default {
             }
         ]
     },
+    resolve: {
+        modules: [process.env.NODE_PATH, path.resolve(__dirname)]
+    },
+    resolveLoader: {
+        modules: [process.env.NODE_PATH]
+    },
     plugins: [
         new ProvidePlugin({
             jQuery: 'jquery',
