@@ -43,3 +43,42 @@ class MainQS(StoryQuerySet):
         # last = date.today() - timedelta(weeks=1)
         # All NOT drafts AND (already approved OR (submitted at last 1 week ago AND NOT approved yet) ) stories
         # default_queryset = self.filter(Q(date__lte=last, approved=False)|Q(approved=True), draft=False)
+
+
+class TopQS(StoryQuerySet):
+
+    # Time spans
+
+    @property
+    def week(self):
+        return self
+
+    @property
+    def month(self):
+        return self
+
+    @property
+    def year(self):
+        return self
+
+    # Filters
+
+    @property
+    def best(self):
+        return self
+
+    @property
+    def new(self):
+        return self
+
+    @property
+    def wild(self):
+        return self
+
+    @property
+    def active(self):
+        return self
+
+    @property
+    def commented(self):
+        return self

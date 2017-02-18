@@ -330,6 +330,7 @@ class Story(JSONModel):
     vote_rating = models.FloatField(default = 0, editable = settings.DEBUG)
 
     objects = qm.factory(qm.story.MainQS)
+    top = qm.factory(qm.story.TopQS)
 
     bl = Resource('bl.story')
 
