@@ -20,7 +20,8 @@ from ponyFiction.filters.html import footnotes_to_html
 from ponyFiction.bl.utils import Resource
 from ponyFiction.fields import SeparatedValuesField
 
-from ponyFiction.querymanagers.story import StoryManager
+from ponyFiction.querymanagers import manager_factory
+from ponyFiction.querymanagers import StoryQuerySet
 
 
 # disable username validation to allow editing of users with russian symbols in names
@@ -329,7 +330,7 @@ class Story(JSONModel):
     vote_down_count = models.PositiveIntegerField(default = 0, editable = settings.DEBUG)
     vote_rating = models.FloatField(default = 0, editable = settings.DEBUG)
 
-    objects = StoryManager()
+    objects = manager_factory(StoryQuerySet)()
 
     bl = Resource('bl.story')
 
