@@ -37,10 +37,10 @@
     <li class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">FAQ<span class="caret"></span></a>
     <ul class="dropdown-menu" role="menu">
-          <li class="disabled"><a href="#">Правила</a></li>
-          <li class="disabled"><a href="#">Начинающему</a></li>
-          <li class="disabled"><a href="#">Полезные ссылки</a></li>
-          <li class="disabled"><a href="#">Благодарности</a></li>
+          <li><a href="{% url 'staticpage' 'terms' %}">Правила</a></li>
+          <li><a href="{% url 'staticpage' 'quickstart' %}">Начинающему</a></li>
+          <li><a href="{% url 'staticpage' 'links' %}">Полезные ссылки</a></li>
+          <li><a href="{% url 'staticpage' 'thanks' %}">Благодарности</a></li>
       </ul>
     </li>
 
