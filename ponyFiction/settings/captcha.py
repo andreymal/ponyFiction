@@ -1,0 +1,6 @@
+# Should be filled later
+RECAPTCHA_PUBLIC_KEY = None
+RECAPTCHA_PRIVATE_KEY = None
+
+RECAPTCHA_USE_SSL = True
+NOCAPTCHA = True

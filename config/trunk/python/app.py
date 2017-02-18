@@ -45,3 +45,7 @@ CACHEOPS_REDIS = {
 
 STATIC_ROOT = '/srv'
 STATIC_URL = set_static_url("https://cdn.everypony.ru/stories-trunk-static")
+
+# Captcha
+RECAPTCHA_PUBLIC_KEY = '6LcY1CATAAAAAH4KcClEUoRL95HXXTxWm4sMXqlI'
+RECAPTCHA_PRIVATE_KEY = '6LcY1CATAAAAAG5dtW1Ozfb4h4FBy_KaN_tZ6t2H'

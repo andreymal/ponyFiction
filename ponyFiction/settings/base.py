@@ -3,6 +3,7 @@
 # pylint: disable=W0122
 
 import os
+from .captcha import *
 
 
 def set_static_url(base):
@@ -192,11 +193,6 @@ EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'noreply@stories.everypony.ru'
-
-RECAPTCHA_PUBLIC_KEY = '6LfbstoSAAAAAAcFIteoZTld24mt3s6_sODZnc8J'
-RECAPTCHA_PRIVATE_KEY = '6LfbstoSAAAAAHHN9jYw9Lp9lsunQCILAyAYgoxz'
-RECAPTCHA_USE_SSL = True
-NOCAPTCHA = True
 
 ALLOWED_TAGS = [
     'b', 'i', 'strong', 'em', 's', 'u',
