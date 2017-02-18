@@ -6,7 +6,7 @@ import json
 from django.db import models
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import Sum, Count, Prefetch
+from django.db.models import Sum, Count
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.contrib.auth.models import AbstractUser
@@ -19,6 +19,9 @@ from ponyFiction.filters.base import html_doc_to_string
 from ponyFiction.filters.html import footnotes_to_html
 from ponyFiction.bl.utils import Resource
 from ponyFiction.fields import SeparatedValuesField
+
+from ponyFiction.querymanagers.story import StoryManager
+
 
 # disable username validation to allow editing of users with russian symbols in names
 username_field = {f.name: f for f in AbstractUser._meta.fields}['username']  # pylint: disable=W0212
@@ -295,60 +298,6 @@ class Series(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class StoryQuerySet(models.query.QuerySet):
-    @property
-    def prefetch_for_list(self):
-        return self.prefetch_related(
-            Prefetch('authors', queryset=Author.objects.all().only('username')),
-            'characters',
-            'categories'
-        )
-
-    @property
-    def published(self):
-        return self.filter(draft=False, approved=True)
-
-    @property
-    def submitted(self):
-        return self.filter(draft=False, approved=False)
-
-    @property
-    def good(self):
-        # self.annotate(votes_up=Count('vote__plus'), votes_down=Count('vote__minus'), votes_all=Count('vote')).exclude(votes_all__gte=20, votes_down__gt=F('votes_all') * 0.5)
-        return self
-
-    @property
-    def last_week(self):
-        return self.filter(date__gte=self.last)
-
-    def accessible(self, user):
-        default_queryset = self.filter(draft=False, approved=True)
-        if not user.is_authenticated():
-            return default_queryset
-        if user.is_staff:
-            return self
-        else:
-            return default_queryset.exclude(categories__in=user.excluded_categories)
-
-        # from datetime import date, timedelta
-        # last = date.today() - timedelta(weeks=1)
-        # All NOT drafts AND (already approved OR (submitted at last 1 week ago AND NOT approved yet) ) stories
-        # default_queryset = self.filter(Q(date__lte=last, approved=False)|Q(approved=True), draft=False)
-
-
-class StoryManager(models.Manager):
-    def get_queryset(self):
-        return StoryQuerySet(self.model, using=self._db)
-
-    def __getattr__(self, attr, *args, **kwargs):
-        if attr.startswith('_') or attr == 'model':
-            raise AttributeError("'{}' object has no attribute '{}'".format(self.__class__, attr))
-        try:
-            return getattr(self.__class__, attr, *args, **kwargs)
-        except AttributeError:
-            return getattr(self.get_queryset(), attr, *args, **kwargs)
 
 
 class Story(JSONModel):
