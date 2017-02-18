@@ -3,6 +3,16 @@
 # pylint: disable=W0122
 
 import os
+from urllib.parse import urljoin
+
+
+def set_static_url(base):
+    try:
+        version = open("frontend.version").read().strip()
+    except (OSError, IOError):
+        version = ""
+    return urljoin(base, version)
+
 
 DATABASES = {
     'default': {
@@ -50,12 +60,7 @@ MEDIA_ROOT = '/media/'
 MEDIA_URL = '/media/'
 
 STATIC_ROOT = 'static'
-STATIC_BASE = "http://localhost:8000/static"
-try:
-    STATIC_VERSION = open("frontend.version").read().strip()
-except (OSError, IOError):
-    STATIC_VERSION = ""
-STATIC_URL = '{}/{}/'.format(STATIC_BASE, STATIC_VERSION)
+STATIC_URL = set_static_url("http://localhost:8000/static")
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
