@@ -38,7 +38,7 @@ class VersionPlugin {
 
 const configuration = {
     entry: {
-        bootstrap: 'bootstrap-loader',
+        bootstrap: 'bootstrap-loader/extractStyles',
         styles: './assets/styles/main.scss',
         app: './assets/app/',
         vendor: ['jquery', 'jquery-ui']
