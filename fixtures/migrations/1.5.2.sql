@@ -1,7 +1,7 @@
 --
 -- Create table for news
 --
-CREATE TABLE ponyFiction_newsitem (
+CREATE TABLE IF NOT EXISTS ponyFiction_newsitem (
   id      INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
   title   VARCHAR(255)           NOT NULL,
   text    LONGTEXT               NOT NULL,
