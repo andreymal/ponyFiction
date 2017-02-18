@@ -181,6 +181,13 @@ urlpatterns += patterns('',
 urlpatterns += patterns('ponyFiction.views.staticpages',
     url(r'^page/(?P<name>[A-z0-9-_\.]+)/$', 'view', name='staticpage'),
 )
+if settings.DEBUG:
+    # Only for debugging purposes, when process runs with "manage.py runserver", not with uwsgi+nginx
+    urlpatterns += patterns(
+        '',
+        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': 'static/'}),
+        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': 'media/'}),
+    )
 
 urlpatterns += patterns('',
     url(r'^api/', include(api.urls)),

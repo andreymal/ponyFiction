@@ -3,6 +3,24 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import path from 'path';
 import fs from 'fs';
 
+
+const isLocal = process.env.NODE_ENV === 'local';
+
+function getOutputPath() {
+    const chunks = [__dirname, "static"];
+    if (!isLocal) {
+        chunks.push('[hash]');
+    }
+    return path.resolve(...chunks);
+}
+
+function getNaming() {
+    if (!isLocal) {
+        return '[hash:4].[ext]';
+    }
+    return '[name].[ext]';
+}
+
 class VersionPlugin {
     constructor(options) {
         this.options = options;
@@ -18,7 +36,7 @@ class VersionPlugin {
     }
 }
 
-export default {
+const configuration = {
     entry: {
         bootstrap: 'bootstrap-loader',
         styles: './assets/styles/main.scss',
@@ -26,7 +44,7 @@ export default {
         vendor: ['jquery', 'jquery-ui']
     },
     output: {
-        path: path.resolve(__dirname, "static", "[hash]"),
+        path: getOutputPath(),
         publicPath: "./",
         filename: '[name].bundle.js'
     },
@@ -52,19 +70,25 @@ export default {
                 })
             },
             {
-                test: /\.(woff2?|ttf|eot)$/,
+                test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: 'url-loader',
                 options: {
-                    limit: 10000,
-                    name: 'font/[hash:4].[ext]'
+                    name: getNaming()
                 }
             },
             {
-                test: /\.(gif|png|jpg|jpeg|svg)$/,
+                test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/,
+                loader: 'file-loader',
+                options: {
+                    name: getNaming()
+                }
+            },
+            {
+                test: /\.(gif|png|jpg|jpeg)$/,
                 loader: 'url-loader',
                 options: {
                     limit: 10000,
-                    name: 'img/[hash:4].[ext]'
+                    name: `img/${getNaming()}`
                 }
             }
         ]
@@ -85,15 +109,15 @@ export default {
             filename: '[name].css',
             allChunks: true
         }),
-        new DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify('production'),
-            },
-        }),
         new optimize.CommonsChunkPlugin({
             name: 'vendor',
             minChunks: Infinity
         }),
-        new VersionPlugin()
     ]
+};
+
+if (!isLocal) {
+    configuration.plugins.push(new VersionPlugin())
 }
+
+export default configuration;

@@ -3,7 +3,6 @@
 # pylint: disable=W0122
 
 import os
-from urllib.parse import urljoin
 
 
 def set_static_url(base):
@@ -11,7 +10,7 @@ def set_static_url(base):
         version = open("frontend.version").read().strip()
     except (OSError, IOError):
         version = ""
-    return urljoin(base, version)
+    return os.path.join(base, version) + os.sep
 
 
 DATABASES = {

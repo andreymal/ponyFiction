@@ -43,4 +43,5 @@ CACHEOPS_REDIS = {
     'socket_timeout': 3,
 }
 
+STATIC_ROOT = '/srv'
 STATIC_URL = set_static_url("https://cdn.everypony.ru/stories-trunk-static")

@@ -55,12 +55,10 @@ containers:
       optional: true
       dev: true
     - !Sh npm rebuild node-sass
-    environ:
-      NODE_PATH: /usr/lib/node_modules
     volumes:
       /root: !Snapshot
 
-  frontend-scripts:
+  trunk-scripts:
     setup:
     - !Container frontend-build
     - !EnsureDir /static
@@ -78,9 +76,10 @@ containers:
       path: /tmp/package.json
     - !Env
       NODE_PATH: /usr/lib/node_modules
+      NODE_ENV: trunk
     - !RunAs
       work-dir: /tmp
-      script: webpack
+      script: webpack --progress
     - !Copy
       source: /tmp/static
       path: /static
@@ -90,35 +89,32 @@ containers:
     auto-clean: true
     data-dirs: [/static, /frontend.version]
 
-  frontend-bundled:
+  bundled-static:
     setup:
     - !Container uwsgi-dev
-    - !Env
-      PYTHONPATH: /work/config/local/python
-      DJANGO_SETTINGS_MODULE: app
     - !RunAs
       work-dir: /work
-      script: python3 manage.py collectstatic --noinput
-    - !Copy
-      source: /work/static
-      path: /static
+      script: python3 manage.py collectstatic --noinput --settings app --pythonpath /work/config/trunk/python
     auto-clean: true
-    data-dirs: [/static]
+    data-dirs: [/srv]
 
   static-trunk:
     setup:
     - !Container _base_alpine
     - !EnsureDir /static
-    # Copy all static from bundled Django apps
+    # Copy all static from build system
     - !Build
-      container: frontend-bundled
+      container: trunk-scripts
       source: /
       path: /
-    # Then append static from build system
+    # Then append static from bundled Django apps
     - !Build
-      container: frontend-scripts
-      source: /
-      path: /
+      container: bundled-static
+      source: /srv
+      temporary-mount: /srv
+    - !RunAs
+      work-dir: /
+      script: cp -r /srv/* /static/`cat frontend.version`/
     data-dirs: [/static, /frontend.version]
 
   redis-dev:
@@ -338,16 +334,15 @@ commands:
   webpack: !Command
     container: frontend-build
     description: Webpack command
-    run: [webpack]
+    environ:
+      NODE_PATH: /usr/lib/node_modules
+      NODE_ENV: local
+    run: [webpack, --progress]
 
-  build-static: !Command
-    container: _base_alpine
-    description: Build static files
-    volumes:
-      /mnt: !Container static-trunk
-    run: |
-      cp -rf /mnt/static /work/
-      mv static/frontend.version /work/
+  collectstatic: !Command
+    container: uwsgi-dev
+    run: python3 manage.py collectstatic --noinput --settings app --pythonpath /work/config/local/python
+
 
   run: !Supervise
     description: Run full server stack
