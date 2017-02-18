@@ -12,6 +12,8 @@ class StoryQuerySet(QuerySet):
             'categories'
         )
 
+
+class MainQS(StoryQuerySet):
     @property
     def published(self):
         return self.filter(draft=False, approved=True)

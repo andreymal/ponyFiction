@@ -4,7 +4,7 @@ from django.db.models import Manager
 from django.db.models import QuerySet
 
 
-def manager_factory(queryset_class=QuerySet):
+def factory(queryset_class=QuerySet):
     def get_queryset(self):
         return queryset_class(self.model, using=self._db)
 
@@ -28,4 +28,4 @@ def manager_factory(queryset_class=QuerySet):
         lambda ns: ns.update(cls_dict)
     )
     cls.__module__ = __name__
-    return cls
+    return cls()
