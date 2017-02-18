@@ -49,7 +49,7 @@ USE_TZ = False
 MEDIA_ROOT = '/media/'
 MEDIA_URL = '/media/'
 
-STATIC_ROOT = '/static'
+STATIC_ROOT = 'static'
 STATIC_BASE = "http://localhost:8000/static"
 try:
     STATIC_VERSION = open("frontend.version").read().strip()

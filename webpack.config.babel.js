@@ -11,7 +11,7 @@ class VersionPlugin {
     apply(compiler) {
         compiler.plugin('done', (stats) => {
             fs.writeFileSync(
-                path.join(__dirname, "frontend.version"),
+                "frontend.version",
                 stats.hash
             )
         })
@@ -26,7 +26,7 @@ export default {
         vendor: ['jquery', 'jquery-ui']
     },
     output: {
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(__dirname, "static", "[hash]"),
         publicPath: "./",
         filename: '[name].bundle.js'
     },

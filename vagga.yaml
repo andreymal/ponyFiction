@@ -57,6 +57,8 @@ containers:
     - !Sh npm rebuild node-sass
     environ:
       NODE_PATH: /usr/lib/node_modules
+    volumes:
+      /root: !Snapshot
 
   frontend-scripts:
     setup:
@@ -66,31 +68,40 @@ containers:
       source: /work/assets
       path: /tmp/assets
     - !Copy
-      source: /work/gulpfile.js
-      path: /tmp/gulpfile.js
+      source: /work/.bootstraprc
+      path: /tmp/.bootstraprc
+    - !Copy
+      source: /work/webpack.config.babel.js
+      path: /tmp/webpack.config.babel.js
+    - !Copy
+      source: /work/package.json
+      path: /tmp/package.json
     - !Env
       NODE_PATH: /usr/lib/node_modules
-      NODE_ENV: production
-    # TODO: replace this pseudo-versioning with smth. prettier
     - !RunAs
       work-dir: /tmp
-      script: |
-        gulp assets
-        mv static /
-        head /dev/urandom | md5sum -b | cut -d" " -f1 > /static/frontend.version
+      script: webpack
+    - !Copy
+      source: /tmp/static
+      path: /static
+    - !Copy
+      source: /tmp/frontend.version
+      path: /frontend.version
     auto-clean: true
-    data-dirs: [/static]
+    data-dirs: [/static, /frontend.version]
 
   frontend-bundled:
     setup:
     - !Container uwsgi-dev
-    - !EnsureDir /static
     - !Env
       PYTHONPATH: /work/config/local/python
       DJANGO_SETTINGS_MODULE: app
     - !RunAs
       work-dir: /work
       script: python3 manage.py collectstatic --noinput
+    - !Copy
+      source: /work/static
+      path: /static
     auto-clean: true
     data-dirs: [/static]
 
@@ -101,27 +112,14 @@ containers:
     # Copy all static from bundled Django apps
     - !Build
       container: frontend-bundled
-      source: /static
-      temporary-mount: /tmp/bundled
+      source: /
+      path: /
     # Then append static from build system
     - !Build
       container: frontend-scripts
-      source: /static
-      temporary-mount: /tmp/scripts
-    # Organize them
-    # FIXME
-    - !RunAs
-      work-dir: /static
-      script: |
-        VER=`cat /tmp/scripts/frontend.version`
-        mkdir $VER
-        cp -r /tmp/bundled/* $VER/
-        cp /tmp/scripts/frontend.version .
-        cp -r /tmp/scripts/* $VER
-        mkdir images
-        cp -r /tmp/scripts/images/main/ images/
-        cp -r /tmp/scripts/images/logopics images/
-    data-dirs: [/static]
+      source: /
+      path: /
+    data-dirs: [/static, /frontend.version]
 
   redis-dev:
     setup:
@@ -340,8 +338,6 @@ commands:
   webpack: !Command
     container: frontend-build
     description: Webpack command
-    volumes:
-      /root: !Snapshot
     run: [webpack]
 
   build-static: !Command
