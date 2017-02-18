@@ -1,98 +1,96 @@
 {% load random_stories %}
 {% load news_block %}
 {% load submitted_stories_count %}
-<!-- Container start -->
-<div class="container">
-	<!-- Header start -->
-	<div class="page-header">
-		<ul class="servicelinks">
-			<li>&nbsp;</li>
-		</ul>
-
-		<a title="Подписаться на RSS поток" href="{% url 'feeds_stories' %}" class="rss"></a>
-		<a title="Твиттер Everypony.ru" href="https://twitter.com/#!/everypony_ru" class="twitter"></a>
-
-		<ul class="main-menu">
-			<li id="logolink"><a href="{% url 'index' %}">Библиотека</a></li>
-			<li><a href="http://everypony.ru">Блог</a></li>
-			<li><a href="http://forum.everypony.ru">Форум</a></li>
-			<li><a href="http://wiki.everypony.ru">Вики</a></li>
-			<li><a href="http://tabun.everypony.ru">Табун</a></li>
-			<li><a href="http://minecraft.everypony.ru">Майнкрафт</a></li>
-		</ul>
-	</div>
-	<!-- Header end -->
-
-    <!-- Logo image and carousel start -->
-    <div class="logopic logopic-1">
-        <div id="slides" class="carousel">
-            {% random_stories %}
-        </div>
-        {% news_block %}
-    </div>
-    <!-- Logo image and carousel end -->
-
-    <!-- Menu start -->
-    <ul class="nav nav-pills nav-main">
-        <li id="nav_index"><a href="{% url 'index' %}">Главная</a></li>
-        <li id="nav_search"><a href="{% url 'search' %}">Поиск</a></li>
-		<li class="dropdown">
-		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">FAQ<span class="caret"></span></a>
-		<ul class="dropdown-menu" role="menu">
-              <li class="disabled"><a href="#">Правила</a></li>
-              <li class="disabled"><a href="#">Начинающему</a></li>
-              <li class="disabled"><a href="#">Полезные ссылки</a></li>
-              <li class="disabled"><a href="#">Благодарности</a></li>
-          </ul>
-		</li>
-  		
-		<li class="dropdown">
-		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Топ<span class="caret"></span></a>
-		<ul class="dropdown-menu" role="menu">
-              <li class="disabled"><a href="#">Лучшие</a></li>
-              <li class="disabled"><a href="#">Новые</a></li>
-              <li class="disabled"><a href="#">Дикие</a></li>
-              <li class="disabled"><a href="#">Активные</a></li>
-			  <li class="disabled"><a href="#">Комментируемые</a></li>
-          </ul>
-		</li>
-          {% if user.is_authenticated %}
-        	<li class="right dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ user.username }}<span class="caret"></span></a>
-			<ul class="dropdown-menu" role="menu">
-			  <li><img src="" class="profile-img"></li>
-			  <li><a class="profile-link" href="{% url 'author_overview' user.id %}">Профиль</a></li>
-			  <li><a class="profile-link" href="{% url 'bookmarks' %}">Закладки</a></li>
-              <li><a class="profile-link" href="{% url 'author_profile_edit' %}">Настройки</a></li>
-              <li><a class="profile-link" href="{% url 'favorites' user.id %}">Избранное</a></li>
-			  <li class="divider" style="clear:both"></li>
-              <li><a href="{% url 'story_add' %}">Добавить рассказ</a></li>
-			  <li><a href="{% url 'author_dashboard' %}">Мои рассказы</a></li>
-			  <li class="divider" style="clear:both"></li>
-			  <li><a class="profile-link danger" href="{% url 'auth_logout' %}">Выход</a></li>
-			</ul>
-    		</li>
-			<li class="right">
-				<a href="#"><span class="glyphicon glyphicon-comment"></span> (0)</a>
-    		</li>
-			<li class="right">
-				<a href="#"><span class="glyphicon glyphicon-book"></span> (0)</a>	
-    		</li>			
-            {% if user.is_staff %}
-            <li id="nav_submitted" class="right"><a href="{% url 'submitted' %}">Новые ({% submitted_stories_count %})</a></li>
-            {% endif %}
-          {% else %}
-        {% if REGISTRATION_OPEN %}<li id="nav_registration" ><a href="{% url 'registration_register' %}">Регистрация</a></li>{% endif %}
-        {% if MIGRATION_SITE %}<li id="nav_stories_auth"><a href="{% url 'migration_new' %}">Войти через {{ MIGRATION_NAME }}</a></li>{% endif %}
-        <li class="right">
-            <form class="login-form form-inline" action="{% url 'auth_login' %}" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                  <input id="id_username" type="text" name="username" placeholder="Логин" class="form-control" maxlength="30">
-                  <input type="password" name="password" id="id_password" placeholder="Пароль" class="form-control">
-                  <button class="btn btn-default" type="submit">Войти</button>
-                  <a href="{% url 'password_reset' %}">Забыл<br/> пароль</a>
-            </form>
-        </li>
-          {% endif %}
+<!-- Header start -->
+<div class="page-header">
+    <ul class="servicelinks">
+        <li>&nbsp;</li>
     </ul>
-    <!-- Menu end -->
+
+    <a title="Подписаться на RSS поток" href="{% url 'feeds_stories' %}" class="rss"></a>
+    <a title="Твиттер Everypony.ru" href="https://twitter.com/#!/everypony_ru" class="twitter"></a>
+
+    <ul class="main-menu">
+        <li id="logolink"><a href="{% url 'index' %}">Библиотека</a></li>
+        <li><a href="http://everypony.ru">Блог</a></li>
+        <li><a href="http://forum.everypony.ru">Форум</a></li>
+        <li><a href="http://wiki.everypony.ru">Вики</a></li>
+        <li><a href="http://tabun.everypony.ru">Табун</a></li>
+        <li><a href="http://minecraft.everypony.ru">Майнкрафт</a></li>
+    </ul>
+</div>
+<!-- Header end -->
+
+<!-- Logo image and carousel start -->
+<div class="logopic logopic-1">
+    <div id="slides" class="carousel">
+        {% random_stories %}
+    </div>
+    {% news_block %}
+</div>
+<!-- Logo image and carousel end -->
+
+<!-- Menu start -->
+<ul class="nav nav-pills nav-main">
+    <li id="nav_index"><a href="{% url 'index' %}">Главная</a></li>
+    <li id="nav_search"><a href="{% url 'search' %}">Поиск</a></li>
+    <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">FAQ<span class="caret"></span></a>
+    <ul class="dropdown-menu" role="menu">
+          <li class="disabled"><a href="#">Правила</a></li>
+          <li class="disabled"><a href="#">Начинающему</a></li>
+          <li class="disabled"><a href="#">Полезные ссылки</a></li>
+          <li class="disabled"><a href="#">Благодарности</a></li>
+      </ul>
+    </li>
+
+    <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Топ<span class="caret"></span></a>
+    <ul class="dropdown-menu" role="menu">
+          <li class="disabled"><a href="#">Лучшие</a></li>
+          <li class="disabled"><a href="#">Новые</a></li>
+          <li class="disabled"><a href="#">Дикие</a></li>
+          <li class="disabled"><a href="#">Активные</a></li>
+          <li class="disabled"><a href="#">Комментируемые</a></li>
+      </ul>
+    </li>
+      {% if user.is_authenticated %}
+        <li class="right dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ user.username }}<span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu">
+          <li><img src="" class="profile-img"></li>
+          <li><a class="profile-link" href="{% url 'author_overview' user.id %}">Профиль</a></li>
+          <li><a class="profile-link" href="{% url 'bookmarks' %}">Закладки</a></li>
+          <li><a class="profile-link" href="{% url 'author_profile_edit' %}">Настройки</a></li>
+          <li><a class="profile-link" href="{% url 'favorites' user.id %}">Избранное</a></li>
+          <li class="divider" style="clear:both"></li>
+          <li><a href="{% url 'story_add' %}">Добавить рассказ</a></li>
+          <li><a href="{% url 'author_dashboard' %}">Мои рассказы</a></li>
+          <li class="divider" style="clear:both"></li>
+          <li><a class="profile-link danger" href="{% url 'auth_logout' %}">Выход</a></li>
+        </ul>
+        </li>
+        <li class="right">
+            <a href="#"><span class="glyphicon glyphicon-comment"></span> (0)</a>
+        </li>
+        <li class="right">
+            <a href="#"><span class="glyphicon glyphicon-book"></span> (0)</a>
+        </li>
+        {% if user.is_staff %}
+        <li id="nav_submitted" class="right"><a href="{% url 'submitted' %}">Новые ({% submitted_stories_count %})</a></li>
+        {% endif %}
+      {% else %}
+    {% if REGISTRATION_OPEN %}<li id="nav_registration" ><a href="{% url 'registration_register' %}">Регистрация</a></li>{% endif %}
+    {% if MIGRATION_SITE %}<li id="nav_stories_auth"><a href="{% url 'migration_new' %}">Войти через {{ MIGRATION_NAME }}</a></li>{% endif %}
+    <li class="right">
+        <form class="login-form form-inline" action="{% url 'auth_login' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+              <input id="id_username" type="text" name="username" placeholder="Логин" class="form-control" maxlength="30">
+              <input type="password" name="password" id="id_password" placeholder="Пароль" class="form-control">
+              <button class="btn btn-default" type="submit">Войти</button>
+              <a href="{% url 'password_reset' %}">Забыл<br/> пароль</a>
+        </form>
+    </li>
+      {% endif %}
+</ul>
+<!-- Menu end -->
