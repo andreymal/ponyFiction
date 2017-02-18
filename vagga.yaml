@@ -260,10 +260,7 @@ containers:
     - !Sh git describe --always > /app/backend.version
     - !Build
       container: static-trunk
-      source: /static
-      temporary-mount: /mnt
-    - !Copy
-      source: /mnt/frontend.version
+      source: /frontend.version
       path: /app/frontend.version
     resolv-conf-path: /state/resolv.conf
     hosts-file-path: /state/hosts
