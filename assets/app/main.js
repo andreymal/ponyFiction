@@ -736,8 +736,8 @@ var stuff = {
         } else {
             var stories_gr = cookie.get('stories_gr');
         }
-        var new_image = "url(/static/images/logopics/logopic-" + stories_gr + ".jpg)";
-        $('.logopic').css('background-image', new_image);
+        var logo = document.getElementsByClassName('logopic')[0];
+        logo.className = ('logopic logopic-' + stories_gr);
     },
     // Плавающая панелька
     panel : function() {

@@ -32,12 +32,6 @@ body {
 	border: none;
 }
 
-.logopic {
-	height: 240px;
-	background: transparent url(../images/logopics/logopic-6.jpg) no-repeat 0 0;
-	background-size: cover;
-}
-
 .carousel {
 	width: 500px;
 	float: right;

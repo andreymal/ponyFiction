@@ -1,0 +1,10 @@
+.logopic {
+  height: 240px;
+  background-size: cover;
+}
+
+@for $i from 1 through 8 {
+  .logopic-#{$i} {
+    background: transparent url(../images/logopics/logopic-#{$i}.jpg) no-repeat 0 0;
+  }
+}
