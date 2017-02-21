@@ -1,25 +1,26 @@
 {% extends "common.html" %}
 {% block content %}
+{% load breadcrumb_tags %}
+{% add_crumb "Кабинет автора" "author_dashboard" %}
+{% if story %}
+    {% add_crumb story.title "story_edit" story.id %}
+{% else %}
+    {% add_crumb chapter.story.title "story_edit" chapter.story.id %}
+{% endif %}
+{% add_crumb page_title %}
 <div class="row">
-    <div class="col-md-12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-            <li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>
-            {% if story %}
-                <li><a href="{% url 'story_edit' story.id %}">Редактирование «{{ story.title }}»</a> <span class="divider">/</span></li>
-                <li class="active">Добавление новой главы</li>
-            {% else %}
-                <li><a href="{% url 'story_edit' chapter.story.id %}">Редактирование «{{ chapter.story.title }}»</a> <span class="divider">/</span></li>
-                <li class="active">Редактирование главы «{{ chapter.title }}»</li>
-            {% endif %}
-        </ul>
-    </div>
+    {% render_breadcrumbs %}
     <div class="col-md-12">
         {% if story %}
             <h1>Добавление новой главы</h1>
-            <p>Перед добавлением главы рекомендуем прочитать <a href="{% url 'staticpage' 'terms' %}">правила</a> и <a href="{% url 'staticpage' 'help' %}">справку</a>. Они сделают вашу жизнь и жизни читателей проще.</p>
+            <p>
+                Перед добавлением главы рекомендуем прочитать
+                <a href="{% url 'staticpage' 'terms' %}">правила</a> и
+                <a href="{% url 'staticpage' 'help' %}">справку</a>.
+                Они сделают вашу жизнь и жизни читателей проще.
+            </p>
         {% else %}
-            <h1>Редактирование главы «{{ chapter.title }}»</h1>
+            <h1>{{ page_title }}</h1>
         {% endif %}
         <form method="POST" enctype="multipart/form-data" name="search" id="searchform" class="form-horizontal">
         {% csrf_token %}
@@ -73,19 +74,5 @@
     {% if chapter %}
         {% include "includes/chapter_single.html" %}
     {% endif %}
-
-    <div class="col-md-12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-            <li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>
-            {% if story %}
-                <li><a href="{% url 'story_edit' story.id %}">Редактирование «{{ story.title }}»</a> <span class="divider">/</span></li>
-                <li class="active">Добавление новой главы</li>
-            {% else %}
-                <li><a href="{% url 'story_edit' chapter.story.id %}">Редактирование «{{ chapter.story.title }}»</a> <span class="divider">/</span></li>
-                <li class="active">Редактирование главы «{{ chapter.title }}»</li>
-            {% endif %}
-        </ul>
-    </div>
 </div>
 {% endblock %}
