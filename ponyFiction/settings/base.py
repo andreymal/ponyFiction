@@ -94,6 +94,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'ponyFiction.apis.captcha',
     'registration',
+    'crumbs',
 )
 
 LOGGING = {

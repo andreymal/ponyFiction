@@ -1,0 +1,11 @@
+<div class="col-md-12">
+    <ul class="breadcrumb">
+        {% for crumb, href in crumbs %}
+            {% if not forloop.last %}
+                <li><a href="{{ href }}">{{ crumb }}</a></li>
+            {% else %}
+                <li class="active">{{ crumb }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
