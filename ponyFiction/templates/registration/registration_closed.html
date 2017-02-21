@@ -1,24 +1,12 @@
 {% extends "common.html" %}
-{% block title %}Регистрация закрыта{% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-      <ul class="breadcrumb">
-            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-            <li class="active">{{ page_title }}</li>
-        </ul>
+    {% load breadcrumb_tags %}
+    {% add_crumb page_title %}
+    <div class="row">
+        {% render_breadcrumbs %}
+        <div class="col-md-6 offset3 reg-complete">
+            <h1>Регистрация закрыта</h1>
+            <p>Объявлено осадное положение.</p>
+        </div>
     </div>
-
-    <div class="col-md-6 offset3 reg-complete">
-        <h1>Регистрация закрыта</h1>
-        <p>Объявлено осадное положение.</p>
-  </div>
-
-    <div class="col-md-12">
-      <ul class="breadcrumb">
-            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-            <li class="active">{{ page_title }}</li>
-        </ul>
-    </div>
-</div>
 {% endblock %}

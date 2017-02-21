@@ -1,49 +1,38 @@
 {% extends "common.html" %}
 {% block content %}
-{% load static %}
-<div class="row">
-    <div class="col-md-12">
-      <ul class="breadcrumb">
-            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-            <li class="active">{{ page_title }}</li>
-        </ul>
-    </div>
-
-    <div class="col-md-12">
-        <h1>Регистрация в библиотеке</h1>
+    {% load breadcrumb_tags %}
+    {% add_crumb page_title %}
+    <div class="row">
+        {% render_breadcrumbs %}
+        <div class="col-md-12">
+            <h1>Регистрация в библиотеке</h1>
             <form action="" method="POST" enctype="multipart/form-data" class="form-horizontal registration-form">
-            {% csrf_token %}
+                {% csrf_token %}
                 <fieldset>
-                {% for field in form %}
-                    <div class="control-group{% if field.errors %} error{% endif %}">
-                        <label class="control-label">{{ field.label }}</label>
-                        <div class="controls">
-                            {{ field }}
-                            {% if field.errors %}
-                                {% for error in field.errors %}
-                                    <span class="help-inline">{{ error }}</span>
-                                {% endfor %}
-                            {% else %}
-                                <span class="help-inline small">{{ field.help_text }}</span>
-                            {% endif %}
+                    {% for field in form %}
+                        <div class="control-group{% if field.errors %} error{% endif %}">
+                            <label class="control-label">{{ field.label }}</label>
+                            <div class="controls">
+                                {{ field }}
+                                {% if field.errors %}
+                                    {% for error in field.errors %}
+                                        <span class="help-inline">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-inline small">{{ field.help_text }}</span>
+                                {% endif %}
+                            </div>
                         </div>
+                    {% endfor %}
+                    {% if form.non_field_errors %}
+                        <div class="control-group error"><span class="help-inline">{{ form.non_field_errors.0 }}</span>
+                        </div>
+                    {% endif %}
+                    <div class="form-actions">
+                        <button class="btn btn-primary" type="submit">Зарегистрироваться</button>
                     </div>
-                {% endfor %}
-                {% if form.non_field_errors %}
-                    <div class="control-group error"><span class="help-inline">{{ form.non_field_errors.0 }}</span></div>
-                {% endif %}
-                <div class="form-actions">
-                    <button class="btn btn-primary" type="submit">Зарегистрироваться</button>
-                </div>
-            </fieldset>
-        </form>
+                </fieldset>
+            </form>
+        </div>
     </div>
-
-    <div class="col-md-12">
-    <ul class="breadcrumb">
-      <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-      <li class="active">{{ page_title }}</li>
-        </ul>
-    </div>
-</div>
 {% endblock %}
