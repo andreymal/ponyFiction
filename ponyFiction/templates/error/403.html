@@ -1,0 +1,13 @@
+{% extends "common.html" %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block content %}
+{% load breadcrumb_tags %}
+{% add_crumb crumb=page_title %}
+    <div class="row page-403">
+    {% render_breadcrumbs %}
+    <div class="col-md-12 message-403">
+        <h1>{{ page_title }}</h1>
+        <p>Возможно, вы пытаетесь влезть в файл на сервере, в который лазать нельзя. От того и не получается.</p>
+    </div>
+</div>
+{% endblock %}

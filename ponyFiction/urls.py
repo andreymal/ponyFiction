@@ -18,6 +18,10 @@ from ponyFiction.api import dispatcher
 from jsonrpc.backend.django import JSONRPCAPI
 api = JSONRPCAPI(dispatcher=dispatcher)
 
+handler403 = 'ponyFiction.views.error.handler403'
+handler404 = 'ponyFiction.views.error.handler404'
+handler500 = 'ponyFiction.views.error.handler500'
+
 # Главная страница
 urlpatterns = patterns('', url(r'^$', index, name='index'))
 # Адреса админки
@@ -173,10 +177,11 @@ urlpatterns += patterns('ponyFiction.views.chapter',
     url(r'^chapter/(?P<pk>\d+)/delete/$', ChapterDelete.as_view(), name='chapter_delete'),
 )
 # Другое
+
 urlpatterns += patterns('',
-    url(r'^not_found/$', TemplateView.as_view(template_name='404.html')),
-    url(r'^forbidden/$', TemplateView.as_view(template_name='403.html')),
-    url(r'^internal_server_error/$', TemplateView.as_view(template_name='500.html')),
+    url(r'^not_found/$', 'ponyFiction.views.error.handler404'),
+    url(r'^forbidden/$', 'ponyFiction.views.error.handler403'),
+    url(r'^internal_server_error/$', 'ponyFiction.views.error.handler500'),
 )
 urlpatterns += patterns('ponyFiction.views.staticpages',
     url(r'^page/(?P<name>[A-z0-9-_\.]+)/$', 'view', name='staticpage'),

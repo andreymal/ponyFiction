@@ -1,0 +1,14 @@
+{% extends "common.html" %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block content %}
+    {% load breadcrumb_tags %}
+    {% add_crumb crumb=page_title %}
+    <div class="row page-404">
+        {% render_breadcrumbs %}
+        <div class="col-md-12 message-403">
+            <h1>{{ page_title }}</h1>
+            <p>Кажется, такого рассказа нет. Яростно удалён или ещё не написан. А может, у вас неправильная ссылка?</p>
+            <p>Попробуйте поискать нужный специально обученным <a href="{% url 'search' %}">поиском</a> или вернуться на <a href="{% url 'index' %}">главную</a>.</p>
+        </div>
+    </div>
+{% endblock %}
