@@ -34,11 +34,12 @@ class ObjectList(ListView):
 
 
 class FavoritesList(ObjectList):
+    template_name = 'lists/stories.html'
+    view_name = 'favorites_page'
+
     @property
     def author(self):
         return get_object_or_404(Author, pk=self.kwargs['user_id'])
-
-    template_name = 'favorites.html'
 
     @property
     def page_title(self):
@@ -63,16 +64,18 @@ class SubmitsList(ObjectList):
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
-    template_name = 'submitted.html'
+    template_name = 'lists/stories.html'
     page_title = 'Новые поступления'
+    view_name = 'submitted_page'
 
     def get_queryset(self):
         return Story.objects.submitted.prefetch_for_list
 
 
 class BookmarksList(ObjectList):
-    template_name = 'bookmarks.html'
+    template_name = 'lists/stories.html'
     page_title = 'Закладки'
+    view_name = 'bookmarks_page'
 
     @method_decorator(login_required())
     def dispatch(self, request, *args, **kwargs):

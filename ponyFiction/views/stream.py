@@ -8,7 +8,7 @@ from ponyFiction.models import Story, Chapter, Comment, StoryEditLogItem
 
 class StreamStories(ObjectList):
     paginate_by = settings.STORIES_COUNT['stream']
-    template_name = 'stream/stories.html'
+    template_name = 'lists/stories.html'
     page_title = 'Лента добавлений'
     view_name = 'stream_stories_page'
 
