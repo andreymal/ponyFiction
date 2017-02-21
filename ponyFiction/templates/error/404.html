@@ -2,7 +2,7 @@
 {% block title %}{{ page_title }}{% endblock %}
 {% block content %}
     {% load breadcrumb_tags %}
-    {% add_crumb crumb=page_title %}
+    {% add_crumb page_title %}
     <div class="row page-404">
         {% render_breadcrumbs %}
         <div class="col-md-12 message-403">
