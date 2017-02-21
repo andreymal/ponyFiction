@@ -1,14 +1,10 @@
 {% extends "common.html" %}
-
 {% block content %}
+{% load breadcrumb_tags %}
+{% add_crumb "Кабинет автора" 'author_dashboard' %}
+{% add_crumb page_title %}
 <div class="row">
-    <div class="col-md-12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-            <li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>
-            <li class="active">{{ page_title }}</li>
-        </ul>
-    </div>
+    {% render_breadcrumbs %}
 
     <div class="col-md-12">
         <h1>
@@ -16,7 +12,12 @@
             {% include 'includes/story_control_buttons.html' %}
         </h1>
         {% if story_add %}
-        <p>Перед добавлением рассказа рекомендуем прочитать <a href="/terms/">правила</a> и <a href="/help/">справку</a>. Они сделают вашу жизнь и жизни читателей проще.</p>
+        <p>
+            Перед добавлением рассказа рекомендуем прочитать
+            <a href="{% url 'staticpage' 'terms' %}">правила</a> и
+            <a href="{% url 'staticpage' 'quickstart' %}">справку</a>.
+            Они сделают вашу жизнь и жизни читателей проще.
+        </p>
             <p>Вкратце:</p>
             <ul>
                 <li>Сейчас вы задаете основные параметры рассказа. Следующим шагом будет добавление глав.</li>
@@ -208,14 +209,6 @@
                   {% endif %}
               </fieldset>
         </form>
-      </div>
-
-    <div class="col-md-12">
-        <ul class="breadcrumb">
-              <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-              <li><a href="{% url 'author_dashboard' %}">Кабинет автора</a> <span class="divider">/</span></li>
-              <li class="active">{{ page_title }}</li>
-        </ul>
       </div>
 </div>
 {% endblock %}
