@@ -363,7 +363,7 @@ commands:
     description: Django management tool
     container: uwsgi-dev
     environ:
-      PYTHONPATH: /config/python
+      PYTHONPATH: /config/python:/work/debug/pycharm-debug.egg
       DJANGO_SETTINGS_MODULE: app
     run:
     - python3
