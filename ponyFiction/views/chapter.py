@@ -17,7 +17,7 @@ def chapter_view(request, story_id=False, chapter_order=False):
     story = get_story(request, pk=story_id)
     if chapter_order:
         chapter = get_object_or_404(story.chapter_set, order=chapter_order)
-        page_title = chapter.title[:80] + ' : ' + chapter.story.title
+        page_title = "{} — {}".format(chapter.title[:80], story.title)
         prev_chapter = chapter.get_prev_chapter()
         next_chapter = chapter.get_next_chapter()
         if request.user.is_authenticated():
@@ -32,7 +32,7 @@ def chapter_view(request, story_id=False, chapter_order=False):
         }
     else:
         chapters = story.chapter_set.order_by('order').cache()
-        page_title = story.title + ' – все главы'
+        page_title = "{} — все главы".format(story.title)
         if request.user.is_authenticated():
             signals.story_viewed.send(sender=Author, instance=request.user, story=story, chapter=None)
         data = {

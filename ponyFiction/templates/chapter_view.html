@@ -1,21 +1,27 @@
 {% extends "common.html" %}
 {% block content %}
-<div class="row">
-    {% include "includes/chapter_breadcrumbs.html" %}
-    {% if allchapters %}
-        <div class="col-md-12 story-chapter-page" id="story-page-story">
-            {% include "includes/story_panel.html" %}
-            <h1>{{ story.title }}</h1>
-            {% for chapter in chapters %}
-                {% include "includes/chapter_single.html" %}
-            {% endfor %}
-        </div>
+    {% load breadcrumb_tags %}
+    {% add_crumb story.title 'story_view' story.id %}
+    {% if not allchapters %}
+        {% add_crumb chapter.title %}
     {% else %}
-        <div class="col-md-12 story-chapter-page" id="story-page-story">
-            {% include "includes/story_panel.html" %}
-            {% include "includes/chapter_single.html" %}
-        </div>
+        {% add_crumb "Все главы" %}
     {% endif %}
-    {% include "includes/chapter_breadcrumbs.html" %}
-</div>
+    <div class="row">
+        {% render_breadcrumbs %}
+        {% if allchapters %}
+            <div class="col-md-12 story-chapter-page" id="story-page-story">
+                {% include "includes/story_panel.html" %}
+                <h1>{{ story.title }}</h1>
+                {% for chapter in chapters %}
+                    {% include "includes/chapter_single.html" %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="col-md-12 story-chapter-page" id="story-page-story">
+                {% include "includes/story_panel.html" %}
+                {% include "includes/chapter_single.html" %}
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}

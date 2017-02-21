@@ -1,18 +1,16 @@
 {% extends "common.html" %}
 {% block content %}
-{% load static %}
-<div class="row">
-    <div class="col-md-8">
-        <ul class="breadcrumb">
-          <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-          <li class="active">{{ page_title }}</li>
-        </ul>
-        <h1>{{ page_title }}</h1>
-        <div id="chapters-list">
-            {% include "includes/chapters_excerpts.html" %}
-        </div>
-        {% if chapters %}
-            <!-- Пагинация: начало вывода -->
+    {% load breadcrumb_tags %}
+    {% add_crumb page_title %}
+    <div class="row">
+        {% render_breadcrumbs %}
+        <div class="col-md-8">
+            <h1>{{ page_title }}</h1>
+            <div id="chapters-list">
+                {% include "includes/chapters_excerpts.html" %}
+            </div>
+            {% if chapters %}
+                <!-- Пагинация: начало вывода -->
                 <div id="pagination" class="center">
                     {% if page_obj.has_previous %}
                         <a class="btn" href="{% url 'stream_chapters_page' page_obj.previous_page_number %}">← Назад</a>
@@ -23,13 +21,9 @@
                     {% if page_obj.has_next %}
                         <a class="btn" href="{% url 'stream_chapters_page' page_obj.next_page_number %}">Вперед →</a>
                     {% endif %}
-                  </div>
-               <!-- Пагинация: конец вывода -->
-        {% endif %}
-        <ul class="breadcrumb">
-          <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-          <li class="active">{{ page_title }}</li>
-        </ul>
+                </div>
+                <!-- Пагинация: конец вывода -->
+            {% endif %}
+        </div>
     </div>
-</div>
 {% endblock %}
