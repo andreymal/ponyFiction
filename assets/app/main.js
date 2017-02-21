@@ -155,7 +155,7 @@ var ajax = {
                         $('.modal').html(data);
                         var textarea = $('.modal textarea');
                         if (textarea.length) {
-                            textarea.markItUp(mySettings);
+                            textarea.markItUp(markitupConfig);
                         }
                     } else {
                         var new_comment = $(data);
@@ -556,7 +556,7 @@ var pages = {
     story_view : {
         regex : new RegExp('^/story/[0-9]+/(?:comments/page/[0-9]+/)?$'),
         action : function() {
-            $('#id_text').markItUp(mySettings)
+            $('#id_text').markItUp(markitupConfig)
             for ( var listener in listeners.story) {
                 listeners.story[listener]();
             }
@@ -573,16 +573,16 @@ var pages = {
         regex : new RegExp('^/story/add/$'),
         action : function() {
             $('#nav_story_add').addClass('active');
-            $('#id_text').markItUp(mySettings);
-            $('#id_notes').markItUp(mySettings);
+            $('#id_text').markItUp(markitupConfig);
+            $('#id_notes').markItUp(markitupConfig);
             listeners.misc.characters();
         }
     },
     story_edit : {
         regex : new RegExp('^/story/[0-9]+/edit/$'),
         action : function() {
-            $('#id_text').markItUp(mySettings);
-            $('#id_notes').markItUp(mySettings);
+            $('#id_text').markItUp(markitupConfig);
+            $('#id_notes').markItUp(markitupConfig);
             listeners.misc.characters();
             for ( var listener in listeners.story) {
                 listeners.story[listener]();
@@ -607,27 +607,27 @@ var pages = {
     chapter_add : {
         regex : new RegExp('^/story/[0-9]+/chapter/add/$'),
         action : function() {
-            $('#id_text').markItUp(mySettings);
-            $('#id_notes').markItUp(mySettings);
+            $('#id_text').markItUp(markitupConfig);
+            $('#id_notes').markItUp(markitupConfig);
         }
     },
     chapter_edit : {
         regex : new RegExp('^/chapter/[0-9]+/edit/$'),
         action : function() {
-            $('#id_text').markItUp(mySettings);
-            $('#id_notes').markItUp(mySettings);
+            $('#id_text').markItUp(markitupConfig);
+            $('#id_notes').markItUp(markitupConfig);
         }
     },
     comment_add : {
         regex : new RegExp('^/story/[0-9]+/comment/add/$'),
         action : function() {
-            $('#id_text').markItUp(mySettings);
+            $('#id_text').markItUp(markitupConfig);
         }
     },
     comment_edit : {
         regex : new RegExp('^/story/[0-9]+/comment/[0-9]+/edit/$'),
         action : function() {
-            $('#id_text').markItUp(mySettings);
+            $('#id_text').markItUp(markitupConfig);
         }
     },
     author_overview : {
@@ -835,23 +835,23 @@ $(function() {
 });
 
 // Прокрутка
-$(function(){
-    $.fn.scrollToTop=function(){
-        $(this).hide().removeAttr("href");
-        if ($("#story_panel").css('position') == 'fixed' ){
-            $(this).fadeIn("fast")
-        }
-        var scrollDiv=$(this);
-        $(window).scroll(function(){
-            if($("#story_panel").css('position') == 'static'){
-                $(scrollDiv).fadeOut("fast")
-            }else{
-                $(scrollDiv).fadeIn("fast")
-            }
-        });
-        $(this).click(function(){
-            $("html, body").animate({scrollTop:0},"slow")
-        })
-    }
-});
-$(function() {$("#toTop").scrollToTop();});
+// $(function(){
+//     $.fn.scrollToTop=function(){
+//         $(this).hide().removeAttr("href");
+//         if ($("#story_panel").css('position') == 'fixed' ){
+//             $(this).fadeIn("fast")
+//         }
+//         var scrollDiv=$(this);
+//         $(window).scroll(function(){
+//             if($("#story_panel").css('position') == 'static'){
+//                 $(scrollDiv).fadeOut("fast")
+//             }else{
+//                 $(scrollDiv).fadeIn("fast")
+//             }
+//         });
+//         $(this).click(function(){
+//             $("html, body").animate({scrollTop:0},"slow")
+//         })
+//     }
+// });
+// $(function() {$("#toTop").scrollToTop();});

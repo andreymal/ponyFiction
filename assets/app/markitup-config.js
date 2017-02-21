@@ -1,4 +1,5 @@
 export default {
+	root: ".",
 	onShiftEnter:	{keepDefault:false, replaceWith:'<br />\n'},
 	onCtrlEnter:	{keepDefault:false, openWith:'\n<p>', closeWith:'</p>\n'},
 	onTab:{keepDefault:false, replaceWith:'	'},
