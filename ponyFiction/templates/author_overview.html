@@ -1,13 +1,10 @@
 {% extends "common.html" %}
 {% block content %}
 {% load pluralize %}
+{% load breadcrumb_tags %}
+{% add_crumb page_title %}
 <div class="row">
-    <div class="col-md-12">
-        <ul class="breadcrumb">
-              <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-              <li class="active">Автор: {{ author.username }}</li>
-        </ul>
-    </div>
+    {% render_breadcrumbs %}
 	<div class="col-md-12">
 			{% if user.is_staff %}
                 {# <a href="{% url 'author_approve' author.id %}" id="author_approve" class="btn btn-xs btn-default{% if author.approved %} btn-primary{% endif %}">{% if author.approved %}Проверен{% else %}Не проверен{% endif %}</a> #}

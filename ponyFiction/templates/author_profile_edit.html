@@ -1,14 +1,10 @@
 {% extends "common.html" %}
 {% block content %}
-{% load static %}
+{% load breadcrumb_tags %}
+{% add_crumb "Мой профиль" 'author_overview' user.id %}
+{% add_crumb page_title %}
 <div class="row">
-    <div class="col-md-12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-            <li><a href="{% url 'author_overview' user.id %}">Мой профиль</a> <span class="divider">/</span></li>
-            <li class="active">{{ page_title }}</li>
-        </ul>
-    </div>
+    {% render_breadcrumbs %}
 
 <div class="col-md-12">
 <h1>{{ page_title }}</h1>
@@ -199,13 +195,5 @@
   </div>
 </div>	
 </div>
-
-    <div class="col-md-12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-            <li><a href="{% url 'author_overview' user.id %}">Мой профиль</a> <span class="divider">/</span></li>
-            <li class="active">{{ page_title }}</li>
-        </ul>
-    </div>
 </div>
 {% endblock %}

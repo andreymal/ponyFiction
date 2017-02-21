@@ -22,13 +22,17 @@ def author_info(request, user_id, comments_page):
         author = request.user
         comments_list = Comment.objects.prefetch_related('story', 'author').filter(story__authors=request.user.id).order_by('-date').cache()
         data['all_views'] = StoryView.objects.filter(story__authors=author).cache().count()
-        data['page_title'] = 'Мой кабинет'
+        if author.story_set.count() > 0:
+            page_title = 'Кабинет автора'
+        else:
+            page_title = 'Читательский билет {}'.format(author.username)
+        data['page_title'] = page_title
         stories = author.story_set.prefetch_for_list.all().cache()
         template = 'author_dashboard.html'
     else:
         author = get_object_or_404(Author, pk=user_id)
         comments_list = author.comment_set.filter(story__in=Story.objects.accessible(user=request.user)).order_by('-date').cache()
-        data['page_title'] = 'Автор: %s' % author.username
+        data['page_title'] = 'Автор: {}'.format(author.username)
         stories = author.story_set.accessible(user=request.user)
         template = 'author_overview.html'
 

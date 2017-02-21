@@ -1,21 +1,15 @@
 {% extends "common.html" %}
 {% block content %}
 {% load pluralize %}
-
-
+{% load breadcrumb_tags %}
+{% add_crumb page_title %}
 <div class="row">
-    <div class="col-md-12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-            <li class="active">{% if author.story_set.count > 0 %}Кабинет автора{% else %}Кабинет потенциального автора{% endif %} {{ author.username }}</li>
-        </ul>
-    </div>
+    {% render_breadcrumbs %}
     <!-- Вывод шапки -->
     <div class="col-md-8">
         <h1 id="author-name">
             <img src="{{ author.get_avatar_url }}" width="42" title="{{ author.username }}" alt="{{ author.username }}"/>
             {{ author.username }}
-            {#{% if author.story_set.count > 0 %}Кабинет автора{% else %}Кабинет потенциального автора{% endif %}#}
             {% if not author.is_active %}
                 <sup id="banned">Read-only</sup>
             {% endif %}
@@ -61,13 +55,6 @@
             </div>
             {% include "includes/comments_pagination_author_dashboard.html" %}
         {% endif %}
-    </div>
-
-    <div class="col-md-12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-            <li class="active">{% if author.story_set.count > 0 %}Кабинет автора{% else %}Читательский билет{% endif %} {{ author.username }}</li>
-        </ul>
     </div>
 </div>
 {% endblock %}
