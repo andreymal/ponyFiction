@@ -8,14 +8,14 @@
   mysqladmin flush-privileges
   MYSQL="mysql --user=$DB_USERNAME --password=$DB_PASSWORD --database=$DB_DATABASE"
 
-  for migration in $(ls -v /work/fixtures/migrations) ; do
-    echo "Applying migration $migration"
-    $MYSQL < /work/fixtures/migrations/$migration
-  done
-
   for data in $(ls -v /work/fixtures/data) ; do
     echo "Populating database with $data"
     $MYSQL < /work/fixtures/data/$data
+  done
+
+  for migration in $(ls -v /work/fixtures/migrations) ; do
+    echo "Applying migration $migration"
+    $MYSQL < /work/fixtures/migrations/$migration
   done
 
   mysqladmin shutdown
