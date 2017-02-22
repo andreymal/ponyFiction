@@ -8,7 +8,7 @@
     <div class="col-md-12">
         <h1>{{ page_title }}</h1>
         <div>
-        <form action="/search/" method="GET" enctype="multipart/form-data" name="search" id="searchform" class="form-horizontal">
+        <form action="{% url 'search' %}" method="GET" enctype="multipart/form-data" name="search" id="searchform" class="form-horizontal">
             <fieldset>
                 <div class="padded">
                     <!-- Поле поиска -->
@@ -118,19 +118,19 @@
                 <!-- Пагинация: начало вывода -->
                     <div id="pagination" class="center">
                         {% for page_head_id in pagination.head_range %}
-                            <input form="searchform" type="submit" class="btn{% if page_head_id = pagination.current %} btn-primary{% endif %}" name="page" value="{{ page_head_id }}" >
+                            <input form="searchform" type="submit" class="btn{% if page_head_id == pagination.current %} btn-primary{% endif %}" name="page" value="{{ page_head_id }}" >
                         {% endfor %}
                         {% if pagination.head_dots %}
                             <span class="pagination-dots">…</span>
                         {% endif %}
                         {% for page_local_id in pagination.locality_range %}
-                            <input form="searchform" type="submit" class="btn{% if page_local_id = pagination.current %} btn-primary{% endif %}" name="page" value="{{ page_local_id }}" >
+                            <input form="searchform" type="submit" class="btn{% if page_local_id == pagination.current %} btn-primary{% endif %}" name="page" value="{{ page_local_id }}" >
                         {% endfor %}
                         {% if pagination.tail_dots %}
                             <span class="pagination-dots">…</span>
                         {% endif %}
                         {% for page_tail_id in pagination.tail_range %}
-                            <input form="searchform" type="submit" class="btn{% if page_tail_id = pagination.current %} btn-primary{% endif %}" name="page" value="{{ page_tail_id }}" >
+                            <input form="searchform" type="submit" class="btn{% if page_tail_id == pagination.current %} btn-primary{% endif %}" name="page" value="{{ page_tail_id }}" >
                         {% endfor %}
                       </div>
                   <!-- Пагинация: конец вывода -->
