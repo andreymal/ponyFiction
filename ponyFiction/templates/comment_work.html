@@ -1,19 +1,13 @@
 {% extends "common.html" %}
 {% block content %}
-<div class="row">
-    <div class="col-md-8">
-    <ul class="breadcrumb">
-      <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-      <li><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> <span class="divider">/</span></li>
-      <li class="active">{{ page_title }}</li>
-    </ul>   
-    <h1>{{ page_title }}</h1>
-    {% include 'includes/comment_form.html' %}
-    <ul class="breadcrumb">
-      <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-      <li><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> <span class="divider">/</span></li>
-      <li class="active">{{ page_title }}</li>
-    </ul>
+    {% load breadcrumb_tags %}
+    {% add_crumb story.title 'story_view' story.id %}
+    {% add_crumb page_title %}
+    <div class="row">
+        {% render_breadcrumbs %}
+        <div class="col-md-8">
+            <h1>{{ page_title }}</h1>
+            {% include 'includes/comment_form.html' %}
+        </div>
     </div>
-</div>
 {% endblock %}
