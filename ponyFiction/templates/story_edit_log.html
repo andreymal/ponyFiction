@@ -1,14 +1,13 @@
 {% extends "common.html" %}
-
 {% block content %}
-
+    {% load breadcrumb_tags %}
+    {% if story %}
+        {% add_crumb story.title 'story_view' story.id %}
+    {% endif %}
+    {% add_crumb page_title %}
 <div class="row">
     <div class="col-md-12 story-page">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-            {% if story %}<li><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> <span class="divider">/</span></li>{% endif %}
-            <li>{{ page_title }}</li>
-        </ul>
+        {% render_breadcrumbs %}
 
         {% for item in edit_log %}
             <p>

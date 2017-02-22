@@ -4,8 +4,8 @@
     {% add_crumb story.title 'story_view' story.id %}
     {% add_crumb page_title %}
     <div class="row">
+        {% render_breadcrumbs %}
         <div class="col-md-8">
-            {% render_breadcrumbs %}
             <h1>{{ page_title }}</h1>
 
             <div class="story-item">
