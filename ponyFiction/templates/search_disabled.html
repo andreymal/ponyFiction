@@ -1,15 +1,12 @@
 {% extends "common.html" %}
 {% block content %}
-<div class="row search-page">
-    <!-- Навигация -->
-    <div class="col-md-12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-            <li class="active">{{ page_title }}</li>
-        </ul>
-    <!-- Поиск -->
-        <h1>Поиск рассказов</h1>
-        <h3>Отключен</h3>
+    {% load breadcrumb_tags %}
+    {% add_crumb page_title %}
+    <div class="row search-page">
+        {% render_breadcrumbs %}
+        <div class="col-md-12">
+            <h1>{{ page_title }}</h1>
+            <h3>Отключен</h3>
+        </div>
     </div>
-</div>
 {% endblock %}

@@ -1,16 +1,12 @@
 {% extends "common.html" %}
 {% load pluralize %}
 {% block content %}
-{% load static %}
+{% load breadcrumb_tags %}
+{% add_crumb page_title %}
 <div class="row search-page">
-    <!-- Навигация -->
+    {% render_breadcrumbs %}
     <div class="col-md-12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-            <li class="active">{{ page_title }}</li>
-        </ul>
-    <!-- Поиск -->
-        <h1>Поиск рассказов</h1>
+        <h1>{{ page_title }}</h1>
         <div>
         <form action="/search/" method="GET" enctype="multipart/form-data" name="search" id="searchform" class="form-horizontal">
             <fieldset>
@@ -141,14 +137,5 @@
         {% endif %}
     </div>
     <!-- Результаты: конец вывода -->
-
-    <!-- Навигация: начало вывода -->
-    <div class="col-md-12">
-        <ul class="breadcrumb">
-            <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-            <li class="active">{{ page_title }}</li>
-        </ul>
-    </div>
-    <!-- Навигация: конец вывода -->
 </div>
 {% endblock %}
