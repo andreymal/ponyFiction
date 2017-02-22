@@ -1,40 +1,34 @@
 {% extends "common.html" %}
 {% load pluralize %}
 {% block content %}
-<div class="row">
-    <div class="col-md-8">
-    <ul class="breadcrumb">
-      <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-      <li><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> <span class="divider">/</span></li>
-      <li class="active">{{ page_title }}</li>
-    </ul>   
-    <h1>{{ page_title }}</h1>
+    {% load breadcrumb_tags %}
+    {% add_crumb story.title 'story_view' story.id %}
+    {% add_crumb page_title %}
+    <div class="row">
+        {% render_breadcrumbs %}
+        <div class="col-md-8">
+            <h1>{{ page_title }}</h1>
 
-    <div class="story-item">
-        <p>Рассказ <strong>«{{ story.title }}»</strong> не может быть опубликован прямо сейчас.</p>
-        {% if story.words < 1000 and story.words > 0 %}
-            <p>Его размер составляет всего {{ story.words|rupluralize:'слово,слова,слов' }}, что меньше 1000, необходимых для публикации.</p>
-        {% else %}
-            <p>
-                Там нет ни единого слова, что недопустимо.&nbsp;
-                    {% if story.chapter_set.count == 0 %}
-                        Более того, лучшие отряды поисковых пегасов не то, что слов — даже глав не нашли!
-                    {% endif %}
-            </p>
-        {% endif %}
-    </div>
+            <div class="story-item">
+                <p>Рассказ <strong>«{{ story.title }}»</strong> не может быть опубликован прямо сейчас.</p>
+                {% if story.words < 1000 and story.words > 0 %}
+                    <p>Его размер составляет всего {{ story.words|rupluralize:'слово,слова,слов' }}, что меньше 1000,
+                        необходимых для публикации.</p>
+                {% else %}
+                    <p>
+                        Там нет ни единого слова, что недопустимо.&nbsp
+                        {% if story.chapter_set.count == 0 %}
+                            Более того, лучшие отряды поисковых пегасов не то, что слов — даже глав не нашли!
+                        {% endif %}
+                    </p>
+                {% endif %}
+            </div>
 
-      <div class="control-group">
-        <div class="controls">
-            <a href="{% url 'story_edit' story.id %}" class="btn">Вернуться к редактированию рассказа</a>
+            <div class="control-group">
+                <div class="controls">
+                    <a href="{% url 'story_edit' story.id %}" class="btn">Вернуться к редактированию рассказа</a>
+                </div>
+            </div>
         </div>
     </div>
-
-    <ul class="breadcrumb">
-      <li><a href="{% url 'index' %}">{{ SITE_NAME }}</a> <span class="divider">/</span></li>
-      <li><a href="{% url 'story_view' story.id %}">{{ story.title }}</a> <span class="divider">/</span></li>
-      <li class="active">{{ page_title }}</li>
-    </ul>
-    </div>
-</div>
 {% endblock %}
