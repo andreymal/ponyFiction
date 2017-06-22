@@ -30,7 +30,7 @@ urlpatterns = [
     # Главная страница
     url(r'^$', index, name='index'),
     # Адреса админки
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
     # Поиск
     url(r'^search/$', search.search_main, name='search'),
     url(r'^search/(?P<search_type>\w+)/(?P<search_id>\d+)/$', search.search_simple, name='search_simple'),
