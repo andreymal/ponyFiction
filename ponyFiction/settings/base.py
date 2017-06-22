@@ -227,7 +227,7 @@ STORY_DOWNLOAD_FORMATS = reversed((
     # 'ponyFiction.downloads.txt.TXT_CP1251Download',
 ))
 
-CACHEOPS_FAKE = False
+CACHEOPS_ENABLED = True
 CELERY_ALWAYS_EAGER = False
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json', 'msgpack', 'yaml']
