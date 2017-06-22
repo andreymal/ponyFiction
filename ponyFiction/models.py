@@ -186,7 +186,7 @@ class Character(JSONModel):
 
     description = models.TextField(max_length=4096, blank=True, verbose_name="Биография")
     name = models.CharField(max_length=256, verbose_name="Имя")
-    group = models.ForeignKey(CharacterGroup, null=True, verbose_name="Группа персонажа")
+    group = models.ForeignKey(CharacterGroup, on_delete=models.CASCADE, null=True, verbose_name="Группа персонажа")
 
     def __str__(self):
         return self.name
@@ -264,8 +264,8 @@ class Rating(JSONModel):
 class InSeriesPermissions(models.Model):
     """ Промежуточная модель хранения взаимосвязей рассказов, серий и разрешений на добавления рассказов в серии """
 
-    story = models.ForeignKey('Story', null=True, verbose_name="Рассказ")
-    series = models.ForeignKey('Series', null=True, verbose_name="Серия")
+    story = models.ForeignKey('Story', on_delete=models.CASCADE, null=True, verbose_name="Рассказ")
+    series = models.ForeignKey('Series', on_delete=models.CASCADE, null=True, verbose_name="Серия")
     order = models.PositiveSmallIntegerField(default=1, verbose_name="Порядок рассказов в серии")
     request = models.BooleanField(default=False, verbose_name="Запрос на добавление")
     answer = models.BooleanField(default=False, verbose_name="Ответ на запрос")
@@ -320,7 +320,7 @@ class Story(JSONModel):
     in_series = models.ManyToManyField(Series, through='InSeriesPermissions', blank=True, verbose_name="Принадлежность к серии")
     notes = models.TextField(max_length=4096, blank=True, verbose_name="Заметки к рассказу")
     original = models.BooleanField(default=True, verbose_name="Оригинальный (не перевод)")
-    rating = models.ForeignKey(Rating, null=True, verbose_name="Рейтинг")
+    rating = models.ForeignKey(Rating, on_delete=models.SET_NULL, null=True, verbose_name="Рейтинг")
     summary = models.TextField(max_length=4096, verbose_name="Общее описание")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     words = models.PositiveIntegerField(default=0, editable=settings.DEBUG, verbose_name="Количество слов")
@@ -526,8 +526,8 @@ class Chapter(models.Model):
 class CoAuthorsStory(models.Model):
     """ Промежуточная модель хранения взаимосвязей авторства рассказов (включая соавторов) """
 
-    author = models.ForeignKey(Author, verbose_name="Автор")
-    story = models.ForeignKey(Story, verbose_name="Рассказ")
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, verbose_name="Автор")
+    story = models.ForeignKey(Story, on_delete=models.CASCADE, verbose_name="Рассказ")
     approved = models.BooleanField(default=False, verbose_name="Подтверждение")
 
     def __str__(self):
@@ -537,8 +537,8 @@ class CoAuthorsStory(models.Model):
 class CoAuthorsSeries(models.Model):
     """ Промежуточная модель хранения взаимосвязей авторства серий (включая соавторов) """
 
-    author = models.ForeignKey(Author, null=True, verbose_name="Автор")
-    series = models.ForeignKey(Series, null=True, verbose_name="Серия")
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, null=True, verbose_name="Автор")
+    series = models.ForeignKey(Series, on_delete=models.CASCADE, null=True, verbose_name="Серия")
     approved = models.BooleanField(default=False, verbose_name="Подтверждение")
 
     def __str__(self):
@@ -548,8 +548,8 @@ class CoAuthorsSeries(models.Model):
 class BetaReading(models.Model):
     """ Промежуточная модель хранения взаимосвязей рассказов, бета-читателей и результатов вычитки """
 
-    beta = models.ForeignKey(Author, null=True, verbose_name="Бета")
-    story = models.ForeignKey(Story, null=True, verbose_name="История вычитки")
+    beta = models.ForeignKey(Author, on_delete=models.CASCADE, null=True, verbose_name="Бета")
+    story = models.ForeignKey(Story, on_delete=models.CASCADE, null=True, verbose_name="История вычитки")
     checked = models.BooleanField(default=False, verbose_name="Вычитано бетой")
 
     def __str__(self):
@@ -618,8 +618,8 @@ class Vote(models.Model):
 class Favorites(models.Model):
     """ Модель избранного """
 
-    author = models.ForeignKey(Author, null=True, verbose_name="Автор")
-    story = models.ForeignKey(Story, related_name="favorites_story_related_set", null=True, verbose_name="Рассказ")
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, null=True, verbose_name="Автор")
+    story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name="favorites_story_related_set", null=True, verbose_name="Рассказ")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления в избранное")
 
     class Meta:
@@ -633,8 +633,8 @@ class Favorites(models.Model):
 class Bookmark(models.Model):
     """ Модель закладок """
 
-    author = models.ForeignKey(Author, null=True, verbose_name="Автор")
-    story = models.ForeignKey(Story, related_name="bookmarks_related_set", null=True, verbose_name="Рассказ")
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, null=True, verbose_name="Автор")
+    story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name="bookmarks_related_set", null=True, verbose_name="Рассказ")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления в список для прочтения")
 
     class Meta:
@@ -650,8 +650,8 @@ class StoryView(models.Model):
     # NOTE: Будет расширена и переименована для серий
     author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE, verbose_name="Автор просмотра")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата просмотра")
-    story = models.ForeignKey(Story, related_name="story_views_set", null=True, verbose_name="Рассказ")
-    chapter = models.ForeignKey(Chapter, related_name="chapter_views_set", null=True, verbose_name="Глава рассказа")
+    story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name="story_views_set", null=True, verbose_name="Рассказ")
+    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name="chapter_views_set", null=True, verbose_name="Глава рассказа")
 
     class Meta:
         verbose_name = "просмотр"
@@ -666,7 +666,7 @@ class Activity(models.Model):
 
     author = models.ForeignKey(Author, null=True, on_delete=models.CASCADE, verbose_name="Автор просмотра")
     date = models.DateTimeField(auto_now_add=True, verbose_name="Дата последнего просмотра автором")
-    story = models.ForeignKey(Story, related_name="story_activity_set", null=True, verbose_name="Рассказ")
+    story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name="story_activity_set", null=True, verbose_name="Рассказ")
     last_views = models.IntegerField(default=0, verbose_name="Последнее количество просмотров")
     last_comments = models.IntegerField(default=0, verbose_name="Последнее количество комментариев")
     last_vote_up = models.IntegerField(default=0, verbose_name="Последнее количество голосов 'За'")
@@ -696,8 +696,8 @@ class StoryEditLogItem(models.Model):
             Edit: 'отредактировал',
         }
 
-    user = models.ForeignKey(Author)
-    story = models.ForeignKey(Story, related_name='edit_log')
+    user = models.ForeignKey(Author, on_delete=models.CASCADE)
+    story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name='edit_log')
     action = models.SmallIntegerField(choices=Actions.action_verbs.items())
     json_data = models.TextField(null=True)
     date = models.DateTimeField(auto_now_add=True, db_index=True)
