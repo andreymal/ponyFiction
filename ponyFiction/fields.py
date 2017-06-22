@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from django.db.models import CommaSeparatedIntegerField, SubfieldBase
+from django.db.models import CommaSeparatedIntegerField
 
 from ponyFiction.utils.misc import unicode_to_int_list
 
 
-class SeparatedValuesField(CommaSeparatedIntegerField, metaclass=SubfieldBase):
+class SeparatedValuesField(CommaSeparatedIntegerField):
     token = ','
 
     def to_python(self, value):
@@ -16,12 +16,15 @@ class SeparatedValuesField(CommaSeparatedIntegerField, metaclass=SubfieldBase):
             return unicode_to_int_list(value)
         return unicode_to_int_list(value.split(self.token))
 
-    def get_db_prep_value(self, value, *args, **kwargs):
+    def from_db_value(self, value, expression, connection, context):
+        return self.to_python(value)
+
+    def get_prep_value(self, value):
         if not value:
-            return
+            return ''
         assert isinstance(value, (tuple, list)), 'SeparatedValuesField value is not list'
         return self.token.join([str(s) for s in value])
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
-        return self.get_db_prep_value(value)
+        return self.get_prep_value(value)
