@@ -194,6 +194,9 @@ if settings.DEBUG:
         (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': 'media/'}),
     )
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    if 'debug_toolbar' in settings.INSTALLED_APPS:
+        import debug_toolbar
+        urlpatterns = [url(r'^__debug__/', include(debug_toolbar.urls))] + urlpatterns
 
 urlpatterns += patterns('',
     url(r'^api/', include(api.urls)),

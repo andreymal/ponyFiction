@@ -53,7 +53,7 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 
-DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS': False}
+DEBUG_TOOLBAR_CONFIG = {'DISABLE_PANELS': {'debug_toolbar.panels.redirects.RedirectsPanel'}}
 
 SITE_URL = 'http://localhost:8000'
 SITE_NAME = 'Библиотека everypony.ru'
