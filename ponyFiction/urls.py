@@ -3,6 +3,7 @@
 
 from django.conf import settings
 from django.conf.urls import patterns, include, url
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
@@ -187,12 +188,12 @@ urlpatterns += patterns('ponyFiction.views.staticpages',
     url(r'^page/(?P<name>[A-z0-9-_\.]+)/$', 'view', name='staticpage'),
 )
 if settings.DEBUG:
-    # Only for debugging purposes, when process runs with "manage.py runserver", not with uwsgi+nginx
+    # Only for debugging purposes, when process runs with "manage.py runserver --nostatic", not with uwsgi+nginx
     urlpatterns += patterns(
         '',
-        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': 'static/'}),
         (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': 'media/'}),
     )
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += patterns('',
     url(r'^api/', include(api.urls)),

@@ -7,11 +7,19 @@ from .captcha import *
 from .templates import *
 
 
+def set_static_root(base):
+    try:
+        version = open("frontend.version").read().strip()
+    except (OSError, IOError):
+        return base
+    return os.path.join(base, version)
+
+
 def set_static_url(base):
     try:
         version = open("frontend.version").read().strip()
     except (OSError, IOError):
-        version = ""
+        return base + os.sep
     return os.path.join(base, version) + os.sep
 
 
@@ -60,8 +68,8 @@ USE_TZ = False
 MEDIA_ROOT = '/media/'
 MEDIA_URL = '/media/'
 
-STATIC_ROOT = 'static'
-STATIC_URL = set_static_url("http://localhost:8000/static")
+STATIC_ROOT = set_static_root('static')
+STATIC_URL = set_static_url("/static")
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
