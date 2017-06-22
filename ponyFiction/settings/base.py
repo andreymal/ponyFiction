@@ -227,11 +227,12 @@ STORY_DOWNLOAD_FORMATS = reversed((
     # 'ponyFiction.downloads.txt.TXT_CP1251Download',
 ))
 
-CACHEOPS_ENABLED = True
-CELERY_ALWAYS_EAGER = False
+CELERY_TASK_ALWAYS_EAGER = False
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json', 'msgpack', 'yaml']
-BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+
+CACHEOPS_ENABLED = True
 
 CACHEOPS_REDIS = {
     'host': 'localhost',

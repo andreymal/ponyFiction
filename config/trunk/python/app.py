@@ -35,7 +35,7 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'noreply-trunk@stories.everypony.ru'
 
-BROKER_URL = 'redis://127.0.0.1:6679/0'
+CELERY_BROKER_URL = 'redis://127.0.0.1:6679/0'
 
 CACHEOPS_REDIS = {
     'host': '127.0.0.1',
