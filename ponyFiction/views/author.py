@@ -17,7 +17,7 @@ def author_info(request, user_id, comments_page):
     data = {}
 
     if user_id is None:
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             raise PermissionDenied
         author = request.user
         comments_list = Comment.objects.prefetch_related('story', 'author').filter(story__authors=request.user.id).order_by('-date').cache()

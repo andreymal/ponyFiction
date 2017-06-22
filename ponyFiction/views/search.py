@@ -55,7 +55,7 @@ def search_action(request, postform):
                 query,
                 limit,
                 int(sort_type),
-                only_published=not request.user.is_authenticated() or not request.user.is_staff,
+                only_published=not request.user.is_authenticated or not request.user.is_staff,
                 character=postform.cleaned_data['char'],
                 classifier=postform.cleaned_data['cls'],
                 category=postform.cleaned_data['genre'],
@@ -77,7 +77,7 @@ def search_action(request, postform):
             raw_result, result = Chapter.bl.search(
                 query,
                 limit,
-                only_published=not request.user.is_authenticated() or not request.user.is_staff,
+                only_published=not request.user.is_authenticated or not request.user.is_staff,
             )
         except SphinxError as exc:
             data = {'form': postform, 'page_title': 'Поиск рассказов', 'error': 'Кажется, есть синтаксическая ошибка в запросе'}

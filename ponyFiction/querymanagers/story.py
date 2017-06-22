@@ -32,7 +32,7 @@ class MainQS(StoryQuerySet):
 
     def accessible(self, user):
         default_queryset = self.filter(draft=False, approved=True)
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return default_queryset
         if user.is_staff:
             return self

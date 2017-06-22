@@ -38,7 +38,7 @@ def story_view(request, pk, comments_page):
     comments = paged.page(page_current)
     page_title = story.title
     comment_form = CommentForm()
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         signals.story_visited.send(sender=Author, instance=request.user, story=story, comments_count=comments_list.count())
         if story.chapter_set.count() == 1:
             signals.story_viewed.send(sender=Author, instance=request.user, story=story, chapter=story.chapter_set.all()[0])
