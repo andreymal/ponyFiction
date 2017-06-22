@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from django.db.models import CommaSeparatedIntegerField
+from django.core import validators
+from django.db.models import CharField
 
 from ponyFiction.utils.misc import unicode_to_int_list
 
 
-class SeparatedValuesField(CommaSeparatedIntegerField):
+class SeparatedValuesField(CharField):
+    default_validators = [validators.validate_comma_separated_integer_list]
+
     token = ','
 
     def to_python(self, value):

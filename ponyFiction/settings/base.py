@@ -71,7 +71,7 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = set_static_root('static')
 STATIC_URL = set_static_url("/static")
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.locale.LocaleMiddleware',

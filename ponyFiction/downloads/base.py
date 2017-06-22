@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.template.loader import render_to_string
 
 
@@ -19,7 +19,7 @@ class BaseDownloadFormat(object):
 
     def url(self, story):
         return reverse(
-            'ponyFiction.views.story.story_download',
+            'story_download',
             kwargs=dict(
                 story_id=story.id,
                 filename=slugify(story.title or str(story.id)),

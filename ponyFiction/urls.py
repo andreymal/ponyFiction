@@ -99,7 +99,7 @@ urlpatterns = [
          'post_reset_redirect': '/accounts/password/done/',
          'extra_context': {'page_title': 'Восстановление пароля: новый пароль'}
          },
-        ),
+        name='password_reset_confirm'),
     url(r'^accounts/password/done/$',
         auth_views.password_reset_complete,
         {
@@ -148,7 +148,7 @@ urlpatterns = [
 
     url(r'^story/(?P<pk>\d+)/editlog/$', views_story.story_edit_log, name='story_edit_log'),
     # Загрузка рассказа
-    url(r'^story/(?P<story_id>\d+)/download/(?P<filename>\w+)\.(?P<extension>[\w\.]+)$', views_story.story_download),
+    url(r'^story/(?P<story_id>\d+)/download/(?P<filename>\w+)\.(?P<extension>[\w\.]+)$', views_story.story_download, name='story_download'),
 
     # Работа с главами
     # Просмотр одной

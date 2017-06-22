@@ -7,11 +7,12 @@ from django.db import models
 from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Sum, Count
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.contrib.auth.models import AbstractUser
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.utils.encoding import is_protected_type
+from django.utils.deprecation import CallableFalse, CallableTrue  # backwards compatiblity, may be removed after testing
 from colorful.fields import RGBColorField
 
 from ponyFiction.filters import filter_html, filtered_html_property
@@ -23,7 +24,7 @@ from ponyFiction.fields import SeparatedValuesField
 from ponyFiction import querymanagers as qm
 
 
-# disable username validation to allow editing of users with russian symbols in names
+# disable username validation to allow editing of users with spaces in names
 username_field = {f.name: f for f in AbstractUser._meta.fields}['username']  # pylint: disable=W0212
 username_field.validators = []
 
@@ -119,8 +120,11 @@ class Author(AbstractUser, JSONModel):
 
     bio_as_html = filtered_html_property('bio', filter_html)
 
+    @property
     def is_authenticated(self):
-        return self.is_active
+        if self.is_active:
+            return CallableTrue
+        return CallableFalse
 
     def get_avatar_url(self):
         url = self.get_tabun_avatar_url()
