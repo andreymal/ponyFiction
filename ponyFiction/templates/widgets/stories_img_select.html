@@ -1,0 +1,8 @@
+{% load static %}
+{% for group, options, index in widget.optgroups %}
+    <span class="{{ widget.attrs.group_container_class }}{{ group.id }}" title="{{ group.name }}">
+    {% for option in options %}
+        <span{{ flat_container_attrs }}><input type="checkbox" name="{{ option.name }}" value="{{ option.value }}"{{ flat_data_attrs }}{% if option.selected %} checked{% endif %} /><img class="{% if option.selected %}ui-selected{% endif %}" src="{{ option.img_url }}" alt="{{ option.label }}" title="{{ option.label }}" /></span>
+    {% endfor %}
+    </span>
+{% endfor %}

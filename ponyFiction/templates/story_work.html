@@ -56,7 +56,7 @@
                             <span class="help-block small">{{ form.categories.help_text }}</span>
                         {% endif %}
                         {% for checkbox in form.categories %}
-                            <label class="inline gen gen-{{checkbox.choice_value}} {% if checkbox.is_checked %} active {% endif %}">
+                            <label class="inline gen gen-{{checkbox.data.value}} {% if checkbox.is_checked %} active {% endif %}">
                                 {{ checkbox.tag }} {{ checkbox.choice_label }}
                             </label>
                         {% endfor %}

@@ -36,7 +36,7 @@
                     <h4>Жанры</h4>
                     <p class="genres-select">
                         {% for checkbox in form.genre %}
-                            <label class="inline gen gen-{{checkbox.choice_value}} {% if checkbox.is_checked %} active {% endif %}">
+                            <label class="inline gen gen-{{checkbox.data.value}} {% if checkbox.is_checked %} active {% endif %}">
                                 {{ checkbox.tag }} {{ checkbox.choice_label }}
                             </label>
                         {% endfor %}
