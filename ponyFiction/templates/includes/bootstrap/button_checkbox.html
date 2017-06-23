@@ -1,6 +1,6 @@
 <div class="btn-group" data-toggle="buttons">
     {% for checkbox in field %}
-    <label class="btn btn-default {% if checkbox.is_checked %} active {% endif %}">
+    <label class="btn btn-default {% if checkbox.data.selected %} active{% endif %}">
         {{ checkbox.tag }} {{ checkbox.choice_label }}
     </label>
     {% endfor %}

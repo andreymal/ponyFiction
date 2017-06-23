@@ -81,7 +81,7 @@ class AuthorEditPrefsForm(Form):
         self.author = kwargs.pop('author', None)
         super(AuthorEditPrefsForm, self).__init__(*args, **kwargs)
         if self.author:
-            self.fields['excluded_categories'].initial = ','.join(str(x) for x in self.author.excluded_categories)
+            self.fields['excluded_categories'].initial = self.author.excluded_categories
             self.fields['detail_view'].initial = int(self.author.detail_view)
             self.fields['nsfw'].initial = int(self.author.nsfw)
 

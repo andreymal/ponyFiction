@@ -45,9 +45,9 @@ class StoryForm(ModelForm):
     # Закончен/не закончен
     finished = ChoiceField(
         required=True,
-        choices=[(0, 'Не закончен'), (1, 'Закончен')],
+        choices=[(False, 'Не закончен'), (True, 'Закончен')],
         widget=RadioSelect,
-        initial=0,
+        initial=False,
         label='Статус',
         help_text='Завершен ли рассказ',
         error_messages={'required': 'Нужно обязательно указать статус рассказа!'},
@@ -56,9 +56,9 @@ class StoryForm(ModelForm):
     # Заморожен/активен
     freezed = ChoiceField(
         required=True,
-        choices=[(0, 'Активен'), (1, 'Заморожен')],
+        choices=[(False, 'Активен'), (True, 'Заморожен')],
         widget=RadioSelect,
-        initial=0,
+        initial=False,
         label='Состояние',
         help_text='Активность рассказа (пишется ли он сейчас)',
         error_messages={'required': 'Нужно обязательно указать состояние рассказа!'},
@@ -67,9 +67,9 @@ class StoryForm(ModelForm):
     # Оригинал/перевод
     original = ChoiceField(
         required=True,
-        choices=[(1, 'Оригинал'), (0, 'Перевод')],
+        choices=[(True, 'Оригинал'), (False, 'Перевод')],
         widget=RadioSelect,
-        initial=1,
+        initial=True,
         label='Происхождение',
         error_messages={'required': 'Нужно обязательно указать происхождение рассказа!'},
     )
