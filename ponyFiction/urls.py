@@ -69,43 +69,36 @@ urlpatterns = [
         ),
         name='registration_disallowed'),
     url(r'^accounts/login/$',
-        auth_views.login,
-        {
-            'template_name': 'registration/login.html',
-            'extra_context': {'page_title': 'Авторизация'}
-        },
+        auth_views.LoginView.as_view(
+            template_name='registration/login.html',
+            extra_context={'page_title': 'Авторизация'},
+        ),
         name='auth_login'),
     url(r'^accounts/logout/$',
-        auth_views.logout,
-        {'next_page': '/'},
+        auth_views.LogoutView.as_view(next_page='/'),
         name='auth_logout'),
     # Регистрация
     url(r'^accounts/password/reset/$',
-        auth_views.password_reset,
-        {
-         'post_reset_redirect': '/accounts/password/reset/done/',
-         'extra_context': {'page_title': 'Восстановление пароля: введите адрес e-mail'}
-         },
+        auth_views.PasswordResetView.as_view(
+            success_url='/accounts/password/reset/done/',
+            extra_context={'page_title': 'Восстановление пароля: введите адрес e-mail'},
+        ),
         name='password_reset'),
     url(r'^accounts/password/reset/done/$',
-        auth_views.password_reset_done,
-        {
-         'extra_context': {'page_title': 'Восстановление пароля: письмо отправлено'}
-         },
+        auth_views.PasswordResetDoneView.as_view(
+            extra_context={'page_title': 'Восстановление пароля: письмо отправлено'},
         ),
+        name='password_reset_done'),
     url(r'^accounts/password/reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-        auth_views.password_reset_confirm,
-        {
-         'post_reset_redirect': '/accounts/password/done/',
-         'extra_context': {'page_title': 'Восстановление пароля: новый пароль'}
-         },
+        auth_views.PasswordResetConfirmView.as_view(
+            success_url='/accounts/password/done/',
+            extra_context={'page_title': 'Восстановление пароля: новый пароль'},
+        ),
         name='password_reset_confirm'),
     url(r'^accounts/password/done/$',
-        auth_views.password_reset_complete,
-        {
-         'extra_context': {'page_title': 'Восстановление пароля: пароль восстановлен'}
-         },
-        ),
+        auth_views.PasswordResetCompleteView.as_view(
+            extra_context={'page_title': 'Восстановление пароля: пароль восстановлен'},
+        )),
     url(r'^accounts/', include('registration.backends.default.urls')),
 
     # AJAX
