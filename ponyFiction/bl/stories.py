@@ -31,9 +31,9 @@ class StoryBL(BaseBL):
             finished=finished,
             notes=notes or '',
         )
-        story.categories = categories
-        story.characters = characters
-        story.classifications = classifications
+        story.categories.set(categories)
+        story.characters.set(characters)
+        story.classifications.set(classifications)
         for author, approved in authors:
             CoAuthorsStory.objects.create(story=story, author=author, approved=approved)
 
@@ -46,7 +46,10 @@ class StoryBL(BaseBL):
 
         story = self.model
         for key, value in data.items():
-            setattr(story, key, value)
+            if key in ('categories', 'characters', 'classifications'):
+                getattr(story, key).set(value)
+            else:
+                setattr(story, key, value)
         story.save()
         if editor:
             StoryEditLogItem.create(
