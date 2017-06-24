@@ -243,6 +243,8 @@ containers:
       - libxslt-dev
       - mariadb-dev
       - ca-certificates
+    - !PipConfig
+      dependencies: true
     - !Py3Requirements requirements.txt
     volumes:
       <<: *local_volumes
