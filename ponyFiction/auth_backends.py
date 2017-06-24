@@ -8,7 +8,7 @@ from django.apps import apps
 
 
 class AuthorModelBackend(ModelBackend):
-    def authenticate(self, username=None, password=None):
+    def authenticate(self, request, username=None, password=None):
         try:
             user = self.user_class.objects.get(username=username)
             if user.check_password(password):
