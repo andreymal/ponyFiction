@@ -22,7 +22,7 @@ class ReCaptcha(forms.widgets.Widget):
         self.js_attrs = attrs
         super(ReCaptcha, self).__init__(*args, **kwargs)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         return mark_safe(u'%s' % client.displayhtml(
             self.public_key,
             self.js_attrs, use_ssl=self.use_ssl))
